@@ -22,6 +22,7 @@ import java.net.URI;
 @CrossOrigin(value = {"*"}, exposedHeaders = {"Content-Disposition"})
 public class ImageController {
 
+
     private final ImageService imageService;
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;

@@ -76,7 +76,7 @@ public class User extends MappedAudibleBase {
     @JsonIgnore
     private Set<Trip> tripsAsDriver = new HashSet<>();
 
-    @ManyToMany(mappedBy = "passengers")
+    @ManyToMany(mappedBy = "acceptedPassengers")
     private Set<Trip> tripsAsPassenger = new HashSet<>();
 
 }

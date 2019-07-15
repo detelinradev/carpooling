@@ -51,6 +51,12 @@ public class Trip extends MappedAudibleBase {
     private User driver;
 
     @ManyToMany
-    private Set<User> passengers = new HashSet<>();
+    private Set<User> acceptedPassengers = new HashSet<>();
+
+    @ManyToMany
+    private Set<User> rejectedPassengers = new HashSet<>();
+
+    @ManyToMany
+    private Set<User> pendingPassengers = new HashSet<>();
 
 }

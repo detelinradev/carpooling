@@ -1,6 +1,7 @@
 package com.telerik.carpooling.controllers;
 
 import com.telerik.carpooling.models.Trip;
+import com.telerik.carpooling.services.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,10 @@ import javax.validation.Valid;
 @RequestMapping("/trip")
 public class TripController {
 
-//    @PostMapping(value = "/create")
-//    public ResponseEntity<Trip>createTrip(@Valid @RequestBody final Trip trip){
-//        return new ResponseEntity<>(tripService.create(trip), HttpStatus.OK);
-//    }
+    private final TripService tripService;
+
+    @PostMapping(value = "/create")
+    public ResponseEntity<Trip>createTrip(@RequestBody final Trip trip){
+        return new ResponseEntity<>(tripService.createTrip(trip), HttpStatus.OK);
+    }
 }
