@@ -9,7 +9,6 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,33 +18,37 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 public class Trip extends MappedAudibleBase {
+    {
 
+    }
+
+    @Enumerated
     private String startingPoint;
 
     private String endPoint;
 
-    private LocalDateTime departureTime;
+    private String departureDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "car", nullable = false)
-    private Car car;
+    private String departureTime;
 
-//    private String carModel;
-//
-//    private boolean isAirConditioned;
-//
-//    private boolean isSmokingAllowed;
-//
-//    private boolean isLuggageAllowed;
-//
-//    private boolean isPetsFriendly;
-//
-//    private boolean isReturnJourney;
-//
-//    private boolean AreChildrenUnder7Allowed;
-//
-//    @Range(min = 1,max = 7)
-//    private int freeSeats;
+    private int tripDuration;
+
+    private int costPerPassenger;
+
+    private String carModel;
+
+    private boolean isAirConditioned;
+
+    private boolean isSmokingAllowed;
+
+    private boolean isLuggageAllowed;
+
+    private boolean isPetsFriendly;
+
+    private boolean AreChildrenUnder7Allowed;
+
+    @Range(min = 1,max = 8)
+    private int freeSeats;
 
     @Size(max = 200)
     private String message;
