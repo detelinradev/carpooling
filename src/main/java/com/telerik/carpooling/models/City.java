@@ -16,6 +16,9 @@ import javax.persistence.*;
 public class City extends MappedAudibleBase {
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private String countryCode;
 
     @Column(nullable = false)
