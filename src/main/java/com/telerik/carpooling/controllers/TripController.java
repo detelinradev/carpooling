@@ -24,13 +24,25 @@ public class TripController {
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
 
-    @PostMapping(value = "/newTrip")
+    @PostMapping(value = "/trip")
     public ResponseEntity<TripDto>createTrip(@Valid@RequestBody final TripDto trip, final HttpServletRequest req){
 
         return Optional
-                .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(
+                .ofNullable(tripService.createTrip(dtoMapper.dtoToObject(trip), userRepository.findFirstByUsername(
                         authenticationService.getUsername(req))))
                 .map(tripDto -> ResponseEntity.ok().body(tripDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
+
+    @PutMapping(value = "/update")
+    public ResponseEntity<TripDto>updateTrip(@Valid@RequestBody final TripDto trip, final HttpServletRequest req){
+
+        return Optional
+                .ofNullable(tripService.updateTrip(dtoMapper.dtoToObject(trip), userRepository.findFirstByUsername(
+                        authenticationService.getUsername(req))))
+                .map(tripDto -> ResponseEntity.ok().body(tripDto))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+
 }

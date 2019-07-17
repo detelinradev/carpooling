@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,20 +29,6 @@ public class Trip extends MappedAudibleBase {
 
     private int costPerPassenger;
 
-    private String carModel;
-
-    private boolean isAirConditioned;
-
-    private boolean isSmokingAllowed;
-
-    private boolean isLuggageAllowed;
-
-    private boolean isPetsFriendly;
-
-    @Range(min = 1,max = 8)
-    private int freeSeats;
-
-    @Size(max = 200)
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY)

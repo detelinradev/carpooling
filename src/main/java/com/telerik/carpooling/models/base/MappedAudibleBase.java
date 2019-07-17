@@ -24,23 +24,18 @@ public abstract class MappedAudibleBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
     @CreatedDate
     private LocalDateTime created;
 
-    @NotNull
     @LastModifiedDate
     private LocalDateTime modified;
 
-    @NotNull
     @CreatedBy
     private String creator;
 
-    @NotNull
     @LastModifiedBy
     private String modifier;
 
-    @NotNull
     private boolean isDeleted;
 
 
