@@ -36,14 +36,14 @@ public class ImageController {
         return ResponseEntity.created(fileDownloadUri).build();
     }
 
-//    @PostMapping("/uploadCarImage")
-//    public ResponseEntity<Void> uploadCarImage(@RequestParam("file") final MultipartFile file,
-//                                           final HttpServletRequest req) {
-//        imageService.storeCarImage(file, userRepository.findFirstByUsername(authenticationService.getUsername(req)));
-//        URI fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
-//
-//        return ResponseEntity.created(fileDownloadUri).build();
-//    }
+    @PostMapping("/uploadCarImage")
+    public ResponseEntity<Void> uploadCarImage(@RequestParam("file") final MultipartFile file,
+                                           final HttpServletRequest req) {
+        imageService.storeCarImage(file, userRepository.findFirstByUsername(authenticationService.getUsername(req)));
+        URI fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
+
+        return ResponseEntity.created(fileDownloadUri).build();
+    }
 
 
     @GetMapping("/downloadUserImage")
@@ -53,12 +53,12 @@ public class ImageController {
         return createImageModelInResponseEntity(dbFile);
     }
 
-//    @GetMapping("/downloadCarImage")
-//    public ResponseEntity<byte[]> downloadCarImage(final HttpServletRequest req) {
-//        Image dbFile = imageService.getImage(userRepository.findFirstByUsername(
-//                authenticationService.getUsername(req)).getCar().getCarImage().getId());
-//        return createImageModelInResponseEntity(dbFile);
-//    }
+    @GetMapping("/downloadCarImage")
+    public ResponseEntity<byte[]> downloadCarImage(final HttpServletRequest req) {
+        Image dbFile = imageService.getImage(userRepository.findFirstByUsername(
+                authenticationService.getUsername(req)).getCar().getCarImage().getId());
+        return createImageModelInResponseEntity(dbFile);
+    }
 
 
     private ResponseEntity<byte[]> createImageModelInResponseEntity(Image dbFile) {

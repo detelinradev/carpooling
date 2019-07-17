@@ -29,21 +29,21 @@ public class Image extends MappedAudibleBase {
     @JoinColumn(name = "user", unique = true)
     private User user;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "car",unique = true)
-//    private Car car;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "car",unique = true)
+    private Car car;
 
-//    public Image(String fileName, String contentType, byte[] data,User user) {
-//        this.fileName = fileName;
-//        this.contentType = contentType;
-//        this.data = data;
-//        this.user = user;
-//    }
+    public Image(String fileName, String contentType, byte[] data,User user) {
+        this.fileName = fileName;
+        this.contentType = contentType;
+        this.data = data;
+        this.user = user;
+    }
 
-//    public Image(String fileName, String contentType, byte[] data, Car car) {
-//        this.fileName = fileName;
-//        this.contentType = contentType;
-//        this.data = data;
-//        this.car = car;
-//    }
+    public Image(String fileName, String contentType, byte[] data, Car car) {
+        this.fileName = fileName;
+        this.contentType = contentType;
+        this.data = data;
+        this.car = car;
+    }
 }

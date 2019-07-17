@@ -60,9 +60,9 @@ public class User extends MappedAudibleBase {
     @JsonIgnore
     private Image userImage;
 
-//    @OneToOne(mappedBy = "user")
-//    @JsonIgnore
-//    private Car car;
+    @OneToOne(mappedBy = "owner")
+    @JsonIgnore
+    private Car car;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "driver")
     @JsonIgnore

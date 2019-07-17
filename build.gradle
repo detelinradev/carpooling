@@ -36,6 +36,7 @@ dependencies {
     implementation 'org.mariadb.jdbc:mariadb-java-client'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
     implementation 'org.springframework.boot:spring-boot-starter'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.0'
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     runtimeOnly 'mysql:mysql-connector-java'
     compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.4'
