@@ -3,7 +3,7 @@ package com.telerik.carpooling.controllers;
 import com.telerik.carpooling.models.Image;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
-import com.telerik.carpooling.services.ImageService;
+import com.telerik.carpooling.services.services.contracts.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

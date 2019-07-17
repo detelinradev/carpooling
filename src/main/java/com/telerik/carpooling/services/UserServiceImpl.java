@@ -3,6 +3,7 @@ package com.telerik.carpooling.services;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.UserDto;
 import com.telerik.carpooling.repositories.UserRepository;
+import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

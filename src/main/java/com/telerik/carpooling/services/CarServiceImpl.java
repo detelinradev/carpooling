@@ -6,6 +6,7 @@ import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.CarDto;
 import com.telerik.carpooling.models.dtos.DtoMapper;
 import com.telerik.carpooling.repositories.CarRepository;
+import com.telerik.carpooling.services.services.contracts.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

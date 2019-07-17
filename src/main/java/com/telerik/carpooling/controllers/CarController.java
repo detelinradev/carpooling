@@ -6,7 +6,7 @@ import com.telerik.carpooling.models.dtos.DtoMapper;
 import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
-import com.telerik.carpooling.services.CarService;
+import com.telerik.carpooling.services.services.contracts.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

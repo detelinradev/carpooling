@@ -5,6 +5,7 @@ import com.telerik.carpooling.exceptions.MyFileNotFoundException;
 import com.telerik.carpooling.models.Image;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.repositories.ImageRepository;
+import com.telerik.carpooling.services.services.contracts.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

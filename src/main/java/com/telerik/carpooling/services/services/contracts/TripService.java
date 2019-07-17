@@ -1,4 +1,4 @@
-package com.telerik.carpooling.services;
+package com.telerik.carpooling.services.services.contracts;
 
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;

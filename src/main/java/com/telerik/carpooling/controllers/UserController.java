@@ -4,7 +4,7 @@ import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.UserDto;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
-import com.telerik.carpooling.services.UserService;
+import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
