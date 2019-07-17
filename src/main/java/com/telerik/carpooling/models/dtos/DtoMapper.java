@@ -1,0 +1,12 @@
+package com.telerik.carpooling.models.dtos;
+
+import com.telerik.carpooling.models.Trip;
+import com.telerik.carpooling.models.User;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface DtoMapper {
+    TripDto objectToDto(Trip trip);
+    Trip dtoToObject(TripDto tripDto);
+
+}

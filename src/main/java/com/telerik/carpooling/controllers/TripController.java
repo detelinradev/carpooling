@@ -1,12 +1,11 @@
 package com.telerik.carpooling.controllers;
 
-import com.telerik.carpooling.models.Trip;
+import com.telerik.carpooling.models.dtos.DtoMapper;
 import com.telerik.carpooling.models.dtos.TripDto;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
 import com.telerik.carpooling.services.TripService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +19,7 @@ import java.util.Optional;
 @RequestMapping("/trip")
 public class TripController {
 
+    private final DtoMapper dtoMapper;
     private final TripService tripService;
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;

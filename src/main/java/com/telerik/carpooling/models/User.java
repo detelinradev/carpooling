@@ -60,17 +60,17 @@ public class User extends MappedAudibleBase {
     @JsonIgnore
     private Image userImage;
 
-    @OneToOne(mappedBy = "owner")
+    @OneToOne(mappedBy = "user")
     @JsonIgnore
     private Car car;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "driver")
-    @JsonIgnore
-    private Set<Rating> ratingsDriver = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "passenger")
-    @JsonIgnore
-    private Set<Rating> ratingsPassenger = new HashSet<>();
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "driver")
+//    @JsonIgnore
+//    private Set<Rating> ratingsDriver = new HashSet<>();
+//
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "passenger")
+//    @JsonIgnore
+//    private Set<Rating> ratingsPassenger = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "driver")
     @JsonIgnore

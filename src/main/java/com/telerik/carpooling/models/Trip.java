@@ -41,8 +41,6 @@ public class Trip extends MappedAudibleBase {
 
     private boolean isPetsFriendly;
 
-    private boolean AreChildrenUnder7Allowed;
-
     @Range(min = 1,max = 8)
     private int freeSeats;
 
