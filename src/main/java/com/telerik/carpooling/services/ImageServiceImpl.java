@@ -52,6 +52,6 @@ public class ImageServiceImpl implements ImageService {
 
     public Image getImage(final int fileId) {
         return imageRepository.findById(fileId)
-                .orElseThrow(() -> new MyFileNotFoundException("File not found with userImageId " + fileId));
+                .orElseThrow(() -> new MyFileNotFoundException("File not found with imageId " + fileId));
     }
 }

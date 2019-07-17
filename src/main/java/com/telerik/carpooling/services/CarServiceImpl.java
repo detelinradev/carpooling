@@ -20,21 +20,32 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDto createCar(final Car car, final User owner) {
-           CarDto newCar = dtoMapper.objectToDto(car);
+        car.setOwner(owner);
+        carRepository.save(car);
+        return dtoMapper.objectToDto(car);
+    }
 
-//        Car newCar = new Car();
-//        newCar.setBrand(car.getBrand());
-//        newCar.setModel(car.getModel());
-//        newCar.setColor(car.getColor());
-//        newCar.setFirstRegistration(car.getFirstRegistration());
-//        newCar.setTotalSeats(car.getTotalSeats());
-//        newCar.setAirConditioned(false);
-//        newCar.setLuggageAllowed(false);
-//        newCar.setPetsAllowed(false);
-//        newCar.setSmokingAllowed(false);
-//        newCar.setOwner(owner);
-//        return carRepository.save(newCar);
+    @Override
+    public CarDto updateCar(Car car, User owner) {
+        car.setOwner(owner);
+        carRepository.save(car);
+        return dtoMapper.objectToDto(car);
+    }
+
+    @Override
+    public CarDto deleteCar(Car car, User owner) {
+        if(carRepository.count()!=0) {
+            carRepository.delete(car);
+            owner.setCar(null);
+            return dtoMapper.objectToDto(car);
+        }
         return null;
+    }
+
+    public CarDto getCarById(final int carId) {
+        return dtoMapper.objectToDto(carRepository.findById(carId)
+                .orElseThrow(() -> new MyFileNotFoundException("Car not found with id " + carId)));
+
     }
 
 }

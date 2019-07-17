@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -17,30 +19,33 @@ import javax.persistence.*;
 public class Car extends MappedAudibleBase {
 
     @Column(nullable = false)
+    @Size(min = 1, max = 20, message = "Please enter brand name between 1 and 20 symbols!")
     private String brand;
 
     @Column(nullable = false)
+    @Size(min = 1, max = 20, message = "Please enter model name between 1 and 20 symbols!")
     private String model;
 
-    @Column
     private String color;
 
     @Column(nullable = false)
+    @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
     private int totalSeats;
 
     @Column(nullable = false)
+    @Range(min = 1950,max = 2019, message = "Please enter year of first registration between 1950 and 2019!")
     private int firstRegistration;
 
-    @Column
+    @Column(nullable = false)
     private boolean isAirConditioned;
 
-    @Column
+    @Column(nullable = false)
     private boolean isSmokingAllowed;
 
-    @Column
+    @Column(nullable = false)
     private boolean isLuggageAllowed;
 
-    @Column
+    @Column(nullable = false)
     private boolean isPetsAllowed;
 
     @OneToOne(mappedBy = "car")
@@ -49,5 +54,6 @@ public class Car extends MappedAudibleBase {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user", unique = true)
+    @JsonIgnore
     private User owner;
 }
