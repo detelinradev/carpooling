@@ -28,7 +28,7 @@ public class TripController {
     public ResponseEntity<TripDto>createTrip(@Valid@RequestBody final TripDto trip, final HttpServletRequest req){
 
         return Optional
-                .ofNullable(tripService.createTrip(dtoMapper.dtoToObject(trip), userRepository.findFirstByUsername(
+                .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(
                         authenticationService.getUsername(req))))
                 .map(tripDto -> ResponseEntity.ok().body(tripDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());

@@ -164,14 +164,18 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<Object> handleAccessDeniedException(final Exception ex, final WebRequest request) {
-        System.out.println("request" + request.getUserPrincipal());
-        return new ResponseEntity<>("Access denied", new HttpHeaders(), HttpStatus.FORBIDDEN);
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getLocalizedMessage()
+                , "Access denied");
+        return new ResponseEntity<>(
+                apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({InvalidDataAccessApiUsageException.class, DataAccessException.class})
     protected ResponseEntity<Object> handleConflict(final RuntimeException ex, final WebRequest request) {
-        final String bodyOfResponse = "InvalidDataAccessApiUsageException.class, DataAccessException.class";
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT, ex.getLocalizedMessage()
+                , "Message not properly formatted");
+        return new ResponseEntity<>(
+                apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class})

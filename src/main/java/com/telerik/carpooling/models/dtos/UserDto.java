@@ -41,6 +41,4 @@ public class UserDto {
     @Email
     private String email;
 
-    private boolean active;
-
 }

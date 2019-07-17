@@ -11,8 +11,6 @@ import javax.validation.constraints.Size;
 @Data
 public class TripDto {
 
-    private int id;
-
     private String startingPoint;
 
     private String endPoint;

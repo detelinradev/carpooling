@@ -6,6 +6,6 @@ import com.telerik.carpooling.models.dtos.TripDto;
 
 public interface TripService {
 
-    TripDto createTrip(Trip trip, User driver);
+    TripDto createTrip(TripDto trip, User driver);
     TripDto updateTrip(Trip trip, User driver);
 }
