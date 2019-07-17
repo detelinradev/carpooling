@@ -1,5 +1,6 @@
 package com.telerik.carpooling.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,10 +43,11 @@ public class Car extends MappedAudibleBase {
     @Column
     private boolean isPetsAllowed;
 
-//
+    @OneToOne(mappedBy = "car")
+    @JsonIgnore
+    private Image carImage;
 
-
-//    @OneToOne(mappedBy = "car")
-//    @JsonIgnore
-//    private Image carImage;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user", unique = true)
+    private User owner;
 }

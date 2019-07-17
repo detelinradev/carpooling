@@ -60,7 +60,7 @@ public class User extends MappedAudibleBase {
     @JsonIgnore
     private Image userImage;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "owner")
     @JsonIgnore
     private Car car;
 
