@@ -16,6 +16,8 @@ import javax.validation.constraints.Size;
 @Data
 public class CarDto {
 
+    private int id;
+
     @Size(min = 1, max = 20, message = "Please enter brand name between 1 and 20 symbols")
     private String brand;
 
@@ -44,7 +46,4 @@ public class CarDto {
     @Column(nullable = false)
     private boolean isPetsAllowed;
 
-    @OneToOne(mappedBy = "car")
-    @JsonIgnore
-    private Image carImage;
 }

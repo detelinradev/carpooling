@@ -5,5 +5,5 @@ import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.CarDto;
 
 public interface CarService {
-    Car createCar(CarDto car, User owner);
+    CarDto createCar(Car car, User owner);
 }
