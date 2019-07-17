@@ -1,6 +1,5 @@
 package com.telerik.carpooling.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;

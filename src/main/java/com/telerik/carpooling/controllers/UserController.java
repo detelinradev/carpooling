@@ -6,6 +6,7 @@ import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
 import com.telerik.carpooling.services.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @CrossOrigin(maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
+@Log4j2
 public class UserController {
 
     private final UserRepository userRepository;
@@ -25,7 +27,7 @@ public class UserController {
 
     @GetMapping(value = "api/me")
     public ResponseEntity<User> getUserOwnInfo(final HttpServletRequest req) {
-
+log.error("logger happened here");
         return Optional
                 .ofNullable(userRepository.findFirstByUsername(
                         authenticationService.getUsername(req)))

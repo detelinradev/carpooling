@@ -3,7 +3,7 @@ package com.telerik.carpooling.services;
 import com.telerik.carpooling.models.Car;
 
 public interface CarService {
-    Car createCar(Car car);
+    Car save(Car car);
 
     Car updateCurrentBrand(String brand, Car car);
 

@@ -18,11 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 public class Trip extends MappedAudibleBase {
-    {
 
-    }
-
-    @Enumerated
     private String startingPoint;
 
     private String endPoint;
