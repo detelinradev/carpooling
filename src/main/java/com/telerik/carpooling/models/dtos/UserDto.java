@@ -1,5 +1,6 @@
 package com.telerik.carpooling.models.dtos;
 
+import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,5 @@ public class UserDto {
     @Email
     private String email;
 
-    private boolean active;
 
 }

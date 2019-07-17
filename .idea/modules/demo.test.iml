@@ -15,6 +15,9 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output-test url="file://$MODULE_DIR$/../../out/test/classes" />
     <exclude-output />
+    <content url="file://$MODULE_DIR$/../../build/generated/sources/annotationProcessor/java/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../build/generated/sources/annotationProcessor/java/test" isTestSource="true" generated="true" />
+    </content>
     <content url="file://$MODULE_DIR$/../../src/test">
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
     </content>
