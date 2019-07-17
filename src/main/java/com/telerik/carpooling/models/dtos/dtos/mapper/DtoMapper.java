@@ -1,7 +1,9 @@
-package com.telerik.carpooling.models.dtos;
+package com.telerik.carpooling.models.dtos.dtos.mapper;
 
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.Trip;
+import com.telerik.carpooling.models.dtos.CarDto;
+import com.telerik.carpooling.models.dtos.TripDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

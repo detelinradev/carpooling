@@ -173,7 +173,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({InvalidDataAccessApiUsageException.class, DataAccessException.class})
     protected ResponseEntity<Object> handleConflict(final RuntimeException ex, final WebRequest request) {
         ApiError apiError = new ApiError(HttpStatus.CONFLICT, ex.getLocalizedMessage()
-                , "Message not properly formatted");
+                , "InvalidDataAccessApiUsageException.class, DataAccessException.class");
         return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }

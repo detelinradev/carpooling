@@ -2,7 +2,7 @@ package com.telerik.carpooling.controllers;
 
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.dtos.CarDto;
-import com.telerik.carpooling.models.dtos.DtoMapper;
+import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;

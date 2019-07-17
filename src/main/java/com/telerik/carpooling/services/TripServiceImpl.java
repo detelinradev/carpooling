@@ -2,7 +2,7 @@ package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.DtoMapper;
+import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.models.dtos.TripDto;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.services.services.contracts.TripService;

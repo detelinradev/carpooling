@@ -1,6 +1,6 @@
 package com.telerik.carpooling.controllers;
 
-import com.telerik.carpooling.models.dtos.DtoMapper;
+import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.models.dtos.TripDto;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
