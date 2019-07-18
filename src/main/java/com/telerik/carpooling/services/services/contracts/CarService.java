@@ -10,7 +10,4 @@ public interface CarService {
 
     CarDto updateCar(Car car, User owner);
 
-    CarDto deleteCar(Car car, User owner);
-
-    CarDto getCarById(int carId);
 }

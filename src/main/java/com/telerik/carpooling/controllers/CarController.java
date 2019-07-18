@@ -30,9 +30,6 @@ public class CarController {
     @PostMapping(value = "/car")
     public ResponseEntity<CarDto> createCar(@Valid @RequestBody final CarDto car, final HttpServletRequest req){
 
-        if(carRepository.count()!=0){
-            return null;
-        }
 
         return Optional
                 .ofNullable(carService.createCar(dtoMapper.dtoToObject(car), userRepository.findFirstByUsername(
@@ -47,7 +44,7 @@ public class CarController {
         return Optional
                 .ofNullable(carService.updateCar(dtoMapper.dtoToObject(car), userRepository.findFirstByUsername(
                         authenticationService.getUsername(req))))
-                .map(tripDto -> ResponseEntity.ok().body(tripDto))
+                .map(carDto -> ResponseEntity.ok().body(carDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 

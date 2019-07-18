@@ -1,11 +1,16 @@
 package com.telerik.carpooling.models.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.telerik.carpooling.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
 
 @NoArgsConstructor
@@ -42,5 +47,10 @@ public class CarDto {
 
     @Column(nullable = false)
     private boolean isPetsAllowed;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user", unique = true)
+    @JsonIgnore
+    private User owner;
 
 }
