@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface TripService {
 
     TripDtoResponse createTrip(TripDtoRequest trip, User driver);
-    Optional<Trip> tripRate(TripDtoResponse tripResponseDto, User user, String userRole,
+    TripDtoResponse updateTrip(TripDtoResponse trip);
+    Optional<Trip> tripRate(TripDtoResponse tripResponseDto, String userRole,
                       int ratedUserID, String ratedUserRole, int rating);
 }

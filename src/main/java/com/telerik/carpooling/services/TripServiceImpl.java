@@ -28,12 +28,17 @@ public class TripServiceImpl implements TripService {
         Trip trip = dtoMapper.dtoToObject(tripRequestDto);
         trip.setDriver(driver);
 
-        tripRepository.save(trip);
-        return dtoMapper.objectToDto(trip);
+        return dtoMapper.objectToDto(tripRepository.save(trip));
     }
 
     @Override
-    public Optional<Trip> tripRate(TripDtoResponse tripResponseDto, User user, String userRole,
+    public TripDtoResponse updateTrip(TripDtoResponse tripDtoResponse) {
+
+        return dtoMapper.objectToDto(tripRepository.save(dtoMapper.dtoToObject(tripDtoResponse)));
+    }
+
+    @Override
+    public Optional<Trip> tripRate(TripDtoResponse tripResponseDto, String userRole,
                                    int ratedUserID, String ratedUserRole, int rating) {
         Optional<Trip> trip = tripRepository.findById(tripResponseDto.getId());
         Optional<User> ratedUser = userRepository.findById(ratedUserID);
