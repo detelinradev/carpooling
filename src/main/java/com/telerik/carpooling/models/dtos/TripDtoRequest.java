@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class TripDto {
+public class TripDtoRequest {
 
     private String startingPoint;
 

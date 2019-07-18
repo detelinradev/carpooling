@@ -50,8 +50,12 @@ public class User extends MappedAudibleBase {
     @Column(nullable = false)
     private String role;
 
+    private int countRatingsAsDriver;
+
     @Range(max = 5)
     private double averageRatingDriver;
+
+    private int countRatingsAsPassenger;
 
     @Range(max = 5)
     private double averageRatingPassenger;
@@ -70,5 +74,6 @@ public class User extends MappedAudibleBase {
 
     @ManyToMany(mappedBy = "acceptedPassengers")
     private Set<Trip> tripsAsPassenger = new HashSet<>();
+
 
 }

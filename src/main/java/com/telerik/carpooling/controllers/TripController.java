@@ -1,7 +1,9 @@
 package com.telerik.carpooling.controllers;
 
+import com.telerik.carpooling.models.Trip;
+import com.telerik.carpooling.models.dtos.TripDtoRequest;
+import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
-import com.telerik.carpooling.models.dtos.TripDto;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
 import com.telerik.carpooling.services.services.contracts.TripService;
@@ -25,23 +27,30 @@ public class TripController {
     private final AuthenticationService authenticationService;
 
     @PostMapping(value = "/trip")
-    public ResponseEntity<TripDto>createTrip(@Valid@RequestBody final TripDto trip, final HttpServletRequest req){
+    public ResponseEntity<TripDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest trip, final HttpServletRequest req) {
 
         return Optional
                 .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(
                         authenticationService.getUsername(req))))
-                .map(tripDto -> ResponseEntity.ok().body(tripDto))
+                .map(tripResponseDto -> ResponseEntity.ok().body(tripResponseDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PutMapping(value = "/update")
-    public ResponseEntity<TripDto>updateTrip(@Valid@RequestBody final TripDto trip, final HttpServletRequest req){
+    @PutMapping(value = "/rate")
+    public ResponseEntity<Trip> tripRate(@Valid @RequestBody final TripDtoResponse trip,
+                                         final HttpServletRequest req,
+                                         @RequestParam(value = "userRole") String userRole,
+                                         @RequestParam(value = "ratedUserID") int ratedUserID,
+                                         @RequestParam(value = "ratedUserRole") String ratedUserROle,
+                                         @RequestParam(value = "rating")int rating) {
 
-        return Optional
-                .ofNullable(tripService.updateTrip(dtoMapper.dtoToObject(trip), userRepository.findFirstByUsername(
-                        authenticationService.getUsername(req))))
-                .map(tripDto -> ResponseEntity.ok().body(tripDto))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+        return ResponseEntity.of(tripService.tripRate(trip, userRepository.findFirstByUsername(
+                authenticationService.getUsername(req)), userRole, ratedUserID, ratedUserROle,rating));
+//        Optional
+//                .ofNullable(tripService.tripRate(trip, userRepository.findFirstByUsername(
+//                        authenticationService.getUsername(req)), userRole, ratedUserID, ratedUserROle,rating))
+        // .map(tripResponseDto -> ResponseEntity.ok().body(tripResponseDto))
+        // .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
 
