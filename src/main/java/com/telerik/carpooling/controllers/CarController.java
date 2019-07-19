@@ -1,7 +1,8 @@
 package com.telerik.carpooling.controllers;
 
 import com.telerik.carpooling.models.Car;
-import com.telerik.carpooling.models.dtos.CarDto;
+import com.telerik.carpooling.models.dtos.CarDtoRequest;
+import com.telerik.carpooling.models.dtos.CarDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.UserRepository;
@@ -22,27 +23,25 @@ import java.util.Optional;
 public class CarController {
 
     private final UserRepository userRepository;
-    private final CarRepository carRepository;
     private final AuthenticationService authenticationService;
     private final CarService carService;
-    private final DtoMapper dtoMapper;
 
     @PostMapping(value = "/car")
-    public ResponseEntity<CarDto> createCar(@Valid @RequestBody final CarDto car, final HttpServletRequest req){
+    public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final CarDtoRequest car, final HttpServletRequest req){
 
 
         return Optional
-                .ofNullable(carService.createCar(dtoMapper.dtoToObject(car), userRepository.findFirstByUsername(
+                .ofNullable(carService.createCar(car, userRepository.findFirstByUsername(
                         authenticationService.getUsername(req))))
                 .map(carDto -> ResponseEntity.ok().body(carDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping(value = "/car")
-    public ResponseEntity<CarDto> updateCar(@Valid @RequestBody final CarDto car, final HttpServletRequest req){
+    public ResponseEntity<CarDtoResponse> updateCar(@Valid @RequestBody final CarDtoResponse car, final HttpServletRequest req){
 
         return Optional
-                .ofNullable(carService.updateCar(dtoMapper.dtoToObject(car), userRepository.findFirstByUsername(
+                .ofNullable(carService.updateCar(car ,userRepository.findFirstByUsername(
                         authenticationService.getUsername(req))))
                 .map(carDto -> ResponseEntity.ok().body(carDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());

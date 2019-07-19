@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CarDto {
+public class CarDtoRequest {
 
     @Column(nullable = false)
     @Size(min = 1, max = 20, message = "Please enter brand name between 1 and 20 symbols!")
@@ -47,10 +47,5 @@ public class CarDto {
 
     @Column(nullable = false)
     private boolean isPetsAllowed;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user", unique = true)
-    @JsonIgnore
-    private User owner;
 
 }
