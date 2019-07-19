@@ -34,22 +34,28 @@ public class Trip extends MappedAudibleBase {
 
     private String message;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver", nullable = false)
     private User driver;
 
+    @JsonIgnore
     @ManyToMany
     private Set<User> acceptedPassengers = new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany
     private Set<User> rejectedPassengers = new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany
     private Set<User> pendingPassengers = new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany
     private Set<User> passengersAvailableForRate = new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany
     private Set<User> passengersAllowedToRate = new HashSet<>();
 

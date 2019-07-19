@@ -13,7 +13,7 @@ public interface TripService {
 
     TripDtoResponse updateTrip(TripDtoResponse trip);
 
-    TripDtoResponse rateTrip(TripDtoResponse tripResponseDto, String userRole,
+    TripDtoResponse rateTrip(TripDtoResponse tripResponseDto,User user, String userRole,
                             int ratedUserID, String ratedUserRole, int rating);
 
     TripDtoResponse addPassenger(TripDtoResponse trip, User user);
