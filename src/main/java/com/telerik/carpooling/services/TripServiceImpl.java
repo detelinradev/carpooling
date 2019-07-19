@@ -11,8 +11,10 @@ import com.telerik.carpooling.services.services.contracts.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -41,17 +43,35 @@ public class TripServiceImpl implements TripService {
     public TripDtoResponse rateTrip(TripDtoResponse tripDtoResponse, String userRole,
                                    int ratedUserID, String ratedUserRole, int rating) {
         Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
+        System.out.println(13);
+        System.out.println(trip);
         Optional<User> ratedUser = userRepository.findById(ratedUserID);
+        System.out.println(2);
 
         if (trip.isPresent() && ratedUser.isPresent()) {
+            System.out.println(3);
             if (userRole.equals("driver") && ratedUserRole.equals("passenger")) {
+                Set<User> users = trip.get().getPassengersAvailableForRate();
+                System.out.println( 10);
+                System.out.println(trip);
+                System.out.println(12);
+                System.out.println(trip.get().getPassengersAvailableForRate());
+                System.out.println(11);
+                boolean contain = users.contains(ratedUser.get());
+                System.out.println(contain);
+                System.out.println(4);
                 if (trip.get().getPassengersAvailableForRate().contains(ratedUser.get())) {
+                    System.out.println(5);
                     trip.get().getPassengersAvailableForRate().remove(ratedUser.get());
+                    System.out.println(6);
                     int countRatings = ratedUser.get().getCountRatingsAsPassenger();
                     double averageRate = ratedUser.get().getAverageRatingPassenger();
                     averageRate = (averageRate * countRatings + rating) / (countRatings + 1);
+                    System.out.println(7);
                     ratedUser.get().setAverageRatingPassenger(averageRate);
+                    System.out.println(8);
                     ratedUser.get().setCountRatingsAsPassenger(countRatings + 1);
+                    System.out.println(9);
                     userRepository.save(ratedUser.get());
                 }
 
@@ -83,16 +103,15 @@ public class TripServiceImpl implements TripService {
     }
 
     public TripDtoResponse approvePassenger(TripDtoResponse tripDtoResponse,int passengerID){
-
         Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
         Optional<User> passenger = userRepository.findById(passengerID);
 
         if (trip.isPresent() && passenger.isPresent()) {
-
             trip.get().getPendingPassengers().remove(passenger.get());
             trip.get().getAcceptedPassengers().add(passenger.get());
             trip.get().getPassengersAllowedToRate().add(passenger.get());
             trip.get().getPassengersAvailableForRate().add(passenger.get());
+            return dtoMapper.objectToDto(tripRepository.save(trip.get()));
         }
 
         return null;

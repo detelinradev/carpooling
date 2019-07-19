@@ -1,6 +1,5 @@
 package com.telerik.carpooling.controllers;
 
-import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.repositories.UserRepository;
@@ -50,6 +49,7 @@ public class TripController {
                                          @RequestParam(value = "ratedUserID") int ratedUserID,
                                          @RequestParam(value = "ratedUserRole") String ratedUserROle,
                                          @RequestParam(value = "rating") int rating) {
+        System.out.println(1);
 
         return Optional
                 .ofNullable(tripService.rateTrip(trip, userRole, ratedUserID, ratedUserROle, rating))
@@ -71,6 +71,7 @@ public class TripController {
     @PutMapping(value = "/passengerOK")
     public ResponseEntity<TripDtoResponse> approvePassenger(@Valid @RequestBody final TripDtoResponse trip,
                                                         @RequestParam(value = "passengerID") int passengerID){
+
         return Optional
                 .ofNullable(tripService.approvePassenger(trip, passengerID))
                 .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))

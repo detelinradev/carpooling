@@ -68,12 +68,13 @@ public class User extends MappedAudibleBase {
     @JsonIgnore
     private Car car;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "driver")
-    @JsonIgnore
-    private Set<Trip> tripsAsDriver = new HashSet<>();
+//    @JsonIgnore
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "driver")
+//    private Set<Trip> tripsAsDriver = new HashSet<>();
 
-    @ManyToMany(mappedBy = "acceptedPassengers")
-    private Set<Trip> tripsAsPassenger = new HashSet<>();
+//    @JsonIgnore
+//    @ManyToMany(mappedBy = "acceptedPassengers")
+//    private Set<Trip> tripsAsPassenger = new HashSet<>();
 
 
 }
