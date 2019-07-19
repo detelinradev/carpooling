@@ -1,7 +1,7 @@
 package com.telerik.carpooling.controllers;
 
 import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.UserDto;
+import com.telerik.carpooling.models.dtos.UserDtoRequest;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
 import com.telerik.carpooling.services.services.contracts.UserService;
@@ -27,7 +27,7 @@ public class UserController {
 
     @GetMapping(value = "api/me")
     public ResponseEntity<User> getUserOwnInfo(final HttpServletRequest req) {
-log.error("logger happened here");
+        log.error("logger happened here");
         return Optional
                 .ofNullable(userRepository.findFirstByUsername(
                         authenticationService.getUsername(req)))
@@ -57,7 +57,7 @@ log.error("logger happened here");
     }
 
     @PostMapping(value = "api/sign-up")
-    public ResponseEntity<User> save(@Valid @RequestBody final UserDto user) {
+    public ResponseEntity<User> save(@Valid @RequestBody final UserDtoRequest user) {
         return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
     }
 

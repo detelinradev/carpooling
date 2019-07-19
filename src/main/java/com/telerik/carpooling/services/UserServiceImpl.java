@@ -1,7 +1,7 @@
 package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.UserDto;
+import com.telerik.carpooling.models.dtos.UserDtoRequest;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptEncoder;
 
     @Override
-    public User save(final UserDto user) {
+    public User save(final UserDtoRequest user) {
         User newUser = new User();
         newUser.setUsername(user.getUsername());
         newUser.setFirstName(user.getFirstName());

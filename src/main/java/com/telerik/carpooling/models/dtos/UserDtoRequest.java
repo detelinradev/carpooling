@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserDto {
+public class UserDtoRequest {
     @Size(min = 1, max = 20, message = "Please enter first name between 1 and 20 symbols")
     @Pattern(regexp = "^[A-Za-z]+$",message = "Please enter first name that contains only letters")
     private String firstName;

@@ -3,7 +3,6 @@ package com.telerik.carpooling.controllers;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
-import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
 import com.telerik.carpooling.services.services.contracts.TripService;
@@ -26,7 +25,8 @@ public class TripController {
     private final AuthenticationService authenticationService;
 
     @PostMapping(value = "/trip")
-    public ResponseEntity<TripDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest trip, final HttpServletRequest req) {
+    public ResponseEntity<TripDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest trip,
+                                                      final HttpServletRequest req) {
 
         return Optional
                 .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(
@@ -45,12 +45,35 @@ public class TripController {
     }
 
     @PutMapping(value = "/rate")
-    public ResponseEntity<Trip> tripRate(@Valid @RequestBody final TripDtoResponse trip,
+    public ResponseEntity<TripDtoResponse> rateTrip(@Valid @RequestBody final TripDtoResponse trip,
                                          @RequestParam(value = "userRole") String userRole,
                                          @RequestParam(value = "ratedUserID") int ratedUserID,
                                          @RequestParam(value = "ratedUserRole") String ratedUserROle,
                                          @RequestParam(value = "rating") int rating) {
 
-        return ResponseEntity.of(tripService.tripRate(trip, userRole, ratedUserID, ratedUserROle, rating));
+        return Optional
+                .ofNullable(tripService.rateTrip(trip, userRole, ratedUserID, ratedUserROle, rating))
+                .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+               // ResponseEntity.of(tripService.rateTrip(trip, userRole, ratedUserID, ratedUserROle, rating));
+    }
+
+    @PutMapping(value = "/passenger")
+    public ResponseEntity<TripDtoResponse> addPassenger(@Valid @RequestBody final TripDtoResponse trip,
+                                                        HttpServletRequest req){
+        return Optional
+                .ofNullable(tripService.addPassenger(trip, userRepository.findFirstByUsername(
+                        authenticationService.getUsername(req))))
+                .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PutMapping(value = "/passengerOK")
+    public ResponseEntity<TripDtoResponse> approvePassenger(@Valid @RequestBody final TripDtoResponse trip,
+                                                        @RequestParam(value = "passengerID") int passengerID){
+        return Optional
+                .ofNullable(tripService.approvePassenger(trip, passengerID))
+                .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 }

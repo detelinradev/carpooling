@@ -38,9 +38,9 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public Optional<Trip> tripRate(TripDtoResponse tripResponseDto, String userRole,
+    public TripDtoResponse rateTrip(TripDtoResponse tripDtoResponse, String userRole,
                                    int ratedUserID, String ratedUserRole, int rating) {
-        Optional<Trip> trip = tripRepository.findById(tripResponseDto.getId());
+        Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
         Optional<User> ratedUser = userRepository.findById(ratedUserID);
 
         if (trip.isPresent() && ratedUser.isPresent()) {
@@ -52,6 +52,7 @@ public class TripServiceImpl implements TripService {
                     averageRate = (averageRate * countRatings + rating) / (countRatings + 1);
                     ratedUser.get().setAverageRatingPassenger(averageRate);
                     ratedUser.get().setCountRatingsAsPassenger(countRatings + 1);
+                    userRepository.save(ratedUser.get());
                 }
 
             } else if (userRole.equals("passenger") && ratedUserRole.equals("driver")) {
@@ -62,9 +63,39 @@ public class TripServiceImpl implements TripService {
                         averageRate = (averageRate * countRatings + rating) / (countRatings + 1);
                         ratedUser.get().setAverageRatingDriver(averageRate);
                         ratedUser.get().setCountRatingsAsDriver(countRatings + 1);
+                        userRepository.save(ratedUser.get());
                 }
             }
+            return dtoMapper.objectToDto(tripRepository.save(trip.get()));
         }
-        return trip;
+        return null;
     }
+
+    public TripDtoResponse addPassenger (TripDtoResponse tripDtoResponse,User passenger){
+        Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
+
+        if (trip.isPresent()){
+            trip.get().getPendingPassengers().add(passenger);
+            return dtoMapper.objectToDto(tripRepository.save(trip.get()));
+        }
+
+        return null;
+    }
+
+    public TripDtoResponse approvePassenger(TripDtoResponse tripDtoResponse,int passengerID){
+
+        Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
+        Optional<User> passenger = userRepository.findById(passengerID);
+
+        if (trip.isPresent() && passenger.isPresent()) {
+
+            trip.get().getPendingPassengers().remove(passenger.get());
+            trip.get().getAcceptedPassengers().add(passenger.get());
+            trip.get().getPassengersAllowedToRate().add(passenger.get());
+            trip.get().getPassengersAvailableForRate().add(passenger.get());
+        }
+
+        return null;
+    }
+
 }
