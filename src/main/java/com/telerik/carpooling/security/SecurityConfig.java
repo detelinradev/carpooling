@@ -62,8 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.cors().and().csrf().disable();
         http.csrf().disable().cors().and().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/login","/api/sign-up").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/beers/**").permitAll()
-                .antMatchers("/api/users/**","/images").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/api/trips/**").permitAll()
+                .antMatchers("/api/users/**","/images","/cars").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new LoginFilter("/api/login", authenticationManager()),

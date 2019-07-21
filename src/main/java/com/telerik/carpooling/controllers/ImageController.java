@@ -36,7 +36,7 @@ public class ImageController {
         return ResponseEntity.created(fileDownloadUri).build();
     }
 
-    @PostMapping("/uploadCarImage")
+    @PutMapping("/uploadCarImage")
     public ResponseEntity<Void> uploadCarImage(@RequestParam("file") final MultipartFile file,
                                            final HttpServletRequest req) {
         imageService.storeCarImage(file, userRepository.findFirstByUsername(authenticationService.getUsername(req)));

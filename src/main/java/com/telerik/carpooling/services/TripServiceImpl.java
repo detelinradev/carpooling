@@ -58,16 +58,13 @@ public class TripServiceImpl implements TripService {
                 }
 
             } else if (userRole.equals("passenger") && ratedUserRole.equals("driver")) {
-                System.out.println(1);
                 if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
                     trip.get().getPassengersAllowedToRate().remove(passenger);
-                    System.out.println(2);
                         int countRatings = ratedUser.get().getCountRatingsAsDriver();
                         double averageRate = ratedUser.get().getAverageRatingDriver();
                         averageRate = (averageRate * countRatings + rating) / (countRatings + 1);
                         ratedUser.get().setAverageRatingDriver(averageRate);
                         ratedUser.get().setCountRatingsAsDriver(countRatings + 1);
-                    System.out.println(3);
                         userRepository.save(ratedUser.get());
                 }
             }

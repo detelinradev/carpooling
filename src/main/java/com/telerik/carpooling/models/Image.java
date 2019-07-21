@@ -18,6 +18,7 @@ public class Image extends MappedAudibleBase {
     @Column(nullable = false)
     private String fileName;
 
+
     @Column(nullable = false)
     private String contentType;
 
@@ -29,7 +30,7 @@ public class Image extends MappedAudibleBase {
     @JoinColumn(name = "user", unique = true)
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "car",unique = true)
     private Car car;
 
