@@ -2,14 +2,12 @@ package com.telerik.carpooling.models.dtos.dtos.mapper;
 
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.Trip;
-import com.telerik.carpooling.models.dtos.CarDtoRequest;
-import com.telerik.carpooling.models.dtos.CarDtoResponse;
-import com.telerik.carpooling.models.dtos.TripDtoRequest;
-import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.models.dtos.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { TripMapperResolver.class })
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { TripMapperResolver.class,CarMapperResolver.class })
 public interface DtoMapper {
     TripDtoResponse objectToDto(Trip trip);
 
@@ -17,11 +15,19 @@ public interface DtoMapper {
 
     Trip dtoToObject(TripDtoResponse tripResponseDto);
 
+    CarDtoResponse objectToDto(Car car);
+
     Car dtoToObject(CarDtoRequest carDtoRequest);
 
     Car dtoToObject(CarDtoResponse carDtoResponse);
 
-    CarDtoResponse objectToDto(Car car);
+    UserDtoResponse objectToDto(User user);
+
+    User dtoToObject(UserDtoRequest userDtoRequest);
+
+    User dtoToObject(UserDtoResponse userDtoResponse);
+
+
 
 
 }

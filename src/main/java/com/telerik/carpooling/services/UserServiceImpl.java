@@ -1,18 +1,27 @@
 package com.telerik.carpooling.services;
 
+import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.UserDtoRequest;
+import com.telerik.carpooling.models.dtos.UserDtoResponse;
+import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
+import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final TripRepository tripRepository;
+    private final DtoMapper dtoMapper;
     private final BCryptPasswordEncoder bCryptEncoder;
 
     @Override
@@ -50,5 +59,40 @@ public class UserServiceImpl implements UserService {
     private boolean isPasswordValid(String password) {
         String regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,128}$";
         return password.matches(regex);
+    }
+
+    public UserDtoResponse rateUser(TripDtoResponse tripDtoResponse, User passenger, String userRole,
+                                    int ratedUserID, String ratedUserRole, int rating) {
+        Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
+        Optional<User> ratedUser = userRepository.findById(ratedUserID);
+
+        if (trip.isPresent() && ratedUser.isPresent()) {
+            if (userRole.equals("driver") && ratedUserRole.equals("passenger")) {
+                if (trip.get().getPassengersAvailableForRate().contains(ratedUser.get())) {
+                    trip.get().getPassengersAvailableForRate().remove(ratedUser.get());
+                    int newCountRatings = ratedUser.get().getCountRatingsAsPassenger() +1;
+                    long newSumRatings = ratedUser.get().getSumRatingsAsPassenger() + rating;
+                    double newAverageRate =newSumRatings/newCountRatings;
+                    ratedUser.get().setAverageRatingPassenger(newAverageRate);
+                    ratedUser.get().setCountRatingsAsPassenger(newCountRatings);
+                    ratedUser.get().setSumRatingsAsPassenger(newSumRatings);
+                    return dtoMapper.objectToDto(userRepository.save(ratedUser.get()));
+                }
+
+            } else if (userRole.equals("passenger") && ratedUserRole.equals("driver")) {
+                if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
+                    trip.get().getPassengersAllowedToRate().remove(passenger);
+                    int newCountRatings = ratedUser.get().getCountRatingsAsDriver() +1;
+                    long newSumRatings = ratedUser.get().getSumRatingsAsDriver() + rating;
+                    double newAverageRate =newSumRatings/newCountRatings;
+                    ratedUser.get().setAverageRatingDriver(newAverageRate);
+
+                    ratedUser.get().setCountRatingsAsDriver(newCountRatings);
+                    ratedUser.get().setSumRatingsAsDriver(newSumRatings);
+                    return dtoMapper.objectToDto(userRepository.save(ratedUser.get()));
+                }
+            }
+        }
+        return null;
     }
 }

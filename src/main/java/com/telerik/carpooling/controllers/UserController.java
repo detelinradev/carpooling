@@ -1,7 +1,9 @@
 package com.telerik.carpooling.controllers;
 
 import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.UserDtoRequest;
+import com.telerik.carpooling.models.dtos.UserDtoResponse;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
 import com.telerik.carpooling.services.services.contracts.UserService;
@@ -59,6 +61,22 @@ public class UserController {
     @PostMapping(value = "api/sign-up")
     public ResponseEntity<User> save(@Valid @RequestBody final UserDtoRequest user) {
         return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/rate")
+    public ResponseEntity<UserDtoResponse> rateUser(@Valid @RequestBody final TripDtoResponse trip,
+                                                    final HttpServletRequest req,
+                                                    @RequestParam(value = "userRole") String userRole,
+                                                    @RequestParam(value = "ratedUserID") int ratedUserID,
+                                                    @RequestParam(value = "ratedUserRole") String ratedUserROle,
+                                                    @RequestParam(value = "rating") int rating) {
+
+        return Optional
+                .ofNullable(userService.rateUser(trip,userRepository.findFirstByUsername(
+                        authenticationService.getUsername(req)), userRole, ratedUserID, ratedUserROle, rating))
+                .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+        // ResponseEntity.of(tripService.rateUser(trip, userRole, ratedUserID, ratedUserROle, rating));
     }
 
 }

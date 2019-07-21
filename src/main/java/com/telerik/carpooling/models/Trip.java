@@ -1,6 +1,8 @@
 package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.telerik.carpooling.enums.PassengerStatus;
+import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,10 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -34,22 +33,16 @@ public class Trip extends MappedAudibleBase {
 
     private String message;
 
+    private TripStatus tripStatus = TripStatus.AVAILABLE;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver", nullable = false)
     private User driver;
 
-    @JsonIgnore
-    @ManyToMany
-    private Set<User> acceptedPassengers = new HashSet<>();
-
-    @JsonIgnore
-    @ManyToMany
-    private Set<User> rejectedPassengers = new HashSet<>();
-
-    @JsonIgnore
-    @ManyToMany
-    private Set<User> pendingPassengers = new HashSet<>();
+    @ElementCollection
+    @MapKeyColumn(name = "id")
+    private Map<User, PassengerStatus> passengerStatus = new HashMap<>();
 
     @JsonIgnore
     @ManyToMany

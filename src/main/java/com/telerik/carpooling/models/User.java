@@ -1,6 +1,7 @@
 package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,8 +11,6 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -50,10 +49,16 @@ public class User extends MappedAudibleBase {
     @Column(nullable = false)
     private String role;
 
+    private PassengerStatus passengerStatus;
+
+    private long sumRatingsAsDriver;
+
     private int countRatingsAsDriver;
 
     @Range(max = 5)
     private double averageRatingDriver;
+
+    private long sumRatingsAsPassenger;
 
     private int countRatingsAsPassenger;
 

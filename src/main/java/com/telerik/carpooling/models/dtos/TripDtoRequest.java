@@ -1,5 +1,6 @@
 package com.telerik.carpooling.models.dtos;
 
+import com.telerik.carpooling.models.Trip;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
