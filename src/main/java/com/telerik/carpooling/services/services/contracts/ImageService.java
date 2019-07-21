@@ -1,9 +1,7 @@
 package com.telerik.carpooling.services.services.contracts;
 
-import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.Image;
 import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.CarDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageService {
