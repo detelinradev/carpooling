@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
+import com.telerik.carpooling.models.dtos.UserDtoResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,6 +41,7 @@ public class Trip extends MappedAudibleBase {
     @JoinColumn(name = "driver", nullable = false)
     private User driver;
 
+    @JsonIgnore
     @ElementCollection
     @MapKeyColumn(name = "id")
     private Map<User, PassengerStatus> passengerStatus = new HashMap<>();

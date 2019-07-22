@@ -1,6 +1,5 @@
 package com.telerik.carpooling.models.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +13,7 @@ import javax.validation.constraints.*;
 @Data
 public class UserDtoResponse {
 
+    @Column
     private int id;
 
     @Column(updatable = false, nullable = false)
@@ -37,20 +37,11 @@ public class UserDtoResponse {
     @Max(value = 150,message = "Please enter valid years")
     private int age;
 
-//    @Size(min = 8, max = 128, message = "Password must be between 8 and 128 symbols")
-//    @Column(nullable = false)
-//    @JsonIgnore
-//    private String password;
-
     @Column(nullable = false)
     private String role;
 
-//    private int countRatingsAsDriver;
-
     @Range(max = 5)
     private double averageRatingDriver;
-
-//    private int countRatingsAsPassenger;
 
     @Range(max = 5)
     private double averageRatingPassenger;
