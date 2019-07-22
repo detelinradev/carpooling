@@ -1,7 +1,7 @@
 package com.telerik.carpooling.controllers;
 
 import com.telerik.carpooling.enums.PassengerStatus;
-import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.repositories.UserRepository;
@@ -45,6 +45,18 @@ public class TripController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PatchMapping(value = "/trips")
+    public ResponseEntity<?> changeTripStatus(@Valid @RequestBody final TripDtoResponse trip,
+                                                   HttpServletRequest req,
+                                                   @Valid @RequestParam(value = "status") TripStatus tripStatus){
+
+        return Optional
+                .ofNullable(tripService.changeTripStatus(trip, userRepository.findFirstByUsername(
+                        authenticationService.getUsername(req)), tripStatus))
+                .map(k -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping(value = "/passengers")
     public ResponseEntity<?> addPassenger(@Valid @RequestBody final TripDtoResponse trip,
                                                         HttpServletRequest req) {
@@ -55,17 +67,7 @@ public class TripController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping(value = "/passengerOK")
-    public ResponseEntity<TripDtoResponse> approvePassenger(@Valid @RequestBody final TripDtoResponse trip,
-                                                            @RequestParam(value = "passengerID") int passengerID) {
-
-        return Optional
-                .ofNullable(tripService.approvePassenger(trip, passengerID))
-                .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PatchMapping(value = "/passengerStatus")
+    @PatchMapping(value = "/passengers")
     public ResponseEntity<?> changePassengerStatus(@Valid @RequestBody final TripDtoResponse trip,
                                                       HttpServletRequest req,
                                                       @Valid @RequestParam(value = "status") PassengerStatus passengerStatus){

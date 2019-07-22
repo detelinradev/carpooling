@@ -33,7 +33,7 @@ public class Trip extends MappedAudibleBase {
 
     private String message;
 
-    private TripStatus tripStatus = TripStatus.AVAILABLE;
+    private TripStatus tripStatus;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
