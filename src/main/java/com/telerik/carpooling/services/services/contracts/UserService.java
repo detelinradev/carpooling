@@ -17,4 +17,7 @@ public interface UserService {
 
     UserDtoResponse rateUser(TripDtoResponse tripResponseDto, User user, String userRole,
                              int ratedUserID, String ratedUserRole, int rating);
+
+    UserDtoResponse leaveFeedback(TripDtoResponse tripDtoResponse, User user, String userToGetFeedbackRole,
+                             int userToGetFeedbackId, String ratedUserRole, String feedback);
 }

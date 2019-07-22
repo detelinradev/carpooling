@@ -9,6 +9,8 @@ import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
 import com.telerik.carpooling.services.services.contracts.CarService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/car")
+@Log4j2
 public class CarController {
 
     private final UserRepository userRepository;
@@ -28,7 +31,7 @@ public class CarController {
 
     @PostMapping(value = "/car")
     public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final CarDtoRequest car, final HttpServletRequest req){
-
+    log.info("Creating car");
 
         return Optional
                 .ofNullable(carService.createCar(car, userRepository.findFirstByUsername(
@@ -39,7 +42,7 @@ public class CarController {
 
     @PutMapping(value = "/car")
     public ResponseEntity<CarDtoResponse> updateCar(@Valid @RequestBody final CarDtoResponse car, final HttpServletRequest req){
-
+log.info("Updating car");
         return Optional
                 .ofNullable(carService.updateCar(car ,userRepository.findFirstByUsername(
                         authenticationService.getUsername(req))))
@@ -49,7 +52,6 @@ public class CarController {
 
     @GetMapping(value = "/car")
     public ResponseEntity<Car> getCar(final HttpServletRequest req){
-
         return Optional
                 .ofNullable(userRepository.findFirstByUsername(
                         authenticationService.getUsername(req)).getCar())

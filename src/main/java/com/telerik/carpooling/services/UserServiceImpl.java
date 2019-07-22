@@ -40,28 +40,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateCurrentUserPassword(final String password, final User user) {
-        if (isPasswordValid(password)) {
-            user.setPassword(bCryptEncoder.encode(password));
-            return userRepository.save(user);
-        } else return null;
+    public User updateCurrentUserPassword(final String password,final User user){
+       if(isPasswordValid(password)) {
+           user.setPassword(bCryptEncoder.encode(password));
+           return userRepository.save(user);
+       }else return null;
     }
-
     @Override
-    public User updateCurrentUserEmail(final String email, final User user) {
-        if (isEmailValid(email)) {
-            user.setEmail(email);
-            return userRepository.save(user);
-        } else return null;
+    public User updateCurrentUserEmail(final String email,final User user){
+        if(isEmailValid(email)){
+        user.setEmail(email);
+        return userRepository.save(user);
+        }else return null;
     }
-
     private boolean isEmailValid(String email) {
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         return email.matches(regex);
     }
-
     private boolean isPasswordValid(String password) {
-        String regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{4,128}$";
+        String regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,128}$";
         return password.matches(regex);
     }
 
@@ -70,17 +67,16 @@ public class UserServiceImpl implements UserService {
         Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
         Optional<User> ratedUser = userRepository.findById(ratedUserID);
 
-        if (trip.isPresent() && ratedUser.isPresent() && trip.get().getTripStatus().equals(TripStatus.DONE)) {
+        if (trip.isPresent() && ratedUser.isPresent()) {
             if (userRole.equals("driver") && ratedUserRole.equals("passenger")) {
                 if (trip.get().getPassengersAvailableForRate().contains(ratedUser.get())) {
                     trip.get().getPassengersAvailableForRate().remove(ratedUser.get());
-
                     return calculateAverageRate(rating, ratedUserID);
                 }
+
             } else if (userRole.equals("passenger") && ratedUserRole.equals("driver")) {
                 if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
                     trip.get().getPassengersAllowedToRate().remove(passenger);
-
                     return calculateAverageRate(rating, ratedUserID);
                 }
             }
@@ -101,6 +97,30 @@ public class UserServiceImpl implements UserService {
 
             return dtoMapper.objectToDto(userRepository.save(ratedUser.get()));
         }
+        return null;
+    }
+
+    @Override
+    public UserDtoResponse leaveFeedback(TripDtoResponse tripDtoResponse, User user, String userToGetFeedbackRole, int userToGetFeedbackId, String ratedUserRole, String feedback) {
+
+        Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
+        Optional<User> userToGetFeedback = userRepository.findById(userToGetFeedbackId);
+
+        if (trip.isPresent() && trip.get().getTripStatus().equals(TripStatus.DONE) && userToGetFeedback.isPresent()) {
+            if (userToGetFeedbackRole.equals("driver") && ratedUserRole.equals("passenger")) {
+                if (trip.get().getPassengersAvailableForFeedback().contains(userToGetFeedback.get())) {
+                    trip.get().getPassengersAvailableForFeedback().remove(userToGetFeedback.get());
+                    return dtoMapper.objectToDto(userRepository.save(userToGetFeedback.get()));
+                }
+
+            } else if (userToGetFeedbackRole.equals("passenger") && ratedUserRole.equals("driver")) {
+                if (trip.get().getPassengersAllowedToRate().contains(user)) {
+                    trip.get().getPassengersAllowedToRate().remove(user);
+                    return dtoMapper.objectToDto(userRepository.save(userToGetFeedback.get()));
+                }
+            }
+        }
+
         return null;
     }
 }

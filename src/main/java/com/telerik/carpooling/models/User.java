@@ -11,6 +11,8 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -51,19 +53,31 @@ public class User extends MappedAudibleBase {
 
     private PassengerStatus passengerStatus;
 
+    @JsonIgnore
     private long sumRatingsAsDriver;
 
+    @JsonIgnore
     private int countRatingsAsDriver;
 
     @Range(max = 5)
     private double averageRatingDriver;
 
+    @JsonIgnore
     private long sumRatingsAsPassenger;
 
+    @JsonIgnore
     private int countRatingsAsPassenger;
 
     @Range(max = 5)
     private double averageRatingPassenger;
+
+    @ElementCollection
+    @MapKeyColumn(name = "id")
+    private Set<String> feedbackAsDriver = new HashSet<>();
+
+    @ElementCollection
+    @MapKeyColumn(name = "id")
+    private Set<String> feedbackAsPassenger = new HashSet<>();
 
     @OneToOne(mappedBy = "user")
     @JsonIgnore

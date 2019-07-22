@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="telerikProject2@localhost [2]" uuid="a8679d81-fc34-49f9-9a25-b1e80d2c99f9">
-      <driver-ref>mariadb</driver-ref>
+    <data-source source="LOCAL" name="car_pooling@localhost" uuid="55d2559b-a9fa-4f44-b551-9c415ce68fc5">
+      <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mariadb://localhost:3306/telerikProject2</jdbc-url>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/car_pooling</jdbc-url>
       <driver-properties>
         <property name="autoReconnect" value="true" />
-        <property name="zeroDateTimeBehavior" value="convertToNull" />
+        <property name="zeroDateTimeBehavior" value="CONVERT_TO_NULL" />
         <property name="tinyInt1isBit" value="false" />
         <property name="characterEncoding" value="utf8" />
         <property name="characterSetResults" value="utf8" />
         <property name="yearIsDateType" value="false" />
+        <property name="serverTimezone" value="UTC" />
       </driver-properties>
     </data-source>
   </component>
