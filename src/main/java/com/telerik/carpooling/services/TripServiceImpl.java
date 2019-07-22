@@ -30,7 +30,6 @@ public class TripServiceImpl implements TripService {
         trip.setDriver(driver);
         trip.setTripStatus(TripStatus.AVAILABLE);
 
-
         return dtoMapper.objectToDto(tripRepository.save(trip));
     }
 
@@ -81,12 +80,12 @@ public class TripServiceImpl implements TripService {
         Optional<User> passenger = userRepository.findById(passengerID);
 
         if (trip.isPresent() && passenger.isPresent()) {
-            if (trip.get().getPassengerStatus().keySet().contains(user)) {
+            if (trip.get().getPassengerStatus().keySet().stream().anyMatch(k->k.equals(user))) {
                 if (statusPassenger.equals(PassengerStatus.CANCELED)) {
                     return cancelPassenger(user, tripDtoResponse);
                 }
             }
-            else if (trip.get().getDriver().equals(user)) {
+            if (trip.get().getDriver().equals(user)) {
                 if (statusPassenger.equals(PassengerStatus.ACCEPTED) &&
                         trip.get().getTripStatus().equals(TripStatus.AVAILABLE)) {
                     return acceptPassenger(passengerID, tripDtoResponse);
@@ -134,17 +133,21 @@ public class TripServiceImpl implements TripService {
     private TripDtoResponse rejectPassenger(int passengerID, TripDtoResponse tripDtoResponse) {
         Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
         Optional<User> passenger = userRepository.findById(passengerID);
-
+        System.out.println(1);
         if (trip.isPresent() && passenger.isPresent()) {
-            if (passenger.get().getPassengerStatus().equals(PassengerStatus.ACCEPTED)) {
+            System.out.println(2);
+            if (trip.get().getPassengerStatus().values().stream().anyMatch(k->k.equals(PassengerStatus.ACCEPTED))) {
+                System.out.println(3);
                 trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.REJECTED);
                 trip.get().getPassengersAvailableForRate().remove(passenger.get());
                 if (trip.get().getTripStatus().equals(TripStatus.BOOKED)) {
                     trip.get().setTripStatus(TripStatus.AVAILABLE);
                 }
                 return dtoMapper.objectToDto(tripRepository.save(trip.get()));
-            } else if (passenger.get().getPassengerStatus().equals(PassengerStatus.PENDING)) {
+            } else if (trip.get().getPassengerStatus().values().stream().anyMatch(k->k.equals(PassengerStatus.PENDING))) {
+                System.out.println(4);
                 trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.REJECTED);
+                System.out.println(5);
                 return dtoMapper.objectToDto(tripRepository.save(trip.get()));
             }
         }
@@ -154,7 +157,6 @@ public class TripServiceImpl implements TripService {
     private TripDtoResponse acceptPassenger(int passengerID, TripDtoResponse tripDtoResponse) {
         Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
         Optional<User> passenger = userRepository.findById(passengerID);
-
         if (trip.isPresent()&&passenger.isPresent()) {
             trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.ACCEPTED);
             trip.get().getPassengersAllowedToRate().add(passenger.get());

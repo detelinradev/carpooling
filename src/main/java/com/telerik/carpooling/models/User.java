@@ -71,10 +71,12 @@ public class User extends MappedAudibleBase {
     @Range(max = 5)
     private double averageRatingPassenger;
 
+    @JsonIgnore
     @ElementCollection
     @MapKeyColumn(name = "id")
     private Set<String> feedbackAsDriver = new HashSet<>();
 
+    @JsonIgnore
     @ElementCollection
     @MapKeyColumn(name = "id")
     private Set<String> feedbackAsPassenger = new HashSet<>();
@@ -86,14 +88,5 @@ public class User extends MappedAudibleBase {
     @OneToOne(mappedBy = "owner")
     @JsonIgnore
     private Car car;
-
-//    @JsonIgnore
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "driver")
-//    private Set<Trip> tripsAsDriver = new HashSet<>();
-
-//    @JsonIgnore
-//    @ManyToMany(mappedBy = "acceptedPassengers")
-//    private Set<Trip> tripsAsPassenger = new HashSet<>();
-
 
 }
