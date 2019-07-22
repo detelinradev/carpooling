@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum PassengerStatus {
-    PENDING("P"), ACCEPTED("AC"), REJECTED("R"), CANCELED("C"), ABSENT("AB");
+    PENDING("PENDING"), ACCEPTED("ACCEPTED"), REJECTED("REJECTED"),
+    CANCELED("CANCELED"), ABSENT("ABSENT");
 
     private String code;
 

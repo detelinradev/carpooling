@@ -72,7 +72,6 @@ public class TripController {
                                                       HttpServletRequest req,
                                                       @RequestParam(value = "passengerID") int passengerID ,
                                                       @Valid @RequestParam(value = "status") PassengerStatus passengerStatus){
-        System.out.println(1);
         return Optional
                 .ofNullable(tripService.changePassengerStatus(trip, userRepository.findFirstByUsername(
                         authenticationService.getUsername(req)),passengerID, passengerStatus))

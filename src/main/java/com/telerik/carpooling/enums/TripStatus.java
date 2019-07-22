@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TripStatus {
-    AVAILABLE("A"), BOOKED("B"), ONGOING("O"), DONE("D"), CANCELED("C");
+    AVAILABLE("AVAILABLE"), BOOKED("BOOKED"), ONGOING("ONGOING"),
+    DONE("DONE"), CANCELED("CANCELED");
 
     private String code;
 
