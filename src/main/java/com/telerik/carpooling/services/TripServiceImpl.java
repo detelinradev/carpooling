@@ -184,6 +184,10 @@ public class TripServiceImpl implements TripService {
 
         if (trip.isPresent()) {
             trip.get().setTripStatus(TripStatus.BOOKED);
+            trip.get().getPassengerStatus().values()
+                    .stream()
+                    .filter(k->k.equals(PassengerStatus.PENDING))
+                    .forEach(p->p = PassengerStatus.REJECTED);
             return dtoMapper.objectToDto(tripRepository.save(trip.get()));
         }
         return null;
