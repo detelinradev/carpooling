@@ -70,11 +70,12 @@ public class TripController {
     @PatchMapping(value = "/passengers")
     public ResponseEntity<?> changePassengerStatus(@Valid @RequestBody final TripDtoResponse trip,
                                                       HttpServletRequest req,
+                                                      @RequestParam(value = "passengerID") int passengerID ,
                                                       @Valid @RequestParam(value = "status") PassengerStatus passengerStatus){
 
         return Optional
                 .ofNullable(tripService.changePassengerStatus(trip, userRepository.findFirstByUsername(
-                        authenticationService.getUsername(req)), passengerStatus))
+                        authenticationService.getUsername(req)),passengerID, passengerStatus))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

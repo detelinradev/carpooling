@@ -15,7 +15,7 @@ public interface TripService {
     TripDtoResponse addPassenger(TripDtoResponse trip, User user);
 
     TripDtoResponse changePassengerStatus (TripDtoResponse tripDtoResponse,
-                                           User user, PassengerStatus passengerStatus);
+                                           User user,int passengerID, PassengerStatus passengerStatus);
 
     TripDtoResponse changeTripStatus (TripDtoResponse tripDtoResponse,
                                            User user, TripStatus tripStatus);
