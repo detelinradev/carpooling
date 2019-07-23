@@ -71,20 +71,20 @@ public class UserServiceImpl implements UserService {
             if (userRole.equals("driver") && ratedUserRole.equals("passenger")) {
                 if (trip.get().getPassengersAvailableForRate().contains(ratedUser.get())) {
                     trip.get().getPassengersAvailableForRate().remove(ratedUser.get());
-                    return calculateAverageRate(rating, ratedUserID);
+                    return calculateAverageRatePassenger(rating, ratedUserID);
                 }
 
             } else if (userRole.equals("passenger") && ratedUserRole.equals("driver")) {
                 if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
                     trip.get().getPassengersAllowedToRate().remove(passenger);
-                    return calculateAverageRate(rating, ratedUserID);
+                    return calculateAverageRateDriver(rating, ratedUserID);
                 }
             }
         }
         return null;
     }
 
-    private UserDtoResponse calculateAverageRate(int rating, int ratedUserID) {
+    private UserDtoResponse calculateAverageRateDriver(int rating, int ratedUserID) {
         Optional<User> ratedUser = userRepository.findById(ratedUserID);
         if(ratedUser.isPresent()) {
             int newCountRatings = ratedUser.get().getCountRatingsAsDriver() + 1;
@@ -94,6 +94,21 @@ public class UserServiceImpl implements UserService {
             ratedUser.get().setAverageRatingDriver(newAverageRate);
             ratedUser.get().setCountRatingsAsDriver(newCountRatings);
             ratedUser.get().setSumRatingsAsDriver(newSumRatings);
+
+            return dtoMapper.objectToDto(userRepository.save(ratedUser.get()));
+        }
+        return null;
+    }
+    private UserDtoResponse calculateAverageRatePassenger(int rating, int ratedUserID) {
+        Optional<User> ratedUser = userRepository.findById(ratedUserID);
+        if(ratedUser.isPresent()) {
+            int newCountRatings = ratedUser.get().getCountRatingsAsDriver() + 1;
+            long newSumRatings = ratedUser.get().getSumRatingsAsDriver() + rating;
+            double newAverageRate = newSumRatings / newCountRatings;
+
+            ratedUser.get().setAverageRatingPassenger(newAverageRate);
+            ratedUser.get().setCountRatingsAsPassenger(newCountRatings);
+            ratedUser.get().setSumRatingsAsPassenger(newSumRatings);
 
             return dtoMapper.objectToDto(userRepository.save(ratedUser.get()));
         }
