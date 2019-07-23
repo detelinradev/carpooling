@@ -20,7 +20,7 @@ import javax.persistence.ManyToOne;
 public class Comment extends MappedAudibleBase {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver", nullable = false)
+    @JoinColumn(name = "author", nullable = false)
     private User author;
 
     private String message;

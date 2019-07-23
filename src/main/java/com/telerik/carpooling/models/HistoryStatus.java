@@ -12,14 +12,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Status extends MappedAudibleBase {
+public class HistoryStatus extends MappedAudibleBase {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip",nullable = false)
@@ -37,7 +36,7 @@ public class Status extends MappedAudibleBase {
 
     private PassengerStatus newPassengerStatus;
 
-    public Status(Trip trip, TripStatus oldTripStatus, TripStatus newTripStatus) {
+    public HistoryStatus(Trip trip, TripStatus oldTripStatus, TripStatus newTripStatus) {
         this.trip = trip;
         this.oldTripStatus = oldTripStatus;
         this.newTripStatus = newTripStatus;

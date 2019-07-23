@@ -26,7 +26,6 @@ public class CommentController {
     public ResponseEntity<CommentDtoResponse> createComment(@Valid @RequestBody final TripDtoResponse trip,
                                                             final HttpServletRequest req,
                                                             @Valid@RequestParam(value = "message") final String message){
-
         return Optional
                 .ofNullable(commentService.createComment( trip, userRepository.findFirstByUsername(
                         authenticationService.getUsername(req)), message))

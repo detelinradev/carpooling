@@ -30,15 +30,19 @@ public class HistoryFeedback extends MappedAudibleBase {
 
     private String feedback;
 
-    public HistoryFeedback(User user, User ratedUser, int rating) {
+    private boolean isDriverRated;
+
+    public HistoryFeedback(User user, User ratedUser, int rating, boolean isDriverRated) {
         this.user = user;
         this.ratedUser = ratedUser;
         this.rating = rating;
+        this.isDriverRated = isDriverRated;
     }
 
-    public HistoryFeedback(User user, User ratedUser, String feedback) {
+    public HistoryFeedback(User user, User ratedUser, String feedback, boolean isDriverRated) {
         this.user = user;
         this.ratedUser = ratedUser;
         this.feedback = feedback;
+        this.isDriverRated = isDriverRated;
     }
 }

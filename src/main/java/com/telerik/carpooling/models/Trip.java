@@ -37,9 +37,11 @@ public class Trip extends MappedAudibleBase {
     private TripStatus tripStatus;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Comment> comments = new HashSet<>();
 
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver", nullable = false)
     private User driver;

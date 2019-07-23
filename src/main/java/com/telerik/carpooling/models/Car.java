@@ -1,6 +1,7 @@
 package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true,exclude = {"carImage", "owner"})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,11 +50,11 @@ public class Car extends MappedAudibleBase {
     private boolean isPetsAllowed;
 
     @OneToOne(mappedBy = "car")
-    @JsonIgnore
+    @JsonIgnoreProperties("car")
     private Image carImage;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user", unique = true)
-    @JsonIgnore
+    @JsonIgnoreProperties("car")
     private User owner;
 }

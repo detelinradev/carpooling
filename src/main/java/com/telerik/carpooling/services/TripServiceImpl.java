@@ -112,7 +112,6 @@ public class TripServiceImpl implements TripService {
                 }
             }
         }
-
         return null;
     }
 

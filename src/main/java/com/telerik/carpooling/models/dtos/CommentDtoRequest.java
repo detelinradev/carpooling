@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class CommentDtoRequest {
+
     private User author;
 
     private String message;

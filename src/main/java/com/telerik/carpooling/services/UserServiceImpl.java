@@ -125,17 +125,18 @@ public class UserServiceImpl implements UserService {
             if (userRole.equals("driver") && userToGetFeedbackRole.equals("passenger")) {
                 if (trip.get().getPassengersAvailableForFeedback().contains(userToGetFeedback.get())) {
                     trip.get().getPassengersAvailableForFeedback().remove(userToGetFeedback.get());
+                    userToGetFeedback.get().getFeedbackAsPassenger().add(feedback);
                     return dtoMapper.objectToDto(userRepository.save(userToGetFeedback.get()));
                 }
 
             } else if (userRole.equals("passenger") && userToGetFeedbackRole.equals("driver")) {
                 if (trip.get().getPassengersAllowedToGiveFeedback().contains(user)) {
                     trip.get().getPassengersAllowedToGiveFeedback().remove(user);
+                    userToGetFeedback.get().getFeedbackAsDriver().add(feedback);
                     return dtoMapper.objectToDto(userRepository.save(userToGetFeedback.get()));
                 }
             }
         }
-
         return null;
     }
 }

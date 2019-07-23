@@ -1,5 +1,6 @@
 package com.telerik.carpooling.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true,exclude = {"user", "car"})
 @Entity
 @Data
 @AllArgsConstructor
@@ -28,10 +29,12 @@ public class Image extends MappedAudibleBase {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user", unique = true)
+    @JsonIgnoreProperties("userImage")
     private User user;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "car",unique = true)
+    @JsonIgnoreProperties("carImage")
     private Car car;
 
     public Image(String fileName, String contentType, byte[] data,User user) {

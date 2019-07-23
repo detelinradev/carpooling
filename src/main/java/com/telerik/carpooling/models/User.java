@@ -1,12 +1,10 @@
 package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -15,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true,exclude ={"userImage", "car"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -73,20 +71,20 @@ public class User extends MappedAudibleBase {
 
     @JsonIgnore
     @ElementCollection
-    @MapKeyColumn(name = "id")
     private Set<String> feedbackAsDriver = new HashSet<>();
 
     @JsonIgnore
     @ElementCollection
-    @MapKeyColumn(name = "id")
     private Set<String> feedbackAsPassenger = new HashSet<>();
 
-    @OneToOne(mappedBy = "user")
     @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    @JsonIgnoreProperties("user")
     private Image userImage;
 
-    @OneToOne(mappedBy = "owner")
     @JsonIgnore
+    @OneToOne(mappedBy = "owner")
+    @JsonIgnoreProperties("owner")
     private Car car;
 
 }
