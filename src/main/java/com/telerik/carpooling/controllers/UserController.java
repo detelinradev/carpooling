@@ -82,20 +82,14 @@ public class UserController {
     @PutMapping(value = "/feedback")
     public ResponseEntity<UserDtoResponse> leaveFeedback(@Valid @RequestBody final TripDtoResponse trip,
                                                     final HttpServletRequest req,
+                                                    @RequestParam(value = "userRole") String userRole,
                                                     @RequestParam(value = "userToGetFeedbackId") int ratedUserID,
                                                     @RequestParam(value = "userToGetFeedbackRole") String ratedUserROle,
                                                     @RequestParam(value = "feedback") String feedback) {
-        System.out.println(1);
-        System.out.println(trip);
-        System.out.println(ratedUserID);
-        System.out.println(ratedUserROle);
-        System.out.println(feedback);
-        System.out.println(userRepository.findFirstByUsername(
-                authenticationService.getUsername(req)));
 
         return Optional
                 .ofNullable(userService.leaveFeedback(trip,userRepository.findFirstByUsername(
-                        authenticationService.getUsername(req)), ratedUserID, ratedUserROle, feedback))
+                        authenticationService.getUsername(req)),userRole, ratedUserID, ratedUserROle, feedback))
                 .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
