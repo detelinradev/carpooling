@@ -116,36 +116,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDtoResponse leaveFeedback(TripDtoResponse tripDtoResponse, User user,
+    public UserDtoResponse leaveFeedback(TripDtoResponse tripDtoResponse, User user,String userRole,
                                          int userToGetFeedbackId, String userToGetFeedbackRole, String feedback) {
-        System.out.println(111111);
         Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
-        System.out.println(222222);
         Optional<User> userToGetFeedback = userRepository.findById(userToGetFeedbackId);
-        System.out.println(3333333);
-        System.out.println(trip);
-        System.out.println(userToGetFeedback);
 
         if (trip.isPresent() && trip.get().getTripStatus().equals(TripStatus.DONE) && userToGetFeedback.isPresent()) {
-            System.out.println(3);
-            if (user.getRole().equals("driver") && userToGetFeedbackRole.equals("passenger")) {
-                System.out.println(4);
+            if (userRole.equals("driver") && userToGetFeedbackRole.equals("passenger")) {
                 if (trip.get().getPassengersAvailableForFeedback().contains(userToGetFeedback.get())) {
-                    System.out.println(5);
                     trip.get().getPassengersAvailableForFeedback().remove(userToGetFeedback.get());
                     return dtoMapper.objectToDto(userRepository.save(userToGetFeedback.get()));
                 }
 
-            } else if (user.getRole().equals("passenger") && userToGetFeedbackRole.equals("driver")) {
-                System.out.println(6);
+            } else if (userRole.equals("passenger") && userToGetFeedbackRole.equals("driver")) {
                 if (trip.get().getPassengersAllowedToGiveFeedback().contains(user)) {
-                    System.out.println(7);
                     trip.get().getPassengersAllowedToGiveFeedback().remove(user);
                     return dtoMapper.objectToDto(userRepository.save(userToGetFeedback.get()));
                 }
             }
         }
-        System.out.println(8);
 
         return null;
     }
