@@ -66,12 +66,16 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripDtoResponse addPassenger(TripDtoResponse tripDtoResponse, User passenger) {
+        System.out.println(1);
         Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
-
+        System.out.println(2);
         if (trip.isPresent()) {
+            System.out.println(3);
             if (trip.get().getTripStatus().equals(TripStatus.AVAILABLE)
                     && !trip.get().getDriver().equals(passenger)) {
+                System.out.println(4);
                 trip.get().getPassengerStatus().put(passenger, PassengerStatus.PENDING);
+                System.out.println(5);
                 return dtoMapper.objectToDto(tripRepository.save(trip.get()));
             }
         }
