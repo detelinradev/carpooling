@@ -30,7 +30,8 @@ public class CarController {
     private final CarService carService;
 
     @PostMapping(value = "/car")
-    public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final CarDtoRequest car, final HttpServletRequest req){
+    public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final CarDtoRequest car,
+                                                    final HttpServletRequest req){
     log.info("Creating car");
 
         return Optional
@@ -41,7 +42,8 @@ public class CarController {
     }
 
     @PutMapping(value = "/car")
-    public ResponseEntity<CarDtoResponse> updateCar(@Valid @RequestBody final CarDtoResponse car, final HttpServletRequest req){
+    public ResponseEntity<CarDtoResponse> updateCar(@Valid @RequestBody final CarDtoResponse car,
+                                                    final HttpServletRequest req){
 log.info("Updating car");
         return Optional
                 .ofNullable(carService.updateCar(car ,userRepository.findFirstByUsername(

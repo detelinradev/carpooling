@@ -1,9 +1,6 @@
 package com.telerik.carpooling.controllers;
 
-import com.telerik.carpooling.models.Comment;
-import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.*;
-import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.security.AuthenticationService;
 import com.telerik.carpooling.services.services.contracts.CommentService;
@@ -26,17 +23,13 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping(value = "/comment")
-    public ResponseEntity<CommentDtoResponse> createComment(@Valid @RequestParam(value = "message") final String message,
-                                                            @Valid @RequestBody final TripDtoResponse trip,
-                                                            final HttpServletRequest req){
-        CommentDtoRequest comment = new CommentDtoRequest();
-        User user = userRepository.findFirstByUsername(authenticationService.getUsername(req));
-        comment.setMessage(message);
-        comment.setAuthor(user);
+    public ResponseEntity<CommentDtoResponse> createComment(@Valid @RequestBody final TripDtoResponse trip,
+                                                            final HttpServletRequest req,
+                                                            @Valid@RequestParam(value = "message") final String message){
 
         return Optional
-                .ofNullable(commentService.createComment(comment, trip, userRepository.findFirstByUsername(
-                        authenticationService.getUsername(req))))
+                .ofNullable(commentService.createComment( trip, userRepository.findFirstByUsername(
+                        authenticationService.getUsername(req)), message))
                 .map(commentDto -> ResponseEntity.ok().body(commentDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
