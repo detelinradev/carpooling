@@ -1,6 +1,7 @@
 package com.telerik.carpooling.models.dtos.dtos.mapper;
 
 import com.telerik.carpooling.models.Car;
+import com.telerik.carpooling.models.Comment;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.*;
@@ -26,6 +27,12 @@ public interface DtoMapper {
     User dtoToObject(UserDtoRequest userDtoRequest);
 
     User dtoToObject(UserDtoResponse userDtoResponse);
+
+    CommentDtoResponse objectToDto(Comment comment);
+
+    Comment dtoToObject(CommentDtoRequest commentDtoRequest);
+
+    Comment dtoToObject(CommentDtoResponse commentDtoResponse);
 
 
 
