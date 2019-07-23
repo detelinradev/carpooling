@@ -9,6 +9,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
@@ -18,8 +21,12 @@ import java.time.LocalDateTime;
 @Entity
 public class Status extends MappedAudibleBase {
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip",nullable = false)
     private Trip trip;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "passenger")
     private User passenger;
 
     private TripStatus oldTripStatus;
@@ -34,12 +41,6 @@ public class Status extends MappedAudibleBase {
         this.trip = trip;
         this.oldTripStatus = oldTripStatus;
         this.newTripStatus = newTripStatus;
-    }
-
-    public Status(User passenger, PassengerStatus oldPassengerStatus, PassengerStatus newPassengerStatus) {
-        this.passenger = passenger;
-        this.oldPassengerStatus = oldPassengerStatus;
-        this.newPassengerStatus = newPassengerStatus;
     }
 }
 
