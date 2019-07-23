@@ -124,6 +124,7 @@ public class TripServiceImpl implements TripService {
             else if (trip.get().getPassengerStatus().get(user).equals(PassengerStatus.ACCEPTED)) {
                 trip.get().getPassengerStatus().put(user, PassengerStatus.CANCELED);
                 trip.get().getPassengersAllowedToRate().remove(user);
+                trip.get().getPassengersAllowedToGiveFeedback().remove(user);
 
                 if (trip.get().getTripStatus().equals(TripStatus.BOOKED)) {
                     trip.get().setTripStatus(TripStatus.AVAILABLE);
@@ -142,6 +143,7 @@ public class TripServiceImpl implements TripService {
             if (trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.ACCEPTED)) {
                 trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.REJECTED);
                 trip.get().getPassengersAvailableForRate().remove(passenger.get());
+                trip.get().getPassengersAvailableForFeedback().remove(passenger.get());
                 if (trip.get().getTripStatus().equals(TripStatus.BOOKED)) {
                     trip.get().setTripStatus(TripStatus.AVAILABLE);
                 }
@@ -161,6 +163,8 @@ public class TripServiceImpl implements TripService {
             trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.ACCEPTED);
             trip.get().getPassengersAllowedToRate().add(passenger.get());
             trip.get().getPassengersAvailableForRate().add(passenger.get());
+            trip.get().getPassengersAllowedToGiveFeedback().add(passenger.get());
+            trip.get().getPassengersAvailableForFeedback().add(passenger.get());
             if (trip.get().getDriver().getCar().getTotalSeats()
                     == trip.get().getPassengerStatus().values()
                     .stream()
@@ -180,6 +184,7 @@ public class TripServiceImpl implements TripService {
         if (trip.isPresent() && passenger.isPresent()) {
             trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.ABSENT);
             trip.get().getPassengersAllowedToRate().remove(passenger.get());
+            trip.get().getPassengersAllowedToGiveFeedback().remove(passenger.get());
             if (trip.get().getTripStatus().equals(TripStatus.BOOKED))
                 trip.get().setTripStatus(TripStatus.AVAILABLE);
 
