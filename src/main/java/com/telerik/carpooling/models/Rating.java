@@ -16,7 +16,7 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class HistoryFeedback extends MappedAudibleBase {
+public class Rating extends MappedAudibleBase {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user",nullable = false)
@@ -28,21 +28,21 @@ public class HistoryFeedback extends MappedAudibleBase {
 
     private int rating;
 
-    private String feedback;
-
-    private boolean isDriverRated;
-
-    public HistoryFeedback(User user, User ratedUser, int rating, boolean isDriverRated) {
-        this.user = user;
-        this.ratedUser = ratedUser;
-        this.rating = rating;
-        this.isDriverRated = isDriverRated;
-    }
-
-    public HistoryFeedback(User user, User ratedUser, String feedback, boolean isDriverRated) {
-        this.user = user;
-        this.ratedUser = ratedUser;
-        this.feedback = feedback;
-        this.isDriverRated = isDriverRated;
-    }
+//    private String feedback;
+//
+//    private boolean isDriverRated;
+//
+//    public Rating(User user, User ratedUser, int rating, boolean isDriverRated) {
+//        this.user = user;
+//        this.ratedUser = ratedUser;
+//        this.rating = rating;
+//        this.isDriverRated = isDriverRated;
+//    }
+//
+//    public Rating(User user, User ratedUser, String feedback, boolean isDriverRated) {
+//        this.user = user;
+//        this.ratedUser = ratedUser;
+//        this.feedback = feedback;
+//        this.isDriverRated = isDriverRated;
+//    }
 }

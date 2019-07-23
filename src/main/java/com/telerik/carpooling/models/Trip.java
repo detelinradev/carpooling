@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import java.util.*;
@@ -18,15 +20,18 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Audited
 public class Trip extends MappedAudibleBase {
 
-    private String startingPoint;
+    private String origin;
 
-    private String endPoint;
-
-    private String departureDate;
+    private String destination;
 
     private String departureTime;
+
+    @Column(nullable = false)
+    @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
+    private int availablePlaces;
 
     private int tripDuration;
 

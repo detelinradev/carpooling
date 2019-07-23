@@ -1,6 +1,7 @@
 package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.enums.TripStatus;
+import com.telerik.carpooling.models.Rating;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
@@ -22,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final TripRepository tripRepository;
+    private final RatingServiceImpl ratingService;
     private final DtoMapper dtoMapper;
     private final BCryptPasswordEncoder bCryptEncoder;
 
@@ -40,29 +42,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateCurrentUserPassword(final String password,final User user){
-       if(isPasswordValid(password)) {
-           user.setPassword(bCryptEncoder.encode(password));
-           return userRepository.save(user);
-       }else return null;
+    public User updateCurrentUserPassword(final String password, final User user) {
+        if (isPasswordValid(password)) {
+            user.setPassword(bCryptEncoder.encode(password));
+            return userRepository.save(user);
+        } else return null;
     }
+
     @Override
-    public User updateCurrentUserEmail(final String email,final User user){
-        if(isEmailValid(email)){
-        user.setEmail(email);
-        return userRepository.save(user);
-        }else return null;
+    public User updateCurrentUserEmail(final String email, final User user) {
+        if (isEmailValid(email)) {
+            user.setEmail(email);
+            return userRepository.save(user);
+        } else return null;
     }
+
     private boolean isEmailValid(String email) {
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         return email.matches(regex);
     }
+
     private boolean isPasswordValid(String password) {
         String regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,128}$";
         return password.matches(regex);
     }
 
-    public UserDtoResponse rateUser(TripDtoResponse tripDtoResponse, User passenger, String userRole,
+    public UserDtoResponse rateUser(TripDtoResponse tripDtoResponse, User loggedUser, String userRole,
                                     int ratedUserID, String ratedUserRole, int rating) {
         Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
         Optional<User> ratedUser = userRepository.findById(ratedUserID);
@@ -71,12 +76,14 @@ public class UserServiceImpl implements UserService {
             if (userRole.equals("driver") && ratedUserRole.equals("passenger")) {
                 if (trip.get().getPassengersAvailableForRate().contains(ratedUser.get())) {
                     trip.get().getPassengersAvailableForRate().remove(ratedUser.get());
+                    ratingService.loggingRating(loggedUser,ratedUserID,rating);
                     return calculateAverageRatePassenger(rating, ratedUserID);
                 }
 
             } else if (userRole.equals("passenger") && ratedUserRole.equals("driver")) {
-                if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
-                    trip.get().getPassengersAllowedToRate().remove(passenger);
+                if (trip.get().getPassengersAllowedToRate().contains(loggedUser)) {
+                    trip.get().getPassengersAllowedToRate().remove(loggedUser);
+                    ratingService.loggingRating(loggedUser,ratedUserID,rating);
                     return calculateAverageRateDriver(rating, ratedUserID);
                 }
             }
@@ -86,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDtoResponse calculateAverageRateDriver(int rating, int ratedUserID) {
         Optional<User> ratedUser = userRepository.findById(ratedUserID);
-        if(ratedUser.isPresent()) {
+        if (ratedUser.isPresent()) {
             int newCountRatings = ratedUser.get().getCountRatingsAsDriver() + 1;
             long newSumRatings = ratedUser.get().getSumRatingsAsDriver() + rating;
             double newAverageRate = newSumRatings / newCountRatings;
@@ -99,9 +106,10 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+
     private UserDtoResponse calculateAverageRatePassenger(int rating, int ratedUserID) {
         Optional<User> ratedUser = userRepository.findById(ratedUserID);
-        if(ratedUser.isPresent()) {
+        if (ratedUser.isPresent()) {
             int newCountRatings = ratedUser.get().getCountRatingsAsDriver() + 1;
             long newSumRatings = ratedUser.get().getSumRatingsAsDriver() + rating;
             double newAverageRate = newSumRatings / newCountRatings;
@@ -116,7 +124,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDtoResponse leaveFeedback(TripDtoResponse tripDtoResponse, User user,String userRole,
+    public UserDtoResponse leaveFeedback(TripDtoResponse tripDtoResponse, User user, String userRole,
                                          int userToGetFeedbackId, String userToGetFeedbackRole, String feedback) {
         Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
         Optional<User> userToGetFeedback = userRepository.findById(userToGetFeedbackId);

@@ -1,6 +1,5 @@
 package com.telerik.carpooling.models.dtos;
 
-import com.telerik.carpooling.models.Trip;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,19 +11,19 @@ import javax.validation.constraints.Size;
 @Data
 public class TripDtoRequest {
 
-    private String startingPoint;
-
-    private String endPoint;
-
-    private String departureDate;
+    @Size(max = 200)
+    private String message;
 
     private String departureTime;
+
+    private String origin;
+
+    private String destination;
+
+    private int availablePlaces;
 
     private int tripDuration;
 
     private int costPerPassenger;
-
-    @Size(max = 200)
-    private String message;
 
 }

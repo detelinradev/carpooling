@@ -12,19 +12,19 @@ import javax.validation.constraints.Size;
 public class TripDtoResponse {
     private int id;
 
-    private String startingPoint;
-
-    private String endPoint;
-
-    private String departureDate;
+    @Size(max = 200)
+    private String message;
 
     private String departureTime;
+
+    private String origin;
+
+    private String destination;
+
+    private int availablePlaces;
 
     private int tripDuration;
 
     private int costPerPassenger;
-
-    @Size(max = 200)
-    private String message;
 
 }

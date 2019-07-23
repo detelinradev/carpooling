@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.*;
+import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Entity
+@Audited
 public class User extends MappedAudibleBase {
 
     @Column(updatable = false, nullable = false)

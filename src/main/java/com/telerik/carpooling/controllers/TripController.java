@@ -26,14 +26,14 @@ public class TripController {
     private final AuthenticationService authenticationService;
 
     @PostMapping(value = "/trips")
-    public ResponseEntity<TripDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest trip,
+    public ResponseEntity<?> createTrip(@Valid @RequestBody final TripDtoRequest trip,
                                                       final HttpServletRequest req) {
 
         return Optional
                 .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(
                         authenticationService.getUsername(req))))
-                .map(tripResponseDto -> ResponseEntity.status(HttpStatus.CREATED).body(tripResponseDto))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(k -> ResponseEntity.status(HttpStatus.CREATED).build())
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping(value = "/trips")
@@ -47,8 +47,8 @@ public class TripController {
 
     @PatchMapping(value = "/trips")
     public ResponseEntity<?> changeTripStatus(@Valid @RequestBody final TripDtoResponse trip,
-                                                   HttpServletRequest req,
-                                                   @Valid @RequestParam(value = "status") TripStatus tripStatus){
+                                              HttpServletRequest req,
+                                              @Valid @RequestParam(value = "status") TripStatus tripStatus) {
 
         return Optional
                 .ofNullable(tripService.changeTripStatus(trip, userRepository.findFirstByUsername(
@@ -59,7 +59,7 @@ public class TripController {
 
     @PostMapping(value = "/passengers")
     public ResponseEntity<?> addPassenger(@Valid @RequestBody final TripDtoResponse trip,
-                                                        HttpServletRequest req) {
+                                          HttpServletRequest req) {
         return Optional
                 .ofNullable(tripService.addPassenger(trip, userRepository.findFirstByUsername(
                         authenticationService.getUsername(req))))
@@ -69,12 +69,12 @@ public class TripController {
 
     @PatchMapping(value = "/passengers")
     public ResponseEntity<?> changePassengerStatus(@Valid @RequestBody final TripDtoResponse trip,
-                                                      HttpServletRequest req,
-                                                      @RequestParam(value = "passengerID") int passengerID ,
-                                                      @Valid @RequestParam(value = "status") PassengerStatus passengerStatus){
+                                                   HttpServletRequest req,
+                                                   @RequestParam(value = "passengerID") int passengerID,
+                                                   @Valid @RequestParam(value = "status") PassengerStatus passengerStatus) {
         return Optional
                 .ofNullable(tripService.changePassengerStatus(trip, userRepository.findFirstByUsername(
-                        authenticationService.getUsername(req)),passengerID, passengerStatus))
+                        authenticationService.getUsername(req)), passengerID, passengerStatus))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
