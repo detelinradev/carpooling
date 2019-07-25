@@ -10,8 +10,10 @@ import com.telerik.carpooling.models.dtos.UserDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
+import com.telerik.carpooling.services.services.contracts.RatingService;
 import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +21,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final TripRepository tripRepository;
-    private final RatingServiceImpl ratingService;
+    private final RatingService ratingService;
     private final DtoMapper dtoMapper;
     private final BCryptPasswordEncoder bCryptEncoder;
 
@@ -67,60 +70,63 @@ public class UserServiceImpl implements UserService {
         return password.matches(regex);
     }
 
-    public UserDtoResponse rateUser(TripDtoResponse tripDtoResponse, User loggedUser, String userRole,
-                                    int ratedUserID, String ratedUserRole, int rating) {
-        Optional<Trip> trip = tripRepository.findById(tripDtoResponse.getId());
-        Optional<User> ratedUser = userRepository.findById(ratedUserID);
+    public User rateDriver(String tripID, User passenger, int rating) {
 
-        if (trip.isPresent() && ratedUser.isPresent()) {
-            if (userRole.equals("driver") && ratedUserRole.equals("passenger")) {
-                if (trip.get().getPassengersAvailableForRate().contains(ratedUser.get())) {
-                    trip.get().getPassengersAvailableForRate().remove(ratedUser.get());
-                    ratingService.loggingRating(loggedUser,ratedUserID,rating);
-                    return calculateAverageRatePassenger(rating, ratedUserID);
-                }
+        int intTripID = parseStringToInt(tripID);
 
-            } else if (userRole.equals("passenger") && ratedUserRole.equals("driver")) {
-                if (trip.get().getPassengersAllowedToRate().contains(loggedUser)) {
-                    trip.get().getPassengersAllowedToRate().remove(loggedUser);
-                    ratingService.loggingRating(loggedUser,ratedUserID,rating);
-                    return calculateAverageRateDriver(rating, ratedUserID);
-                }
+        Optional<Trip> trip = tripRepository.findById(intTripID);
+
+        if (trip.isPresent()) {
+            User driver = trip.get().getDriver();
+            if (trip.get().getPassengersAvailableForRate().contains(passenger)) {
+                trip.get().getPassengersAvailableForRate().remove(passenger);
+                ratingService.loggingRating(passenger, driver, rating);
+                return calculateAverageRatePassenger(rating, driver);
             }
         }
         return null;
     }
 
-    private UserDtoResponse calculateAverageRateDriver(int rating, int ratedUserID) {
-        Optional<User> ratedUser = userRepository.findById(ratedUserID);
-        if (ratedUser.isPresent()) {
-            int newCountRatings = ratedUser.get().getCountRatingsAsDriver() + 1;
-            long newSumRatings = ratedUser.get().getSumRatingsAsDriver() + rating;
-            double newAverageRate = newSumRatings / newCountRatings;
+    public User ratePassenger(String tripID, User driver,String passengerID, int rating) {
 
-            ratedUser.get().setAverageRatingDriver(newAverageRate);
-            ratedUser.get().setCountRatingsAsDriver(newCountRatings);
-            ratedUser.get().setSumRatingsAsDriver(newSumRatings);
+        int intTripID = parseStringToInt(tripID);
+        int intPassengerID = parseStringToInt(passengerID);
 
-            return dtoMapper.objectToDto(userRepository.save(ratedUser.get()));
+        Optional<Trip> trip = tripRepository.findById(intTripID);
+        Optional<User> passenger = userRepository.findById(intPassengerID);
+
+        if (trip.isPresent() && passenger.isPresent()) {
+            if (trip.get().getPassengersAllowedToRate().contains(passenger.get())) {
+                trip.get().getPassengersAllowedToRate().remove(passenger.get());
+                ratingService.loggingRating(driver, passenger.get(), rating);
+                return calculateAverageRateDriver(rating, passenger.get());
+            }
         }
         return null;
     }
 
-    private UserDtoResponse calculateAverageRatePassenger(int rating, int ratedUserID) {
-        Optional<User> ratedUser = userRepository.findById(ratedUserID);
-        if (ratedUser.isPresent()) {
-            int newCountRatings = ratedUser.get().getCountRatingsAsDriver() + 1;
-            long newSumRatings = ratedUser.get().getSumRatingsAsDriver() + rating;
-            double newAverageRate = newSumRatings / newCountRatings;
+    private User calculateAverageRateDriver(int rating, User driver) {
+        int newCountRatings = driver.getCountRatingsAsDriver() + 1;
+        long newSumRatings = driver.getSumRatingsAsDriver() + rating;
+        double newAverageRate = newSumRatings / newCountRatings;
 
-            ratedUser.get().setAverageRatingPassenger(newAverageRate);
-            ratedUser.get().setCountRatingsAsPassenger(newCountRatings);
-            ratedUser.get().setSumRatingsAsPassenger(newSumRatings);
+        driver.setAverageRatingDriver(newAverageRate);
+        driver.setCountRatingsAsDriver(newCountRatings);
+        driver.setSumRatingsAsDriver(newSumRatings);
 
-            return dtoMapper.objectToDto(userRepository.save(ratedUser.get()));
-        }
-        return null;
+        return userRepository.save(driver);
+    }
+
+    private User calculateAverageRatePassenger(int rating, User passenger) {
+        int newCountRatings = passenger.getCountRatingsAsPassenger() + 1;
+        long newSumRatings = passenger.getSumRatingsAsPassenger() + rating;
+        double newAverageRate = newSumRatings / newCountRatings;
+
+        passenger.setAverageRatingPassenger(newAverageRate);
+        passenger.setCountRatingsAsPassenger(newCountRatings);
+        passenger.setSumRatingsAsPassenger(newSumRatings);
+
+        return userRepository.save(passenger);
     }
 
     @Override
@@ -146,5 +152,15 @@ public class UserServiceImpl implements UserService {
             }
         }
         return null;
+    }
+
+    private int parseStringToInt(String tripID) {
+        int intTripID = 0;
+        try {
+            intTripID = Integer.parseInt(tripID);
+        } catch (NumberFormatException e) {
+            log.error("Exception during parsing", e);
+        }
+        return intTripID;
     }
 }

@@ -1,6 +1,5 @@
 package com.telerik.carpooling.models.dtos;
 
-import com.telerik.carpooling.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@ public class CommentDtoResponse {
 
     private int id;
 
-    private User author;
+    private UserDtoResponse author;
 
     private String message;
 }

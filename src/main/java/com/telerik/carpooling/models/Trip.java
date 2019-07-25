@@ -1,6 +1,7 @@
 package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
@@ -15,7 +16,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import java.util.*;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true,exclude = "comments")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,10 +42,10 @@ public class Trip extends MappedAudibleBase {
 
     private TripStatus tripStatus;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trip")
     @JsonIgnore
+    @JsonIgnoreProperties("trip")
     private Set<Comment> comments = new HashSet<>();
-
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,9 +53,18 @@ public class Trip extends MappedAudibleBase {
     private User driver;
 
     @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car", nullable = false)
+    private Car car;
+
+    @JsonIgnore
     @ElementCollection
     @MapKeyColumn(name = "id")
     private Map<User, PassengerStatus> passengerStatus = new HashMap<>();
+
+    @JsonIgnore
+    @ManyToMany
+    private Set<User>passengers = new HashSet<>();
 
     @JsonIgnore
     @ManyToMany

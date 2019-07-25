@@ -7,5 +7,5 @@ import com.telerik.carpooling.models.dtos.TripDtoResponse;
 
 public interface CommentService {
 
-    CommentDtoResponse createComment( TripDtoResponse trip, User user, String message);
+    CommentDtoResponse createComment( String tripID, User user, String message);
 }

@@ -15,8 +15,9 @@ public interface UserService {
 
     User updateCurrentUserEmail(String email,User user);
 
-    UserDtoResponse rateUser(TripDtoResponse tripResponseDto, User user, String userRole,
-                             int ratedUserID, String ratedUserRole, int rating);
+    User rateDriver(String tripID, User user, int rating);
+
+    User ratePassenger(String tripID, User user,String passengerID, int rating);
 
     UserDtoResponse leaveFeedback(TripDtoResponse tripDtoResponse, User user,String userRole,
                              int userToGetFeedbackId, String userToGetFeedbackRole, String feedback);

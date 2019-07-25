@@ -29,10 +29,6 @@ public class CarDtoRequest {
     private String color;
 
     @Column(nullable = false)
-    @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
-    private int totalSeats;
-
-    @Column(nullable = false)
     @Range(min = 1950,max = 2019, message = "Please enter year of first registration between 1950 and 2019!")
     private int firstRegistration;
 

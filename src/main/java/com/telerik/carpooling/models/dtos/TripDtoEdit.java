@@ -11,7 +11,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class TripDtoRequest {
+public class TripDtoEdit {
+
+    private int id;
 
     @Size(max = 200)
     private String message;
@@ -33,5 +35,4 @@ public class TripDtoRequest {
 
     @Max(value = Integer.MAX_VALUE)
     private int costPerPassenger;
-
 }

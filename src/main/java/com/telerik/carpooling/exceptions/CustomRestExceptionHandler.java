@@ -46,7 +46,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+                new ApiError(HttpStatus.METHOD_NOT_ALLOWED, ex.getLocalizedMessage(), errors);
         return handleExceptionInternal(
                 ex, apiError, headers, apiError.getStatus(), request);
     }

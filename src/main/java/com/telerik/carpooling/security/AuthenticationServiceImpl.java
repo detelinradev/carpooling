@@ -19,19 +19,10 @@ import java.util.stream.Collectors;
 
 
 @Service
- public class AuthenticationServiceImpl implements AuthenticationService {
+ public class AuthenticationServiceImpl {
      private static final long EXPIRATIONTIME = 864_000_00; // 1 day in milliseconds
      private static final String SIGNINGKEY = "SecretKey";
      private static final String PREFIX = "Bearer";
-
-    public String getUsername(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            String token =  bearerToken.substring(7);
-            return Jwts.parser().setSigningKey(SIGNINGKEY).parseClaimsJws(token).getBody().getSubject();
-        }
-        return null;
-    }
 
     static void addToken(HttpServletResponse res, Authentication authentication) {
 

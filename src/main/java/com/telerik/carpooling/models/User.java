@@ -39,6 +39,9 @@ public class User extends MappedAudibleBase {
     @Email
     private String email;
 
+    @Range(min = 10,max = 10)
+    private String phone;
+
     @Min(value = 18,message = "Not of age persons are not allowed to use the carpooling service")
     @Max(value = 150,message = "Please enter valid years")
     private int age;
@@ -88,5 +91,4 @@ public class User extends MappedAudibleBase {
     @OneToOne(mappedBy = "owner")
     @JsonIgnoreProperties("owner")
     private Car car;
-
 }

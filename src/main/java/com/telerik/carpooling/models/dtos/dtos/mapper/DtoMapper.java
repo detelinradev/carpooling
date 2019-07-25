@@ -8,9 +8,14 @@ import com.telerik.carpooling.models.dtos.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.Set;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { TripMapperResolver.class,CarMapperResolver.class })
 public interface DtoMapper {
+
     TripDtoResponse objectToDto(Trip trip);
+
+    Trip dtoToObject(TripDtoEdit tripDtoEdit);
 
     Trip dtoToObject(TripDtoRequest tripRequestDto);
 
@@ -33,6 +38,10 @@ public interface DtoMapper {
     Comment dtoToObject(CommentDtoRequest commentDtoRequest);
 
     Comment dtoToObject(CommentDtoResponse commentDtoResponse);
+
+    Set<UserDtoResponse> usersToUserDtoResponses(Set<User> passengers);
+
+    Set<CommentDtoResponse> commentsToCommentsDtoResponses(Set<Comment>comments);
 
 
 

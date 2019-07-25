@@ -2,18 +2,24 @@ package com.telerik.carpooling.controllers;
 
 import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
+import com.telerik.carpooling.models.Trip;
+import com.telerik.carpooling.models.dtos.TripDtoEdit;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
-import com.telerik.carpooling.security.AuthenticationService;
+import com.telerik.carpooling.services.services.contracts.CommentService;
 import com.telerik.carpooling.services.services.contracts.TripService;
+import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Optional;
 
 @CrossOrigin(maxAge = 3600)
@@ -22,60 +28,129 @@ import java.util.Optional;
 public class TripController {
 
     private final TripService tripService;
+    private final TripRepository tripRepository;
+    private final UserService userService;
     private final UserRepository userRepository;
-    private final AuthenticationService authenticationService;
+    private final CommentService commentService;
 
     @PostMapping(value = "/trips")
     public ResponseEntity<?> createTrip(@Valid @RequestBody final TripDtoRequest trip,
-                                                      final HttpServletRequest req) {
+                                        final Authentication authentication) {
 
         return Optional
                 .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(
-                        authenticationService.getUsername(req))))
+                        authentication.getName())))
                 .map(k -> ResponseEntity.status(HttpStatus.CREATED).build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping(value = "/trips")
-    public ResponseEntity<TripDtoResponse> updateTrip(@Valid @RequestBody final TripDtoResponse trip) {
-
+    public ResponseEntity<?> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit,
+                                        final Authentication authentication,
+                                        HttpServletResponse httpServletResponse) throws IOException {
+        Optional<Trip> trip = tripRepository.findById(tripDtoEdit.getId());
+        if (trip.isPresent()) {
+            if (!trip.get().getCreator().equals(authentication.getName()))
+                httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        }
         return Optional
-                .ofNullable(tripService.updateTrip(trip))
-                .map(tripResponseDto -> ResponseEntity.ok().body(tripResponseDto))
+                .ofNullable(tripService.updateTrip(tripDtoEdit))
+                .map(tripResponseDto -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PatchMapping(value = "/trips")
-    public ResponseEntity<?> changeTripStatus(@Valid @RequestBody final TripDtoResponse trip,
-                                              HttpServletRequest req,
-                                              @Valid @RequestParam(value = "status") TripStatus tripStatus) {
+    @PatchMapping(value = "/trips/{tripID}")
+    public ResponseEntity<?> changeTripStatus(@PathVariable final String tripID,
+                                              final Authentication authentication,
+                                              @RequestParam(value = "status") TripStatus tripStatus) throws IOException {
+
 
         return Optional
-                .ofNullable(tripService.changeTripStatus(trip, userRepository.findFirstByUsername(
-                        authenticationService.getUsername(req)), tripStatus))
+                .ofNullable(tripService.changeTripStatus(tripID,
+                        userRepository.findFirstByUsername(authentication.getName()), tripStatus))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping(value = "/passengers")
-    public ResponseEntity<?> addPassenger(@Valid @RequestBody final TripDtoResponse trip,
-                                          HttpServletRequest req) {
+    @GetMapping(value = "/trips/{id}")
+    public ResponseEntity<TripDtoResponse> getTrips(@PathVariable String id) {
+
         return Optional
-                .ofNullable(tripService.addPassenger(trip, userRepository.findFirstByUsername(
-                        authenticationService.getUsername(req))))
+                .ofNullable(tripService.getTrip(id))
+                .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping(value = "/trips/{id}/passengers")
+    public ResponseEntity<?> addPassenger(@PathVariable final String id,
+                                          final Authentication authentication) {
+        return Optional
+                .ofNullable(tripService.addPassenger(id, userRepository.findFirstByUsername(
+                        authentication.getName())))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PatchMapping(value = "/passengers")
-    public ResponseEntity<?> changePassengerStatus(@Valid @RequestBody final TripDtoResponse trip,
-                                                   HttpServletRequest req,
-                                                   @RequestParam(value = "passengerID") int passengerID,
-                                                   @Valid @RequestParam(value = "status") PassengerStatus passengerStatus) {
+    @PatchMapping(value = "/trips/{tripId}/passengers/{passengerId}")
+    public ResponseEntity<?> changePassengerStatus(@PathVariable final String tripId,
+                                                   @PathVariable final String passengerId,
+                                                   final Authentication authentication,
+                                                   @RequestParam(value = "status") PassengerStatus passengerStatus) {
         return Optional
-                .ofNullable(tripService.changePassengerStatus(trip, userRepository.findFirstByUsername(
-                        authenticationService.getUsername(req)), passengerID, passengerStatus))
+                .ofNullable(tripService.changePassengerStatus(tripId, userRepository.findFirstByUsername(
+                        authentication.getName()), passengerId, passengerStatus))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping(value = "trips/{id}/comments")
+    public ResponseEntity<?> createComment(@PathVariable final String id,
+                                           final Authentication authentication,
+                                           @RequestParam(value = "comment") final String message){
+        return Optional
+                .ofNullable(commentService.createComment( id, userRepository.findFirstByUsername(
+                        authentication.getName()), message))
+                .map(commentDto -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PostMapping(value = "/trips/{id}/driver/rate")
+    public ResponseEntity<?> rateDriver(@PathVariable final String id,
+                                      final Authentication authentication,
+                                      @RequestBody int rating) {
+
+        return Optional
+                .ofNullable(userService.rateDriver(id,userRepository.findFirstByUsername(
+                        authentication.getName()), rating))
+                .map(tripDtoResponse -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PostMapping(value = "/trips/{tripId}/passengers/{passengerId}/rate")
+    public ResponseEntity<?> ratePassenger(@PathVariable final String tripId,
+                                           @PathVariable final String passengerId,
+                                        final Authentication authentication,
+                                        @RequestBody int rating) {
+
+        return Optional
+                .ofNullable(userService.ratePassenger(tripId,userRepository.findFirstByUsername(
+                        authentication.getName()),passengerId, rating))
+                .map(tripDtoResponse -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PutMapping(value = "/feedback")
+    public ResponseEntity<?> leaveFeedback(@Valid @RequestBody final TripDtoResponse trip,
+                                           final Authentication authentication,
+                                           @RequestParam(value = "userRole") String userRole,
+                                           @RequestParam(value = "userToGetFeedbackId") int ratedUserID,
+                                           @RequestParam(value = "userToGetFeedbackRole") String ratedUserROle,
+                                           @RequestParam(value = "feedback") String feedback) {
+
+        return Optional
+                .ofNullable(userService.leaveFeedback(trip,userRepository.findFirstByUsername(
+                        authentication.getName()),userRole, ratedUserID, ratedUserROle, feedback))
+                .map(tripDtoResponse -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 }
