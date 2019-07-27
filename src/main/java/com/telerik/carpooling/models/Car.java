@@ -55,4 +55,6 @@ public class Car extends MappedAudibleBase {
     @JoinColumn(name = "user", unique = true)
     @JsonIgnoreProperties("car")
     private User owner;
+
+    private String avatarUri;
 }

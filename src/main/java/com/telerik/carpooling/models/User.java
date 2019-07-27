@@ -39,40 +39,22 @@ public class User extends MappedAudibleBase {
     @Email
     private String email;
 
-    @Range(min = 10,max = 10)
+    @Size(min = 9,max = 10)
     private String phone;
-
-    @Min(value = 18,message = "Not of age persons are not allowed to use the carpooling service")
-    @Max(value = 150,message = "Please enter valid years")
-    private int age;
 
     @Size(min = 8, max = 128, message = "Password must be between 8 and 128 symbols")
     @Column(nullable = false)
     @JsonIgnore
     private String password;
 
+    @Size(max = 250)
     @Column(nullable = false)
     private String role;
 
     private PassengerStatus passengerStatus;
 
-    @JsonIgnore
-    private long sumRatingsAsDriver;
-
-    @JsonIgnore
-    private int countRatingsAsDriver;
-
-    @Range(max = 5)
-    private double averageRatingDriver;
-
-    @JsonIgnore
-    private long sumRatingsAsPassenger;
-
-    @JsonIgnore
-    private int countRatingsAsPassenger;
-
-    @Range(max = 5)
-    private double averageRatingPassenger;
+    @Size(max = 250)
+    private String avatarUri;
 
     @JsonIgnore
     @ElementCollection

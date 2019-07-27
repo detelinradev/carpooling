@@ -27,9 +27,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDtoResponse createComment(String tripID,
                                             User user, String message) {
-        int intTripID = 0;
+        long intTripID = 0;
         try {
-            intTripID = Integer.parseInt(tripID);
+            intTripID = Long.parseLong(tripID);
         } catch (NumberFormatException e) {
             log.error("Exception during parsing", e);
         }

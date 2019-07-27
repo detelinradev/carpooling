@@ -1,25 +1,76 @@
 package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.models.Rating;
+import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.repositories.RatingRepository;
+import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.RatingService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Log4j2
 public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
+    private final TripRepository tripRepository;
+    private final UserRepository userRepository;
 
-    public void loggingRating(User loggedUser, User ratedUser, int rating) {
+    @Override
+    public Rating rateDriver(String tripID, User passenger, int rating) {
+        System.out.println(2);
+        long intTripID = parseStringToInt(tripID);
+        System.out.println(3);
+        Optional<Trip> trip = tripRepository.findById(intTripID);
+        System.out.println(4);
+        if (trip.isPresent()) {
+            System.out.println(5);
+            User driver = trip.get().getDriver();
+            System.out.println(6);
+            if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
+                System.out.println(7);
+                trip.get().getPassengersAllowedToRate().remove(passenger);
+                Rating ratingObject = new Rating(passenger, driver, rating,true);
+                System.out.println(8);
+                return ratingRepository.save(ratingObject);
+            }
+        }
+        return null;
+    }
 
-        Rating ratingObject = new Rating(loggedUser, ratedUser, rating);
-        ratingRepository.save(ratingObject);
+    @Override
+    public Rating ratePassenger(String tripID, User driver, String passengerID, int rating) {
+
+        long intTripID = parseStringToInt(tripID);
+        long intPassengerID = parseStringToInt(passengerID);
+
+        Optional<Trip> trip = tripRepository.findById(intTripID);
+        Optional<User> passenger = userRepository.findById(intPassengerID);
+
+        if (trip.isPresent() && passenger.isPresent()) {
+            if (trip.get().getPassengersAvailableForRate().contains(passenger.get())) {
+                trip.get().getPassengersAvailableForRate().remove(passenger.get());
+                Rating ratingObject = new Rating(driver, passenger.get(), rating,false);
+                return ratingRepository.save(ratingObject);
+            }
+        }
+        return null;
+    }
+
+    private long parseStringToInt(String tripID) {
+        long intTripID = 0;
+        try {
+            intTripID = Long.parseLong(tripID);
+        } catch (NumberFormatException e) {
+            log.error("Exception during parsing", e);
+        }
+        return intTripID;
     }
 }
 

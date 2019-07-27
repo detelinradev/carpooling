@@ -7,18 +7,22 @@ import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.UserDtoRequest;
 import com.telerik.carpooling.models.dtos.UserDtoResponse;
 
-public interface UserService {
+import java.util.Optional;
 
-    User save(UserDtoRequest user);
+public interface UserService {
+   // Optional<User> findUser(Long userId);
+
+    UserDtoResponse save(UserDtoRequest user);
 
     User updateCurrentUserPassword(String password, User user);
 
     User updateCurrentUserEmail(String email,User user);
 
-    User rateDriver(String tripID, User user, int rating);
+    User leaveFeedbackDriver(String tripID, User user, String feedback);
 
-    User ratePassenger(String tripID, User user,String passengerID, int rating);
+    User leaveFeedbackPassenger(String tripID, User user,String passengerID, String feedback);
 
-    UserDtoResponse leaveFeedback(TripDtoResponse tripDtoResponse, User user,String userRole,
-                             int userToGetFeedbackId, String userToGetFeedbackRole, String feedback);
+    User updateUser(UserDtoResponse userDtoResponse);
+
+    UserDtoResponse getUser(String username);
 }

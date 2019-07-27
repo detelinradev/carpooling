@@ -10,7 +10,8 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.Set;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { TripMapperResolver.class,CarMapperResolver.class })
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = { TripMapperResolver.class,CarMapperResolver.class,UserMapperResolver.class })
 public interface DtoMapper {
 
     TripDtoResponse objectToDto(Trip trip);

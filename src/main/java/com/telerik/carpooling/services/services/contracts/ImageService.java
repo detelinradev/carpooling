@@ -4,11 +4,13 @@ import com.telerik.carpooling.models.Image;
 import com.telerik.carpooling.models.User;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
+
 public interface ImageService {
 
-    void storeCarImage(MultipartFile file, User user);
+    Image storeCarImage(MultipartFile file, User user, URI fileDownloadUri);
 
-    void storeUserImage(MultipartFile file, User user);
+    Image storeUserImage(MultipartFile file, User user, URI fileDownloadUri);
 
-    Image getImage(int fileId);
+    Image getImage(long fileId);
 }

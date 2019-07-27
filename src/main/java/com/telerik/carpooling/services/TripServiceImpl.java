@@ -53,7 +53,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public TripDtoResponse getTrip(String tripID){
 
-        int intTripID = parseStringToInt(tripID);
+        long intTripID = parseStringToInt(tripID);
         Optional<Trip> trip = tripRepository.findById(intTripID);
         return trip.map(value -> dtoMapper.objectToDto(tripRepository.save(value))).orElse(null);
     }
@@ -61,7 +61,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public Trip changeTripStatus(String tripID, User user, TripStatus tripStatus) {
 
-        int intTripID = parseStringToInt(tripID);
+        long intTripID = parseStringToInt(tripID);
 
         Optional<Trip> trip = tripRepository.findById(intTripID);
 
@@ -86,7 +86,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public Trip addPassenger(String tripID, User passenger) {
 
-        int intTripID = parseStringToInt(tripID);
+        long intTripID = parseStringToInt(tripID);
 
         Optional<Trip> trip = tripRepository.findById(intTripID);
         if (trip.isPresent()) {
@@ -102,8 +102,8 @@ public class TripServiceImpl implements TripService {
 
     public Trip changePassengerStatus(String tripID, User user, String passengerID, PassengerStatus statusPassenger) {
 
-        int intTripID = parseStringToInt(tripID);
-        int intPassengerID = parseStringToInt(passengerID);
+        long intTripID = parseStringToInt(tripID);
+        long intPassengerID = parseStringToInt(passengerID);
 
         Optional<Trip> trip = tripRepository.findById(intTripID);
         Optional<User> passenger = userRepository.findById(intPassengerID);
@@ -134,7 +134,7 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    private Trip cancelPassenger(User user, int tripID) {
+    private Trip cancelPassenger(User user, long tripID) {
         Optional<Trip> trip = tripRepository.findById(tripID);
 
         if (trip.isPresent()) {
@@ -158,7 +158,7 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    private Trip rejectPassenger(int passengerID, int tripID) {
+    private Trip rejectPassenger(long passengerID, long tripID) {
         Optional<Trip> trip = tripRepository.findById(tripID);
         Optional<User> passenger = userRepository.findById(passengerID);
         if (trip.isPresent() && passenger.isPresent()) {
@@ -179,7 +179,7 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    private Trip acceptPassenger(int passengerID, int tripID) {
+    private Trip acceptPassenger(long passengerID, long tripID) {
         Optional<Trip> trip = tripRepository.findById(tripID);
         Optional<User> passenger = userRepository.findById(passengerID);
         if (trip.isPresent() && passenger.isPresent()) {
@@ -201,7 +201,7 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    private Trip absentPassenger(int tripID, int passengerID) {
+    private Trip absentPassenger(long tripID, long passengerID) {
         Optional<Trip> trip = tripRepository.findById(tripID);
         Optional<User> passenger = userRepository.findById(passengerID);
 
@@ -218,7 +218,7 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    private Trip markTripAsBooked(int tripID) {
+    private Trip markTripAsBooked(long tripID) {
         Optional<Trip> trip = tripRepository.findById(tripID);
 
         if (trip.isPresent()) {
@@ -232,7 +232,7 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    private Trip markTripAsOngoing(int tripID) {
+    private Trip markTripAsOngoing(long tripID) {
         Optional<Trip> trip = tripRepository.findById(tripID);
 
         if (trip.isPresent()) {
@@ -242,7 +242,7 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    private Trip markTripAsDone(int tripID) {
+    private Trip markTripAsDone(long tripID) {
         Optional<Trip> trip = tripRepository.findById(tripID);
 
         if (trip.isPresent()) {
@@ -252,7 +252,7 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    private Trip markTripAsCanceled(int tripID) {
+    private Trip markTripAsCanceled(long tripID) {
         Optional<Trip> trip = tripRepository.findById(tripID);
 
         if (trip.isPresent()) {
@@ -262,11 +262,11 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    private int parseStringToInt(String stringID) {
+    private long parseStringToInt(String stringID) {
 
-        int intID = 0;
+        long intID = 0;
         try {
-            intID = Integer.parseInt(stringID);
+            intID = Long.parseLong(stringID);
         } catch (NumberFormatException e) {
             log.error("Exception during parsing", e);
         }

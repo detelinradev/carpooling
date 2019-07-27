@@ -14,35 +14,33 @@ import javax.validation.constraints.*;
 public class UserDtoResponse {
 
     @Column
-    private int id;
+    private long id;
 
     @Size(min = 2, max = 20, message = "Please enter username between 2 and 20 symbols")
-    @Column(unique = true, nullable = false,updatable = false )
+    @Column(unique = true, nullable = false, updatable = false)
     private String username;
 
     @Column(updatable = false, nullable = false)
     @Size(min = 1, max = 20, message = "Please enter first name between 1 and 20 characters")
-    @Pattern(regexp = "^[A-Za-z]+$",message = "First name must contain only letters")
+    @Pattern(regexp = "^[A-Za-z]+$", message = "First name must contain only letters")
     private String firstName;
 
     @Size(min = 1, max = 20, message = "Please enter last name between 1 and 20 characters")
     @Column(updatable = false, nullable = false)
-    @Pattern(regexp = "^[A-Za-z]+$",message = "Last name must contain only letters")
+    @Pattern(regexp = "^[A-Za-z]+$", message = "Last name must contain only letters")
     private String lastName;
 
     @Email
     private String email;
 
-    @Range(min=10,max = 10)
+    @Range(min = 10, max = 10)
     private String phone;
 
+    @Size(max = 250)
     @Column(nullable = false)
     private String role;
 
-    @Range(max = 5)
-    private double averageRatingDriver;
-
-    @Range(max = 5)
-    private double averageRatingPassenger;
+    @Size(max = 250)
+    private String avatarUri;
 
 }

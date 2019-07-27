@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 @Data
 public class CarDtoResponse {
 
-    private int id;
+    private long id;
 
     @Column(nullable = false)
     @Size(min = 1, max = 20, message = "Please enter brand name between 1 and 20 symbols!")
@@ -46,4 +46,6 @@ public class CarDtoResponse {
 
     @Column(nullable = false)
     private boolean isPetsAllowed;
+
+    private String avatarUri;
 }

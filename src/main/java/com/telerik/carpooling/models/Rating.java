@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,6 +27,9 @@ public class Rating extends MappedAudibleBase {
     @JoinColumn(name = "ratedUser",nullable = false)
     private User ratedUser;
 
+    @Range(min=1,max = 5)
     private int rating;
+
+    private boolean isDriver;
 
 }
