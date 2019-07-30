@@ -1,28 +1,28 @@
 import React, { Component } from 'react';
-import './Trip.css';
-import axios from "axios";
+// import './Trip.css';
+// import axios from "axios";
 
 
 class Trip extends Component {
-    state = {
-        car:{
-            brand: 'brand',
-            model: 'model',
+    // state = {
+    //     car:{
+    //         brand: 'brand',
+    //         model: 'model',
+    //
+    //     }
+    // };
 
-        }
-    };
-
-    componentDidMount() {
-        axios.get('/trips/2'+'/car')
-            .then(response => {
-                this.setState({
-                    car: response.data,
-                });
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    }
+    // componentDidMount() {
+    //     axios.get('/trips/2'+'/car')
+    //         .then(response => {
+    //             this.setState({
+    //                 car: response.data,
+    //             });
+    //         })
+    //         .catch(error => {
+    //             console.log(error);
+    //         });
+    // }
 
     render() {
 

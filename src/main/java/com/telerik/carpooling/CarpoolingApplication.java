@@ -25,7 +25,7 @@ public class CarpoolingApplication {
 
     @Component
     @RequiredArgsConstructor
-    class Auditor implements AuditorAware<String> {
+    static class Auditor implements AuditorAware<String> {
 
         @Override
         public Optional<String> getCurrentAuditor() {

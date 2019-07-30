@@ -11,17 +11,17 @@ class Trips extends Component {
         };
     }
 
-    componentDidMount() {
-        axios.get('/trips')
-            .then(response => {
-                this.setState({
-                    trips: response.data._embedded.trips,
-                });
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    }
+    // componentDidMount() {
+    //     axios.get('/trips')
+    //         .then(response => {
+    //             this.setState({
+    //                 trips: response.data._embedded.trips,
+    //             });
+    //         })
+    //         .catch(error => {
+    //             console.log(error);
+    //         });
+    // }
 
     render() {
         let trips = <p style={{textAlign: 'center'}}>Something went wrong!</p>;
