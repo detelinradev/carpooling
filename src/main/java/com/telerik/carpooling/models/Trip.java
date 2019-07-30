@@ -24,6 +24,10 @@ import java.util.*;
 @Audited
 public class Trip extends MappedAudibleBase {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
     private String origin;
 
     private String destination;
