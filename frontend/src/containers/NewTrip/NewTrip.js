@@ -121,14 +121,14 @@ class NewTrip extends Component {
         for (let formElementIdentifier in this.state.createForm) {
             formData[formElementIdentifier] = this.state.createForm[formElementIdentifier].value;
         }
-        const create = {
-            //ingredients: this.props.ings,
-           // price: this.props.price,
-            tripData: formData,
-           // userId: this.props.userId
-        };
+        // const create = {
+        //     //ingredients: this.props.ings,
+        //    // price: this.props.price,
+        //     tripData: formData,
+        //    // userId: this.props.userId
+        // };
 
-        this.props.onCreateTrip(create, this.props.token);
+        this.props.onCreateTrip(formData, this.props.token);
 
     };
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
+import { Route, Switch, withRouter, Redirect,  } from 'react-router-dom';
 import { connect } from 'react-redux';
 import asyncComponent from './hoc/asyncComponent/asyncComponent';
 
@@ -14,6 +14,9 @@ import NewTrip from "./containers/NewTrip/NewTrip";
 const asyncAuth = asyncComponent(() => {
     return import('./containers/Auth/Auth');
 });
+const asyncCreateTrip = asyncComponent(() => {
+    return import('./containers/NewTrip/NewTrip');
+});
 
 class App extends Component {
     componentDidMount () {
@@ -24,7 +27,6 @@ class App extends Component {
         let routes = (
             <Switch>
                 <Route path="/auth" component={asyncAuth} />
-                {/*<Route path="/" exact component={Trip} />*/}
                 <Redirect to="/auth" />
             </Switch>
         );
@@ -33,7 +35,7 @@ class App extends Component {
             routes = (
                 <Switch>
                     <Route path="/logout" component={Logout} />
-                    <Route path="/createTrip" component={NewTrip} />
+                    <Route path="/createTrip" component={asyncCreateTrip} />
                     <Route path="/" exact component={Trip} />
                     <Redirect to="/" />
                 </Switch>

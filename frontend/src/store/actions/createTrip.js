@@ -23,10 +23,11 @@ export const purchaseBurgerStart = () => {
     };
 };
 
+
+
 export const createTrip = (TripData, token ) => {
 
-    // qs.stringify(TripData)
-    // console.log(TripData);
+
     return dispatch => {
         dispatch( purchaseBurgerStart() );
         const headers = {
@@ -37,7 +38,11 @@ export const createTrip = (TripData, token ) => {
          )
             .then( response => {
                 dispatch( purchaseBurgerSuccess( response.data.name, TripData ) );
+
             } )
+            .then(()=>{
+                this.props.history.replace( '/' );
+            })
             .catch( error => {
                 dispatch( purchaseBurgerFail( error ) );
             } );
