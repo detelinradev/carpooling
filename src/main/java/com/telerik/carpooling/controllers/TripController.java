@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -39,7 +41,13 @@ public class TripController {
 
     @PostMapping
     public ResponseEntity<?> createTrip(@Valid @RequestBody final TripDtoRequest trip,
-                                        final Authentication authentication) {
+                                        HttpServletRequest httpServletRequest,
+                                        final Authentication authentication) throws IOException, ServletException {
+        System.out.println(1);
+        System.out.println(trip.getDestination());
+        System.out.println(trip.getAvailablePlaces());
+        System.out.println(httpServletRequest.getHeader("Authorization"));
+        System.out.println(httpServletRequest.getAttribute("TripData"));
 
         return Optional
                 .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(

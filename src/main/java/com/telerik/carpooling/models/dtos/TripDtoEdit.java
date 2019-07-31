@@ -27,7 +27,7 @@ public class TripDtoEdit {
     @Size(max = 20)
     private String destination;
 
-    @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
+   // @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
     private int availablePlaces;
 
     @Max(value = Integer.MAX_VALUE)

@@ -6,6 +6,7 @@ import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.*;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.Set;

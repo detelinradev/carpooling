@@ -8,6 +8,7 @@ import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
 
 import Trip from './Trips/Trips'
+import NewTrip from "./containers/NewTrip/NewTrip";
 
 
 const asyncAuth = asyncComponent(() => {
@@ -23,8 +24,8 @@ class App extends Component {
         let routes = (
             <Switch>
                 <Route path="/auth" component={asyncAuth} />
-                <Route path="/" exact component={Trip} />
-                <Redirect to="/" />
+                {/*<Route path="/" exact component={Trip} />*/}
+                <Redirect to="/auth" />
             </Switch>
         );
 
@@ -32,7 +33,7 @@ class App extends Component {
             routes = (
                 <Switch>
                     <Route path="/logout" component={Logout} />
-                    <Route path="/auth" component={asyncAuth} />
+                    <Route path="/createTrip" component={NewTrip} />
                     <Route path="/" exact component={Trip} />
                     <Redirect to="/" />
                 </Switch>

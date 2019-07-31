@@ -59,20 +59,20 @@ export const auth = (username, password, isSignup) => {
                 const expirationDate = new Date(new Date().getTime() +
                     // response.data.expiresIn
                     fakeExpiresIn* 1000);
-                localStorage.setItem('token', response.data.idToken);
+                localStorage.setItem('token', response.headers.authorization);
                 localStorage.setItem('expirationDate', expirationDate);
                 localStorage.setItem('userId',
                     // response.data.localId
                     fakeLocalID
                 );
-                dispatch(authSuccess(response.data.idToken, response.data.localId));
+                dispatch(authSuccess(response.headers.authorization, fakeLocalID));
                 dispatch(checkAuthTimeout(
                     // response.data.expiresIn
                     fakeExpiresIn
                 ));
             })
             .catch(err => {
-                dispatch(authFail(err.response.data.error));
+                dispatch(authFail(err));
             });
     };
 };
