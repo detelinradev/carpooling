@@ -8,8 +8,27 @@
     box-sizing: border-box;
 }
 
+.Button:first-of-type {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.Button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.Success {
+    color: greenyellow;
+}
+
+.Danger {
+    color: red;
+}
+
 @media (min-width: 600px) {
     .Auth {
         width: 500px;
     }
 }
+

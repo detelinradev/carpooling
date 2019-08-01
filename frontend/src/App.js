@@ -6,8 +6,9 @@ import asyncComponent from './hoc/asyncComponent/asyncComponent';
 import Layout from './hoc/Layout/Layout';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
+import './App.css';
 
-import Trip from './Trips/Trips'
+import Trips from './Trips/Trips'
 import NewTrip from "./containers/NewTrip/NewTrip";
 
 
@@ -36,14 +37,14 @@ class App extends Component {
                 <Switch>
                     <Route path="/logout" component={Logout} />
                     <Route path="/createTrip" component={asyncCreateTrip} />
-                    <Route path="/" exact component={Trip} />
+                    <Route path="/" exact component={Trips} />
                     <Redirect to="/" />
                 </Switch>
             );
         }
 
         return (
-            <div>
+            <div className="app">
                 <Layout>
                     {routes}
                 </Layout>

@@ -22,13 +22,13 @@ import java.util.Set;
 @Audited
 public class User extends MappedAudibleBase {
 
-    @Column(updatable = false, nullable = false)
+    @Column(updatable = false)
     @Size(min = 1, max = 20, message = "Please enter first name between 1 and 20 characters")
     @Pattern(regexp = "^[A-Za-z]+$",message = "First name must contain only letters")
     private String firstName;
 
     @Size(min = 1, max = 20, message = "Please enter last name between 1 and 20 characters")
-    @Column(updatable = false, nullable = false)
+    @Column(updatable = false)
     @Pattern(regexp = "^[A-Za-z]+$",message = "Last name must contain only letters")
     private String lastName;
 
@@ -48,7 +48,7 @@ public class User extends MappedAudibleBase {
     private String password;
 
     @Size(max = 250)
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String role;
 
     private PassengerStatus passengerStatus;
