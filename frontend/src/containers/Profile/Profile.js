@@ -4,9 +4,7 @@ import './Profile.css';
 
 class Profile extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
+        state = {
             username: "",
             firstName: "",
             lastName: "",
@@ -16,7 +14,6 @@ class Profile extends Component {
             avatarUri: "",
             car: {}
         };
-    }
 
     componentDidMount() {
         // const AuthStr = 'Bearer '.concat("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTIiLCJzY29wZSI6IlJPTEVfVVNFUiIsImV4cCI6MTU2NDc3NzI2M30.GIlikKV1unpxClqpabghxcUlnEhPjVvqVl7WnxevMltbfe_uBoK47wnFu2DMMn8WqVWGgmMJlnU1S88viKR44w");
