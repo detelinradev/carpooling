@@ -45,7 +45,8 @@ export const auth = (username, password, isSignup) => {
         dispatch(authStart());
         const authData = {
             username: username,
-            password: password,
+            password: password
+
             // returnSecureToken: true
         };
         let url = 'http://localhost:8080/users/register';

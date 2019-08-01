@@ -7,6 +7,8 @@ import Layout from './hoc/Layout/Layout';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
 import './App.css';
+import Home from './containers/Home/Home';
+import Profile from './containers/Profile/Profile';
 
 import Trips from './Trips/Trips'
 import NewTrip from "./containers/NewTrip/NewTrip";
@@ -28,6 +30,7 @@ class App extends Component {
         let routes = (
             <Switch>
                 <Route path="/auth" component={asyncAuth} />
+                <Route path="/" component={Home} />
                 <Redirect to="/" />
             </Switch>
         );
@@ -37,15 +40,18 @@ class App extends Component {
                 <Switch>
                     <Route path="/logout" component={Logout} />
                     <Route path="/createTrip" component={asyncCreateTrip} />
-                    <Route path="/" exact component={Trips} />
+                    <Route path="/trips" component={Trips} />
+                    <Route path="/myProfile" component={Profile} />
+
                     <Redirect to="/" />
                 </Switch>
             );
         }
 
         return (
-            <div className="app">
+            <div>
                 <Layout>
+                    {/*<Login/>*/}
                     {routes}
                 </Layout>
             </div>

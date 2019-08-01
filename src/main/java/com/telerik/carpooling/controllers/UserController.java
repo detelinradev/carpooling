@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/me")
-    public ResponseEntity getUserOwnInfo(Authentication authentication) {
+    public ResponseEntity<?> getUserOwnInfo(Authentication authentication) {
         return Optional
                 .ofNullable(userRepository.findFirstByUsername(
                         authentication.getName()))

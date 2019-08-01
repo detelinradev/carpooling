@@ -8,7 +8,8 @@ import thunk from 'redux-thunk';
 import './index.css';
 import App from './App';
 import authReducer from './store/reducers/auth';
-import  tripReducer from './store/reducers/trip'
+import  tripReducer from './store/reducers/trip';
+
 
 
 const composeEnhancers = process.env.NODE_ENV === 'development'

@@ -1,4 +1,18 @@
-.app {
-  background-image: url("https://hdqwalls.com/wallpapers/simple-gray-abstract-background-wi.jpg");
-  background-size: cover;
+/*.app {*/
+/*  !*background-image: url("https://hdqwalls.com/wallpapers/simple-gray-abstract-background-wi.jpg");*!*/
+/*  background-attachment: fixed;*/
+/*  background-size: cover;*/
+/*  background-repeat: no-repeat;*/
+/*  height: 100%;*/
+/*  font-family: "Numans", sans-serif;*/
+/*}*/
+
+html,
+body {
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_RHndbUB6HFcZYDhVuZ7xYm-3Qovmb_Y4aX2H5uuG-SMQ46fogg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    font-family: "Numans", sans-serif;
 }

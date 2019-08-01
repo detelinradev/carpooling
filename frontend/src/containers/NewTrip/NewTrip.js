@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import classes from './NewTrip.css';
+import './NewTrip.css';
 import axios from '../../axios-baseUrl';
 import Input from '../../components/UI/Input/Input';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
@@ -178,7 +178,7 @@ class NewTrip extends Component {
             form = <Spinner/>;
         }
         return (
-            <div className={classes.NewTrip}>
+            <div className="NewTrip">
                 <h4>Enter your Trip Data</h4>
                 {form}
             </div>
