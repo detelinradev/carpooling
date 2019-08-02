@@ -5,6 +5,7 @@ import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.UserDtoRequest;
 import com.telerik.carpooling.models.dtos.UserDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
+import com.telerik.carpooling.repositories.RatingRepository;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.RatingService;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final TripRepository tripRepository;
+    private final RatingRepository ratingRepository;
     private final RatingService ratingService;
     private final DtoMapper dtoMapper;
     private final BCryptPasswordEncoder bCryptEncoder;
@@ -49,7 +51,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDtoResponse getUser(String username) {
-        return dtoMapper.objectToDto(userRepository.findFirstByUsername(username));
+        UserDtoResponse user = dtoMapper.objectToDto(userRepository.findFirstByUsername(username));
+        if (ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).isPresent())
+            user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).get());
+        if (ratingRepository.findAverageRatingByUserAsDriver(user.getId()).isPresent())
+            user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getId()).get());
+
+        return user;
     }
 
     @Override

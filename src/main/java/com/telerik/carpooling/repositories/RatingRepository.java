@@ -11,11 +11,11 @@ public interface RatingRepository extends JpaRepository<Rating,Long> {
 
     @Query("SELECT AVG(r.rating) from Rating r join User u " +
             "on u.id = r.ratedUser  where u.id=:userID and r.isDriver = true")
-    double findAverageRatingByUserAsDriver(@Param("userID") long userID);
+    Optional<Double> findAverageRatingByUserAsDriver(@Param("userID") long userID);
 
     @Query("SELECT AVG(r.rating) from Rating r join User u " +
             "on u.id = r.ratedUser  where u.id=:userID and r.isDriver = false")
-    double findAverageRatingByUserAsPassenger(@Param("userID") long userID);
+    Optional<Double> findAverageRatingByUserAsPassenger(@Param("userID") long userID);
 
     Optional<Rating> findById(Long id);
 }

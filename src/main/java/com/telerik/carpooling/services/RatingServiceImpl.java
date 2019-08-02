@@ -24,20 +24,13 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public Rating rateDriver(String tripID, User passenger, int rating) {
-        System.out.println(2);
         long intTripID = parseStringToInt(tripID);
-        System.out.println(3);
         Optional<Trip> trip = tripRepository.findById(intTripID);
-        System.out.println(4);
         if (trip.isPresent()) {
-            System.out.println(5);
             User driver = trip.get().getDriver();
-            System.out.println(6);
             if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
-                System.out.println(7);
                 trip.get().getPassengersAllowedToRate().remove(passenger);
                 Rating ratingObject = new Rating(passenger, driver, rating,true);
-                System.out.println(8);
                 return ratingRepository.save(ratingObject);
             }
         }

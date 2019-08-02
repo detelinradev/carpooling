@@ -36,9 +36,9 @@ public class UserDtoResponse {
     @Range(min = 10, max = 10)
     private String phone;
 
-    @Size(max = 250)
-    @Column(nullable = false)
-    private String role;
+    private double ratingAsDriver;
+
+    private double ratingAsPassenger;
 
     @Size(max = 250)
     private String avatarUri;

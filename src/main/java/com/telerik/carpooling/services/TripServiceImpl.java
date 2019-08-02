@@ -60,6 +60,16 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
+    public List<TripDtoResponse> getTrips(int pageEnd, int pageStart, String tripStatus, String driverUsername,
+                                          String origin, String destination, String earliestDepartureTime,
+                                          String latestDepartureTime, String availablePlaces, String smoking,
+                                          String pets, String luggage) {
+        String queryParam = "";
+
+        return null;
+    }
+
+    @Override
     public Trip changeTripStatus(String tripID, User user, TripStatus tripStatus) {
 
         long intTripID = parseStringToInt(tripID);

@@ -42,13 +42,16 @@ public class User extends MappedAudibleBase {
     @Size(min = 9,max = 10)
     private String phone;
 
+    private double ratingAsDriver = 0;
+
+    private double ratingAsPassenger = 0;
+
     @Size(min = 8, max = 128, message = "Password must be between 8 and 128 symbols")
     @Column(nullable = false)
     @JsonIgnore
     private String password;
 
     @Size(max = 250)
-//    @Column(nullable = false)
     private String role;
 
     private PassengerStatus passengerStatus;

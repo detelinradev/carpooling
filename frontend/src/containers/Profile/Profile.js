@@ -12,12 +12,11 @@ class Profile extends Component {
         username: "",
         firstName: "",
         lastName: "",
-        role: "",
         email: "",
         phone: 0,
-        avatarUri: "",
         ratingAsDriver: 0,
         ratingAsPassenger: 0,
+        avatarUri: "",
         brand: "",
         model: "",
         color: "",
@@ -40,42 +39,42 @@ class Profile extends Component {
                 {"Authorization": this.props.token}
             })]);
 
-        const getRatingAsDriverResponse = await axios.get('/api/ratings/search/findAverageRatingByUserAsDriver', {
-            headers:
-                {"Authorization": this.props.token},
-            params:
-                {userID: getMeResponse.data.id}
-        });
-
-        const getRatingAsPassengerResponse = await axios.get('/api/ratings/search/findAverageRatingByUserAsPassenger', {
-            headers:
-                {"Authorization": this.props.token},
-            params:
-                {userID: getMeResponse.data.id}
-        });
+        // const getRatingAsDriverResponse = await axios.get('/api/ratings/search/findAverageRatingByUserAsDriver', {
+        //     headers:
+        //         {"Authorization": this.props.token},
+        //     params:
+        //         {userID: getMeResponse.data.id}
+        // });
+        //
+        // const getRatingAsPassengerResponse = await axios.get('/api/ratings/search/findAverageRatingByUserAsPassenger', {
+        //     headers:
+        //         {"Authorization": this.props.token},
+        //     params:
+        //         {userID: getMeResponse.data.id}
+        // });
 
         this.setState({
             id: getMeResponse.data.id,
             username: getMeResponse.data.username,
             firstName: getMeResponse.data.firstName,
             lastName: getMeResponse.data.lastName,
-            role: getMeResponse.data.role,
             email: getMeResponse.data.email,
             phone: getMeResponse.data.phone,
-            avatarUri: getMeResponse.data.avatarUri,
+            ratingAsDriver: getMeResponse.data.ratingAsDriver,
+            ratingAsPassenger: getMeResponse.data.ratingAsPassenger,
+            avatarUri: getMeResponse.data.avatarUri});
 
-            ratingAsDriver: getRatingAsDriverResponse.data,
-
-            ratingAsPassenger: getRatingAsPassengerResponse.data,
-
-            brand: getCarResponse.data.brand,
-            model: getCarResponse.data.model,
-            firstRegistration: getCarResponse.data.firstRegistration,
-            airConditioned: getCarResponse.data.airConditioned,
-            smokingAllowed: getCarResponse.data.smokingAllowed,
-            luggageAllowed: getCarResponse.data.luggageAllowed,
-            petsAllowed: getCarResponse.data.petsAllowed
-        });
+            if(getCarResponse){
+                this.setState({
+                    brand: getCarResponse.data.brand,
+                    model: getCarResponse.data.model,
+                    firstRegistration: getCarResponse.data.firstRegistration,
+                    airConditioned: getCarResponse.data.airConditioned,
+                    smokingAllowed: getCarResponse.data.smokingAllowed,
+                    luggageAllowed: getCarResponse.data.luggageAllowed,
+                    petsAllowed: getCarResponse.data.petsAllowed
+                })
+        }
 
     }
 
@@ -88,10 +87,11 @@ class Profile extends Component {
                 <ul>
                     <li><h1>Name: <span className="header">{this.state.firstName} {this.state.lastName}</span></h1></li>
                     <li><h1>Username: <span className="header">{this.state.username}</span></h1></li>
+                    <li><h2>Email: <span className="header">{this.state.email}</span></h2></li>
+                    <li><h2>Phone: <span className="header">{this.state.phone}</span></h2></li>
                 </ul>
                 <hr/>
                 <ul style={{paddingRight: 140}}>
-                    <li><h2>Role: <span className="header">{this.state.role}</span></h2></li>
                     <li><h2>Rating as driver: <span className="header">{this.state.ratingAsDriver}</span></h2></li>
                     <li><h2>Rating as passenger: <span className="header">{this.state.ratingAsPassenger}</span></h2>
                     </li>

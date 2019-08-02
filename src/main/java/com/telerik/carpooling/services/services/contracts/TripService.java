@@ -8,6 +8,8 @@ import com.telerik.carpooling.models.dtos.TripDtoEdit;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 
+import java.util.List;
+
 public interface TripService {
 
     Trip createTrip(TripDtoRequest trip, User driver);
@@ -23,5 +25,10 @@ public interface TripService {
                           User user, TripStatus tripStatus);
 
     TripDtoResponse getTrip(String tripID);
+
+    List<TripDtoResponse> getTrips(int pageEnd, int pageStart, String tripStatus, String driverUsername, String origin,
+                                   String destination, String earliestDepartureTime, String latestDepartureTime,
+                                   String availablePlaces, String smoking, String pets, String luggage);
+
 }
 
