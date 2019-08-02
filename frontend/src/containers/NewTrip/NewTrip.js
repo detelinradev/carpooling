@@ -20,7 +20,7 @@ class NewTrip extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'origin'
+                    placeholder: 'Origin'
                 },
                 value: '',
                 validation: {
@@ -33,7 +33,7 @@ class NewTrip extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'destination'
+                    placeholder: 'Destination'
                 },
                 value: '',
                 validation: {
@@ -46,7 +46,7 @@ class NewTrip extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'DepartureTime'
+                    placeholder: 'Departure time'
                 },
                 value: '',
                 validation: {
@@ -62,7 +62,7 @@ class NewTrip extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'number',
-                    placeholder: 'Available Places'
+                    placeholder: 'Available places'
                 },
                 value: '',
                 validation: {
@@ -76,7 +76,7 @@ class NewTrip extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'Trip Duration'
+                    placeholder: 'Trip duration'
                 },
                 value: '',
                 validation: {
@@ -90,7 +90,7 @@ class NewTrip extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'Cost Per Passenger'
+                    placeholder: 'Cost per passenger'
                 },
                 value: '',
                 validation: {
@@ -104,7 +104,7 @@ class NewTrip extends Component {
                 elementType: 'input',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'message'
+                    placeholder: 'Message'
                 },
                 value: '',
                 validation: {
@@ -113,19 +113,19 @@ class NewTrip extends Component {
                 valid: false,
                 touched: false
             },
-            date: {
-                elementType: 'select',
-                elementConfig: {
-                    type: 'text',
-                    placeholder: 'message'
-                },
-                value: null,
-                validation: {
-                    required: true
-                },
-                valid: false,
-                touched: false
-            }
+            // date: {
+            //     elementType: 'select',
+            //     elementConfig: {
+            //         type: 'text',
+            //         placeholder: 'message'
+            //     },
+            //     value: null,
+            //     validation: {
+            //         required: true
+            //     },
+            //     valid: false,
+            //     touched: false
+            // }
         },
         formIsValid: false,
 

@@ -42,6 +42,7 @@ class App extends Component {
                     <Route path="/createTrip" component={asyncCreateTrip} />
                     <Route path="/trips" component={Trips} />
                     <Route path="/myProfile" component={Profile} />
+                    <Route path="/" exact component={Home} />
 
                     <Redirect to="/" />
                 </Switch>

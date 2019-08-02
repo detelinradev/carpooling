@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+//import axiosс from 'axios';
+import {connect} from 'react-redux';
 import './Profile.css';
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import axios from '../../axios-baseUrl';
 
 class Profile extends Component {
 
@@ -29,9 +32,10 @@ class Profile extends Component {
         // const token = sessionStorage.getItem("jwt");
         // let user = JSON.parse(sessionStorage.getItem('jwt'));
         // const token = user.data.id;
-        axios.get('/users/me', { headers: {"Authorization" : `Bearer `} })
+
+        axios.get('/users/me', { headers: {"Authorization" : this.props.token} })
             .then(response => {
-                console.log(111111);
+                console.log(response);
                 this.setState({
                     username: response.username,
                     firstName: response.firstName,
@@ -69,4 +73,12 @@ class Profile extends Component {
     }
 }
 
-export default Profile;
+const mapStateToProps = state => {
+    return {
+        loading: state.trip.loading,
+        token: state.auth.token,
+    }
+};
+
+//export default Profile;
+export default connect(mapStateToProps)(withErrorHandler(Profile, axios));
