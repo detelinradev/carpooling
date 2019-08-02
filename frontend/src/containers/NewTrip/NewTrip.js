@@ -9,9 +9,13 @@ import Input from '../../components/UI/Input/Input';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import * as actions from '../../store/actions/index';
 import {updateObject, checkValidity} from '../../shared/utility';
+import 'react-dates/initialize';
+import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import Calendar from "./Calendar";
 
 class NewTrip extends Component {
     state = {
+        focused: false,
         createForm: {
             origin: {
                 elementType: 'input',
@@ -109,9 +113,23 @@ class NewTrip extends Component {
                 },
                 valid: false,
                 touched: false
+            },
+            date: {
+                elementType: 'select',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'message'
+                },
+                value: null,
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
             }
         },
-        formIsValid: false
+        formIsValid: false,
+
     };
 
     createHandler = (event) => {
@@ -160,6 +178,7 @@ class NewTrip extends Component {
         }
         let form = (
             <form onSubmit={this.createHandler}>
+
                 {formElementsArray.map(formElement => (
                     <Input
                         key={formElement.id}
@@ -178,9 +197,11 @@ class NewTrip extends Component {
             form = <Spinner/>;
         }
         return (
+            <div>
             <div className="NewTrip">
                 <h4>Enter your Trip Data</h4>
                 {form}
+            </div>
             </div>
         );
     }

@@ -27,9 +27,9 @@ class Profile extends Component {
         //     });
 
         // const token = sessionStorage.getItem("jwt");
-        let user = JSON.parse(sessionStorage.getItem('jwt'));
-        const token = user.data.id;
-        axios.get('/users/me', { headers: {"Authorization" : `Bearer ${token}`} })
+        // let user = JSON.parse(sessionStorage.getItem('jwt'));
+        // const token = user.data.id;
+        axios.get('/users/me', { headers: {"Authorization" : `Bearer `} })
             .then(response => {
                 console.log(111111);
                 this.setState({

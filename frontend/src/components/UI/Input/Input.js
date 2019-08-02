@@ -1,6 +1,7 @@
 import React from 'react';
 
 import './Input.css';
+import Calendar from "../../../containers/NewTrip/Calendar";
 
 const input = ( props ) => {
     let inputElement = null;
@@ -27,16 +28,9 @@ const input = ( props ) => {
             break;
         case ( 'select' ):
             inputElement = (
-                <select
-                    className={inputClasses}
-                    value={props.value}
-                    onChange={props.changed}>
-                    {props.elementConfig.options.map(option => (
-                        <option key={option.value} value={option.value}>
-                            {option.displayValue}
-                        </option>
-                    ))}
-                </select>
+                <Calendar
+                    date={props.value}/>
+
             );
             break;
         default:
