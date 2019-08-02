@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import './Home.css';
-import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import axios from '../../axios-baseUrl';
 
 
 class Home extends Component {

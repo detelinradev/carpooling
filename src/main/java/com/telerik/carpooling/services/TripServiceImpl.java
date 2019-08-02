@@ -36,15 +36,10 @@ public class TripServiceImpl implements TripService {
     public Trip createTrip(TripDtoRequest tripRequestDto, User driver) {
 
         if (driver.getCar() != null) {
-            System.out.println(tripRequestDto.getAvailablePlaces());
-            System.out.println(tripRequestDto.getCostPerPassenger());
-            System.out.println(tripRequestDto.getDestination());
-
             Trip trip = dtoMapper.dtoToObject(tripRequestDto);
             trip.setDriver(driver);
             trip.setCar(driver.getCar());
             trip.setTripStatus(TripStatus.AVAILABLE);
-            System.out.println(trip.getAvailablePlaces());
             return tripRepository.save(trip);
         }
         return null;
