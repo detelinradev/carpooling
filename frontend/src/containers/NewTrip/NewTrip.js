@@ -10,8 +10,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import * as actions from '../../store/actions/index';
 import {updateObject, checkValidity} from '../../shared/utility';
 import 'react-dates/initialize';
-import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
-import Calendar from "./Calendar";
+
 
 class NewTrip extends Component {
     state = {

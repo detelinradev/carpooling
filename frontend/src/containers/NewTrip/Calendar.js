@@ -1,14 +1,15 @@
 import {SingleDatePicker} from "react-dates";
 import React, {PureComponent} from "react";
+
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 
 class Calendar extends PureComponent {
 
     state = {
+        date: null,
         focused: false,
-        id: '',
-        date: null
+        id: ''
     };
 
     render() {

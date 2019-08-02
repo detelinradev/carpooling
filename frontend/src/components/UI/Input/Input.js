@@ -4,6 +4,9 @@ import './Input.css';
 import Calendar from "../../../containers/NewTrip/Calendar";
 
 const input = ( props ) => {
+
+
+
     let inputElement = null;
     const inputClasses = "InputElement ";
 
@@ -29,7 +32,7 @@ const input = ( props ) => {
         case ( 'select' ):
             inputElement = (
                 <Calendar
-                    date={props.value}/>
+                    newDate={props.value}/>
 
             );
             break;
