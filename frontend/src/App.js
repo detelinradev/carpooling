@@ -10,7 +10,7 @@ import './App.css';
 import Home from './containers/Home/Home';
 import Profile from './containers/Profile/Profile';
 
-import Trips from './Trips/Trips'
+import Trips from './components/Trips/Trips'
 import NewTrip from "./containers/NewTrip/NewTrip";
 
 
@@ -30,7 +30,7 @@ class App extends Component {
         let routes = (
             <Switch>
                 <Route path="/auth" component={asyncAuth} />
-                <Route path="/" component={Home} />
+                <Route path="/" exact component={Home} />
                 <Redirect to="/" />
             </Switch>
         );
@@ -40,7 +40,6 @@ class App extends Component {
                 <Switch>
                     <Route path="/logout" component={Logout} />
                     <Route path="/createTrip" component={asyncCreateTrip} />
-                    <Route path="/trips" component={Trips} />
                     <Route path="/myProfile" component={Profile} />
                     <Route path="/" exact component={Home} />
 

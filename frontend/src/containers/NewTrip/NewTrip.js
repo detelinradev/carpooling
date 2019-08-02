@@ -218,7 +218,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCreateTrip: (create, token) => dispatch(actions.createTrip(create, token))
+        onCreateTrip: (create, token) => dispatch(actions.trip(create, token))
     };
 };
 

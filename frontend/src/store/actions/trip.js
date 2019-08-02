@@ -1,6 +1,5 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-baseUrl';
-import qs from 'qs'
 
 export const purchaseBurgerSuccess = ( id, orderData ) => {
     return {
@@ -25,7 +24,7 @@ export const purchaseBurgerStart = () => {
 
 
 
-export const createTrip = (TripData, token ) => {
+export const trip = (TripData, token ) => {
 
 
     return dispatch => {

@@ -6,7 +6,7 @@ export {
 } from './auth';
 
 export {
-    createTrip,
+    trip,
     purchaseInit,
     fetchOrders
-} from './createTrip';
+} from './trip';
