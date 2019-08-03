@@ -41,6 +41,7 @@ class App extends Component {
                     <Route path="/logout" component={Logout} />
                     <Route path="/createTrip" component={asyncCreateTrip} />
                     <Route path="/myProfile" component={Profile} />
+                    <Route path="/auth" component={asyncAuth} />
                     <Route path="/" exact component={Home} />
 
                     <Redirect to="/" />

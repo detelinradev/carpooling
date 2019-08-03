@@ -7,6 +7,6 @@ export {
 
 export {
     createTrip,
-    purchaseInit,
+    createInit,
     fetchTrips
 } from './trip';

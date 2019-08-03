@@ -48,7 +48,7 @@ export const createTrip = (TripData, token ) => {
     };
 };
 
-export const purchaseInit = () => {
+export const createInit = () => {
     return {
         type: actionTypes.CREATE_INIT
     };

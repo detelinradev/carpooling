@@ -41,9 +41,9 @@ public class TripController {
 
     @GetMapping
     public ResponseEntity<List<TripDtoResponse>> getTrips(@RequestParam(value = "_end", required = false)
-                                                                  int pageEnd,
+                                                                  Integer pageEnd,
                                                           @RequestParam(value = "_start", required = false)
-                                                                  int pageStart,
+                                                                  Integer pageStart,
                                                           @RequestParam(value = "status", required = false)
                                                                   String tripStatus,
                                                           @RequestParam(value = "driver", required = false)
@@ -64,6 +64,14 @@ public class TripController {
                                                                   String pets,
                                                           @RequestParam(value = "luggage", required = false)
                                                                   String luggage) {
+        System.out.println(1);
+        System.out.println(driverUsername);
+        System.out.println(origin);
+        System.out.println(pageEnd);
+        System.out.println(availablePlaces);
+        System.out.println(tripStatus);
+        System.out.println(smoking);
+        System.out.println(2);
 
         return Optional
                 .ofNullable(tripService.getTrips(pageEnd, pageStart, tripStatus, driverUsername, origin, destination,

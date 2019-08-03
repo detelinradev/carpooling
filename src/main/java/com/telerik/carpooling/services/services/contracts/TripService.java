@@ -26,7 +26,7 @@ public interface TripService {
 
     TripDtoResponse getTrip(String tripID);
 
-    List<TripDtoResponse> getTrips(int pageEnd, int pageStart, String tripStatus, String driverUsername, String origin,
+    List<TripDtoResponse> getTrips(Integer pageEnd, Integer pageStart, String tripStatus, String driverUsername, String origin,
                                    String destination, String earliestDepartureTime, String latestDepartureTime,
                                    String availablePlaces, String smoking, String pets, String luggage);
 

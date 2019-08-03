@@ -52,6 +52,6 @@ public class CarController {
                 .ofNullable(carService.getCar(userRepository.findFirstByUsername(
                         authentication.getName())))
                 .map(car -> ResponseEntity.ok().body(car))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+                .orElseGet(() -> ResponseEntity.ok().build());
     }
 }

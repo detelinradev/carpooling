@@ -35,7 +35,7 @@ public class Trip extends MappedAudibleBase {
     private String departureTime;
 
     @Column(nullable = false)
-  //  @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
+    @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
     private int availablePlaces;
 
     private int tripDuration;
