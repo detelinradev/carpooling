@@ -3,6 +3,7 @@ package com.telerik.carpooling.controllers;
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.dtos.CarDtoRequest;
 import com.telerik.carpooling.models.dtos.CarDtoResponse;
+import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.CarService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class CarController {
 
     private final UserRepository userRepository;
+    private final CarRepository carRepository;
     private final CarService carService;
 
     @PostMapping(value = "/car")
@@ -45,10 +47,10 @@ public class CarController {
     }
 
     @GetMapping(value = "/car")
-    public ResponseEntity<Car> getCar(final Authentication authentication){
+    public ResponseEntity<CarDtoResponse> getCar(final Authentication authentication){
         return Optional
-                .ofNullable(userRepository.findFirstByUsername(
-                        authentication.getName()).getCar())
+                .ofNullable(carService.getCar(userRepository.findFirstByUsername(
+                        authentication.getName())))
                 .map(car -> ResponseEntity.ok().body(car))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }

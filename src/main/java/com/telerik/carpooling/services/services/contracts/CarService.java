@@ -7,6 +7,8 @@ import com.telerik.carpooling.models.dtos.CarDtoResponse;
 
 public interface CarService {
 
+    CarDtoResponse getCar(User user);
+
     CarDtoResponse createCar(CarDtoRequest car, User owner);
 
     CarDtoResponse updateCar(CarDtoResponse car, User owner);

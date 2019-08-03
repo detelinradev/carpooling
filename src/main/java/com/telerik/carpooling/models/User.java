@@ -42,6 +42,7 @@ public class User extends MappedAudibleBase {
     @Size(min = 9,max = 10)
     private String phone;
 
+
     private double ratingAsDriver = 0;
 
     private double ratingAsPassenger = 0;
@@ -76,4 +77,6 @@ public class User extends MappedAudibleBase {
     @OneToOne(mappedBy = "owner")
     @JsonIgnoreProperties("owner")
     private Car car;
+
+    private boolean hasCar;
 }
