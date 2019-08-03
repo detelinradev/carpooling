@@ -10,8 +10,7 @@ import './App.css';
 import Home from './containers/Home/Home';
 import Profile from './containers/Profile/Profile';
 
-import Trips from './components/Trips/Trips'
-import NewTrip from "./containers/NewTrip/NewTrip";
+
 
 
 const asyncAuth = asyncComponent(() => {
