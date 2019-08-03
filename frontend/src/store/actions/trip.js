@@ -1,34 +1,34 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-baseUrl';
 
-export const purchaseBurgerSuccess = ( id, orderData ) => {
+export const createTripSuccess = ( id, tripData ) => {
     return {
-        type: actionTypes.PURCHASE_BURGER_SUCCESS,
-        orderId: id,
-        orderData: orderData
+        type: actionTypes.CREATE_TRIP_SUCCESS,
+        tripId: id,
+        tripData: tripData
     };
 };
 
-export const purchaseBurgerFail = ( error ) => {
+export const createTripFail = ( error ) => {
     return {
-        type: actionTypes.PURCHASE_BURGER_FAIL,
+        type: actionTypes.CREATE_TRIP_FAIL,
         error: error
     };
 };
 
-export const purchaseBurgerStart = () => {
+export const createTripStart = () => {
     return {
-        type: actionTypes.PURCHASE_BURGER_START
+        type: actionTypes.CREATE_TRIP_START
     };
 };
 
 
 
-export const trip = (TripData, token ) => {
+export const createTrip = (TripData, token ) => {
 
 
     return dispatch => {
-        dispatch( purchaseBurgerStart() );
+        dispatch( createTripStart() );
         const headers = {
             "Content-Type":"application/json",
             'Authorization':token
@@ -36,61 +36,61 @@ export const trip = (TripData, token ) => {
         axios.post ( '/trips' ,TripData,{headers}
          )
             .then( response => {
-                dispatch( purchaseBurgerSuccess( response.data.name, TripData ) );
+                dispatch( createTripSuccess( response.data.name, TripData ) );
 
             } )
             .then(()=>{
                 this.props.history.replace( '/' );
             })
             .catch( error => {
-                dispatch( purchaseBurgerFail( error ) );
+                dispatch( createTripFail( error ) );
             } );
     };
 };
 
 export const purchaseInit = () => {
     return {
-        type: actionTypes.PURCHASE_INIT
+        type: actionTypes.CREATE_INIT
     };
 };
 
-export const fetchOrdersSuccess = ( orders ) => {
+export const fetchTripsSuccess = ( trips ) => {
     return {
-        type: actionTypes.FETCH_ORDERS_SUCCESS,
-        orders: orders
+        type: actionTypes.FETCH_TRIPS_SUCCESS,
+        trips: trips
     };
 };
 
-export const fetchOrdersFail = ( error ) => {
+export const fetchTripsFail = ( error ) => {
     return {
-        type: actionTypes.FETCH_ORDERS_FAIL,
+        type: actionTypes.FETCH_TRIPS_FAIL,
         error: error
     };
 };
 
-export const fetchOrdersStart = () => {
+export const fetchTripsStart = () => {
     return {
-        type: actionTypes.FETCH_ORDERS_START
+        type: actionTypes.FETCH_TRIPS_START
     };
 };
 
-export const fetchOrders = (token, userId) => {
+export const fetchTrips = (token, userId) => {
     return dispatch => {
-        dispatch(fetchOrdersStart());
+        dispatch(fetchTripsStart());
         const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
-        axios.get( '/orders.json' + queryParams)
+        axios.get( '/trips' + queryParams)
             .then( res => {
-                const fetchedOrders = [];
+                const fetchedTrips = [];
                 for ( let key in res.data ) {
-                    fetchedOrders.push( {
+                    fetchedTrips.push( {
                         ...res.data[key],
                         id: key
                     } );
                 }
-                dispatch(fetchOrdersSuccess(fetchedOrders));
+                dispatch(fetchTripsSuccess(fetchedTrips));
             } )
             .catch( err => {
-                dispatch(fetchOrdersFail(err));
+                dispatch(fetchTripsFail(err));
             } );
     };
 };

@@ -14,7 +14,7 @@ import 'react-dates/initialize';
 
 class NewTrip extends Component {
     state = {
-        focused: false,
+        //focused: false,
         createForm: {
             origin: {
                 elementType: 'input',
@@ -75,7 +75,7 @@ class NewTrip extends Component {
             tripDuration: {
                 elementType: 'input',
                 elementConfig: {
-                    type: 'text',
+                    type: 'number',
                     placeholder: 'Trip duration'
                 },
                 value: '',
@@ -95,7 +95,7 @@ class NewTrip extends Component {
                 value: '',
                 validation: {
                     required: true,
-                    isNumeric: true
+                   isNumeric: true
                 },
                 valid: false,
                 touched :false
@@ -138,12 +138,6 @@ class NewTrip extends Component {
         for (let formElementIdentifier in this.state.createForm) {
             formData[formElementIdentifier] = this.state.createForm[formElementIdentifier].value;
         }
-        // const create = {
-        //     //ingredients: this.props.ings,
-        //    // price: this.props.price,
-        //     tripData: formData,
-        //    // userId: this.props.userId
-        // };
 
         this.props.onCreateTrip(formData, this.props.token);
 
@@ -208,17 +202,14 @@ class NewTrip extends Component {
 
 const mapStateToProps = state => {
     return {
-       // ings: state.burgerBuilder.ingredients,
-       // price: state.burgerBuilder.totalPrice,
         loading: state.trip.loading,
         token: state.auth.token,
-       // userId: state.auth.userId
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCreateTrip: (create, token) => dispatch(actions.trip(create, token))
+        onCreateTrip: (create, token) => dispatch(actions.createTrip(create, token))
     };
 };
 

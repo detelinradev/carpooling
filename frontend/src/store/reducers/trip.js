@@ -2,56 +2,56 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
 const initialState = {
-    orders: [],
+    trips: [],
     loading: false,
     purchased: false
 };
 
-const purchaseInit = ( state, action ) => {
+const createInit = ( state, action ) => {
     return updateObject( state, { purchased: false } );
 };
 
-const purchaseBurgerStart = ( state, action ) => {
+const createTripStart = ( state, action ) => {
     return updateObject( state, { loading: true } );
 };
 
-const purchaseBurgerSuccess = ( state, action ) => {
-    const newOrder = updateObject( action.orderData, { id: action.orderId } );
+const createTripSuccess = ( state, action ) => {
+    const newTrip = updateObject( action.tripData, { id: action.tripId } );
     return updateObject( state, {
         loading: false,
         purchased: true,
-        orders: state.orders.concat( newOrder )
+        trips: state.trips.concat( newTrip )
     } );
 };
 
-const purchaseBurgerFail = ( state, action ) => {
+const createTripFail = ( state, action ) => {
     return updateObject( state, { loading: false } );
 };
 
-const fetchOrdersStart = ( state, action ) => {
+const fetchTripsStart = ( state, action ) => {
     return updateObject( state, { loading: true } );
 };
 
-const fetchOrdersSuccess = ( state, action ) => {
+const fetchTripsSuccess = ( state, action ) => {
     return updateObject( state, {
-        orders: action.orders,
+        trips: action.trips,
         loading: false
     } );
 };
 
-const fetchOrdersFail = ( state, action ) => {
+const fetchTripsFail = ( state, action ) => {
     return updateObject( state, { loading: false } );
 };
 
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
-        case actionTypes.PURCHASE_INIT: return purchaseInit( state, action );
-        case actionTypes.PURCHASE_BURGER_START: return purchaseBurgerStart( state, action );
-        case actionTypes.PURCHASE_BURGER_SUCCESS: return purchaseBurgerSuccess( state, action )
-        case actionTypes.PURCHASE_BURGER_FAIL: return purchaseBurgerFail( state, action );
-        case actionTypes.FETCH_ORDERS_START: return fetchOrdersStart( state, action );
-        case actionTypes.FETCH_ORDERS_SUCCESS: return fetchOrdersSuccess( state, action );
-        case actionTypes.FETCH_ORDERS_FAIL: return fetchOrdersFail( state, action );
+        case actionTypes.CREATE_INIT: return createInit( state, action );
+        case actionTypes.CREATE_TRIP_START: return createTripStart( state, action );
+        case actionTypes.CREATE_TRIP_SUCCESS: return createTripSuccess( state, action )
+        case actionTypes.CREATE_TRIP_FAIL: return createTripFail( state, action );
+        case actionTypes.FETCH_TRIPS_START: return fetchTripsStart( state, action );
+        case actionTypes.FETCH_TRIPS_SUCCESS: return fetchTripsSuccess( state, action );
+        case actionTypes.FETCH_TRIPS_FAIL: return fetchTripsFail( state, action );
         default: return state;
     }
 };

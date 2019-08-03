@@ -2,19 +2,25 @@ import React from 'react';
 import './Trip.css';
 
 const trip = ( props ) => {
-    const tripFields = [];
+    const tripData = [];
 
-    for ( let field in props.tripFields ) {
-        tripFields.push(
+    for (let field in props.tripData) {
+        tripData.push(
             {
-                name: ingredientName,
-                amount: props.ingredients[ingredientName]
+                id: tripField,
+                value: props.tripData[tripField]
             }
         );
     }
+    return(
+        <div className="Trip">
+            {tripData}
+        </div>
+    )
+};
 
 
-//export default Trip;
+export default trip;
 
 {/*    <div className=" Post">*/}
 {/*    <div  className="proba Trip additional-details hed">{this.props.origin} -> {this.props.destination}</div>*/}
