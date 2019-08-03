@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import './Profile.css';
+import './Car.css';
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import axios from '../../axios-baseUrl';
 
@@ -29,7 +29,7 @@ class Car extends Component {
         const carr =
             this.props.hasCar ? (
 
-                    <div className="Profile" style={{paddingRight: 700}}>
+                    <div className="Car" style={{paddingRight: 700}}>
                         <img
                             src="https://res.cloudinary.com/teepublic/image/private/s--L9GalMpn--/t_Preview/b_rgb:000000,c_limit,f_jpg,h_630,q_90,w_630/v1556900569/production/designs/3555619_1.jpg"
                             alt="car pooling"/>

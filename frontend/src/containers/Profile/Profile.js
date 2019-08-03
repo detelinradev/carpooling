@@ -4,6 +4,8 @@ import './Profile.css';
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import axios from '../../axios-baseUrl';
 import Car from "./Car";
+import Button from "@material-ui/core/Button";
+import {MDBBtn, MDBIcon} from 'mdbreact';
 
 
 class Profile extends Component {
@@ -40,26 +42,22 @@ class Profile extends Component {
         return (
             <div>
                 <div className="Profile">
-                    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="car pooling"/>
                     <ul>
+                    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="car pooling"/>
+                    <Button className="edit"><h3 className="header">EDIT PROFILE</h3></Button>
+                    </ul>
+                        <ul>
                         <li><h1>Name: <span
                             className="header">{this.state.user.firstName} {this.state.user.lastName}</span></h1></li>
                         <li><h1>Username: <span className="header">{this.state.user.username}</span></h1></li>
                         <li><h2>Email: <span className="header">{this.state.user.email}</span></h2></li>
                         <li><h2>Phone: <span className="header">{this.state.user.phone}</span></h2></li>
+                        <hr/>
+                        <li className="feedback"><Button ><h3 className="header">Show Feedback</h3></Button></li>
                     </ul>
-                    <hr/>
-                    <ul style={{paddingRight: 140}}>
-                        <li>
-                            <h2>
-                                Rating as driver: <span className="header">{this.state.user.ratingAsDriver}</span>
-                            </h2>
-                        </li>
-                        <li>
-                            <h2>
-                                Rating as passenger: <span className="header">{this.state.user.ratingAsPassenger}</span>
-                            </h2>
-                        </li>
+                    <ul>
+                        <li className="rating"><h3>Rating as driver<span className="header"><h1>{this.state.user.ratingAsDriver}</h1></span></h3></li>
+                        <li className="rating"><h3>Rating as passenger<span className="header"><h1>{this.state.user.ratingAsPassenger}</h1></span></h3></li>
                     </ul>
                 </div>
                 <button className="Profile" onClick={() => this.toggleCarHandler()}>

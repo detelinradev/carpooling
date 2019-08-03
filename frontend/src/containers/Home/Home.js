@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import './Home.css';
+import { FaAndroid } from "react-icons/fa";
+
+
 
 
 class Home extends Component {
@@ -16,7 +19,8 @@ class Home extends Component {
 
         return (
                 <div className="todore">
-                    <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
+
+                    <h1 className="header">THE PERFECT PLACE TO FIND <FaAndroid/><br/> THE FASTEST WAY TO TRAVEL</h1>
                     <hr style={{width: '70%'}}/>
                     <h2 style={{textAlign: "center"}}>
                         SEARCH AMONG ALL KIND OF VEHICLES AND DESTINATIONS!
