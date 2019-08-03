@@ -3,19 +3,18 @@
     box-shadow: 0 2px 3px #ccc;
     box-sizing: border-box;
     cursor: pointer;
-    justify-content: center;
     text-align: left;
     display: flex;
     flex-flow: row wrap;
     margin: auto;
-    padding: 15px;
+    padding: 24px;
     background-color: rgba(0, 0, 0, 0.5) !important;
-    margin-top: 50px;
+    margin-top: 35px;
 }
 
 .Profile img {
     height: 256px;
-    padding-right: 16px;
+    padding-right: 30px;
 }
 
 .Profile {
@@ -23,3 +22,50 @@
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
+.header{
+    color: mediumseagreen;
+    text-align: center;
+}
+
+
+.rating{
+    margin-left: 50px;
+    width: 110%;
+    margin-top: 8px;
+    box-shadow: 0 2px 2px 3px #ccc;
+    box-sizing: border-box;
+    cursor: pointer;
+    justify-content: center;
+    display: flex;
+}
+
+.feedback{
+    width: 100%;
+    box-shadow: 0 2px 2px 3px #ccc;
+    box-sizing: border-box;
+    cursor: pointer;
+    justify-content: center;
+    text-align: left;
+    display: flex;
+    margin-top: 20px;
+    transition-property: background-color;
+    transition-duration: 1s;
+    transition-timing-function: linear;
+    transition-delay: 1s;
+    background-color: #cccccc;
+}
+
+.edit {
+    width: 50%;
+    box-shadow: 0 2px 2px 3px #ccc;
+    box-sizing: border-box;
+    cursor: pointer;
+    justify-content: center;
+    text-align: left;
+    display: flex;
+    transition-property: background-color;
+    transition-duration: 1s;
+    transition-timing-function: linear;
+    transition-delay: 1s;
+    background-color: #cccccc;
+}
