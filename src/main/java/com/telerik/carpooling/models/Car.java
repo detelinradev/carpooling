@@ -21,31 +21,30 @@ import javax.validation.constraints.Size;
 @Audited
 public class Car extends MappedAudibleBase {
 
-    @Column(nullable = false)
     @Size(min = 1, max = 20, message = "Please enter brand name between 1 and 20 symbols!")
     private String brand;
 
-    @Column(nullable = false)
     @Size(min = 1, max = 20, message = "Please enter model name between 1 and 20 symbols!")
     private String model;
 
+    @Size(min = 3,max = 20)
     private String color;
 
     @Column(nullable = false)
     @Range(min = 1950,max = 2019, message = "Please enter year of first registration between 1950 and 2019!")
     private Integer firstRegistration;
 
-    @Column(nullable = false)
-    private Boolean isAirConditioned;
+    @Size(min = 2,max = 3)
+    private String airConditioned;
 
-    @Column(nullable = false)
-    private Boolean isSmokingAllowed;
+    @Size(min = 2,max = 3)
+    private String smokingAllowed;
 
-    @Column(nullable = false)
-    private Boolean isLuggageAllowed;
+    @Size(min = 2,max = 3)
+    private String luggageAllowed;
 
-    @Column(nullable = false)
-    private Boolean isPetsAllowed;
+    @Size(min = 2,max = 3)
+    private String petsAllowed;
 
     @OneToOne(mappedBy = "car")
     @JsonIgnoreProperties("car")
@@ -56,5 +55,6 @@ public class Car extends MappedAudibleBase {
     @JsonIgnoreProperties("car")
     private User owner;
 
+    @Size(max = 250)
     private String avatarUri;
 }

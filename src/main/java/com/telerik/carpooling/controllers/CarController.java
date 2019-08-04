@@ -22,7 +22,6 @@ import java.util.Optional;
 public class CarController {
 
     private final UserRepository userRepository;
-    private final CarRepository carRepository;
     private final CarService carService;
 
     @PostMapping(value = "/car")
