@@ -15,7 +15,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -78,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     public User leaveFeedbackDriver(String tripID, User passenger, String feedback) {
 
-        long intTripID = parseStringToInt(tripID);
+        long intTripID = parseStringToLong(tripID);
 
         Optional<Trip> trip = tripRepository.findById(intTripID);
 
@@ -95,8 +94,8 @@ public class UserServiceImpl implements UserService {
 
     public User leaveFeedbackPassenger(String tripID, User driver, String passengerID, String feedback) {
 
-        long intTripID = parseStringToInt(tripID);
-        long intPassengerID = parseStringToInt(passengerID);
+        long intTripID = parseStringToLong(tripID);
+        long intPassengerID = parseStringToLong(passengerID);
 
         Optional<Trip> trip = tripRepository.findById(intTripID);
         Optional<User> passenger = userRepository.findById(intPassengerID);
@@ -111,44 +110,14 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-//    @Override
-//    public Optional<User> findUser(Long userId) {
-//        Objects.requireNonNull(userId);
-//        return userRepository.findById(userId);
-//    }
-
-//    private User calculateAverageRateDriver(int rating, User driver) {
-//        int newCountRatings = driver.getCountRatingsAsDriver() + 1;
-//        long newSumRatings = driver.getSumRatingsAsDriver() + rating;
-//        double newAverageRate = newSumRatings / newCountRatings;
-//
-//        driver.setRatingAsDriver(newAverageRate);
-//        driver.setCountRatingsAsDriver(newCountRatings);
-//        driver.setSumRatingsAsDriver(newSumRatings);
-//
-//        return userRepository.save(driver);
-//    }
-
-//    private User calculateAverageRatePassenger(int rating, User passenger) {
-//        int newCountRatings = passenger.getCountRatingsAsPassenger() + 1;
-//        long newSumRatings = passenger.getSumRatingsAsPassenger() + rating;
-//        double newAverageRate = newSumRatings / newCountRatings;
-//
-//        passenger.setRatingAsPassenger(newAverageRate);
-//        passenger.setCountRatingsAsPassenger(newCountRatings);
-//        passenger.setSumRatingsAsPassenger(newSumRatings);
-//
-//        return userRepository.save(passenger);
-//    }
-
-    private long parseStringToInt(String tripID) {
-        long intTripID = 0;
+    private long parseStringToLong(String tripID) {
+        long longTripID = 0;
         try {
-            intTripID = Long.parseLong(tripID);
+            longTripID = Long.parseLong(tripID);
         } catch (NumberFormatException e) {
             log.error("Exception during parsing", e);
         }
-        return intTripID;
+        return longTripID;
     }
 
     private boolean isEmailValid(String email) {

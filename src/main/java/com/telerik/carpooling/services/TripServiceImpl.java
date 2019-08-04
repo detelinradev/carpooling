@@ -63,14 +63,12 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<TripDtoResponse> getTrips(Integer pageEnd, Integer pageStart, String tripStatus, String driverUsername,
+    public List<TripDtoResponse> getTrips(Integer pageNumber, Integer pageSize, String tripStatus, String driverUsername,
                                           String origin, String destination, String earliestDepartureTime,
                                           String latestDepartureTime, String availablePlaces, String smoking,
                                           String pets, String luggage) {
 
-        System.out.println(3);
-        Pageable page = PageRequest.of(0, 10);
-        System.out.println(4);
+        Pageable page = PageRequest.of(pageNumber, pageSize);
 
         if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
                 (pets == null || (pets.equalsIgnoreCase("yes") || pets.equalsIgnoreCase("no"))) &&
@@ -84,70 +82,16 @@ public class TripServiceImpl implements TripService {
                                 .orElse("")))) &&
                 ((driverUsername == null) || (userRepository.findFirstByUsername(driverUsername) != null))) {
 
-
-//            System.out.println(5);
-//            System.out.println(Arrays.stream(TripStatus.values())
-//                    .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
-//                    .findAny()
-//                    .map(TripStatus::getCode)
-//                    .orElse(null));
-//            System.out.println(6);
-//            // System.out.println(userRepository.findFirstByUsername(driverUsername));
-//            System.out.println(7);
-//            System.out.println(origin);
-//            System.out.println(8);
-//            System.out.println(destination);
-//            System.out.println(9);
-//            System.out.println(earliestDepartureTime);
-//            System.out.println(10);
-//            System.out.println(parseStringToLong(availablePlaces));
-//            System.out.println(11);
-//            System.out.println(smoking);
-//            System.out.println(12);
-//            System.out.println(pets);
-//            System.out.println(13);
-//            System.out.println(luggage);
-//            System.out.println(14);
-//            System.out.println(tripRepository.findTripsByPassedParameters(Arrays.stream(TripStatus.values())
-//                            .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
-//                            .findAny()
-//                            .map(TripStatus::getCode)
-//                            .orElse(null),
-//                    userRepository.findFirstByUsername(driverUsername),
-//                    origin,
-//                    destination, earliestDepartureTime, parseStringToLong(availablePlaces),
-//                    Boolean.parseBoolean(smoking != null ? smoking.toLowerCase() : null),
-//                    Boolean.parseBoolean(pets != null ? pets.toLowerCase() : null),
-//                    Boolean.parseBoolean(luggage != null ? luggage.toLowerCase() : null)));
-            System.out.println(15);
-//            List<Trip> trips=tripRepository.findTripsByPassedParameters(Arrays.stream(TripStatus.values())
-//                            .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
-//                            .findAny()
-//                            .map(TripStatus::getCode)
-//                            .orElse(null),
-//                    userRepository.findFirstByUsername(driverUsername),
-//                    origin,
-//                    destination, earliestDepartureTime, parseStringToLong(availablePlaces),
-//                    ,
-//                    Boolean.parseBoolean(pets != null ? pets.toLowerCase() : null),
-//                    Boolean.parseBoolean(luggage != null ? luggage.toLowerCase() : null));
-            System.out.println(16);
-//            for (Trip trip : trips) {
-//                System.out.println(trip);
-//                System.out.println(17);
-//            }
-            System.out.println(18);
             return dtoMapper.objectToDto(
                     tripRepository.findTripsByPassedParameters(
                             Arrays.stream(TripStatus.values())
                                     .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
                                     .findAny()
-//                                    .map(TripStatus::getCode)
                                     .orElse(null),
                             userRepository.findFirstByUsername(driverUsername),
                             origin, destination, earliestDepartureTime,
-                            (parseStringToLong(availablePlaces)!=null?parseStringToLong(availablePlaces).intValue():null),
-                            smoking, pets, luggage));
+                            (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
+                            smoking, pets, luggage, page));
         } else return null;
     }
 
@@ -357,13 +301,13 @@ public class TripServiceImpl implements TripService {
 
     private Long parseStringToLong(String stringID) {
         if (stringID != null) {
-            long intID = 0;
+            long longID = 0;
             try {
-                intID = Long.parseLong(stringID);
+                longID = Long.parseLong(stringID);
             } catch (NumberFormatException e) {
                 log.error("Exception during parsing", e);
             }
-            return intID;
+            return longID;
         }
         return null;
     }

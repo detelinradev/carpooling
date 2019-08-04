@@ -42,8 +42,8 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
                                            @Param(value = "availablePlaces") Integer availablePlaces,
                                            @Param(value = "smoking") String smoking,
                                            @Param(value = "pets") String pets,
-                                           @Param(value = "luggage") String luggage
-                                          // Pageable page
+                                           @Param(value = "luggage") String luggage,
+                                           Pageable page
     );
     Trip findByDriver(User driver);
 

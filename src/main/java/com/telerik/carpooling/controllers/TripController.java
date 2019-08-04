@@ -41,9 +41,9 @@ public class TripController {
 
     @GetMapping
     public ResponseEntity<List<TripDtoResponse>> getTrips(@RequestParam(value = "_end", required = false)
-                                                                  Integer pageEnd,
+                                                                  Integer pageNumber,
                                                           @RequestParam(value = "_start", required = false)
-                                                                  Integer pageStart,
+                                                                  Integer pageSize,
                                                           @RequestParam(value = "status", required = false)
                                                                   String tripStatus,
                                                           @RequestParam(value = "driver", required = false)
@@ -64,21 +64,9 @@ public class TripController {
                                                                   String pets,
                                                           @RequestParam(value = "luggage", required = false)
                                                                   String luggage) {
-        System.out.println(1);
-        System.out.println(tripStatus);
-        System.out.println(driverUsername);
-        System.out.println(origin);
-        System.out.println(destination);
-        System.out.println(pageEnd);
-        System.out.println(availablePlaces);
-        System.out.println(tripStatus);
-        System.out.println(smoking);
-        System.out.println(pets);
-        System.out.println(luggage);
-        System.out.println(2);
 
         return Optional
-                .ofNullable(tripService.getTrips(pageEnd, pageStart, tripStatus, driverUsername, origin, destination,
+                .ofNullable(tripService.getTrips(pageNumber, pageSize, tripStatus, driverUsername, origin, destination,
                         earliestDepartureTime, latestDepartureTime, availablePlaces, smoking, pets, luggage))
                 .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
                 .orElseGet(() -> ResponseEntity.notFound().build());
