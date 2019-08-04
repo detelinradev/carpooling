@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(bCryptEncoder.encode(user.getPassword()));
         newUser.setEmail(user.getEmail());
         newUser.setRole("USER");
-        newUser.setDeleted(false);
+        newUser.setIsDeleted(false);
         newUser.setPhone(user.getPhone());
         return dtoMapper.objectToDto(userRepository.save(newUser));
     }

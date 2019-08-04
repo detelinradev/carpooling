@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @Data
 public class CommentDtoResponse {
 
-    private long id;
+    private Long id;
 
     private UserDtoResponse author;
 

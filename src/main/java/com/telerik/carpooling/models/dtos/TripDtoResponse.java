@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Data
 public class TripDtoResponse {
-    private long id;
+    private Long id;
 
     private UserDtoResponse driver;
 
@@ -34,7 +34,7 @@ public class TripDtoResponse {
     private String destination;
 
    // @Range(min = 1, max = 8, message = "Please enter total number of seats between 1 and 8!")
-    private int availablePlaces;
+    private Integer availablePlaces;
 
     private Set<UserDtoResponse> passengers;
 
@@ -43,10 +43,10 @@ public class TripDtoResponse {
     private Set<CommentDtoResponse> comments;
 
     @Max(value = Integer.MAX_VALUE)
-    private int tripDuration;
+    private Integer tripDuration;
 
     @Max(value = Integer.MAX_VALUE)
-    private int costPerPassenger;
+    private Integer costPerPassenger;
 
     private CarDtoResponse car;
 }

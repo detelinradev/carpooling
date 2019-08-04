@@ -23,7 +23,7 @@ public class RatingServiceImpl implements RatingService {
     private final UserRepository userRepository;
 
     @Override
-    public Rating rateDriver(String tripID, User passenger, int rating) {
+    public Rating rateDriver(String tripID, User passenger, Integer rating) {
         long intTripID = parseStringToInt(tripID);
         Optional<Trip> trip = tripRepository.findById(intTripID);
         if (trip.isPresent()) {
@@ -38,7 +38,7 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public Rating ratePassenger(String tripID, User driver, String passengerID, int rating) {
+    public Rating ratePassenger(String tripID, User driver, String passengerID, Integer rating) {
 
         long intTripID = parseStringToInt(tripID);
         long intPassengerID = parseStringToInt(passengerID);

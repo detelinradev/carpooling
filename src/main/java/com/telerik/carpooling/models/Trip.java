@@ -24,10 +24,6 @@ import java.util.*;
 @Audited
 public class Trip extends MappedAudibleBase {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
     private String origin;
 
     private String destination;
@@ -36,11 +32,11 @@ public class Trip extends MappedAudibleBase {
 
     @Column(nullable = false)
     @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
-    private int availablePlaces;
+    private Integer availablePlaces;
 
-    private int tripDuration;
+    private Integer tripDuration;
 
-    private int costPerPassenger;
+    private Integer costPerPassenger;
 
     private String message;
 

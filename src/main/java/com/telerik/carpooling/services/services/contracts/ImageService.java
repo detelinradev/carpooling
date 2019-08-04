@@ -12,5 +12,5 @@ public interface ImageService {
 
     Image storeUserImage(MultipartFile file, User user, URI fileDownloadUri);
 
-    Image getImage(long fileId);
+    Image getImage(Long fileId);
 }

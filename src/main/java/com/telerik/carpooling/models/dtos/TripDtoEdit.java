@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Data
 public class TripDtoEdit {
 
-    private long id;
+    private Long id;
 
     @Size(max = 200)
     private String message;
@@ -28,11 +28,11 @@ public class TripDtoEdit {
     private String destination;
 
    // @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
-    private int availablePlaces;
+    private Integer availablePlaces;
 
     @Max(value = Integer.MAX_VALUE)
-    private int tripDuration;
+    private Integer tripDuration;
 
     @Max(value = Integer.MAX_VALUE)
-    private int costPerPassenger;
+    private Integer costPerPassenger;
 }

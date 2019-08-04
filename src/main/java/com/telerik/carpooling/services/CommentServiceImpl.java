@@ -27,9 +27,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDtoResponse createComment(String tripID,
                                             User user, String message) {
-        long intTripID = 0;
+        long longTripID = 0;
         try {
-            intTripID = Long.parseLong(tripID);
+            longTripID = Long.parseLong(tripID);
         } catch (NumberFormatException e) {
             log.error("Exception during parsing", e);
         }
@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthor(user);
         comment.setMessage(message);
 
-        Optional<Trip> trip = tripRepository.findById(intTripID);
+        Optional<Trip> trip = tripRepository.findById(longTripID);
         if (trip.isPresent()) {
             trip.get().getComments().add(comment);
             comment.setTrip(trip.get());

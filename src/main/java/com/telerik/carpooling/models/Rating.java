@@ -28,7 +28,7 @@ public class Rating extends MappedAudibleBase {
     private User ratedUser;
 
     @Range(min=1,max = 5)
-    private int rating;
+    private Integer rating;
 
     private boolean isDriver;
 

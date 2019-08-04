@@ -65,12 +65,16 @@ public class TripController {
                                                           @RequestParam(value = "luggage", required = false)
                                                                   String luggage) {
         System.out.println(1);
+        System.out.println(tripStatus);
         System.out.println(driverUsername);
         System.out.println(origin);
+        System.out.println(destination);
         System.out.println(pageEnd);
         System.out.println(availablePlaces);
         System.out.println(tripStatus);
         System.out.println(smoking);
+        System.out.println(pets);
+        System.out.println(luggage);
         System.out.println(2);
 
         return Optional
@@ -165,7 +169,7 @@ public class TripController {
     @PostMapping(value = "/{id}/driver/rate")
     public ResponseEntity<?> rateDriver(@PathVariable final String id,
                                         final Authentication authentication,
-                                        @RequestBody int rating) {
+                                        @RequestBody Integer rating) {
         System.out.println(1);
         return Optional
                 .ofNullable(ratingService.rateDriver(id, userRepository.findFirstByUsername(
@@ -178,7 +182,7 @@ public class TripController {
     public ResponseEntity<?> ratePassenger(@PathVariable final String tripId,
                                            @PathVariable final String passengerId,
                                            final Authentication authentication,
-                                           @RequestBody int rating) {
+                                           @RequestBody Integer rating) {
 
         return Optional
                 .ofNullable(ratingService.ratePassenger(tripId, userRepository.findFirstByUsername(

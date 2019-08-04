@@ -14,7 +14,7 @@ import javax.validation.constraints.*;
 public class UserDtoResponse {
 
     @Column
-    private long id;
+    private Long id;
 
     @Size(min = 2, max = 20, message = "Please enter username between 2 and 20 symbols")
     @Column(unique = true, nullable = false, updatable = false)
@@ -36,9 +36,9 @@ public class UserDtoResponse {
     @Range(min = 10, max = 10)
     private String phone;
 
-    private double ratingAsDriver;
+    private Double ratingAsDriver;
 
-    private double ratingAsPassenger;
+    private Double ratingAsPassenger;
 
     @Size(max = 250)
     private String avatarUri;

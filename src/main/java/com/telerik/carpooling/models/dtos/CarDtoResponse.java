@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 @Data
 public class CarDtoResponse {
 
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     @Size(min = 1, max = 20, message = "Please enter brand name between 1 and 20 symbols!")
@@ -33,19 +33,19 @@ public class CarDtoResponse {
 
     @Column(nullable = false)
     @Range(min = 1950,max = 2019, message = "Please enter year of first registration between 1950 and 2019!")
-    private int firstRegistration;
+    private Integer firstRegistration;
 
     @Column(nullable = false)
-    private boolean isAirConditioned;
+    private Boolean isAirConditioned;
 
     @Column(nullable = false)
-    private boolean isSmokingAllowed;
+    private Boolean isSmokingAllowed;
 
     @Column(nullable = false)
-    private boolean isLuggageAllowed;
+    private Boolean isLuggageAllowed;
 
     @Column(nullable = false)
-    private boolean isPetsAllowed;
+    private Boolean isPetsAllowed;
 
     private String avatarUri;
 }

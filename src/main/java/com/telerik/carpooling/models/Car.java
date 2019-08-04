@@ -33,19 +33,19 @@ public class Car extends MappedAudibleBase {
 
     @Column(nullable = false)
     @Range(min = 1950,max = 2019, message = "Please enter year of first registration between 1950 and 2019!")
-    private int firstRegistration;
+    private Integer firstRegistration;
 
     @Column(nullable = false)
-    private boolean isAirConditioned;
+    private Boolean isAirConditioned;
 
     @Column(nullable = false)
-    private boolean isSmokingAllowed;
+    private Boolean isSmokingAllowed;
 
     @Column(nullable = false)
-    private boolean isLuggageAllowed;
+    private Boolean isLuggageAllowed;
 
     @Column(nullable = false)
-    private boolean isPetsAllowed;
+    private Boolean isPetsAllowed;
 
     @OneToOne(mappedBy = "car")
     @JsonIgnoreProperties("car")
