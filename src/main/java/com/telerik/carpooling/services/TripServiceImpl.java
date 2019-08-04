@@ -82,7 +82,7 @@ public class TripServiceImpl implements TripService {
                                 .orElse("")))) &&
                 ((driverUsername == null) || (userRepository.findFirstByUsername(driverUsername) != null))) {
 
-            return dtoMapper.objectToDto(
+            return dtoMapper.tripToDtoList(
                     tripRepository.findTripsByPassedParameters(
                             Arrays.stream(TripStatus.values())
                                     .filter(k -> k.toString().equalsIgnoreCase(tripStatus))

@@ -46,5 +46,9 @@ public interface DtoMapper {
 
     Set<CommentDtoResponse> commentsToCommentsDtoResponses(Set<Comment>comments);
 
-    List<TripDtoResponse> objectToDto(List<Trip> trips);
+    List<TripDtoResponse> tripToDtoList(List<Trip> trips);
+
+    List<UserDtoResponse> userToDtoList(List<User> users);
+
+
 }

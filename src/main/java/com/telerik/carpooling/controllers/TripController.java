@@ -158,7 +158,6 @@ public class TripController {
     public ResponseEntity<?> rateDriver(@PathVariable final String id,
                                         final Authentication authentication,
                                         @RequestBody Integer rating) {
-        System.out.println(1);
         return Optional
                 .ofNullable(ratingService.rateDriver(id, userRepository.findFirstByUsername(
                         authentication.getName()), rating))

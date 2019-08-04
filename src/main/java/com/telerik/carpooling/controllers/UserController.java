@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(maxAge = 3600)
@@ -34,6 +35,14 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final ImageService imageService;
+
+    @GetMapping
+    public ResponseEntity<List<UserDtoResponse>> getUsers (){
+        return Optional
+                .ofNullable(userService.getUsers())
+                .map(users -> ResponseEntity.ok().body(users))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     @PutMapping
     //@PreAuthorize(value = "hasRole(ADMIN)")

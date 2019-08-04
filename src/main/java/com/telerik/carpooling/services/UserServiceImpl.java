@@ -12,9 +12,12 @@ import com.telerik.carpooling.services.services.contracts.RatingService;
 import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,7 +28,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TripRepository tripRepository;
     private final RatingRepository ratingRepository;
-    private final RatingService ratingService;
     private final DtoMapper dtoMapper;
     private final BCryptPasswordEncoder bCryptEncoder;
 
@@ -50,13 +52,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDtoResponse getUser(String username) {
-        UserDtoResponse user = dtoMapper.objectToDto(userRepository.findFirstByUsername(username));
+         UserDtoResponse user = dtoMapper.objectToDto(userRepository.findFirstByUsername(username));
         if (ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).isPresent())
             user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).get());
         if (ratingRepository.findAverageRatingByUserAsDriver(user.getId()).isPresent())
             user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getId()).get());
 
         return user;
+    }
+
+    @Override
+    public List<UserDtoResponse> getUsers() {
+        List<UserDtoResponse> users = dtoMapper.userToDtoList(userRepository.findAllByIsDeletedIsFalse());
+        for(UserDtoResponse user : users){
+            if (ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).isPresent())
+                user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).get());
+            if (ratingRepository.findAverageRatingByUserAsDriver(user.getId()).isPresent())
+                user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getId()).get());
+        }
+        return users;
     }
 
     @Override
