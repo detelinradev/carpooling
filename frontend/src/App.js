@@ -51,8 +51,12 @@ class App extends Component {
         return (
             <div>
                 <Layout>
-                    {/*<Login/>*/}
+
                     {routes}
+                    {/*<footer style={{textAlign: 'center', marginTop: 100}} className="test-footer m-5 color=elegant-color">*/}
+                    {/*    This is footer*/}
+                    {/*</footer>*/}
+
                 </Layout>
             </div>
         );

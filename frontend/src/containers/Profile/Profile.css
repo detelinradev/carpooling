@@ -2,7 +2,6 @@
     width: 80%;
     box-shadow: 0 2px 3px #ccc;
     box-sizing: border-box;
-    cursor: pointer;
     text-align: left;
     display: flex;
     flex-flow: row wrap;
@@ -16,7 +15,26 @@
 
 .Profile img {
     height: 256px;
-    padding-right: 30px;
+}
+
+.Car {
+    width: 80%;
+    box-shadow: 0 2px 3px #ccc;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-flow: row wrap;
+    margin: auto;
+    padding: 24px;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    margin-top: 35px;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.Car img {
+    height: 256px;
 }
 
 .header {
@@ -53,18 +71,15 @@
 }
 
 .edit {
-    width: 50%;
+    width: 100%;
     box-shadow: 0 2px 2px 3px #ccc;
-    box-sizing: border-box;
     cursor: pointer;
-    justify-content: center;
-    text-align: left;
-    display: flex;
+    text-align: center;
     transition-property: background-color;
     transition-duration: 1s;
     transition-timing-function: linear;
     transition-delay: 1s;
-    background-color: #cccccc;
+    margin-top: 10px;
 }
 
 .head {
@@ -72,4 +87,25 @@
     text-align: center;
     margin-top: 100px;
     color: mediumseagreen;
+}
+
+.input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+
+}
+
+.save:hover {
+    background-color: lightblue;
+}
+
+.cont {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
 }

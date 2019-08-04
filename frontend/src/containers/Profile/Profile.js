@@ -7,6 +7,9 @@ import Car from "./Car";
 import Button from "@material-ui/core/Button";
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Modal from "../../components/UI/Modal/Modal";
+import { TiUser, TiGroup} from "react-icons/ti";
+import { FaEnvelopeOpen, FaPhone, FaMedal, FaUserEdit} from "react-icons/fa";
+
 
 
 class Profile extends Component {
@@ -15,11 +18,30 @@ class Profile extends Component {
         hasCar: false,
         isToggleOn: false,
         edit: false,
-        testemail: "eeec@gmail.com"
+        newEmail: "",
+        newPassword: "",
+        img: null,
     };
 
 
     async componentDidMount() {
+
+        //
+        // axios.get('http://localhost:8080/users/avatar', {
+        //     headers: {"Authorization": this.props.token},
+        //         responseType: 'arraybuffer'
+        //     })
+        //     .then(response => {
+        //         const buffer = Buffer.from(response.data, 'base64');
+        //         this.setState({
+        //             img: buffer
+        //         })
+        //
+        //     })
+        //     .catch(ex => {
+        //         console.error(ex);
+        //     });
+
         const getMeResponse = await
             axios.get('/users/me', {
                 headers:
@@ -27,10 +49,21 @@ class Profile extends Component {
             });
         this.setState({
             user: getMeResponse.data,
+            newEmail: getMeResponse.data.email
         });
 
 
     }
+    //
+    // getBase64() {
+    //     return axios
+    //         .get('http://localhost:8080/users/avatar', {
+    //             headers: {"Authorization": this.props.token},
+    //             responseType: 'arraybuffer',
+    //
+    //         })
+    //         .then(response => new Buffer(response.data, 'binary').toString('base64'))
+    // }
 
 
     toggleCarHandler() {
@@ -47,23 +80,39 @@ class Profile extends Component {
     editCloseHandler() {
         this.setState({
             edit: !this.state.edit
-        })
+        });
     }
 
-    async editFields() {
+    async editParamsHandler() {
          await
-        axios.patch('/users/me/update-email?email='+this.state.testemail,null,{
+        axios.patch('/users/me/update-email?email='+this.state.newEmail,null,{
             headers: {"Authorization": this.props.token}
+        });
+
+        if(this.state.newPassword.size>1) {
+            await
+                axios.patch('/users/me/update-password?password=' + this.state.newPassword, null, {
+                    headers: {"Authorization": this.props.token}
+                });
+        }
+
+        this.setState({
+            edit: !this.state.edit
         });
 
     }
 
 
-    changed = (event) => {
-        // this.state.email = event.target.value;
 
-        this.setState({ [this.state.testemail]: event.target.value });
-        this.editFields();
+    changedEmail = (event) => {
+
+        this.setState({ newEmail: event.target.value});
+    };
+
+    changedPassword = (event) => {
+        if(event.target.value.size>1) {
+            this.setState({newPassword: event.target.value});
+        }
     };
 
 
@@ -75,38 +124,47 @@ class Profile extends Component {
                     USER INFORMATION
                 </h1>
                 <Modal show={this.state.edit} modalClosed={() => this.editCloseHandler()}>
-                    <input type="text" onChange={event => this.changed(event)} value={this.state.email} />
-                    <Button className="head" onClick={() => this.editFields()}><h2>SAVE</h2></Button>
+                    <div className="cont">
+                    <label >Email</label>
+                    <input className="input" type="text" onChange={event => this.changedEmail(event)} value={this.state.newEmail} />
+                    <label >Password</label>
+                    <input className="input" type="text" onChange={event => this.changedPassword(event)} value={this.state.newPassword} />
+
+                    <Button className="input save" onClick={() => this.editParamsHandler()}><h2>SAVE</h2></Button>
+                    </div>
                 </Modal>
-                <div>
+                <div >
                     <div className="Profile">
-                        <ul>
+                        <ul style={{marginRight: 50}}>
                             <img src="https://www.w3schools.com/howto/img_avatar.png" alt="car pooling"/>
-                            <Button className="edit" onClick={() => this.editHandler()}><h3 className="header">EDIT PROFILE</h3>
+                            {/*<img src={this.getBase64()} alt="car pooling"/>*/}
+                            <div className="edit">
+                            <Button  onClick={() => this.editHandler()}><h3 className="header">EDIT PROFILE <FaUserEdit/></h3>
                             </Button>
+                            </div>
                         </ul>
-                        <ul>
-                            <li><h1>Name:<span className="header">{this.state.user.firstName} {this.state.user.lastName}</span></h1></li>
-                            <li><h1>Username: <span className="header">{this.state.user.username}</span></h1></li>
-                            <li><h2>Email: <span className="header">{this.state.user.email}</span></h2></li>
-                            <li><h2>Phone: <span className="header">{this.state.user.phone}</span></h2></li>
+                        <ul style={{maxWidth: 500}}>
+                            <h1><TiUser/> Name:  <span className="header">{this.state.user.firstName} {this.state.user.lastName}</span></h1>
+                            <h1><TiGroup/> Username: <span className="header">{this.state.user.username}</span></h1>
+                            <h1><FaEnvelopeOpen/> Email: <span className="header">{this.state.user.email}</span></h1>
+                            <h1><FaPhone/> Phone:  <span className="header">{this.state.user.phone}</span></h1>
                             <hr/>
                             <li className="feedback"><Button><h3 className="header">Show Feedback</h3></Button></li>
                         </ul>
                         <ul>
                             <li className="rating">
-                                <h3>Rating as driver<span
+                                <h3><FaMedal/>  Rating as driver<span
                                     className="header"><h1>{this.state.user.ratingAsDriver}</h1></span></h3>
                             </li>
                             <li className="rating">
-                                <h3>Rating as passenger<span
+                                <h3><span><FaMedal/></span>  Rating as passenger<span
                                     className="header"><h1>{this.state.user.ratingAsPassenger}</h1></span></h3>
                             </li>
                         </ul>
                     </div>
-                    <button className="Profile" onClick={() => this.toggleCarHandler()}>
+                    <button className="Car" onClick={() => this.toggleCarHandler()}>
                         {this.state.isToggleOn ? <Car hasCar={this.state.user.hasCar}/> :
-                            <div>Toggle car</div>}</button>
+                            <div><h2>SHOW CAR</h2></div>}</button>
                 </div>
 
             </Auxiliary>
