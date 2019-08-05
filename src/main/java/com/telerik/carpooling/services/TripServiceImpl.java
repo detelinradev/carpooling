@@ -68,7 +68,8 @@ public class TripServiceImpl implements TripService {
                                           String latestDepartureTime, String availablePlaces, String smoking,
                                           String pets, String luggage) {
 
-        Pageable page = PageRequest.of(pageNumber, pageSize);
+//        if(pageNumber != null && pageSize != null)
+//        Pageable page = PageRequest.of(pageNumber, pageSize);
 
         if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
                 (pets == null || (pets.equalsIgnoreCase("yes") || pets.equalsIgnoreCase("no"))) &&
@@ -80,7 +81,8 @@ public class TripServiceImpl implements TripService {
                                 .findAny()
                                 .map(TripStatus::getCode)
                                 .orElse("")))) &&
-                ((driverUsername == null) || (userRepository.findFirstByUsername(driverUsername) != null))) {
+                ((driverUsername == null) || (userRepository.findFirstByUsername(driverUsername) != null)) &&
+                ((pageNumber != null && pageSize != null) || (pageNumber == null && pageSize == null) )) {
 
             return dtoMapper.tripToDtoList(
                     tripRepository.findTripsByPassedParameters(
@@ -91,7 +93,7 @@ public class TripServiceImpl implements TripService {
                             userRepository.findFirstByUsername(driverUsername),
                             origin, destination, earliestDepartureTime,
                             (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
-                            smoking, pets, luggage, page));
+                            smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null)));
         } else return null;
     }
 

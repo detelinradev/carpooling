@@ -74,11 +74,16 @@ export const fetchTripsStart = () => {
     };
 };
 
-export const fetchTrips = (token, userId) => {
+export const fetchTrips = (token) => {
     return dispatch => {
         dispatch(fetchTripsStart());
-        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
-        axios.get( '/trips' + queryParams)
+        const headers = {
+            "Content-Type":"application/json",
+            'Authorization':token
+        };
+        const queryParams = '?driver=username1';
+            // '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
+        axios.get( '/trips' + queryParams, {headers})
             .then( res => {
                 const fetchedTrips = [];
                 for ( let key in res.data ) {
