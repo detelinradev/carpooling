@@ -3,11 +3,19 @@ import {connect} from 'react-redux';
 import './Car.css';
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import axios from '../../axios-baseUrl';
+import Modal from "../../components/UI/Modal/Modal";
+import Button from "@material-ui/core/Button";
+import Avatar from "../../assets/images/images.png";
 
 class Car extends Component {
 
     state = {
-        car: {}
+        car: {},
+        showModal: false,
+        src: Avatar,
+        error:'',
+        msg:'',
+        file:''
     };
 
     async componentDidMount() {
@@ -16,23 +24,79 @@ class Car extends Component {
                     {"Authorization": this.props.token}
             });
 
+        const getCarAvatarResponse = await
+            fetch('http://localhost:8080/users/avatar/car',
+                { headers: {"Authorization": this.props.token}})
+                .then(response => response.blob());
+
             if(getCarResponse) {
                 this.setState({
-                    car: getCarResponse.data
+                    car: getCarResponse.data,
+                    src: URL.createObjectURL(getCarAvatarResponse)
                 })
             }
     }
 
 
+    onFileChange = (event) => {
+        this.setState({
+            file: event.target.files[0]
+        });
+    };
+
+    uploadFile = (event) => {
+        event.preventDefault();
+        this.setState({error: '', msg: ''});
+        if(!this.state.file) {
+            this.setState({error: 'Please upload a file.'})
+            return;
+        }
+        if(this.state.file.size >= 2000000) {
+            this.setState({error: 'File size exceeds limit of 2MB.'})
+            return;
+        }
+        let data = new FormData();
+        data.append('upfile', this.state.file);
+        console.log(data.getAll("upfile"));
+        fetch('http://localhost:8080/users/avatar/car', {
+            method: 'POST',
+            headers: {"Authorization": this.props.token},
+            body: data
+        }).then(response => {
+            this.setState({error: '', msg: 'Successfully uploaded file'});
+            this.componentDidMount();
+        }).catch(err => {
+            this.setState({error: err});
+        });
+    };
+
+    toggleModal(){
+        this.setState({
+            showModal: !this.state.showModal
+        })
+    }
+
+
+    editCloseHandler() {
+        this.setState({
+            showModal: !this.state.showModal
+        });
+    }
+
+
     render() {
 
-        const carr =
-            this.props.hasCar ? (
-
+        const car =
+            this.state.car ? (
                     <div className="Car" style={{paddingRight: 700}}>
                         <img
-                            src="https://res.cloudinary.com/teepublic/image/private/s--L9GalMpn--/t_Preview/b_rgb:000000,c_limit,f_jpg,h_630,q_90,w_630/v1556900569/production/designs/3555619_1.jpg"
+                            src={this.state.src}
                             alt="car pooling"/>
+                        <div>
+                            <input onChange={this.onFileChange} type="file"/>
+                            <br/>
+                            <button onClick={this.uploadFile}>Upload</button>
+                        </div>
                         <div>
                             <h1>Brand: <span className="header">{this.state.car.brand}<br/></span></h1>
                             <h1>Model: <span className="header">{this.state.car.model}</span></h1>
@@ -41,11 +105,17 @@ class Car extends Component {
                         </div>
                     </div>
                 ) :
-                (null);
+                (
+                    <button className="Car" onClick={() => this.toggleModal()}>+CREATE CAR</button>
+                );
 
         return (
             <div>
-                {carr}
+                <Modal show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
+                    zdravei
+                    <Button className="input save" onClick={() => this.editParamsHandler()}><h2>SAVE</h2></Button>
+                </Modal>
+                {car}
             </div>
         );
     }

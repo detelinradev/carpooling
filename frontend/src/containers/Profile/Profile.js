@@ -7,6 +7,7 @@ import Car from "./Car";
 import Button from "@material-ui/core/Button";
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Modal from "../../components/UI/Modal/Modal";
+import Avatar from '../../assets/images/images.png';
 import { TiUser, TiGroup} from "react-icons/ti";
 import { FaEnvelopeOpen, FaPhone, FaMedal, FaUserEdit} from "react-icons/fa";
 
@@ -15,12 +16,14 @@ import { FaEnvelopeOpen, FaPhone, FaMedal, FaUserEdit} from "react-icons/fa";
 class Profile extends Component {
     state = {
         user: {},
-        hasCar: false,
         isToggleOn: false,
         edit: false,
         newEmail: "",
         newPassword: "",
-        imge: "",
+        src: Avatar,
+        error:'',
+        msg:'',
+        file:''
     };
 
 
@@ -29,10 +32,13 @@ class Profile extends Component {
         const getAvatarResponse = await
             fetch('http://localhost:8080/users/avatar',
             { headers: {"Authorization": this.props.token}})
-                .then(response => response.blob())
-                .then(blob => {
-                    this.setState({ imge: URL.createObjectURL(blob) })
-                });
+                .then(response => response.blob());
+
+        if(getAvatarResponse.size>100){
+            console.log(getAvatarResponse);
+            this.setState({
+                src: URL.createObjectURL(getAvatarResponse)
+            })}
 
 
         const getMeResponse = await
@@ -40,29 +46,28 @@ class Profile extends Component {
                 headers:
                     {"Authorization": this.props.token}
             });
-        // console.log(getAvatarResponse.headers['content-type']);
-        // console.log(getAvatarResponse.data);
 
         this.setState({
             user: getMeResponse.data,
             newEmail: getMeResponse.data.email,
-            // imge: URL.createObjectURL(getAvatarResponse)
-            // imge: `data:${getAvatarResponse.headers['content-type']}
-            //     ;base64,${btoa(
-            //     String.fromCharCode(...new Uint8Array(getAvatarResponse.data)))}`
+
         })};
 
-    //
-    // getBase64() {
-    //     return axios
-    //         .get('http://localhost:8080/users/avatar', {
-    //             headers: {"Authorization": this.props.token},
-    //             responseType: 'arraybuffer',
-    //
-    //         })
-    //         .then(response => new Buffer(response.data, 'binary').toString('base64'))
-    // }
-
+    // const getAvatarResponseAxios = await
+    //     axios('/users/avatar',
+    //     { headers: {"Authorization": this.props.token}})
+    //         .then(response => {
+    //             const blob = new Blob([response.data], {
+    //                 responseType: 'image/jpeg',
+    //             });
+    //             this.setState({
+    //                 imge: URL.createObjectURL(blob)
+    //             });
+    //             console.log(this.state.imge);
+    //         });
+    //         // .then(blob => {
+    //         //     this.setState({ imge: URL.createObjectURL(blob) })
+    //         // });
 
     toggleCarHandler() {
         this.setState({
@@ -73,7 +78,8 @@ class Profile extends Component {
     editHandler() {
         this.setState({
             edit: !this.state.edit
-        })
+        });
+
     }
     editCloseHandler() {
         this.setState({
@@ -97,8 +103,56 @@ class Profile extends Component {
         this.setState({
             edit: !this.state.edit
         });
+        this.componentDidMount();
 
     }
+
+
+
+    onFileChange = (event) => {
+        this.setState({
+            file: event.target.files[0]
+        });
+    };
+
+    uploadFile = (event) => {
+        event.preventDefault();
+        this.setState({error: '', msg: ''});
+        if(!this.state.file) {
+            this.setState({error: 'Please upload a file.'})
+            return;
+        }
+        if(this.state.file.size >= 2000000) {
+            this.setState({error: 'File size exceeds limit of 2MB.'})
+            return;
+        }
+        let data = new FormData();
+        data.append('upfile', this.state.file);
+        console.log(data.getAll("upfile"));
+        fetch('http://localhost:8080/users/avatar', {
+            method: 'POST',
+            headers: {"Authorization": this.props.token},
+            body: data
+        }).then(response => {
+            this.setState({error: '', msg: 'Successfully uploaded file'});
+            this.componentDidMount();
+        }).catch(err => {
+            this.setState({error: err});
+        });
+    };
+
+
+    // GetImageHandler = () => {
+    //     const getAvatarResponse =
+    //         fetch('http://localhost:8080/users/avatar',
+    //             { headers: {"Authorization": this.props.token}})
+    //             .then(response => response.blob())
+    //     ;
+    //
+    //     this.setState({
+    //         src: URL.createObjectURL(getAvatarResponse)
+    //     })
+    //     ;};
 
 
 
@@ -115,6 +169,12 @@ class Profile extends Component {
 
 
     render() {
+        //
+        // if(!this.state.src){
+        //     this.setState({
+        //         src: Avatar
+        //     })
+        // }
 
         return (
             <Auxiliary>
@@ -133,19 +193,23 @@ class Profile extends Component {
                 </Modal>
                 <div >
                     <div className="Profile">
-                        <ul style={{marginRight: 50}}>
-                            {/*<img src="https://www.w3schools.com/howto/img_avatar.png" alt="car pooling"/>*/}
-                            <img src={this.state.imge} alt="car pooling"/>
+                        <ul style={{marginRight: 50,maxWidth: 350}} >
+                            <img  src={this.state.src} alt="Not found!"/>
+                            <div>
+                            <input onChange={this.onFileChange} type="file"/>
+                            <br/>
+                            <button onClick={this.uploadFile}>Upload</button>
+                            </div>
                             <div className="edit">
                             <Button  onClick={() => this.editHandler()}><h3 className="header">EDIT PROFILE <FaUserEdit/></h3>
                             </Button>
                             </div>
                         </ul>
                         <ul style={{maxWidth: 500}}>
-                            <h1><TiUser/> Name:  <span className="header">{this.state.user.firstName} {this.state.user.lastName}</span></h1>
-                            <h1><TiGroup/> Username: <span className="header">{this.state.user.username}</span></h1>
-                            <h1><FaEnvelopeOpen/> Email: <span className="header">{this.state.user.email}</span></h1>
-                            <h1><FaPhone/> Phone:  <span className="header">{this.state.user.phone}</span></h1>
+                            <h2><TiUser/> Name:  <span className="header">{this.state.user.firstName} {this.state.user.lastName}</span></h2>
+                            <h2><TiGroup/> Username: <span className="header">{this.state.user.username}</span></h2>
+                            <h2><FaEnvelopeOpen/> Email: <span className="header">{this.state.user.email}</span></h2>
+                            <h2><FaPhone/> Phone:  <span className="header">{this.state.user.phone}</span></h2>
                             <hr/>
                             <li className="feedback"><Button><h3 className="header">Show Feedback</h3></Button></li>
                         </ul>
@@ -160,9 +224,11 @@ class Profile extends Component {
                             </li>
                         </ul>
                     </div>
-                    <button className="Car" onClick={() => this.toggleCarHandler()}>
-                        {this.state.isToggleOn ? <Car hasCar={this.state.user.hasCar}/> :
-                            <div><h2>SHOW CAR</h2></div>}</button>
+                    <Car/>
+
+                    {/*<button className="Car" onClick={() => this.toggleCarHandler()}>*/}
+                    {/*    {this.state.isToggleOn ? <div/> :*/}
+                    {/*        <div><h2>SHOW CAR</h2></div>}</button>*/}
                 </div>
 
             </Auxiliary>
