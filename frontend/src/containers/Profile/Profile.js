@@ -225,10 +225,6 @@ class Profile extends Component {
                         </ul>
                     </div>
                     <Car/>
-
-                    {/*<button className="Car" onClick={() => this.toggleCarHandler()}>*/}
-                    {/*    {this.state.isToggleOn ? <div/> :*/}
-                    {/*        <div><h2>SHOW CAR</h2></div>}</button>*/}
                 </div>
 
             </Auxiliary>
