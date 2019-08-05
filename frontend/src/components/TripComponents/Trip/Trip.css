@@ -8,13 +8,13 @@
 
 .Trip:hover,
 .Trip:active {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: yellowgreen;
 }
 
 
 .cardcont {
 
-    background: rgba(0, 0, 0, 0.85);
+    background: orange;
 }
 
 .test{
@@ -57,7 +57,7 @@
 .proba {
     padding-left: 10px;
     margin-top: 10px;
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: orangered;
 }
 
 .meta-data-container {
@@ -85,13 +85,13 @@ h1 {
 }
 
 .meta-data {
-    color: mediumseagreen;
+    color: black;
     font-size: 1.6em;
     line-height: 1.1em;
 }
 
 .hed {
-    color: mediumseagreen;
+    color: royalblue;
     font-weight: bolder;
     font-size: 1.6em;
     line-height: 1.1em;
