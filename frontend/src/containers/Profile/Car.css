@@ -5,11 +5,19 @@
     display: flex;
     flex-flow: row wrap;
     padding: 15px;
+    width: 80%;
+    box-shadow: 0 2px 3px #ccc;
+    box-sizing: border-box;
+    flex-flow: row wrap;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    margin-top: 35px;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
 .Car img {
     height: 256px;
-    padding-right: 16px;
 }
 
 .Car {
