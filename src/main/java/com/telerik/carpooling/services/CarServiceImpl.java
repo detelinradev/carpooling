@@ -31,7 +31,6 @@ public class CarServiceImpl implements CarService {
 
         Car car = dtoMapper.dtoToObject(carDtoRequest);
         car.setOwner(owner);
-        owner.setHasCar(true);
         return dtoMapper.objectToDto(carRepository.save(car));
     }
 

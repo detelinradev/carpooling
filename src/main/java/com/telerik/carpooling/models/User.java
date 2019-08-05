@@ -78,5 +78,4 @@ public class User extends MappedAudibleBase {
     @JsonIgnoreProperties("owner")
     private Car car;
 
-    private boolean hasCar;
 }

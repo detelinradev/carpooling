@@ -20,40 +20,34 @@ class Profile extends Component {
         edit: false,
         newEmail: "",
         newPassword: "",
-        img: null,
+        imge: "",
     };
 
 
     async componentDidMount() {
 
-        //
-        // axios.get('http://localhost:8080/users/avatar', {
-        //     headers: {"Authorization": this.props.token},
-        //         responseType: 'arraybuffer'
-        //     })
-        //     .then(response => {
-        //         const buffer = Buffer.from(response.data, 'base64');
-        //         this.setState({
-        //             img: buffer
-        //         })
-        //
-        //     })
-        //     .catch(ex => {
-        //         console.error(ex);
-        //     });
+        const getAvatarResponse = await
+            axios.get('http://localhost:8080/users/avatar',
+            { headers: {"Authorization": this.props.token},
+                responseType: 'arraybuffer' });
+
 
         const getMeResponse = await
             axios.get('/users/me', {
                 headers:
                     {"Authorization": this.props.token}
             });
+        console.log(getAvatarResponse.headers['content-type']);
+        console.log(getAvatarResponse.data);
+
         this.setState({
             user: getMeResponse.data,
-            newEmail: getMeResponse.data.email
-        });
+            newEmail: getMeResponse.data.email,
+            imge: `data:${getAvatarResponse.headers['content-type']}
+                ;base64,${btoa(
+                String.fromCharCode(...new Uint8Array(getAvatarResponse.data)))}`
+        })};
 
-
-    }
     //
     // getBase64() {
     //     return axios
@@ -136,8 +130,8 @@ class Profile extends Component {
                 <div >
                     <div className="Profile">
                         <ul style={{marginRight: 50}}>
-                            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="car pooling"/>
-                            {/*<img src={this.getBase64()} alt="car pooling"/>*/}
+                            {/*<img src="https://www.w3schools.com/howto/img_avatar.png" alt="car pooling"/>*/}
+                            <img src={this.state.imge} alt="car pooling"/>
                             <div className="edit">
                             <Button  onClick={() => this.editHandler()}><h3 className="header">EDIT PROFILE <FaUserEdit/></h3>
                             </Button>
