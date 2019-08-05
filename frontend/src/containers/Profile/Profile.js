@@ -27,9 +27,12 @@ class Profile extends Component {
     async componentDidMount() {
 
         const getAvatarResponse = await
-            axios.get('http://localhost:8080/users/avatar',
-            { headers: {"Authorization": this.props.token},
-                responseType: 'arraybuffer' });
+            fetch('http://localhost:8080/users/avatar',
+            { headers: {"Authorization": this.props.token}})
+                .then(response => response.blob())
+                .then(blob => {
+                    this.setState({ imge: URL.createObjectURL(blob) })
+                });
 
 
         const getMeResponse = await
@@ -37,15 +40,16 @@ class Profile extends Component {
                 headers:
                     {"Authorization": this.props.token}
             });
-        console.log(getAvatarResponse.headers['content-type']);
-        console.log(getAvatarResponse.data);
+        // console.log(getAvatarResponse.headers['content-type']);
+        // console.log(getAvatarResponse.data);
 
         this.setState({
             user: getMeResponse.data,
             newEmail: getMeResponse.data.email,
-            imge: `data:${getAvatarResponse.headers['content-type']}
-                ;base64,${btoa(
-                String.fromCharCode(...new Uint8Array(getAvatarResponse.data)))}`
+            // imge: URL.createObjectURL(getAvatarResponse)
+            // imge: `data:${getAvatarResponse.headers['content-type']}
+            //     ;base64,${btoa(
+            //     String.fromCharCode(...new Uint8Array(getAvatarResponse.data)))}`
         })};
 
     //
