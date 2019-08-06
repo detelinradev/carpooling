@@ -10,13 +10,18 @@ import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
 
 class Home extends Component {
+
     componentDidMount() {
         if (this.props.token) {
             this.props.onFetchTrips(this.props.token);
         }
     }
 
+    showFullTrip = (key) => {
 
+        this.props.history.push('/fullTrip');
+        console.log(key)
+    };
     render() {
         let trips = <Spinner/>;
         if (this.props.token && this.props.trips) {
@@ -25,11 +30,13 @@ class Home extends Component {
             trips = this.props.trips.map(trip => (
                 <Trip
                     key={trip.id}
+                    tripID={trip.modelId}
                     data = {trip}
                     driver={trip.driver}
                     passengers={trip.passengers}
                     comments={trip.comments}
                     car ={trip.car}
+                    showFullTrip={this.showFullTrip}
                 />
             ))
         }
@@ -57,12 +64,12 @@ const mapStateToProps = state => {
     return {
         trips: state.trip.trips,
         loading: state.trip.loading,
-        token: state.auth.token
+        token: state.auth.token,
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchTrips: (token) => dispatch(actions.fetchTrips(token))
+        onFetchTrips: (token) => dispatch(actions.fetchTrips(token)),
     };
 };
 

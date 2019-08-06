@@ -22,7 +22,7 @@ public abstract class MappedAudibleBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long modelId;
 
     @CreatedDate
     private LocalDateTime created;

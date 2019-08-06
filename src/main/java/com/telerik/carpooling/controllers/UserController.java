@@ -131,7 +131,7 @@ public class UserController {
 
         return Optional
                 .ofNullable(imageService.getImage(userRepository.findFirstByUsername(
-                        authentication.getName()).getUserImage().getId()))
+                        authentication.getName()).getUserImage().getModelId()))
                 .map(this::createImageModelInResponseEntity)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -141,7 +141,7 @@ public class UserController {
 
         return Optional
                 .ofNullable(imageService.getImage(userRepository.findFirstByUsername(
-                        authentication.getName()).getCar().getCarImage().getId()))
+                        authentication.getName()).getCar().getCarImage().getModelId()))
                 .map(this::createImageModelInResponseEntity)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

@@ -8,7 +8,6 @@ import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
 import './App.css';
 import Home from './containers/Home/Home';
-import Profile from './containers/Profile/Profile';
 
 
 
@@ -18,6 +17,12 @@ const asyncAuth = asyncComponent(() => {
 });
 const asyncCreateTrip = asyncComponent(() => {
     return import('./containers/NewTrip/NewTrip');
+});
+const asyncFullTrip = asyncComponent(() => {
+    return import('./containers/FullTrip/FullTrip');
+});
+const asyncProfile = asyncComponent(() => {
+    return import('./containers/Profile/Profile');
 });
 
 class App extends Component {
@@ -38,8 +43,9 @@ class App extends Component {
             routes = (
                 <Switch>
                     <Route path="/logout" component={Logout} />
+                    <Route path="/fullTrip" component={asyncFullTrip} />
                     <Route path="/createTrip" component={asyncCreateTrip} />
-                    <Route path="/myProfile" component={Profile} />
+                    <Route path="/myProfile" component={asyncProfile} />
                     <Route path="/auth" component={asyncAuth} />
                     <Route path="/" exact component={Home} />
 

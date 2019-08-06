@@ -17,6 +17,6 @@ public class CarMapperResolver {
 
     @ObjectFactory
     Car resolve(CarDtoResponse dto, @TargetType Class<Car> type) {
-        return dto != null && dto.getId() != 0 ? carRepository.findById(dto.getId()).orElse(new Car()) : new Car();
+        return dto != null && dto.getModelId() != 0 ? carRepository.findById(dto.getModelId()).orElse(new Car()) : new Car();
     }
 }

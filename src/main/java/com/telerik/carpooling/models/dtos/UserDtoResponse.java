@@ -14,7 +14,7 @@ import javax.validation.constraints.*;
 public class UserDtoResponse {
 
     @Column
-    private Long id;
+    private Long modelId;
 
     @Size(min = 2, max = 20, message = "Please enter username between 2 and 20 symbols")
     @Column(unique = true, nullable = false, updatable = false)

@@ -37,7 +37,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDtoResponse updateCar(CarDtoResponse carDtoResponse, User owner) {
         Car car = dtoMapper.dtoToObject(carDtoResponse);
-        car.setId(owner.getCar().getId());
+        car.setModelId(owner.getCar().getModelId());
         car.setOwner(owner);
         return dtoMapper.objectToDto(carRepository.save(car));
     }

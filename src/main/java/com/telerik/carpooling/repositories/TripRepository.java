@@ -1,10 +1,8 @@
 package com.telerik.carpooling.repositories;
 
-import com.sun.org.apache.xerces.internal.dom.PSVIElementNSImpl;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,8 +31,7 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
             "(:smoking is null or :smoking ='' or c.smokingAllowed = :smoking) and" +
             "(:pets is null or :pets ='' or c.petsAllowed = :pets) and" +
             "(:luggage is null or :luggage ='' or c.luggageAllowed = :luggage)")
-    List<Trip> findTripsByPassedParameters(//@Param(value = "page")PageRequest page,
-                                           @Param(value = "tripStatus") TripStatus status,
+    List<Trip> findTripsByPassedParameters(@Param(value = "tripStatus") TripStatus status,
                                            @Param(value = "driver") User driver,
                                            @Param(value = "origin") String origin,
                                            @Param(value = "destination") String destination,
@@ -45,9 +42,4 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
                                            @Param(value = "luggage") String luggage,
                                            Pageable page
     );
-    Trip findByDriver(User driver);
-
-    @Query("select t from Trip t join User u on u.id = t.driver join Car c on c.owner = u.id where c.smokingAllowed = :smoking")
-    Trip findByIsSmokingAllowed(@Param(value = "smoking") String isSmokingAllowed);
-
 }

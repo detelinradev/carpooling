@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Data
 public class TripDtoResponse {
-    private Long id;
+    private Long modelId;
 
     private UserDtoResponse driver;
 

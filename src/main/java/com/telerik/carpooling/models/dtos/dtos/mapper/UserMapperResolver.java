@@ -16,7 +16,7 @@ public class UserMapperResolver {
 
     @ObjectFactory
     User resolve(UserDtoResponse dto, @TargetType Class<User> type) throws IllegalArgumentException {
-        return dto != null && dto.getId() != 0 ? userRepository.findById(dto.getId())
+        return dto != null && dto.getModelId() != 0 ? userRepository.findById(dto.getModelId())
                 .orElseThrow(()->new IllegalArgumentException("Invalid ID supplied")) : null;
     }
 }

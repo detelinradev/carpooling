@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 @Data
 public class CarDtoResponse {
 
-    private Long id;
+    private Long modelId;
 
     @Size(min = 1, max = 20, message = "Please enter brand name between 1 and 20 symbols!")
     private String brand;

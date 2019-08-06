@@ -53,10 +53,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDtoResponse getUser(String username) {
          UserDtoResponse user = dtoMapper.objectToDto(userRepository.findFirstByUsername(username));
-        if (ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).isPresent())
-            user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).get());
-        if (ratingRepository.findAverageRatingByUserAsDriver(user.getId()).isPresent())
-            user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getId()).get());
+        if (ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).isPresent())
+            user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).get());
+        if (ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).isPresent())
+            user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).get());
 
         return user;
     }
@@ -65,10 +65,10 @@ public class UserServiceImpl implements UserService {
     public List<UserDtoResponse> getUsers() {
         List<UserDtoResponse> users = dtoMapper.userToDtoList(userRepository.findAllByIsDeletedIsFalse());
         for(UserDtoResponse user : users){
-            if (ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).isPresent())
-                user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getId()).get());
-            if (ratingRepository.findAverageRatingByUserAsDriver(user.getId()).isPresent())
-                user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getId()).get());
+            if (ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).isPresent())
+                user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).get());
+            if (ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).isPresent())
+                user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).get());
         }
         return users;
     }

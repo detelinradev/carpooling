@@ -88,7 +88,7 @@ public class TripController {
     public ResponseEntity<?> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit,
                                         final Authentication authentication,
                                         HttpServletResponse httpServletResponse) throws IOException {
-        Optional<Trip> trip = tripRepository.findById(tripDtoEdit.getId());
+        Optional<Trip> trip = tripRepository.findById(tripDtoEdit.getModelId());
         if (trip.isPresent()) {
             if (!trip.get().getCreator().equals(authentication.getName()))
                 httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);

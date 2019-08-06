@@ -18,7 +18,7 @@ public class CommentMapperResolver {
 
     @ObjectFactory
     Comment resolve(CommentDtoResponse dto, @TargetType Class<Comment> type) {
-        return dto != null && dto.getId() != 0 ? commentRepository.findById(dto.getId()).orElse(new Comment()) : new Comment();
+        return dto != null && dto.getModelId() != 0 ? commentRepository.findById(dto.getModelId()).orElse(new Comment()) : new Comment();
     }
 
 }

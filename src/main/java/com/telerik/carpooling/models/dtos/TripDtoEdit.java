@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Data
 public class TripDtoEdit {
 
-    private Long id;
+    private Long modelId;
 
     @Size(max = 200)
     private String message;

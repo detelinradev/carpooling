@@ -68,9 +68,6 @@ public class TripServiceImpl implements TripService {
                                           String latestDepartureTime, String availablePlaces, String smoking,
                                           String pets, String luggage) {
 
-//        if(pageNumber != null && pageSize != null)
-//        Pageable page = PageRequest.of(pageNumber, pageSize);
-
         if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
                 (pets == null || (pets.equalsIgnoreCase("yes") || pets.equalsIgnoreCase("no"))) &&
                 (luggage == null || (luggage.equalsIgnoreCase("yes") || luggage.equalsIgnoreCase("no"))) &&
