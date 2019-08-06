@@ -26,6 +26,7 @@ class Home extends Component {
         let trips = <Spinner/>;
         if (this.props.token && this.props.trips) {
             console.log(this.props.trips);
+            console.log(1);
 
             trips = this.props.trips.map(trip => (
                 <Trip

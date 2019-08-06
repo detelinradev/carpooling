@@ -73,6 +73,12 @@ public class UserServiceImpl implements UserService {
         return users;
     }
 
+//    @Override
+//    public List<UserDtoResponse> getTopRatedDrivers() {
+//        List<UserDtoResponse> users = dtoMapper.userToDtoList(userRepository.findAllAndOrderByRatingAsDriver());
+//        return users;
+//    }
+
     @Override
     public User updateCurrentUserPassword(final String password, final User user) {
         if (isPasswordValid(password)) {

@@ -83,7 +83,7 @@ export const fetchTrips = (token) => {
         };
         const queryParams = '?driver=username1';
             // '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
-        axios.get( '/trips' + queryParams, {headers})
+        axios.get( 'http://localhost:8080/trips' + queryParams, {headers})
             .then( res => {
                 const fetchedTrips = [];
                 for ( let key in res.data ) {

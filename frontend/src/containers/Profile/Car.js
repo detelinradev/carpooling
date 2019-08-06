@@ -5,14 +5,14 @@ import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import axios from '../../axios-baseUrl';
 import Modal from "../../components/UI/Modal/Modal";
 import Button from "@material-ui/core/Button";
-import Avatar from "../../assets/images/images.png";
+import CarAvatar from "../../assets/images/218567006-abstract-car-wallpapers.jpg";
 
 class Car extends Component {
 
     state = {
         car: {},
         showModal: false,
-        src: Avatar,
+        src: CarAvatar,
         error:'',
         msg:'',
         file:''
@@ -31,7 +31,12 @@ class Car extends Component {
 
             if(getCarResponse) {
                 this.setState({
-                    car: getCarResponse.data,
+                    car: getCarResponse.data
+                })
+            }
+
+            if(getCarAvatarResponse>100){
+                this.setState({
                     src: URL.createObjectURL(getCarAvatarResponse)
                 })
             }
@@ -118,7 +123,7 @@ class Car extends Component {
                     </div>
                 ) :
                 (
-                    <button className="Car" onClick={() => this.toggleModal()}>+CREATE CAR</button>
+                    <button className="Car" onClick={() => this.toggleModal()}><h1>+CREATE CAR</h1></button>
                 );
 
         return (

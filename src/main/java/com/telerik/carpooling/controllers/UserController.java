@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +42,30 @@ public class UserController {
         return Optional
                 .ofNullable(userService.getUsers())
                 .map(users -> ResponseEntity.ok().body(users))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping (value = "/top-rated-drivers")
+    public ResponseEntity<List<UserDtoResponse>> getTopRatedDrivers() {
+        List<UserDtoResponse> users = userService.getUsers();
+        Collections.sort(users, (a, b) -> a.getRatingAsDriver() > b.getRatingAsDriver() ?
+                -1 : a.getRatingAsDriver() == b.getRatingAsDriver() ? 0 : 1);
+
+        return Optional
+                .ofNullable(users)
+                .map(user -> ResponseEntity.ok().body(user))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping (value = "/top-rated-passengers")
+    public ResponseEntity<List<UserDtoResponse>> getTopRatedPassengers() {
+        List<UserDtoResponse> users = userService.getUsers();
+        Collections.sort(users, (a, b) -> a.getRatingAsPassenger()  > b.getRatingAsPassenger() ?
+                -1 : a.getRatingAsPassenger() == b.getRatingAsPassenger() ? 0 : 1);
+
+        return Optional
+                .ofNullable(users)
+                .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

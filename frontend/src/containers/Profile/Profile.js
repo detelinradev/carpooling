@@ -35,7 +35,6 @@ class Profile extends Component {
                 .then(response => response.blob());
 
         if(getAvatarResponse.size>100){
-            console.log(getAvatarResponse);
             this.setState({
                 src: URL.createObjectURL(getAvatarResponse)
             })}
@@ -225,6 +224,7 @@ class Profile extends Component {
                         </ul>
                     </div>
                     <Car/>
+
                 </div>
 
             </Auxiliary>

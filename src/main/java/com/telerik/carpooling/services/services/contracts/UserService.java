@@ -28,4 +28,6 @@ public interface UserService {
     UserDtoResponse getUser(String username);
 
     List<UserDtoResponse> getUsers();
+
 }
+
