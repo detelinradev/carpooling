@@ -1,11 +1,8 @@
 import React from 'react';
 import './Trip.css';
-import Comment from "../Comment/Comment";
-import Modal from "../../UI/Modal/Modal";
 import Button from "@material-ui/core/Button";
 import Auxiliary from "../../../hoc/Auxiliary/Auxiliary";
 import {FaUserEdit} from "react-icons/fa";
-import { Redirect } from 'react-router-dom';
 
 const trip = (props) => {
 
@@ -21,7 +18,7 @@ const trip = (props) => {
                              src={'https://cdn.pixabay.com/photo/2018/02/08/22/27/flower-3140492__340.jpg'} alt={''}/>
                         <p className="meta-data">{props.driver.firstName} {props.driver.lastName}</p></p>
                     <div className="edit">
-                        <Button onClick={() => props.showFullTrip(props.tripID)}><h3
+                        <Button onClick={() => props.showFullTrip(props.data)}><h3
                             className="header">DETAILS <FaUserEdit/></h3>
                         </Button>
                     </div>

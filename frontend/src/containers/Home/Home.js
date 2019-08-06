@@ -17,21 +17,18 @@ class Home extends Component {
         }
     }
 
-    showFullTrip = (key) => {
-
+    showFullTrip = (trip) => {
+        this.props.onShowFullTrip(trip);
         this.props.history.push('/fullTrip');
-        console.log(key)
     };
+
     render() {
         let trips = <Spinner/>;
         if (this.props.token && this.props.trips) {
-            console.log(this.props.trips);
-            console.log(1);
 
             trips = this.props.trips.map(trip => (
                 <Trip
                     key={trip.id}
-                    tripID={trip.modelId}
                     data = {trip}
                     driver={trip.driver}
                     passengers={trip.passengers}
@@ -66,11 +63,13 @@ const mapStateToProps = state => {
         trips: state.trip.trips,
         loading: state.trip.loading,
         token: state.auth.token,
+        tripID:state.trip.tripId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token) => dispatch(actions.fetchTrips(token)),
+        onShowFullTrip: (trip) => dispatch(actions.showFullTrip(trip)),
     };
 };
 

@@ -4,11 +4,16 @@ import { updateObject } from '../../shared/utility';
 const initialState = {
     trips: [],
     loading: false,
-    purchased: false
+    purchased: false,
+    trip:null,
 };
 
 const createInit = ( state, action ) => {
     return updateObject( state, { purchased: false } );
+};
+
+const showFullTrip = ( state, action ) => {
+    return updateObject( state, { trip: action.trip } );
 };
 
 const createTripStart = ( state, action ) => {
@@ -32,6 +37,10 @@ const fetchTripsStart = ( state, action ) => {
     return updateObject( state, { loading: true } );
 };
 
+const fetchTripStart = ( state, action ) => {
+    return updateObject( state, { loading: true } );
+};
+
 const fetchTripsSuccess = ( state, action ) => {
     return updateObject( state, {
         trips: action.trips,
@@ -39,7 +48,18 @@ const fetchTripsSuccess = ( state, action ) => {
     } );
 };
 
+const fetchTripSuccess = ( state, action ) => {
+    return updateObject( state, {
+        trip: action.trip,
+        loading: false
+    } );
+};
+
 const fetchTripsFail = ( state, action ) => {
+    return updateObject( state, { loading: false } );
+};
+
+const fetchTripFail = ( state, action ) => {
     return updateObject( state, { loading: false } );
 };
 
@@ -50,8 +70,12 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.CREATE_TRIP_SUCCESS: return createTripSuccess( state, action )
         case actionTypes.CREATE_TRIP_FAIL: return createTripFail( state, action );
         case actionTypes.FETCH_TRIPS_START: return fetchTripsStart( state, action );
+        case actionTypes.FETCH_TRIP_START: return fetchTripStart( state, action );
         case actionTypes.FETCH_TRIPS_SUCCESS: return fetchTripsSuccess( state, action );
+        case actionTypes.FETCH_TRIP_SUCCESS: return fetchTripSuccess( state, action );
         case actionTypes.FETCH_TRIPS_FAIL: return fetchTripsFail( state, action );
+        case actionTypes.FETCH_TRIP_FAIL: return fetchTripFail( state, action );
+        case actionTypes.SHOW_FULL_TRIP: return showFullTrip(state, action);
         default: return state;
     }
 };

@@ -8,5 +8,7 @@ export {
 export {
     createTrip,
     createInit,
-    fetchTrips
+    fetchTrips,
+    fetchTrip,
+    showFullTrip
 } from './trip';

@@ -7,44 +7,55 @@ import * as actions from '../../store/actions/index';
 import Trip from "../../components/TripComponents/Trip/Trip";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
+import Button from "@material-ui/core/Button";
 
 class FullTrip extends Component{
 
-    componentDidMount() {
-            this.props.onFetchTrips(this.props.token);
-    }
-
     render() {
-            if (this.props.token) {
-            return (
-                <div className="todore">
-                    <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
-                    {/*{trips}*/}
-                </div>)
-        }
+        return(
+            <div className=" Post" >
+                <div className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination}</div>
+                <div className="Trip additional-details  cardcont  meta-data-container">
+                    <p className="image">
+                        <img id="postertest" className='poster' style={{width: 128}}
+                             src={'https://cdn.pixabay.com/photo/2018/02/08/22/27/flower-3140492__340.jpg'} alt={''}/>
+                        <p className="meta-data">{this.props.trip.driver.firstName} {this.props.trip.driver.lastName}</p></p>
+                    <p className="row-xs-6 info"> Departure Time<p className="meta-data">{this.props.trip.departureTime}</p>
+                    </p>
+                    <p className="row-xs-6 info">Available Seats<p
+                        className="meta-data">{this.props.trip.availablePlaces}</p>
+                    </p>
+                    <p className="row-xs-6 info">Price<p className="meta-data">{this.props.trip.costPerPassenger} leva</p>
+                    </p>
+                    <p className="row-xs-6 info">Car<p className="meta-data">{this.props.trip.car.brand} {this.props.trip.car.model}</p></p>
+                    <p className="row-xs-6 info">Status<p className="meta-data">{this.props.trip.tripStatus}</p></p>
+                    <p className="row-xs-3 info">Message<p className="meta-data">{this.props.trip.message}</p></p>
+                    <p className="row-xs-6 info">Smoking allowed<p className="meta-data">{this.props.trip.car.smokingAllowed}</p>
+                    </p>
+                    <p className="row-xs-6 info">Pets allowed<p className="meta-data">{this.props.trip.car.petsAllowed}</p></p>
+                    <p className="row-xs-6 info">Luggage allowed<p className="meta-data">{this.props.trip.car.luggageAllowed}</p>
+                    </p>
+                    <p className="row-xs-6 info">Air-conditioned<p className="meta-data">{this.props.trip.car.airConditioned}</p>
+                    </p>
+                </div>
 
-        return (
-            <div className="todore">
+            </div>
+        )
 
-                <h1 className="header">THE PERFECT PLACE TO FIND <FaAndroid/><br/> THE FASTEST WAY TO TRAVEL</h1>
-                <hr style={{width: '70%'}}/>
-                <h2 style={{textAlign: "center"}}>
-                    SEARCH AMONG ALL KIND OF VEHICLES AND DESTINATIONS!
-                </h2>
-            </div>)
-        }
+}
 }
 
 const mapStateToProps = state => {
     return {
-        trips: state.trip.trips,
         loading: state.trip.loading,
         token: state.auth.token,
+        trip:state.trip.trip,
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchTrips: (token) => dispatch(actions.fetchTrips(token)),
+        onFetchTrip: (token,tripId) => dispatch(actions.fetchTrip(token,tripId)),
     };
 };
 

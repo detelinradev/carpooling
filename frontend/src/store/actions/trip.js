@@ -54,10 +54,24 @@ export const createInit = () => {
     };
 };
 
+export const showFullTrip = ( trip) => {
+    return {
+        type: actionTypes.SHOW_FULL_TRIP,
+        trip:trip
+    };
+};
+
 export const fetchTripsSuccess = ( trips ) => {
     return {
         type: actionTypes.FETCH_TRIPS_SUCCESS,
         trips: trips
+    };
+};
+
+export const fetchTripSuccess = ( trip ) => {
+    return {
+        type: actionTypes.FETCH_TRIP_SUCCESS,
+        trip: trip
     };
 };
 
@@ -68,9 +82,22 @@ export const fetchTripsFail = ( error ) => {
     };
 };
 
+export const fetchTripFail = ( error ) => {
+    return {
+        type: actionTypes.FETCH_TRIP_FAIL,
+        error: error
+    };
+};
+
 export const fetchTripsStart = () => {
     return {
         type: actionTypes.FETCH_TRIPS_START
+    };
+};
+
+export const fetchTripStart = () => {
+    return {
+        type: actionTypes.FETCH_TRIP_START
     };
 };
 
@@ -96,6 +123,23 @@ export const fetchTrips = (token) => {
             } )
             .catch( err => {
                 dispatch(fetchTripsFail(err));
+            } );
+    };
+};
+
+export const fetchTrip = (token,tripId) => {
+    return dispatch => {
+        dispatch(fetchTripStart());
+        const headers = {
+            "Content-Type":"application/json",
+            'Authorization':token
+        };
+        axios.get( '/trips/' +tripId , {headers})
+            .then( res => {
+                dispatch(fetchTripSuccess(res.body))
+            })
+            .catch( err => {
+                dispatch(fetchTripFail(err));
             } );
     };
 };
