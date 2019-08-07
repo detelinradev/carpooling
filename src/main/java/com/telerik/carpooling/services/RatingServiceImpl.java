@@ -26,7 +26,7 @@ public class RatingServiceImpl implements RatingService {
     public Rating rateDriver(String tripID, User passenger, Integer rating) {
         long intTripID = parseStringToInt(tripID);
         Optional<Trip> trip = tripRepository.findById(intTripID);
-        if (trip.isPresent()) {
+        if (trip.isPresent()&&rating>0 && rating <6) {
             User driver = trip.get().getDriver();
             if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
                 trip.get().getPassengersAllowedToRate().remove(passenger);
@@ -46,7 +46,7 @@ public class RatingServiceImpl implements RatingService {
         Optional<Trip> trip = tripRepository.findById(intTripID);
         Optional<User> passenger = userRepository.findById(intPassengerID);
 
-        if (trip.isPresent() && passenger.isPresent()) {
+        if (trip.isPresent() && passenger.isPresent()&&rating>0 && rating <6 ) {
             if (trip.get().getPassengersAvailableForRate().contains(passenger.get())) {
                 trip.get().getPassengersAvailableForRate().remove(passenger.get());
                 Rating ratingObject = new Rating(driver, passenger.get(), rating,false);
