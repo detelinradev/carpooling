@@ -6,6 +6,7 @@ import axios from '../../axios-baseUrl';
 import Modal from "../../components/UI/Modal/Modal";
 import Button from "@material-ui/core/Button";
 import CarAvatar from "../../assets/images/218567006-abstract-car-wallpapers.jpg";
+import NewCar from "./NewCar";
 
 class Car extends Component {
 
@@ -128,9 +129,8 @@ class Car extends Component {
 
         return (
             <div>
-                <Modal show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
-                    zdravei
-                    <Button className="input save" onClick={() => this.editParamsHandler()}><h2>SAVE</h2></Button>
+                <Modal style={{width: 600}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
+                    <NewCar/>
                 </Modal>
                 {car}
             </div>
