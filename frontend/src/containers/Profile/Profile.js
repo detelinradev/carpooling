@@ -10,6 +10,7 @@ import Modal from "../../components/UI/Modal/Modal";
 import Avatar from '../../assets/images/images.png';
 import { TiUser, TiGroup} from "react-icons/ti";
 import { FaEnvelopeOpen, FaPhone, FaMedal, FaUserEdit} from "react-icons/fa";
+import StarRatings from 'react-star-ratings';
 
 
 
@@ -30,7 +31,7 @@ class Profile extends Component {
     async componentDidMount() {
 
         const getAvatarResponse = await
-            fetch('http://localhost:8080/users/avatar',
+            fetch('http://localhost:8080/users/avatarMe',
             { headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
 
@@ -215,11 +216,25 @@ class Profile extends Component {
                         <ul>
                             <li className="rating">
                                 <h3><FaMedal/>  Rating as driver<span
-                                    className="header"><h1>{this.state.user.ratingAsDriver}</h1></span></h3>
+                                    className="header"><h1>{
+                                        <StarRatings
+                                    rating={this.state.user.ratingAsDriver}
+                                    starRatedColor="blue"
+                                    changeRating={this.changeRating}
+                                    numberOfStars={5}
+                                    name='rating'
+                                />}</h1></span></h3>
                             </li>
                             <li className="rating">
                                 <h3><span><FaMedal/></span>  Rating as passenger<span
-                                    className="header"><h1>{this.state.user.ratingAsPassenger}</h1></span></h3>
+                                    className="header"><h1>{
+                                    <StarRatings
+                                        rating={this.state.user.ratingAsPassenger}
+                                        starRatedColor="blue"
+                                        changeRating={this.changeRating}
+                                        numberOfStars={5}
+                                        name='rating'
+                                    />}</h1></span></h3>
                             </li>
                         </ul>
                     </div>

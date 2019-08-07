@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,11 +49,12 @@ public class UserController {
     @GetMapping (value = "/top-rated-drivers")
     public ResponseEntity<List<UserDtoResponse>> getTopRatedDrivers() {
         List<UserDtoResponse> users = userService.getUsers();
-        Collections.sort(users, (a, b) -> a.getRatingAsDriver() > b.getRatingAsDriver() ?
-                -1 : a.getRatingAsDriver() == b.getRatingAsDriver() ? 0 : 1);
+        users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
+
+         List<UserDtoResponse>finalUserList = users.subList(0,10);
 
         return Optional
-                .ofNullable(users)
+                .of(finalUserList)
                 .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -60,11 +62,12 @@ public class UserController {
     @GetMapping (value = "/top-rated-passengers")
     public ResponseEntity<List<UserDtoResponse>> getTopRatedPassengers() {
         List<UserDtoResponse> users = userService.getUsers();
-        Collections.sort(users, (a, b) -> a.getRatingAsPassenger()  > b.getRatingAsPassenger() ?
-                -1 : a.getRatingAsPassenger() == b.getRatingAsPassenger() ? 0 : 1);
+        users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
+
+        List<UserDtoResponse>finalUserList = users.subList(0,10);
 
         return Optional
-                .ofNullable(users)
+                .of(finalUserList)
                 .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -89,7 +92,7 @@ public class UserController {
     @GetMapping(value = "/me")
     public ResponseEntity<?> getUserOwnInfo(Authentication authentication) {
         return Optional
-                .ofNullable(userRepository.findFirstByUsername(
+                .ofNullable(userService.getUser(
                         authentication.getName()))
                 .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -142,7 +145,7 @@ public class UserController {
                                                final Authentication authentication) {
 
         URI fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
-
+        System.out.println(1);
         return Optional
                 .ofNullable(imageService.storeCarImage(file,
                         userRepository.findFirstByUsername(authentication.getName()),fileDownloadUri))
@@ -151,8 +154,8 @@ public class UserController {
     }
 
 
-    @GetMapping("/avatar")
-    public ResponseEntity<byte[]> downloadUserImage(final Authentication authentication) {
+    @GetMapping("/avatarMe")
+    public ResponseEntity<byte[]> downloadUserOwnImage(final Authentication authentication) {
 
         return Optional
                 .ofNullable(imageService.getImage(userRepository.findFirstByUsername(
@@ -161,14 +164,36 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/avatar/car")
-    public ResponseEntity<byte[]> downloadCarImage(Authentication authentication) {
+    @GetMapping("/avatar/{userId}")
+    public ResponseEntity<byte[]> downloadUserImage(@PathVariable Long userId) {
+
+        if(userRepository.findById(userId).isPresent()) {
+            return Optional
+                    .ofNullable(imageService.getImage(userRepository.findById(userId).get().getUserImage().getModelId()))
+                    .map(this::createImageModelInResponseEntity)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/avatarMe/car")
+    public ResponseEntity<byte[]> downloadOwnCarImage(Authentication authentication) {
 
         return Optional
                 .ofNullable(imageService.getImage(userRepository.findFirstByUsername(
                         authentication.getName()).getCar().getCarImage().getModelId()))
                 .map(this::createImageModelInResponseEntity)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/avatar/car/{userId}")
+    public ResponseEntity<byte[]> downloadCarImage(@PathVariable Long userId) {
+
+        if(userRepository.findById(userId).isPresent()) {
+            return Optional
+                    .ofNullable(imageService.getImage(userRepository.findById(userId).get().getCar().getCarImage().getModelId()))
+                    .map(this::createImageModelInResponseEntity)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 

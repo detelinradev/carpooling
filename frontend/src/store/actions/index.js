@@ -8,9 +8,12 @@ export {
 export {
     createTrip,
     createInit,
-    fetchTrips
+    fetchTrips,
+    fetchTrip,
+    showFullTrip
 } from './trip';
 
 export {
-    createCar,
-} from './car';
+    fetchImageCar,
+    fetchImageUser
+} from './user';

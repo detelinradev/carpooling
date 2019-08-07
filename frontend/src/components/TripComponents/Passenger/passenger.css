@@ -1,4 +1,4 @@
-.Comments {
+.Passenger {
     width: 90%;
     box-shadow: 0 2px 3px #ccc;
     box-sizing: border-box;
@@ -6,8 +6,8 @@
     display: flex;
 }
 
-.Comments:hover,
-.Comments:active {
+.Passenger:hover,
+.Passenger:active {
     background-color: yellowgreen;
 }
 

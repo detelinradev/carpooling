@@ -291,10 +291,7 @@ public class TripServiceImpl implements TripService {
     private Trip markTripAsCanceled(Long tripID) {
         Optional<Trip> trip = tripRepository.findById(tripID);
 
-        if (trip.isPresent()) {
-            trip.get().setTripStatus(TripStatus.CANCELED);
-            return tripRepository.save(trip.get());
-        }
+        trip.ifPresent(value -> value.setTripStatus(TripStatus.CANCELED));
         return null;
     }
 
