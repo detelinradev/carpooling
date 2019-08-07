@@ -47,7 +47,7 @@ public class ImageServiceImpl implements ImageService {
                         file.getContentType(),
                         file.getBytes(), user.getCar());
                 user.getCar().setAvatarUri(fileDownloadUri.toString());
-
+                System.out.println(2);
                 return imageRepository.save(image);
             } catch (IOException ex) {
                 throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);

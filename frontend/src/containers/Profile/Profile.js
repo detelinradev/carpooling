@@ -31,7 +31,7 @@ class Profile extends Component {
     async componentDidMount() {
 
         const getAvatarResponse = await
-            fetch('http://localhost:8080/users/avatar',
+            fetch('http://localhost:8080/users/avatarMe',
             { headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
 

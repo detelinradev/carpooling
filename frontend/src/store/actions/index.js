@@ -12,3 +12,8 @@ export {
     fetchTrip,
     showFullTrip
 } from './trip';
+
+export {
+    fetchImageCar,
+    fetchImageUser
+} from './user';

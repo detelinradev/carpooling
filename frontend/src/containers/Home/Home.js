@@ -35,6 +35,7 @@ class Home extends Component {
                     comments={trip.comments}
                     car ={trip.car}
                     showFullTrip={this.showFullTrip}
+                    token={this.props.token}
                 />
             ))
         }
@@ -63,7 +64,6 @@ const mapStateToProps = state => {
         trips: state.trip.trips,
         loading: state.trip.loading,
         token: state.auth.token,
-        tripID:state.trip.tripId
     }
 };
 const mapDispatchToProps = dispatch => {

@@ -145,7 +145,7 @@ public class UserController {
                                                final Authentication authentication) {
 
         URI fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
-
+        System.out.println(1);
         return Optional
                 .ofNullable(imageService.storeCarImage(file,
                         userRepository.findFirstByUsername(authentication.getName()),fileDownloadUri))
@@ -154,8 +154,8 @@ public class UserController {
     }
 
 
-    @GetMapping("/avatar")
-    public ResponseEntity<byte[]> downloadUserImage(final Authentication authentication) {
+    @GetMapping("/avatarMe")
+    public ResponseEntity<byte[]> downloadUserOwnImage(final Authentication authentication) {
 
         return Optional
                 .ofNullable(imageService.getImage(userRepository.findFirstByUsername(
@@ -164,14 +164,36 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/avatar/car")
-    public ResponseEntity<byte[]> downloadCarImage(Authentication authentication) {
+    @GetMapping("/avatar/{userId}")
+    public ResponseEntity<byte[]> downloadUserImage(@PathVariable Long userId) {
+
+        if(userRepository.findById(userId).isPresent()) {
+            return Optional
+                    .ofNullable(imageService.getImage(userRepository.findById(userId).get().getUserImage().getModelId()))
+                    .map(this::createImageModelInResponseEntity)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/avatarMe/car")
+    public ResponseEntity<byte[]> downloadOwnCarImage(Authentication authentication) {
 
         return Optional
                 .ofNullable(imageService.getImage(userRepository.findFirstByUsername(
                         authentication.getName()).getCar().getCarImage().getModelId()))
                 .map(this::createImageModelInResponseEntity)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/avatar/car/{userId}")
+    public ResponseEntity<byte[]> downloadCarImage(@PathVariable Long userId) {
+
+        if(userRepository.findById(userId).isPresent()) {
+            return Optional
+                    .ofNullable(imageService.getImage(userRepository.findById(userId).get().getCar().getCarImage().getModelId()))
+                    .map(this::createImageModelInResponseEntity)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 
