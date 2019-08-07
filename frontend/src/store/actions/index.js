@@ -17,3 +17,7 @@ export {
     fetchImageCar,
     fetchImageUser
 } from './user';
+
+export {
+    createCar,
+} from './car';

@@ -20,13 +20,14 @@ class Car extends Component {
     };
 
     async componentDidMount() {
+        console.log("first" + this.state.src);
             const getCarResponse = await axios.get('/car', {
                 headers:
                     {"Authorization": this.props.token}
             });
 
         const getCarAvatarResponse = await
-            fetch('http://localhost:8080/users/avatar/car',
+            fetch('http://localhost:8080/users/avatarMe/car',
                 { headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
 
@@ -36,11 +37,12 @@ class Car extends Component {
                 })
             }
 
-            if(getCarAvatarResponse>100){
+            if(getCarAvatarResponse>49){
                 this.setState({
                     src: URL.createObjectURL(getCarAvatarResponse)
                 })
             }
+            console.log(this.state.src);
     }
 
 

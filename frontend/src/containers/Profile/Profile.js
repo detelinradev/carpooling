@@ -39,6 +39,7 @@ class Profile extends Component {
             this.setState({
                 src: URL.createObjectURL(getAvatarResponse)
             })}
+        console.log(this.state.src);
 
 
         const getMeResponse = await
