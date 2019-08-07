@@ -2,13 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import './FullTrip.css';
 import axios from '../../axios-baseUrl';
-import {FaAndroid} from 'react-icons/fa';
-import * as actions from '../../store/actions/index';
-import Trip from "../../components/TripComponents/Trip/Trip";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
-import Button from "@material-ui/core/Button";
 import Comment from '../../components/TripComponents/Comment/Comment'
 import Passenger from '../../components/TripComponents/Passenger/Passenger'
 import StarRatings from "react-star-ratings";
@@ -17,8 +12,23 @@ import Car from "../../components/TripComponents/Car/Car";
 
 class FullTrip extends Component {
 
-    componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId);
+    state={
+        image:""
+    };
+
+
+    async componentDidMount() {
+
+        const fetchUserImage = await
+            fetch('http://localhost:8080/users/avatar/' + this.props.trip.driver.modelId,
+                {headers: {"Authorization": this.props.token}})
+                .then(response => response.blob());
+
+        if (fetchUserImage.size > 100) {
+            this.setState({
+                image: URL.createObjectURL(fetchUserImage)
+            })
+        }
     }
 
     render() {
@@ -52,7 +62,7 @@ class FullTrip extends Component {
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
-                                 src={this.props.userImage} alt={''}/>
+                                 src={this.state.image} alt={''}/>
                             <p className="meta-data">{this.props.trip.driver.firstName} {this.props.trip.driver.lastName}</p>
                         </p>
                         <h3><span><FaMedal/></span> Rating <span
@@ -112,13 +122,13 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         trip: state.trip.trip,
-        userImage: state.trip.userImage
+        // userImage: state.trip.userImage
     }
 };
-const mapDispatchToProps = dispatch => {
-    return {
-        onFetchUserImage: (token, userId) => dispatch(actions.fetchImageUser(token, userId)),
-    };
-};
+// const mapDispatchToProps = dispatch => {
+    // return {
+    //     onFetchUserImage: (token, userId) => dispatch(actions.fetchImageUser(token, userId)),
+    // };
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(FullTrip, axios));
+export default connect(mapStateToProps)(withErrorHandler(FullTrip, axios));

@@ -101,15 +101,16 @@ export const fetchTripStart = () => {
     };
 };
 
-export const fetchTrips = (token) => {
+export const fetchTrips = (token,queryParams) => {
+    console.log(queryParams);
+    console.log(1);
     return dispatch => {
+
         dispatch(fetchTripsStart());
         const headers = {
             "Content-Type":"application/json",
             'Authorization':token
         };
-        const queryParams = '?driver=username1';
-            // '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
         axios.get( 'http://localhost:8080/trips' + queryParams, {headers})
             .then( res => {
                 const fetchedTrips = [];

@@ -5,14 +5,12 @@ import Auxiliary from "../../../hoc/Auxiliary/Auxiliary";
 import {FaUserEdit} from "react-icons/fa";
 
  const trip = (props) => {
-    let image=null;
-   const getAvatarResponse = async () => {
-      await fetch('http://localhost:8080/users/avatar/' + props.data.driver.modelId,
-           {headers: {"Authorization": props.token}})
-           .then(response => response.blob())
-           .then(blob =>  URL.createObjectURL(blob))
-           .then(response => image = response);
-   };
+   // const getAvatarResponse = async () =>{
+   //   await fetch('http://localhost:8080/users/avatar/' + props.data.driver.modelId,
+   //         {headers: {"Authorization": props.token}})
+   //         .then(response => response.blob())
+   //         .then(blob =>  URL.createObjectURL(blob))
+   // };
     //
     // const fetchImage = async () => {
     //      const token = sessionStorage.getItem("jwt");
@@ -35,7 +33,7 @@ import {FaUserEdit} from "react-icons/fa";
                 <div className="Trip additional-details  cardcont  meta-data-container">
                     <p className="image">
                         <img id="postertest" className='poster' style={{width: 128}}
-                             src={getAvatarResponse()} alt={''}/>
+                             src={'https://cdn.pixabay.com/photo/2018/02/08/22/27/flower-3140492__340.jpg'} alt={''}/>
                         <p className="meta-data">{props.data.driver.firstName} {props.data.driver.lastName}</p></p>
                     <div className="edit">
                         <Button onClick={() => props.showFullTrip(props.data)}><h3
