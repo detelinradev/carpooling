@@ -40,18 +40,23 @@ export const checkAuthTimeout = (expirationTime) => {
     };
 };
 
-export const auth = (username, password, isSignup) => {
+export const auth = (username, password, isSignup,firstName) => {
     return dispatch => {
         dispatch(authStart());
-        const authData = {
-            username: username,
-            password: password
 
-            // returnSecureToken: true
-        };
+
         let url = 'http://localhost:8080/users/register';
+        let authData= {
+            username: username,
+            password: password,
+            firstName: firstName
+        };
         if (!isSignup) {
             url = 'http://localhost:8080/users/authenticate';
+            authData= {
+                username: username,
+                password: password
+            };
         }
         axios.post(url, authData)
             .then(response => {

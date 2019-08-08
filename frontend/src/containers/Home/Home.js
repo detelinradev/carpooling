@@ -138,10 +138,10 @@ class Home extends Component {
         let stringData ="?";
         let questionMark="";
         for (let formElementIdentifier in this.state.createForm) {
+            if(this.state.createForm[formElementIdentifier].value !=='')
             stringData = stringData + questionMark + formElementIdentifier + '=' + this.state.createForm[formElementIdentifier].value;
             questionMark = '&';
         }
-
         this.props.onFetchTrips(this.props.token,stringData);
 
     };
@@ -169,6 +169,12 @@ class Home extends Component {
         this.props.history.push('/fullTrip');
     };
 
+    fetchUsersImages = (userId) => {
+        console.log(1)
+        this.props.onFetchUserImage(userId);
+        // this.props.history.push('/fullTrip');
+    };
+
 
     render() {
         const formElementsArray = [];
@@ -192,7 +198,9 @@ class Home extends Component {
                         touched={formElement.config.touched}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
-                <Button btnType="Success" disabled={!this.state.formIsValid}>CREATE</Button>
+                <Button btnType="Success"
+                       // disabled={!this.state.formIsValid}
+                >CREATE</Button>
             </form>
         );
         if (this.props.loading) {
@@ -210,7 +218,9 @@ class Home extends Component {
                     comments={trip.comments}
                     car ={trip.car}
                     showFullTrip={this.showFullTrip}
+                    fetchUserImage={this.fetchUsersImages}
                     token={this.props.token}
+                    userImage={this.props.userImage}
                 />
             ))
         }
@@ -245,12 +255,14 @@ const mapStateToProps = state => {
         trips: state.trip.trips,
         loading: state.trip.loading,
         token: state.auth.token,
+        userImage: state.user.userImage
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
         onShowFullTrip: (trip) => dispatch(actions.showFullTrip(trip)),
+        onFetchUserImage:(userId)=> dispatch(actions.fetchImageUser(this.props.token,userId))
     };
 };
 

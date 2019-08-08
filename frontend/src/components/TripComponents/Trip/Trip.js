@@ -28,15 +28,15 @@ import {FaUserEdit} from "react-icons/fa";
     return (
 
         <Auxiliary>
-            <div className=" Post" >
+            <div className=" Post"  >
                 <div className="proba Trip additional-details hed">{props.data.origin} -> {props.data.destination}</div>
                 <div className="Trip additional-details  cardcont  meta-data-container">
                     <p className="image">
-                        <img id="postertest" className='poster' style={{width: 128}}
-                             src={'https://cdn.pixabay.com/photo/2018/02/08/22/27/flower-3140492__340.jpg'} alt={''}/>
+                        <img   id="postertest" className='poster' style={{width: 128}}
+                             src={props.userImage} alt={''}/>
                         <p className="meta-data">{props.data.driver.firstName} {props.data.driver.lastName}</p></p>
                     <div className="edit">
-                        <Button onClick={() => props.showFullTrip(props.data)}><h3
+                        <Button onClick={() => props.fetchUserImage(props.data.driver.modelId)}><h3
                             className="header">DETAILS <FaUserEdit/></h3>
                         </Button>
                     </div>

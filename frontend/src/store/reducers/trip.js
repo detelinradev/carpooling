@@ -67,7 +67,7 @@ const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
         case actionTypes.CREATE_INIT: return createInit( state, action );
         case actionTypes.CREATE_TRIP_START: return createTripStart( state, action );
-        case actionTypes.CREATE_TRIP_SUCCESS: return createTripSuccess( state, action )
+        case actionTypes.CREATE_TRIP_SUCCESS: return createTripSuccess( state, action );
         case actionTypes.CREATE_TRIP_FAIL: return createTripFail( state, action );
         case actionTypes.FETCH_TRIPS_START: return fetchTripsStart( state, action );
         case actionTypes.FETCH_TRIP_START: return fetchTripStart( state, action );
