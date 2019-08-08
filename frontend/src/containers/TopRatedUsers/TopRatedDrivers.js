@@ -22,6 +22,7 @@ class topRatedDrivers extends Component {
 
         let drivers = this.state.users.map(driver => (
             <Driver
+                key={driver.modelId}
                 driver={driver}
             />
         ));
