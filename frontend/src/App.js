@@ -8,6 +8,7 @@ import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
 import './App.css';
 import Home from './containers/Home/Home';
+import TopRatedDrivers from "./containers/TopRatedUsers/TopRatedDrivers";
 
 
 
@@ -62,7 +63,7 @@ class App extends Component {
                     {/*<footer style={{textAlign: 'center', marginTop: 100}} className="test-footer m-5 color=elegant-color">*/}
                     {/*    This is footer*/}
                     {/*</footer>*/}
-
+                    <TopRatedDrivers/>
                 </Layout>
             </div>
         );

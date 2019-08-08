@@ -206,7 +206,7 @@ class Profile extends Component {
                             </Button>
                             </div>
                         </ul>
-                        <ul style={{maxWidth: 500}}>
+                        <ul style={{maxWidth: 350}}>
                             <h2><TiUser/> Name:  <span className="header">{this.state.user.firstName} {this.state.user.lastName}</span></h2>
                             <h2><TiGroup/> Username: <span className="header">{this.state.user.username}</span></h2>
                             <h2><FaEnvelopeOpen/> Email: <span className="header">{this.state.user.email}</span></h2>
@@ -214,24 +214,24 @@ class Profile extends Component {
                             <hr/>
                             <li className="feedback"><Button><h3 className="header">Show Feedback</h3></Button></li>
                         </ul>
-                        <ul>
+                        <ul style={{maxWidth: 300}}>
                             <li className="rating">
                                 <h3><FaMedal/>  Rating as driver<span
-                                    className="header"><h1>{
+                                    className="header"><h3>{
                                         <StarRatings
                                     rating={this.state.user.ratingAsDriver}
-                                    starRatedColor="blue"
+                                    starRatedColor="yellow"
                                     changeRating={this.changeRating}
                                     numberOfStars={5}
                                     name='rating'
-                                />}</h1></span></h3>
+                                />}</h3></span></h3>
                             </li>
                             <li className="rating">
                                 <h3><span><FaMedal/></span>  Rating as passenger<span
                                     className="header"><h1>{
                                     <StarRatings
                                         rating={this.state.user.ratingAsPassenger}
-                                        starRatedColor="blue"
+                                        starRatedColor="yellow"
                                         changeRating={this.changeRating}
                                         numberOfStars={5}
                                         name='rating'

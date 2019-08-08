@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
@@ -51,7 +52,9 @@ public class UserController {
         List<UserDtoResponse> users = userService.getUsers();
         users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
 
-         List<UserDtoResponse>finalUserList = users.subList(0,10);
+        List<UserDtoResponse>finalUserList =users.stream()
+                .limit(10)
+                .collect(Collectors.toList());
 
         return Optional
                 .of(finalUserList)
@@ -64,7 +67,9 @@ public class UserController {
         List<UserDtoResponse> users = userService.getUsers();
         users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
 
-        List<UserDtoResponse>finalUserList = users.subList(0,10);
+        List<UserDtoResponse>finalUserList =users.stream()
+                .limit(10)
+                .collect(Collectors.toList());
 
         return Optional
                 .of(finalUserList)
