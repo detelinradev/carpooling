@@ -4,7 +4,7 @@ import { updateObject } from '../../shared/utility';
 const initialState = {
     users: [],
     loading: false,
-    userImage:null,
+    userImage:"",
     carImage:null
 };
 

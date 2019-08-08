@@ -4,7 +4,6 @@ import './Car.css';
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import axios from '../../axios-baseUrl';
 import Modal from "../../components/UI/Modal/Modal";
-import Button from "@material-ui/core/Button";
 import CarAvatar from "../../assets/images/218567006-abstract-car-wallpapers.jpg";
 import NewCar from "./NewCar";
 
