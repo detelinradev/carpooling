@@ -229,7 +229,7 @@ class Home extends Component {
                 <div className="todore">
                     <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
                     <div>
-                        <div className="NewTrip">
+                        <div className="SearchTrips">
                             <h4>Search Trips</h4>
                             {form}
                         </div>

@@ -1,0 +1,24 @@
+.Passenger {
+    width: 200px;
+    box-shadow: 0 2px 3px #ccc;
+    box-sizing: border-box;
+    text-align: left;
+    display: inline-block;
+    float: left;
+    flex-flow: row wrap;
+    margin: auto;
+    padding: 24px;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    margin-top: 35px;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.Passenger img {
+    height: 50px;
+}
+
+.header {
+    color: mediumseagreen;
+    text-align: center;
+}

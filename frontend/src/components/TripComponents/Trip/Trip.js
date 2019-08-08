@@ -40,6 +40,7 @@ import {FaUserEdit} from "react-icons/fa";
                             className="header">DETAILS <FaUserEdit/></h3>
                         </Button>
                     </div>
+                    <div>
                     <p className="row-xs-6 info"> Departure Time<p className="meta-data">{props.data.departureTime}</p>
                     </p>
                     <p className="row-xs-6 info">Available Seats<p
@@ -57,7 +58,7 @@ import {FaUserEdit} from "react-icons/fa";
                     </p>
                     <p className="row-xs-6 info">Air-conditioned<p className="meta-data">{props.car.airConditioned}</p>
                     </p>
-
+                    </div>
                 </div>
 
             </div>

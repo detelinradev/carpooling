@@ -2,50 +2,86 @@ import React, {Component} from 'react';
 import axios from '../../axios-baseUrl';
 import Driver from "./Driver";
 import {fetchImageCarFail} from "../../store/actions/user";
+import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
+import './TopRatedDrivers.css';
+import Passenger from "./Passenger";
 
 class topRatedDrivers extends Component {
     state = {
-        users: []
+        drivers: [],
+        passengers: []
     };
 
     componentDidMount() {
         axios.get('http://localhost:8080/users/top-rated-drivers')
             .then(response => {
-                if(response){
+                if (response) {
                     this.setState({
-                        users: response.data
-                    })};
-            })
-            .catch( err => {
-                console.log(3);})
+                        drivers: response.data
+                    })
+                }
 
-        // if(response){
-        //     this.setState({
-        //         users: response.data
-        //     })}
+            })
+            .catch(err => {
+                console.log(3);
+            });
+
+        axios.get('http://localhost:8080/users/top-rated-passengers')
+            .then(response => {
+                if (response) {
+                    this.setState({
+                        passengers: response.data
+                    })
+                }
+
+            })
+            .catch(err => {
+                console.log(3);
+            })
+
     }
 
     render() {
 
 
+        let drivers = this.state.drivers.map(driver => (
+            <div className="users">
+                <Driver
+                    key={driver.modelId}
+                    driver={driver}
+                />
+            </div>
+        ));
 
-        let drivers = this.state.users.map(driver => (
-            <Driver
-                key={driver.modelId}
-                driver={driver}
-            />
+        let passengers = this.state.passengers.map(passenger => (
+            <div className="users">
+                <Passenger
+                    key={passenger.modelId}
+                    passenger={passenger}
+                />
+            </div>
         ));
 
         return (
-            <div >
-                <ul>
-                    <div style={{color: "white"}}>
-                        TOP 10 DRIVERS
+            <Auxiliary>
+                <div className="users">
+                    <div>
+                        <h1> TOP RATED DRIVERS</h1>
+                    </div>
+                    <div>
                         {drivers}
                     </div>
-                </ul>
-            </div>)
+                    <div>
+                        <h1> TOP RATED PASSENGERS</h1>
+                    </div>
+                    <div>
+                    {passengers}
+                    </div>
+                </div>
+            </Auxiliary>
+        )
 
     }
 }
+
 export default topRatedDrivers;

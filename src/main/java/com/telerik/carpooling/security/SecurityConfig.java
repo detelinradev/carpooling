@@ -65,7 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,
                             "/trips/**",
                                        "/users/top-rated-drivers",
-                                        "/users/top-rated-passengers").permitAll()
+                                        "/users/top-rated-passengers",
+                                         "/users/avatar/**").permitAll()
                 .antMatchers("/api/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
