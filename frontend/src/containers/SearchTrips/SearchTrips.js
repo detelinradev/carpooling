@@ -159,16 +159,20 @@ class SearchTrips extends Component {
     //     // this.inputChangedHandler(date,'departureTime')
     // };
 
-    inputDateChangedHandler = (date) => {
+    inputDateChangedHandler = (date,name) => {
         console.log(date)
+        console.log(name)
+        this.setState({
+                    startDate : date
+                });
 
-        const updatedFormElement = updateObject(this.state.createForm['departureTime'], {
+        const updatedFormElement = updateObject(this.state.createForm[name], {
             value: date,
             //  valid: checkValidity(date, this.state.createForm['departureTime'].validation),
             touched: true
         });
         const updatedCreateForm = updateObject(this.state.createForm, {
-            ['departureTime']: updatedFormElement
+            [name]: updatedFormElement
         });
 
         let formIsValid = true;
@@ -190,6 +194,9 @@ class SearchTrips extends Component {
                 questionMark = '&';
             }
         }
+        this.setState({
+            startDate : new Date()
+        });
         this.props.onFetchTrips(this.props.token,stringData);
 
     };
@@ -213,7 +220,30 @@ class SearchTrips extends Component {
     };
 
     showFullTrip = (trip) => {
-        this.props.onShowFullTrip(trip);
+        let isJoined;
+        console.log(trip)
+        const currentUserName = this.props.username;
+        let tripJoined = 'Join Trip';
+        let passengers = trip.passengers.map(passenger =>
+            (passenger.username === currentUserName)
+        );
+        isJoined = passengers.includes(true);
+        if (isJoined) {
+            tripJoined ='Trip joined'
+        }
+        let isRequested;
+        if(trip.notApprovedPassengers) {
+            let notApproved = trip.notApprovedPassengers.map(passenger =>
+                (passenger.username === currentUserName)
+            );
+            isRequested = notApproved.includes(true);
+            if (isRequested) {
+                tripJoined = 'Request sent'
+            }
+        }
+
+        console.log(tripJoined)
+        this.props.onShowFullTrip(trip,tripJoined,'No');
         this.props.history.push('/fullTrip');
     };
 
@@ -234,12 +264,12 @@ class SearchTrips extends Component {
                         name={formElement.id}
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
-                        value={this.props.changedDate}
+                        // value={this.props.changedDate}
                         invalid={!formElement.config.valid}
                         shouldValidate={formElement.config.validation}
                         touched={formElement.config.touched}
                         startDate={this.state.startDate}
-                        dateChange={(date) => this.inputDateChangedHandler(date)}
+                        dateChange={(date) => this.inputDateChangedHandler(date,formElement.id)}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
                 <Button btnType="Success"
@@ -284,12 +314,13 @@ const mapStateToProps = state => {
         trips: state.trip.trips,
         loading: state.trip.loading,
         token: state.auth.token,
+        username:state.auth.userId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
-        onShowFullTrip: (trip) => dispatch(actions.showFullTrip(trip)),
+        onShowFullTrip: (trip,tripJoined,requestSent) => dispatch(actions.showFullTrip(trip,tripJoined,requestSent)),
         onFetchUserImage:(token,userId)=> dispatch(actions.fetchImageUser(token,userId))
     };
 };

@@ -6,6 +6,8 @@ const initialState = {
     loading: false,
     purchased: false,
     trip:null,
+    tripJoined:'Join Trip',
+    requestSent:'No'
 };
 
 const createInit = ( state, action ) => {
@@ -13,8 +15,16 @@ const createInit = ( state, action ) => {
 };
 
 const showFullTrip = ( state, action ) => {
-    return updateObject( state, { trip: action.trip } );
+    return updateObject( state, {
+        trip: action.trip,
+        tripJoined:action.tripJoined,
+        requestSent: action.requestSent
+    } );
 };
+
+// const changeJoinTripStatus = ( state, action ) => {
+//     return updateObject( state, { tripJoined: action.tripJoined } );
+// };
 
 const createTripStart = ( state, action ) => {
     return updateObject( state, { loading: true } );
@@ -51,6 +61,7 @@ const fetchTripsSuccess = ( state, action ) => {
 const fetchTripSuccess = ( state, action ) => {
     return updateObject( state, {
         trip: action.trip,
+        requestSent:action.requestSent,
         loading: false
     } );
 };

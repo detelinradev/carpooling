@@ -42,6 +42,8 @@ public class TripDtoResponse {
 
     private Set<CommentDtoResponse> comments;
 
+    private Set<UserDtoResponse>notApprovedPassengers;
+
     @Max(value = Integer.MAX_VALUE)
     private Integer tripDuration;
 

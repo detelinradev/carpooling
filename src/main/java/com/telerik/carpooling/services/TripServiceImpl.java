@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.security.InvalidParameterException;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +68,9 @@ public class TripServiceImpl implements TripService {
                                           String origin, String destination, String earliestDepartureTime,
                                           String latestDepartureTime, String availablePlaces, String smoking,
                                           String pets, String luggage) {
+//         LocalDateTime earliestDepartureTimeFormat = LocalDateTime.parse(earliestDepartureTime);
+//         LocalDateTime latestDepartureTimeFormat = LocalDateTime.parse(latestDepartureTime);
+
 
         if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
                 (pets == null || (pets.equalsIgnoreCase("yes") || pets.equalsIgnoreCase("no"))) &&
@@ -80,7 +84,6 @@ public class TripServiceImpl implements TripService {
                                 .orElse("")))) &&
                 ((driverUsername == null) || (userRepository.findFirstByUsername(driverUsername) != null)) &&
                 ((pageNumber != null && pageSize != null) || (pageNumber == null && pageSize == null) )) {
-
             return dtoMapper.tripToDtoList(
                     tripRepository.findTripsByPassedParameters(
                             Arrays.stream(TripStatus.values())
@@ -129,6 +132,7 @@ public class TripServiceImpl implements TripService {
             if (trip.get().getTripStatus().equals(TripStatus.AVAILABLE)
                     && !trip.get().getDriver().equals(passenger)) {
                 trip.get().getPassengerStatus().put(passenger, PassengerStatus.PENDING);
+                trip.get().getNotApprovedPassengers().add(passenger);
                 return tripRepository.save(trip.get());
             }
         }
@@ -146,18 +150,32 @@ public class TripServiceImpl implements TripService {
 
         if (trip.isPresent() && passenger.isPresent()) {
             if (trip.get().getPassengerStatus().keySet().stream().anyMatch(k -> k.equals(user))) {
-                if (statusPassenger.equals(PassengerStatus.CANCELED)) {
-                    return cancelPassenger(user, intTripID);
+                PassengerStatus passengerStatus = trip.get().getPassengerStatus().get(user);
+                if(passengerStatus.equals(PassengerStatus.PENDING)) {
+                    trip.get().getNotApprovedPassengers().remove(user);
+                    if (statusPassenger.equals(PassengerStatus.CANCELED)) {
+                        return cancelPassenger(user, intTripID);
+                    }
+                }
+                if(passengerStatus.equals(PassengerStatus.ACCEPTED) &&
+                        (trip.get().getTripStatus().equals(TripStatus.AVAILABLE) ||
+                                trip.get().getTripStatus().equals(TripStatus.BOOKED))) {
+                    if (statusPassenger.equals(PassengerStatus.CANCELED)) {
+                        return cancelPassenger(user, intTripID);
+                    }
                 }
             }
             if (trip.get().getDriver().equals(user)
                     && trip.get().getPassengerStatus().keySet().stream().anyMatch(k -> k.equals(passenger.get()))) {
                 if (statusPassenger.equals(PassengerStatus.ACCEPTED) &&
                         trip.get().getTripStatus().equals(TripStatus.AVAILABLE)) {
+                    trip.get().getNotApprovedPassengers().remove(passenger.get());
                     return acceptPassenger(intPassengerID, intTripID);
                 } else if (statusPassenger.equals(PassengerStatus.REJECTED) &&
                         (trip.get().getTripStatus().equals(TripStatus.AVAILABLE) ||
                                 trip.get().getTripStatus().equals(TripStatus.BOOKED))) {
+                    if(trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.PENDING))
+                    trip.get().getNotApprovedPassengers().remove(passenger.get());
                     return rejectPassenger(intPassengerID, intTripID);
                 } else if (statusPassenger.equals(PassengerStatus.ABSENT) &&
                         (trip.get().getTripStatus().equals(TripStatus.AVAILABLE) ||

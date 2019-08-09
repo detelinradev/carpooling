@@ -72,7 +72,6 @@ export const fetchImageCarStart = () => {
 export const fetchImageUser = (token, userId, userType) => {
     return dispatch => {
         dispatch(fetchImageUserStart());
-        console.log(1234);
         const headers = {
             "Content-Type": "application/json",
             'Authorization': token

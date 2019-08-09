@@ -79,6 +79,10 @@ public class Trip extends MappedAudibleBase {
 
     @JsonIgnore
     @ManyToMany
+    private Set<User>notApprovedPassengers = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany
     private Set<User> passengersAvailableForRate = new HashSet<>();
 
     @JsonIgnore

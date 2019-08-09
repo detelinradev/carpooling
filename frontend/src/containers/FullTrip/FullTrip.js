@@ -10,17 +10,50 @@ import StarRatings from "react-star-ratings";
 import {FaMedal} from "react-icons/fa";
 import Car from "../../components/TripComponents/Car/Car";
 import * as actions from "../../store/actions";
+import Button from "@material-ui/core/Button";
+import {FaUserEdit} from "react-icons/fa";
 
 class FullTrip extends Component {
 
-
     componentDidMount() {
-            this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId,'driver');
+        this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver');
+        // this.checkIfTripJoined();
     }
+
+    async joinTrip() {
+        axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
+            headers: {"Authorization": this.props.token}
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId,'Yes'))
+            .then(res => this.componentDidMount());
+
+        // this.componentDidMount();
+    }
+    // joinTripStatus(){
+    //     this.props.tripJoined? 'Request sent': this.props.tripJoined
+    // }
+
+    // checkIfTripJoined() {
+    //     const currentUserName = this.props.username;
+    //     console.log(currentUserName)
+    //     let isJoined = false;
+    //
+    //     let trips = this.props.trip.passengers.map(passenger =>
+    //         (passenger.username === currentUserName)
+    //     );
+    //     isJoined = trips.includes(true)
+    //     if (isJoined) {
+    //         this.setState({
+    //             tripJoined: 'Trip joined'
+    //         });
+    //     }
+    //     console.log(isJoined);
+    //     console.log(this.state.tripJoined)
+    //     console.log(this.props.trip.driver.firstName)
+    // }
 
     render() {
         let comments;
-        if(this.props.trip.comments) {
+        if (this.props.trip.comments) {
             comments = this.props.trip.comments.map(comment => (
                 <Comment
                     key={comment.modelId}
@@ -31,8 +64,8 @@ class FullTrip extends Component {
         }
 
         let passengers;
-        if(this.props.trip.passengers) {
-             passengers = this.props.trip.passengers.map(passenger => (
+        if (this.props.trip.passengers) {
+            passengers = this.props.trip.passengers.map(passenger => (
                 <Passenger
                     key={passenger.id}
                     data={passenger}
@@ -45,6 +78,18 @@ class FullTrip extends Component {
                 data={this.props.trip.car}
             />
         );
+
+        let joinTripStatus='Trip joined';
+        if(this.props.tripJoined === 'Join Trip'){
+            joinTripStatus = 'Join trip';
+            if(this.props.requestSent === 'Yes'){
+                joinTripStatus = 'Request sent'
+            }
+        }
+        if(this.props.tripJoined === 'Request sent'){
+            joinTripStatus = 'Request Sent'
+        }
+
 
         let trip = <Spinner/>;
         if (!this.props.loading) {
@@ -67,6 +112,11 @@ class FullTrip extends Component {
                                 numberOfStars={5}
                                 name='rating'
                             />}</h1></span></h3>
+                        <div style={{marginRight: 20, verticalAlign: "middle"}} className="edit">
+                            <Button onClick={() => this.joinTrip()}><h3
+                                className="header">{joinTripStatus} <FaUserEdit/></h3>
+                            </Button>
+                        </div>
                         <p className="row-xs-6 info"> Departure Time<p
                             className="meta-data">{this.props.trip.departureTime}</p>
                         </p>
@@ -95,7 +145,7 @@ class FullTrip extends Component {
 
                     </div>
                     {car}
-                        {comments}
+                    {comments}
                 </div>
             )
         }
@@ -115,13 +165,18 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         trip: state.trip.trip,
-        driverImage: state.user.driverImage
+        driverImage: state.user.driverImage,
+        username: state.auth.userId,
+        tripJoined:state.trip.tripJoined,
+        requestSent:state.trip.requestSent
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId,userType) => dispatch(actions.fetchImageUser(token, userId,userType)),
+        onFetchUserImage: (token, userId, userType) => dispatch(actions.fetchImageUser(token, userId, userType)),
+        onFetchTrip: (token, tripId,requestSent) => dispatch(actions.fetchTrip(token, tripId,requestSent)),
+        // onTripJoined:(tripJoinedStatus) => dispatch(actions.changeTripJoinedStatus(tripJoinedStatus))
     };
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(FullTrip, axios));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(FullTrip, axios));

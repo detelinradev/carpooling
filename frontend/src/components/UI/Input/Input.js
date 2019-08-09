@@ -34,9 +34,8 @@ const input = ( props ) => {
             break;
         case ( 'select' ):
             inputElement = (
-                <DatePicker
-                    // className={inputClasses.join(' ')}
-                    /*{...props.elementConfig}*/
+                <DatePicker 
+                    placeholderText="Click to select a date"
                     selected={props.startDate}
                     onChange={props.dateChange}
                     // value={props.value}

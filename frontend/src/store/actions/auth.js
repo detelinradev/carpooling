@@ -46,6 +46,7 @@ export const auth = (username, password, isSignup,firstName) => {
 
 
         let url = 'http://localhost:8080/users/register';
+        let currentUserName= username;
         let authData= {
             username: username,
             password: password,
@@ -61,7 +62,7 @@ export const auth = (username, password, isSignup,firstName) => {
         axios.post(url, authData)
             .then(response => {
                 const fakeExpiresIn = 3600;
-                const fakeLocalID = 'username1';
+                // const fakeLocalID = 'username1';
                 const expirationDate = new Date(new Date().getTime() +
                     // response.data.expiresIn
                     fakeExpiresIn* 1000);
@@ -69,9 +70,9 @@ export const auth = (username, password, isSignup,firstName) => {
                 localStorage.setItem('expirationDate', expirationDate);
                 localStorage.setItem('userId',
                     // response.data.localId
-                    fakeLocalID
+                    currentUserName
                 );
-                dispatch(authSuccess(response.headers.authorization, fakeLocalID));
+                dispatch(authSuccess(response.headers.authorization, currentUserName));
                 dispatch(checkAuthTimeout(
                     // response.data.expiresIn
                     fakeExpiresIn

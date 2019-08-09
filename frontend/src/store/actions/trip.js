@@ -54,12 +54,21 @@ export const createInit = () => {
     };
 };
 
-export const showFullTrip = ( trip) => {
+export const showFullTrip = ( trip,tripJoined,requestSent) => {
     return {
         type: actionTypes.SHOW_FULL_TRIP,
-        trip:trip
+        trip:trip,
+        tripJoined:tripJoined,
+        requestSent:requestSent
     };
 };
+
+// export const changeJoinTripStatus = ( tripJoined) => {
+//     return {
+//         type: actionTypes.CHANGE_TRIP_JOIN_STATUS,
+//         tripJoined:tripJoined
+//     };
+// };
 
 export const fetchTripsSuccess = ( trips ) => {
     return {
@@ -68,10 +77,11 @@ export const fetchTripsSuccess = ( trips ) => {
     };
 };
 
-export const fetchTripSuccess = ( trip ) => {
+export const fetchTripSuccess = ( trip,requestSent ) => {
     return {
         type: actionTypes.FETCH_TRIP_SUCCESS,
-        trip: trip
+        trip: trip,
+        requestSent:requestSent
     };
 };
 
@@ -128,7 +138,7 @@ export const fetchTrips = (token,queryParams) => {
     };
 };
 
-export const fetchTrip = (token,tripId) => {
+export const fetchTrip = (token,tripId,requestSent) => {
     return dispatch => {
         dispatch(fetchTripStart());
         const headers = {
@@ -137,7 +147,7 @@ export const fetchTrip = (token,tripId) => {
         };
         axios.get( '/trips/' +tripId , {headers})
             .then( res => {
-                dispatch(fetchTripSuccess(res.body))
+                dispatch(fetchTripSuccess(res.data,requestSent))
             })
             .catch( err => {
                 dispatch(fetchTripFail(err));
