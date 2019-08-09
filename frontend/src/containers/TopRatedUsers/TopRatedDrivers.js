@@ -63,7 +63,6 @@ class topRatedDrivers extends Component {
         ));
 
         return (
-            <Auxiliary>
                 <div style={{marginBottom: 50}} className="users">
                     <div>
                         <h1> TOP RATED DRIVERS</h1>
@@ -78,7 +77,6 @@ class topRatedDrivers extends Component {
                     {passengers}
                     </div>
                 </div>
-            </Auxiliary>
         )
 
     }

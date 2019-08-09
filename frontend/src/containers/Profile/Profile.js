@@ -214,7 +214,7 @@ class Profile extends Component {
                             <hr/>
                             <li className="feedback"><Button><h3 className="header">Show Feedback</h3></Button></li>
                         </ul>
-                        <ul style={{maxWidth: 300}}>
+                        <ul style={{maxWidth: 400}}>
                             <li className="rating">
                                 <h3><FaMedal/>  Rating as driver<span
                                     className="header"><h3>{

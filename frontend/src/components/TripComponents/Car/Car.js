@@ -22,20 +22,23 @@ class Car extends Component {
         }
 
         return (
-            <div className="Car">
+            <div style={{width: 800, float: 'left'}} className="Car" >
                 <ul>
                     <img style={{maxWidth: 350}}
                          src={image}
                          alt="car pooling"/>
+                </ul>
+                <ul>
                     <div>
                         <h2>Brand: <span className="header">{this.props.data.brand}<br/></span></h2>
                         <h2>Model: <span className="header">{this.props.data.model}</span></h2>
                         <h2>Color: <span className="header">{this.props.data.color}</span></h2>
-                        <h2>Air-conditioned: <span className="header">{this.props.data.airConditioned}</span></h2>
                         <h2>First registration: <span className="header">{this.props.data.firstRegistration}</span></h2>
+                        <h2>A/C: <span className="header">{this.props.data.airConditioned}</span></h2>
                     </div>
                 </ul>
             </div>)
+
 
 
     };

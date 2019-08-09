@@ -16,13 +16,12 @@ class Comment extends Component {
         if (this.props.commentImage)
             image = this.props.commentImage;
         return (
-            <div className=" Post">
+            <div style={{width: 650}} className="Comment">
                 <div className="Trip additional-details  cardcont  meta-data-container">
-                    <p className="image">
-                        <p className="meta-data">Comment of {this.props.author.firstName} {this.props.author.lastName}</p></p>
-                    <img id="postertest" className='poster' style={{width: 64, height: 64}}
+                    <img id="postertest" className='poster' style={{width: 30, height: 30, marginTop: 10}}
                          src={image} alt={''}/>
-                    <p className="row-xs-6 info">Message<p className="meta-data">{this.props.message}</p></p>
+                        <p> {this.props.author.firstName} {this.props.author.lastName}</p>
+                    <p className="meta-data">{this.props.message}</p>
                 </div>
             </div>)
     }

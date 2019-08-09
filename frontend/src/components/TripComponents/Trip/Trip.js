@@ -29,32 +29,48 @@ class Trip extends Component {
                                  src={this.props.driverImage} alt={''}/>
                             <p className="meta-data">{this.props.data.driver.firstName} {this.props.data.driver.lastName}</p>
                         </p>
-                        <div className="edit">
+                        <div style={{marginRight: 20,     verticalAlign:"middle"}} className="edit">
                             <Button onClick={() => this.props.showFullTrip(this.props.data)}><h3
                                 className="header">DETAILS <FaUserEdit/></h3>
                             </Button>
                         </div>
+                        <div className="comps" style={{margin: 15}}>
                         <p className="row-xs-6 info"> Departure Time<p
                             className="meta-data">{this.props.data.departureTime}</p>
                         </p>
-                        <p className="row-xs-6 info">Available Seats<p
-                            className="meta-data">{this.props.data.availablePlaces}</p>
-                        </p>
-                        <p className="row-xs-6 info">Price<p
-                            className="meta-data">{this.props.data.costPerPassenger} leva</p>
-                        </p>
-                        <p className="row-xs-6 info">Status<p className="meta-data">{this.props.data.tripStatus}</p></p>
+                            <hr/>
                         <p className="row-xs-6 info">Smoking allowed<p
                             className="meta-data">{this.props.data.smokingAllowed}</p>
                         </p>
-                        <p className="row-xs-6 info">Pets allowed<p
-                            className="meta-data">{this.props.data.petsAllowed}</p></p>
-                        <p className="row-xs-6 info">Luggage allowed<p
-                            className="meta-data">{this.props.data.luggageAllowed}</p>
+                        </div>
+
+                        <div  className="comps" style={{margin: 15}}>
+                        <p className="row-xs-6 info">Available Seats<p
+                            className="meta-data">{this.props.data.availablePlaces}</p>
                         </p>
+                            <hr/>
                         <p className="row-xs-6 info">Air-conditioned<p
                             className="meta-data">{this.props.data.car.airConditioned}</p>
                         </p>
+                        </div>
+
+                        <div  className="comps" style={{margin: 15}}>
+                        <p className="row-xs-6 info">Price<p
+                            className="meta-data">{this.props.data.costPerPassenger} leva</p>
+                        </p>
+                            <hr/>
+                        <p className="row-xs-6 info">Luggage allowed<p
+                            className="meta-data">{this.props.data.luggageAllowed}</p>
+                        </p>
+                        </div>
+
+                        <div className="comps"  style={{margin: 15}}>
+                        <p className="row-xs-6 info">Status<p className="meta-data">{this.props.data.tripStatus}</p></p>
+                            <hr/>
+                        <p className="row-xs-6 info">Pets allowed<p
+                            className="meta-data">{this.props.data.petsAllowed}</p></p>
+                        </div>
+
                     </div>
                 </div>
             )
