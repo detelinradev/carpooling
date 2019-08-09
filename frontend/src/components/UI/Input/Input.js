@@ -2,6 +2,9 @@ import React from 'react';
 
 import './Input.css';
 import Calendar from "../../../containers/NewTrip/Calendar";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 const input = ( props ) => {
 
@@ -31,11 +34,28 @@ const input = ( props ) => {
             break;
         case ( 'select' ):
             inputElement = (
-                <Calendar
-                    newDate={props.value}/>
+                <DatePicker
+                    // className={inputClasses.join(' ')}
+                    /*{...props.elementConfig}*/
+                    selected={props.startDate}
+                    onChange={props.dateChange}
+                    // value={props.value}
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={15}
+                    dateFormat="MMMM d, yyyy h:mm aa"
+                    timeCaption="time"
+                />
 
             );
             break;
+        // case ( 'select' ):
+        //     inputElement = (
+        //         <Calendar
+        //             newDate={props.value}/>
+        //
+        //     );
+        //     break;
         default:
             inputElement = <input
                 className={inputClasses.join(' ')}
@@ -47,7 +67,7 @@ const input = ( props ) => {
     return (
         <div className="Input">
             <label className="Label">{props.label}</label>
-            {inputElement}
+            <p>{props.name}<p>{inputElement}</p></p>
         </div>
     );
 

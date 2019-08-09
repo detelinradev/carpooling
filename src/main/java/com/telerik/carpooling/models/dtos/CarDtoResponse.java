@@ -31,15 +31,6 @@ public class CarDtoResponse {
     @Size(min = 2,max = 3)
     private String airConditioned;
 
-    @Size(min = 2,max = 3)
-    private String smokingAllowed;
-
-    @Size(min = 2,max = 3)
-    private String luggageAllowed;
-
-    @Size(min = 2,max = 3)
-    private String petsAllowed;
-
     @Size(max = 250)
     private String avatarUri;
 }

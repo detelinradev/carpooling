@@ -31,6 +31,7 @@ class Car extends Component {
                         <h2>Brand: <span className="header">{this.props.data.brand}<br/></span></h2>
                         <h2>Model: <span className="header">{this.props.data.model}</span></h2>
                         <h2>Color: <span className="header">{this.props.data.color}</span></h2>
+                        <h2>Air-conditioned: <span className="header">{this.props.data.airConditioned}</span></h2>
                         <h2>First registration: <span className="header">{this.props.data.firstRegistration}</span></h2>
                     </div>
                 </ul>

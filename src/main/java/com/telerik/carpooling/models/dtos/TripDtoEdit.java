@@ -35,4 +35,13 @@ public class TripDtoEdit {
 
     @Max(value = Integer.MAX_VALUE)
     private Integer costPerPassenger;
+
+    @Size(min = 2,max = 3)
+    private String smokingAllowed;
+
+    @Size(min = 2,max = 3)
+    private String luggageAllowed;
+
+    @Size(min = 2,max = 3)
+    private String petsAllowed;
 }

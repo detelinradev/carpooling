@@ -49,4 +49,13 @@ public class TripDtoResponse {
     private Integer costPerPassenger;
 
     private CarDtoResponse car;
+
+    @Size(min = 2,max = 3)
+    private String smokingAllowed;
+
+    @Size(min = 2,max = 3)
+    private String luggageAllowed;
+
+    @Size(min = 2,max = 3)
+    private String petsAllowed;
 }

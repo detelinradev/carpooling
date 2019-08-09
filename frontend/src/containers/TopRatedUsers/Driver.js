@@ -11,6 +11,7 @@ class Driver extends Component {
     };
 
     async componentDidMount() {
+        console.log(this.props.driver.modelId + 'driver')
         const getDriverAvatarResponse = await
             fetch("http://localhost:8080/users/avatar/" + this.props.driver.modelId)
                 .then(response => response.blob());

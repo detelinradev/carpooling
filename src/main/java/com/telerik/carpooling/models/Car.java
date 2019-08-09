@@ -37,15 +37,6 @@ public class Car extends MappedAudibleBase {
     @Size(min = 2,max = 3)
     private String airConditioned;
 
-    @Size(min = 2,max = 3)
-    private String smokingAllowed;
-
-    @Size(min = 2,max = 3)
-    private String luggageAllowed;
-
-    @Size(min = 2,max = 3)
-    private String petsAllowed;
-
     @OneToOne(mappedBy = "car")
     @JsonIgnoreProperties("car")
     private Image carImage;

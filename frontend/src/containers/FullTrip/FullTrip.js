@@ -31,7 +31,7 @@ class FullTrip extends Component {
         }
 
         let passengers;
-        if(this.props.trip.comments) {
+        if(this.props.trip.passengers) {
              passengers = this.props.trip.passengers.map(passenger => (
                 <Passenger
                     key={passenger.id}
@@ -81,12 +81,12 @@ class FullTrip extends Component {
                         <p className="row-xs-6 info">Status<p className="meta-data">{this.props.trip.tripStatus}</p></p>
                         <p className="row-xs-3 info">Message<p className="meta-data">{this.props.trip.message}</p></p>
                         <p className="row-xs-6 info">Smoking allowed<p
-                            className="meta-data">{this.props.trip.car.smokingAllowed}</p>
+                            className="meta-data">{this.props.trip.smokingAllowed}</p>
                         </p>
                         <p className="row-xs-6 info">Pets allowed<p
-                            className="meta-data">{this.props.trip.car.petsAllowed}</p></p>
+                            className="meta-data">{this.props.trip.petsAllowed}</p></p>
                         <p className="row-xs-6 info">Luggage allowed<p
-                            className="meta-data">{this.props.trip.car.luggageAllowed}</p>
+                            className="meta-data">{this.props.trip.luggageAllowed}</p>
                         </p>
                         <p className="row-xs-6 info">Air-conditioned<p
                             className="meta-data">{this.props.trip.car.airConditioned}</p>

@@ -25,6 +25,9 @@ const asyncFullTrip = asyncComponent(() => {
 const asyncProfile = asyncComponent(() => {
     return import('./containers/Profile/Profile');
 });
+const asyncSearchTrips = asyncComponent(() => {
+    return import('./containers/SearchTrips/SearchTrips');
+});
 
 class App extends Component {
     componentDidMount () {
@@ -46,6 +49,7 @@ class App extends Component {
                     <Route path="/logout" component={Logout} />
                     <Route path="/fullTrip" component={asyncFullTrip} />
                     <Route path="/createTrip" component={asyncCreateTrip} />
+                    <Route path="/searchTrips" component={asyncSearchTrips} />
                     <Route path="/myProfile" component={asyncProfile} />
                     <Route path="/auth" component={asyncAuth} />
                     <Route path="/" exact component={Home} />

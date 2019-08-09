@@ -20,7 +20,6 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
 
     @Query("select t from Trip t " +
             "join User u on t.driver = u.id " +
-            "join Car c on c.owner = u.id " +
             "where " +
             "(:tripStatus is null or t.tripStatus = :tripStatus) and" +
             "(:driver is null or t.driver = :driver) and" +
@@ -28,9 +27,9 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
             "(:destination is null or :destination ='' or t.destination = :destination) and" +
             "(:departureTime is null or :departureTime ='' or t.departureTime = :departureTime) and" +
             "(:availablePlaces is null or t.availablePlaces = :availablePlaces) and" +
-            "(:smoking is null or :smoking ='' or c.smokingAllowed = :smoking) and" +
-            "(:pets is null or :pets ='' or c.petsAllowed = :pets) and" +
-            "(:luggage is null or :luggage ='' or c.luggageAllowed = :luggage)")
+            "(:smoking is null or :smoking ='' or t.smokingAllowed = :smoking) and" +
+            "(:pets is null or :pets ='' or t.petsAllowed = :pets) and" +
+            "(:luggage is null or :luggage ='' or t.luggageAllowed = :luggage)")
     List<Trip> findTripsByPassedParameters(@Param(value = "tripStatus") TripStatus status,
                                            @Param(value = "driver") User driver,
                                            @Param(value = "origin") String origin,

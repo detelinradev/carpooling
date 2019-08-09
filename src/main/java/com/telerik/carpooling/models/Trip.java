@@ -14,6 +14,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @EqualsAndHashCode(callSuper = true,exclude = "comments")
@@ -42,6 +43,15 @@ public class Trip extends MappedAudibleBase {
     private String message;
 
     private TripStatus tripStatus;
+
+    @Size(min = 2,max = 3)
+    private String smokingAllowed;
+
+    @Size(min = 2,max = 3)
+    private String luggageAllowed;
+
+    @Size(min = 2,max = 3)
+    private String petsAllowed;
 
     @OneToMany(mappedBy = "trip")
     @JsonIgnore
