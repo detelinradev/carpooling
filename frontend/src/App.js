@@ -42,6 +42,7 @@ class App extends Component {
                 <Redirect to="/" />
             </Switch>
         );
+        let topRated;
 
         if ( this.props.isAuthenticated ) {
             routes = (
@@ -53,25 +54,28 @@ class App extends Component {
                     <Route path="/myProfile" component={asyncProfile} />
                     <Route path="/auth" component={asyncAuth} />
                     <Route path="/" exact component={Home} />
+                    <Route path="/" component={Home} />
 
                     <Redirect to="/" />
                 </Switch>
             );
+            topRated = (
+                <TopRatedDrivers/>
+            )
         }
 
         return (
             <div>
                 <Layout>
-
                     {routes}
                     {/*<footer style={{textAlign: 'center', marginTop: 100}} className="test-footer m-5 color=elegant-color">*/}
                     {/*    This is footer*/}
                     {/*</footer>*/}
-                    <TopRatedDrivers/>
-                    <div className="footer">
-                        footer
-                    </div>
+                    {topRated}
                 </Layout>
+                    <footer className="footer">
+                        footer
+                    </footer>
             </div>
         );
     }

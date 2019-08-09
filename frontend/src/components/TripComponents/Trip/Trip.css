@@ -2,30 +2,33 @@
     width: 90%;
     box-shadow: 0 2px 3px #ccc;
     box-sizing: border-box;
-    cursor: pointer;
     display: flex;
-}
-
-.Trip:hover,
-.Trip:active {
-    background-color: yellowgreen;
 }
 
 
 .cardcont {
 
-    background: orange;
+    background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.test{
-    margin-left: 30px;
+/*.test {*/
+/*    margin-left: 30px;*/
+/*}*/
+
+.divche {
+    display: flex;
+    flex-flow: row wrap;
+
 }
+
 .Post {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
     width: 80%;
     margin-bottom: 20px;
+    text-align: center;
+    margin-left: 100px;
 
 }
 
@@ -35,14 +38,15 @@
 }
 
 .info {
-    margin: 20px;
+    /*margin: 20px;*/
     text-align: center;
 }
 
-.image{
+.image {
     text-align: center;
     margin-right: 20px;
 }
+
 .poster {
     width: 100%;
     border-radius: 0 0 3px 3px;
@@ -57,7 +61,7 @@
 .proba {
     padding-left: 10px;
     margin-top: 10px;
-    background-color: orangered;
+    background-color: black;
 }
 
 .meta-data-container {
@@ -71,9 +75,9 @@ h1 {
     font-size: 2.2em;
 }
 
-.additional-details {
-    font-family: oswald;
-}
+/*.additional-details {*/
+/*    font-family: oswald;*/
+/*}*/
 
 .genre-list {
     color: mediumseagreen;
@@ -85,13 +89,13 @@ h1 {
 }
 
 .meta-data {
-    color: black;
+    color: mediumseagreen;
     font-size: 1.6em;
     line-height: 1.1em;
 }
 
 .hed {
-    color: royalblue;
+    color: whitesmoke;
     font-weight: bolder;
     font-size: 1.6em;
     line-height: 1.1em;
@@ -105,7 +109,7 @@ h1 {
     font-family: oswald;
 }
 
-.right{
+.right {
     text-align: right;
 }
 

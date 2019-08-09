@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import Avatar from '../../assets/images/image-default.png';
 import './Driver.css';
-import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
-import CarAvatar from "../../assets/images/218567006-abstract-car-wallpapers.jpg";
-import StarRatings from "react-star-ratings";
 
 class Driver extends Component {
     state = {
@@ -29,7 +26,6 @@ class Driver extends Component {
             <div className="Driver">
                 <img  src={this.state.src} alt="Not found!"/>
                 <span className="header"> {this.props.driver.username}</span>
-
                 <div className="divech">
                     Driver rating  <span className="header-two"> {this.props.driver.ratingAsDriver}</span>
                 </div>

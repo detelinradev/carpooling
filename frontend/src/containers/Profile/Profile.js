@@ -224,6 +224,8 @@ class Profile extends Component {
                                     changeRating={this.changeRating}
                                     numberOfStars={5}
                                     name='rating'
+                                    starDimension="30px"
+                                    starSpacing="6px"
                                 />}</h3></span></h3>
                             </li>
                             <li className="rating">
@@ -235,6 +237,8 @@ class Profile extends Component {
                                         changeRating={this.changeRating}
                                         numberOfStars={5}
                                         name='rating'
+                                        starDimension="30px"
+                                        starSpacing="6px"
                                     />}</h1></span></h3>
                             </li>
                         </ul>

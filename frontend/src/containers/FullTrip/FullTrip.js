@@ -49,7 +49,7 @@ class FullTrip extends Component {
         let trip = <Spinner/>;
         if (!this.props.loading) {
             trip = (
-                <div className=" Post">
+                <div >
                     <div
                         className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">

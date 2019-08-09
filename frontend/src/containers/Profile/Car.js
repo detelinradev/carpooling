@@ -110,14 +110,7 @@ class Car extends Component {
                             <h2>Model: <span className="header">{this.state.car.model}</span></h2>
                             <h2>Color: <span className="header">{this.state.car.color}</span></h2>
                             <h2>First registration: <span className="header">{this.state.car.firstRegistration}</span></h2>
-                        </div>
-                        </ul>
-                        <ul>
-                        <div>
                             <h2>A/C: <span className="header">{this.state.car.airConditioned}</span></h2>
-                            <h2>Smoking: <span className="header">{this.state.car.smokingAllowed}</span></h2>
-                            <h2>Pets: <span className="header">{this.state.car.petsAllowed}</span></h2>
-                            <h2>Luggage: <span className="header">{this.state.car.luggageAllowed}</span></h2>
                         </div>
                         </ul>
                     </div>

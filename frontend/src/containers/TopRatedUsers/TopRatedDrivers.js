@@ -4,7 +4,7 @@ import Driver from "./Driver";
 import {fetchImageCarFail} from "../../store/actions/user";
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import './TopRatedDrivers.css';
-import Passenger from "./Passenger";
+import Passengers from "./Passengers";
 
 class topRatedDrivers extends Component {
     state = {
@@ -55,7 +55,7 @@ class topRatedDrivers extends Component {
 
         let passengers = this.state.passengers.map(passenger => (
             <div className="users">
-                <Passenger
+                <Passengers
                     key={passenger.modelId}
                     passenger={passenger}
                 />
