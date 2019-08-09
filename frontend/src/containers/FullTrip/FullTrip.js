@@ -9,43 +9,36 @@ import Passenger from '../../components/TripComponents/Passenger/Passenger'
 import StarRatings from "react-star-ratings";
 import {FaMedal} from "react-icons/fa";
 import Car from "../../components/TripComponents/Car/Car";
+import * as actions from "../../store/actions";
 
 class FullTrip extends Component {
 
-    state={
-        image:""
-    };
 
-
-    async componentDidMount() {
-
-        const fetchUserImage = await
-            fetch('http://localhost:8080/users/avatar/' + this.props.trip.driver.modelId,
-                {headers: {"Authorization": this.props.token}})
-                .then(response => response.blob());
-
-        if (fetchUserImage.size > 100) {
-            this.setState({
-                image: URL.createObjectURL(fetchUserImage)
-            })
-        }
+    componentDidMount() {
+            this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId,'driver');
     }
 
     render() {
-        let comments = this.props.trip.comments.map(comment => (
-            <Comment
-                key={comment.modelId}
-                message={comment.message}
-                author={comment.author}
-            />
-        ));
+        let comments;
+        if(this.props.trip.comments) {
+            comments = this.props.trip.comments.map(comment => (
+                <Comment
+                    key={comment.modelId}
+                    message={comment.message}
+                    author={comment.author}
+                />
+            ));
+        }
 
-        let passengers = this.props.trip.passengers.map(passenger => (
-            <Passenger
-                key={passenger.id}
-                data={passenger}
-            />
-        ));
+        let passengers;
+        if(this.props.trip.comments) {
+             passengers = this.props.trip.passengers.map(passenger => (
+                <Passenger
+                    key={passenger.id}
+                    data={passenger}
+                />
+            ));
+        }
 
         let car = (
             <Car
@@ -62,7 +55,7 @@ class FullTrip extends Component {
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
-                                 src={this.state.image} alt={''}/>
+                                 src={this.props.driverImage} alt={''}/>
                             <p className="meta-data">{this.props.trip.driver.firstName} {this.props.trip.driver.lastName}</p>
                         </p>
                         <h3><span><FaMedal/></span> Rating <span
@@ -122,13 +115,13 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         trip: state.trip.trip,
-        // userImage: state.trip.userImage
+        driverImage: state.user.driverImage
     }
 };
-// const mapDispatchToProps = dispatch => {
-    // return {
-    //     onFetchUserImage: (token, userId) => dispatch(actions.fetchImageUser(token, userId)),
-    // };
-// };
+const mapDispatchToProps = dispatch => {
+    return {
+        onFetchUserImage: (token, userId,userType) => dispatch(actions.fetchImageUser(token, userId,userType)),
+    };
+};
 
-export default connect(mapStateToProps)(withErrorHandler(FullTrip, axios));
+export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(FullTrip, axios));

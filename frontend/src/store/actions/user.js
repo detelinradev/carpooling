@@ -1,28 +1,56 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-baseUrl';
 
-export const fetchImageUserSuccess = ( userImage ) => {
+export const fetchImageDriverSuccess = (driverImage) => {
     return {
-        type: actionTypes.FETCH_USER_IMAGE_SUCCESS,
-        userImage: userImage
+        type: actionTypes.FETCH_DRIVER_IMAGE_SUCCESS,
+        driverImage: driverImage
     };
 };
 
-export const fetchImageCarSuccess = ( carImage ) => {
+export const fetchImagePassengerSuccess = (passengerImage) => {
+    return {
+        type: actionTypes.FETCH_PASSENGER_IMAGE_SUCCESS,
+        passengerImage: passengerImage
+    };
+};
+
+export const fetchImageCommentSuccess = (commentImage) => {
+    return {
+        type: actionTypes.FETCH_COMMENT_IMAGE_SUCCESS,
+        commentImage: commentImage
+    };
+};
+
+export const fetchImageCarSuccess = (carImage) => {
     return {
         type: actionTypes.FETCH_CAR_IMAGE_SUCCESS,
         carImage: carImage
     };
 };
 
-export const fetchImageUserFail = ( error ) => {
+export const fetchImageDriverFail = (error) => {
     return {
-        type: actionTypes.FETCH_USER_IMAGE_FAIL,
+        type: actionTypes.FETCH_DRIVER_IMAGE_FAIL,
         error: error
     };
 };
 
-export const fetchImageCarFail = ( error ) => {
+export const fetchImagePassengerFail = (error) => {
+    return {
+        type: actionTypes.FETCH_PASSENGER_IMAGE_FAIL,
+        error: error
+    };
+};
+
+export const fetchImageCommentFail = (error) => {
+    return {
+        type: actionTypes.FETCH_COMMENT_IMAGE_FAIL,
+        error: error
+    };
+};
+
+export const fetchImageCarFail = (error) => {
     return {
         type: actionTypes.FETCH_CAR_IMAGE_FAIL,
         error: error
@@ -41,41 +69,51 @@ export const fetchImageCarStart = () => {
     };
 };
 
-export const fetchImageUser = (token,userId) => {
+export const fetchImageUser = (token, userId, userType) => {
     return dispatch => {
         dispatch(fetchImageUserStart());
-        console.log(1);
+        console.log(1234);
         const headers = {
-            "Content-Type":"application/json",
-            'Authorization':token
+            "Content-Type": "application/json",
+            'Authorization': token
         };
-        axios.get( 'http://localhost:8080/users/avatar/' + userId, {headers})
+        fetch('http://localhost:8080/users/avatar/' + userId, {headers})
             .then(response => response.blob())
-            .then(blob =>  URL.createObjectURL(blob))
-            .then( res => {
-                dispatch(fetchImageUserSuccess(res));
+            .then(blob => URL.createObjectURL(blob))
+            .then(res => {
+                if (userType === 'passenger')
+                    dispatch(fetchImagePassengerSuccess(res));
+                if (userType === 'driver')
+                    dispatch(fetchImageDriverSuccess(res));
+                if (userType === 'comment')
+                    dispatch(fetchImageCommentSuccess(res));
             })
-            .catch( err => {
-                dispatch(fetchImageUserFail(err));
-            } );
+            .catch(err => {
+                if (userType === 'passenger')
+                    dispatch(fetchImagePassengerFail(err));
+                if (userType === 'driver')
+                    dispatch(fetchImageDriverFail(err));
+                if (userType === 'comment')
+                    dispatch(fetchImageCommentFail(err));
+            });
     };
 };
 
-export const fetchImageCar = (token,userId) => {
+export const fetchImageCar = (token, userId) => {
     return dispatch => {
         dispatch(fetchImageCarStart());
         const headers = {
-            "Content-Type":"application/json",
-            'Authorization':token
+            "Content-Type": "application/json",
+            'Authorization': token
         };
-        axios.get( '/users/avatar/car/' +userId , {headers})
+        fetch('http://localhost:8080/users/avatar/car/' + userId, {headers})
             .then(response => response.blob())
-            .then(blob =>  URL.createObjectURL(blob))
-            .then( res => {
+            .then(blob => URL.createObjectURL(blob))
+            .then(res => {
                 dispatch(fetchImageCarSuccess(res))
             })
-            .catch( err => {
+            .catch(err => {
                 dispatch(fetchImageCarFail(err));
-            } );
+            });
     };
 };

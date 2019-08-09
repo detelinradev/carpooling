@@ -169,11 +169,11 @@ class Home extends Component {
         this.props.history.push('/fullTrip');
     };
 
-    fetchUsersImages = (userId) => {
-        console.log(1)
-        this.props.onFetchUserImage(userId);
-        // this.props.history.push('/fullTrip');
-    };
+    // fetchUsersImages = (userId) => {
+    //     console.log(123)
+    //     this.props.onFetchUserImage(this.props.token,userId);
+    //     // this.props.history.push('/fullTrip');
+    // };
 
 
     render() {
@@ -218,9 +218,9 @@ class Home extends Component {
                     comments={trip.comments}
                     car ={trip.car}
                     showFullTrip={this.showFullTrip}
-                    fetchUserImage={this.fetchUsersImages}
-                    token={this.props.token}
-                    userImage={this.props.userImage}
+                    // fetchUsersImages={this.fetchUsersImages}
+                    // token={this.props.token}
+                    // userImage={this.props.userImage}
                 />
             ))
         }
@@ -255,14 +255,14 @@ const mapStateToProps = state => {
         trips: state.trip.trips,
         loading: state.trip.loading,
         token: state.auth.token,
-        userImage: state.user.userImage
+        // userImage: state.user.userImage
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
         onShowFullTrip: (trip) => dispatch(actions.showFullTrip(trip)),
-        onFetchUserImage:(userId)=> dispatch(actions.fetchImageUser(this.props.token,userId))
+        onFetchUserImage:(token,userId)=> dispatch(actions.fetchImageUser(token,userId))
     };
 };
 

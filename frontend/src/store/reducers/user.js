@@ -4,7 +4,9 @@ import { updateObject } from '../../shared/utility';
 const initialState = {
     users: [],
     loading: false,
-    userImage:"",
+    driverImage:null,
+    passengerImage:null,
+    commentImage:null,
     carImage:null
 };
 
@@ -16,9 +18,22 @@ const fetchImageCarStart = ( state, action ) => {
     return updateObject( state, { loading: true } );
 };
 
-const fetchImageUserSuccess = ( state, action ) => {
+const fetchImageDriverSuccess = ( state, action ) => {
     return updateObject( state, {
-        userImage: action.userImage,
+        driverImage: action.driverImage,
+        loading: false
+    } );
+};
+
+const fetchImagePassengerSuccess = ( state, action ) => {
+    return updateObject( state, {
+        passengerImage: action.passengerImage,
+        loading: false
+    } );
+};
+const fetchImageCommentSuccess = ( state, action ) => {
+    return updateObject( state, {
+        commentImage: action.commentImage,
         loading: false
     } );
 };
@@ -30,7 +45,15 @@ const fetchImageCarSuccess = ( state, action ) => {
     } );
 };
 
-const fetchImageUserFail = ( state, action ) => {
+const fetchImageDriverFail = ( state, action ) => {
+    return updateObject( state, { loading: false } );
+};
+
+const fetchImagePassengerFail = ( state, action ) => {
+    return updateObject( state, { loading: false } );
+};
+
+const fetchImageCommentFail = ( state, action ) => {
     return updateObject( state, { loading: false } );
 };
 
@@ -42,9 +65,13 @@ const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
         case actionTypes.FETCH_USER_IMAGE_START: return fetchImageUserStart( state, action );
         case actionTypes.FETCH_CAR_IMAGE_START: return fetchImageCarStart( state, action );
-        case actionTypes.FETCH_USER_IMAGE_SUCCESS: return fetchImageUserSuccess( state, action );
+        case actionTypes.FETCH_DRIVER_IMAGE_SUCCESS: return fetchImageDriverSuccess( state, action );
+        case actionTypes.FETCH_PASSENGER_IMAGE_SUCCESS: return fetchImagePassengerSuccess( state, action );
+        case actionTypes.FETCH_COMMENT_IMAGE_SUCCESS: return fetchImageCommentSuccess( state, action );
         case actionTypes.FETCH_CAR_IMAGE_SUCCESS: return fetchImageCarSuccess( state, action );
-        case actionTypes.FETCH_USER_IMAGE_FAIL: return fetchImageUserFail( state, action );
+        case actionTypes.FETCH_DRIVER_IMAGE_FAIL: return fetchImageDriverFail( state, action );
+        case actionTypes.FETCH_PASSENGER_IMAGE_FAIL: return fetchImagePassengerFail( state, action );
+        case actionTypes.FETCH_COMMENT_IMAGE_FAIL: return fetchImageCommentFail( state, action );
         case actionTypes.FETCH_CAR_IMAGE_FAIL: return fetchImageCarFail( state, action );
         default: return state;
     }
