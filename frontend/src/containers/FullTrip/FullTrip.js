@@ -96,7 +96,6 @@ class FullTrip extends Component {
                         <p className="row-xs-6 info">Air-conditioned<p
                             className="meta-data">{this.props.trip.car.airConditioned}</p>
                         </p>
-                        {passengers}
 
                     </div>
                     {car}
@@ -107,6 +106,12 @@ class FullTrip extends Component {
                         <br/>
                     {comments}
                     </div>
+                        <div style={{float: "left"}}>
+                    <h1>
+                        PASSENGERS
+                    </h1>
+                        {passengers}
+                        </div>
                 </div>
             )
         }

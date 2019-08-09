@@ -21,7 +21,7 @@ class Passenger extends Component {
             <div className=" Post">
 
                 <div className="Trip additional-details  cardcont  meta-data-container">
-                    <h2>Passenger:</h2> <p className="meta-data">{this.props.data.firstName} {this.props.data.lastName}</p>
+                    <p className="meta-data">{this.props.data.firstName} {this.props.data.lastName}</p>
                     <p className="image">
                         <img id="postertest" className='poster' style={{width: 128}}
                              src={image} alt={''}/></p>
@@ -33,6 +33,8 @@ class Passenger extends Component {
                             //changeRating={this.changeRating}
                             numberOfStars={5}
                             name='rating'
+                            starDimension="30px"
+                            starSpacing="6px"
                         />}</p></p>
                 </div>
             </div>)
