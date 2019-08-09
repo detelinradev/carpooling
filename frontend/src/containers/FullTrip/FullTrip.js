@@ -16,6 +16,8 @@ class FullTrip extends Component {
 
     componentDidMount() {
             this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId,'driver');
+
+            // axios.post('http://localhost:8080/comment?message=saobshtenie')
     }
 
     render() {
@@ -57,16 +59,19 @@ class FullTrip extends Component {
                             <img id="postertest" className='poster' style={{width: 128}}
                                  src={this.props.driverImage} alt={''}/>
                             <p className="meta-data">{this.props.trip.driver.firstName} {this.props.trip.driver.lastName}</p>
-                        </p>
+
                         <h3><span><FaMedal/></span> Rating <span
-                            className="header"><h1>{
+                            className="header">{
                             <StarRatings
                                 rating={this.props.trip.ratingAsDriver}
                                 starRatedColor="blue"
                                 changeRating={this.changeRating}
                                 numberOfStars={5}
                                 name='rating'
-                            />}</h1></span></h3>
+                                starDimension="30px"
+                                starSpacing="6px"
+                            />}</span></h3>
+                        </p>
                         <p className="row-xs-6 info"> Departure Time<p
                             className="meta-data">{this.props.trip.departureTime}</p>
                         </p>
@@ -95,7 +100,13 @@ class FullTrip extends Component {
 
                     </div>
                     {car}
-                        {comments}
+                    <div className="Comment">
+                        <div>
+                    <button>+ADD COMMENT</button>
+                        </div>
+                        <br/>
+                    {comments}
+                    </div>
                 </div>
             )
         }

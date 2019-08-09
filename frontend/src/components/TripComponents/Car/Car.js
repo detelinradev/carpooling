@@ -22,7 +22,7 @@ class Car extends Component {
         }
 
         return (
-            <div style={{width: 800, float: 'left'}} className="Car" >
+            <div style={{width: 800, float: 'left', marginRight: 35}} className="Car" >
                 <ul>
                     <img style={{maxWidth: 350}}
                          src={image}
@@ -34,7 +34,6 @@ class Car extends Component {
                         <h2>Model: <span className="header">{this.props.data.model}</span></h2>
                         <h2>Color: <span className="header">{this.props.data.color}</span></h2>
                         <h2>First registration: <span className="header">{this.props.data.firstRegistration}</span></h2>
-                        <h2>A/C: <span className="header">{this.props.data.airConditioned}</span></h2>
                     </div>
                 </ul>
             </div>)

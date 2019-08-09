@@ -4,39 +4,41 @@ import * as actions from "../../../store/actions";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
+import Avatar from '../../../assets/images/image-default.png'
 
 class Comment extends Component {
 
 
     componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.author.modelId,'comment');
+        this.props.onFetchUserImage(this.props.token, this.props.author.modelId, 'comment');
     }
+
     render() {
-        let image = 'https://cdn.pixabay.com/photo/2018/02/08/22/27/flower-3140492__340.jpg';
+        let image = Avatar;
         if (this.props.commentImage)
             image = this.props.commentImage;
         return (
-            <div style={{width: 650}} className="Comment">
-                <div className="Trip additional-details  cardcont  meta-data-container">
-                    <img id="postertest" className='poster' style={{width: 30, height: 30, marginTop: 10}}
-                         src={image} alt={''}/>
-                        <p> {this.props.author.firstName} {this.props.author.lastName}</p>
-                    <p className="meta-data">{this.props.message}</p>
-                </div>
-            </div>)
+            <div >
+                <img id="postertest"  style={{width: 30, height: 30, marginTop: 10}}
+                     src={image} alt={''}/>
+                <p>&nbsp;&nbsp;{this.props.author.firstName} {this.props.author.lastName}:&nbsp;&nbsp;</p>
+                <p className="metadata">{this.props.message}</p>
+            </div>
+        )
     }
 
 }
+
 const mapStateToProps = state => {
     return {
         token: state.auth.token,
-        commentImage:state.user.commentImage
+        commentImage: state.user.commentImage
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId,userType) => dispatch(actions.fetchImageUser(token, userId,userType)),
+        onFetchUserImage: (token, userId, userType) => dispatch(actions.fetchImageUser(token, userId, userType)),
     };
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(Comment, axios));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Comment, axios));
