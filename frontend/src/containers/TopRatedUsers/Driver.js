@@ -7,7 +7,7 @@ import StarRatings from "react-star-ratings";
 
 class Driver extends Component {
     state = {
-        src: Avatar
+        src: Avatar,
     };
 
     async componentDidMount() {
