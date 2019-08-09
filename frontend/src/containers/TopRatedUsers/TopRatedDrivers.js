@@ -64,7 +64,7 @@ class topRatedDrivers extends Component {
 
         return (
             <Auxiliary>
-                <div className="users">
+                <div style={{marginBottom: 50}} className="users">
                     <div>
                         <h1> TOP RATED DRIVERS</h1>
                     </div>

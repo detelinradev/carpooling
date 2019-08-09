@@ -1,25 +1,42 @@
 .Driver {
-    width: 200px;
+    width: 250px;
+    height: 80px;
     box-shadow: 0 2px 3px #ccc;
     box-sizing: border-box;
-    text-align: left;
     display: inline-block;
     float: left;
     flex-flow: row wrap;
-    margin: auto;
-    padding: 24px;
+    padding: 10px;
     background-color: rgba(0, 0, 0, 0.5) !important;
-    margin-top: 35px;
+    margin-top: 10px;
     color: white;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    vertical-align:middle
 }
 
 .Driver img {
     height: 50px;
+    max-width: 60px;
+    vertical-align:middle
 }
 
 
 .header {
     color: mediumseagreen;
     text-align: center;
+    font-weight: bold;
+    vertical-align:top
+}
+
+
+.header-two {
+    color: mediumseagreen;
+    text-align: center;
+    font-weight: bold;
+    vertical-align: center;
+}
+
+.divech {
+    padding-left: 50px;
+
 }

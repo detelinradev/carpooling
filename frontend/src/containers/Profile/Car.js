@@ -4,7 +4,7 @@ import './Car.css';
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import axios from '../../axios-baseUrl';
 import Modal from "../../components/UI/Modal/Modal";
-import CarAvatar from "../../assets/images/218567006-abstract-car-wallpapers.jpg";
+import CarAvatar from "../../assets/images/cars-noimage_sedan-lrg.png";
 import NewCar from "./NewCar";
 
 class Car extends Component {
@@ -19,7 +19,6 @@ class Car extends Component {
     };
 
     async componentDidMount() {
-        console.log("first" + this.state.src);
             const getCarResponse = await axios.get('/car', {
                 headers:
                     {"Authorization": this.props.token}
@@ -32,17 +31,15 @@ class Car extends Component {
 
         if(getCarResponse) {
             this.setState({
-                car: getCarResponse.data,
-                src: URL.createObjectURL(getCarAvatarResponse)
+                car: getCarResponse.data
             })
         }
 
-            // if(getCarAvatarResponse>49){
-            //     this.setState({
-            //         src: URL.createObjectURL(getCarAvatarResponse)
-            //     })
-            // }
-            console.log(this.state.src);
+            if(getCarAvatarResponse.size>100){
+                this.setState({
+                    src: URL.createObjectURL(getCarAvatarResponse)
+                })
+            }
     }
 
 

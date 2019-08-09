@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import Avatar from '../../assets/images/images.png';
+import Avatar from '../../assets/images/image-default.png';
 import './Passenger.css';
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import CarAvatar from "../../assets/images/218567006-abstract-car-wallpapers.jpg";
 
 class Passenger extends Component {
     state = {
-        src: ""
+        src: Avatar
     };
 
     async componentDidMount() {
         const getDriverAvatarResponse = await
             fetch("http://localhost:8080/users/avatar/" + this.props.passenger.modelId)
                 .then(response => response.blob());
-
-        if(getDriverAvatarResponse){
+        if(getDriverAvatarResponse.size>100){
             this.setState({
                 src: URL.createObjectURL(getDriverAvatarResponse)
             })
@@ -25,12 +24,12 @@ class Passenger extends Component {
     render() {
         return (
             <div className="Passenger">
-                <ul style={{marginRight: 50, maxWidth: 350}}>
-                    <img src={this.state.src} alt="Not found!"/>
-                </ul>
-                <ul style={{maxWidth: 350}}>
-                    <h2> Name: <span className="header">{this.props.passenger.firstName}</span></h2>
-                </ul>
+                <img  src={this.state.src} alt="Not found!"/>
+                <span className="header"> {this.props.passenger.username}</span>
+
+                <div className="divech">
+                    Passenger rating  <span className="header-two"> {this.props.passenger.ratingAsPassenger}</span>
+                </div>
             </div>
         )
     }

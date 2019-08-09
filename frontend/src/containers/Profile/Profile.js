@@ -7,7 +7,7 @@ import Car from "./Car";
 import Button from "@material-ui/core/Button";
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Modal from "../../components/UI/Modal/Modal";
-import Avatar from '../../assets/images/images.png';
+import Avatar from '../../assets/images/image-default.png';
 import { TiUser, TiGroup} from "react-icons/ti";
 import { FaEnvelopeOpen, FaPhone, FaMedal, FaUserEdit} from "react-icons/fa";
 import StarRatings from 'react-star-ratings';

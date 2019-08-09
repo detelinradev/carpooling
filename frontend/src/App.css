@@ -9,3 +9,11 @@ body {
     height: 100%;
     font-family: "Numans", sans-serif;
 }
+
+.footer {
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  height: 50px;
+  text-align: center;
+  color: whitesmoke;
+}

@@ -200,7 +200,7 @@ class Home extends Component {
                 ))}
                 <Button btnType="Success"
                        // disabled={!this.state.formIsValid}
-                >CREATE</Button>
+                >SEARCH</Button>
             </form>
         );
         if (this.props.loading) {

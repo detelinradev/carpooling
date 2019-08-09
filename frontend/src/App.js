@@ -64,6 +64,9 @@ class App extends Component {
                     {/*    This is footer*/}
                     {/*</footer>*/}
                     <TopRatedDrivers/>
+                    <div className="footer">
+                        footer
+                    </div>
                 </Layout>
             </div>
         );
