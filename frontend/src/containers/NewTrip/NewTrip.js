@@ -192,7 +192,7 @@ class NewTrip extends Component {
         return (
             <div>
             <div className="NewTrip">
-                <h4>Enter your Trip Data</h4>
+                <h4 className="header">Enter your Trip Data</h4>
                 {form}
             </div>
             </div>

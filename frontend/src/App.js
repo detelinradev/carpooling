@@ -68,14 +68,11 @@ class App extends Component {
             <div>
                 <Layout>
                     {routes}
-                    {/*<footer style={{textAlign: 'center', marginTop: 100}} className="test-footer m-5 color=elegant-color">*/}
-                    {/*    This is footer*/}
-                    {/*</footer>*/}
                     {topRated}
                 </Layout>
-                    <footer className="footer">
-                        footer
-                    </footer>
+                    {/*<footer className="footer">*/}
+                    {/*    footer*/}
+                    {/*</footer>*/}
             </div>
         );
     }

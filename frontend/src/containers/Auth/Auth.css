@@ -6,6 +6,7 @@
     border: 1px solid #eee;
     padding: 10px;
     box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
 .Button:first-of-type {

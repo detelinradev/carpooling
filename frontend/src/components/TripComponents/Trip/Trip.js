@@ -29,7 +29,7 @@ class Trip extends Component {
                                  src={this.props.driverImage} alt={''}/>
                             <p className="meta-data">{this.props.data.driver.firstName} {this.props.data.driver.lastName}</p>
                         </p>
-                        <div style={{marginRight: 20,     verticalAlign:"middle"}} className="edit">
+                        <div style={{marginRight: 20,     verticalAlign:"middle"}} className="ed">
                             <Button onClick={() => this.props.showFullTrip(this.props.data)}><h3
                                 className="header">DETAILS <FaUserEdit/></h3>
                             </Button>

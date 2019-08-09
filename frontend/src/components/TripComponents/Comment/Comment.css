@@ -1,9 +1,12 @@
 .Comment {
-    display: flex;
     flex-flow: row wrap;
-    justify-content: center;
     margin-bottom: 20px;
-    text-align: center;
     margin-top: 35px;
     height: 320px;
+}
+
+
+
+.metadata {
+    color: mediumseagreen;
 }
