@@ -76,6 +76,8 @@
     transition-timing-function: linear;
     transition-delay: 1s;
     margin-top: 10px;
+    margin-right: 20px;
+    vertical-align: middle;
 }
 
 h1 {

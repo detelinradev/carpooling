@@ -4,28 +4,31 @@ import * as actions from "../../../store/actions";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
-import CarAvatar from "../../../assets/images/218567006-abstract-car-wallpapers.jpg";
+import CarAvatar from "../../../assets/images/cars-noimage_sedan-lrg.png";
 
 class Car extends Component {
+    state = {
+        src: CarAvatar
+    };
 
 
     componentDidMount() {
         this.props.onFetchCarImage(this.props.token, this.props.trip.driver.modelId);
-        console.log(this.props.trip.driver.modelId)
+        if (this.props.carImage) {
+            this.setState({
+                src: this.state.carImage
+            })
+        }
     }
 
     render() {
-        let image = CarAvatar;
-        if (this.props.carImage) {
-            console.log(this.props.carImage)
-            image = this.props.carImage;
-        }
+
 
         return (
             <div style={{width: 800, float: 'left', marginRight: 35}} className="Car" >
                 <ul>
                     <img style={{maxWidth: 350}}
-                         src={image}
+                         src={this.state.src}
                          alt="car pooling"/>
                 </ul>
                 <ul>

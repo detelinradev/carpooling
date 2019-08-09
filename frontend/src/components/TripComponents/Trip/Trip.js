@@ -8,14 +8,26 @@ import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
 import * as actions from "../../../store/actions";
 import Spinner from "../../UI/Spinner/Spinner";
+import Avatar from "../../../assets/images/image-default.png";
 
 class Trip extends Component {
-
+    state = {
+        src: Avatar,
+    };
     componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.data.driver.modelId, 'driver');
+         this.props.onFetchUserImage(this.props.token, this.props.data.driver.modelId, 'driver');
+        console.log(this.state.src);
+
+        if(this.props.driverImage){
+            this.setState({
+                src: this.props.driverImage
+            })
+        }
+        console.log(this.state.src)
     }
 
     render() {
+
         // let trip = this.props.error ? <p>Trips can't be loaded!</p> : <Spinner />;
         let trip = null;
         if (this.props.driverImage) {
@@ -26,10 +38,10 @@ class Trip extends Component {
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
-                                 src={this.props.driverImage} alt={''}/>
+                                 src={this.state.src} alt={''}/>
                             <p className="meta-data">{this.props.data.driver.firstName} {this.props.data.driver.lastName}</p>
                         </p>
-                        <div style={{marginRight: 20,     verticalAlign:"middle"}} className="ed">
+                        <div className="ed">
                             <Button onClick={() => this.props.showFullTrip(this.props.data)}><h3
                                 className="header">DETAILS <FaUserEdit/></h3>
                             </Button>
