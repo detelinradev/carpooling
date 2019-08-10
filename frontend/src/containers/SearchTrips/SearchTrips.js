@@ -44,38 +44,6 @@ class SearchTrips extends Component {
                 valid: false,
                 touched: false
             },
-            earliestDepartureTime: {
-                elementType: 'select',
-                elementConfig: {
-                    type: 'text',
-                    placeholder: 'Departure time'
-                },
-                value: '',
-                validation: {
-                    required: false,
-                    // minLength: 5,
-                    // maxLength: 5,
-                    //isNumeric: true
-                },
-                valid: true,
-                touched: false
-            },
-            latestDepartureTime: {
-                elementType: 'select',
-                elementConfig: {
-                    type: 'text',
-                    placeholder: 'Departure time'
-                },
-                value: '',
-                validation: {
-                    required: false,
-                    // minLength: 5,
-                    // maxLength: 5,
-                    //isNumeric: true
-                },
-                valid: true,
-                touched: false
-            },
             availablePlaces: {
                 elementType: 'input',
                 elementConfig: {
@@ -90,20 +58,20 @@ class SearchTrips extends Component {
                 valid: false,
                 touched: false
             },
-            tripDuration: {
-                elementType: 'input',
-                elementConfig: {
-                    type: 'number',
-                    placeholder: 'Trip duration'
-                },
-                value: '',
-                validation: {
-                    required: true,
-                    isNumeric: true
-                },
-                valid: false,
-                touched: false
-            },
+            // tripDuration: {
+            //     elementType: 'input',
+            //     elementConfig: {
+            //         type: 'number',
+            //         placeholder: 'Trip duration'
+            //     },
+            //     value: '',
+            //     validation: {
+            //         required: true,
+            //         isNumeric: true
+            //     },
+            //     valid: false,
+            //     touched: false
+            // },
             costPerPassenger: {
                 elementType: 'input',
                 elementConfig: {
@@ -118,19 +86,19 @@ class SearchTrips extends Component {
                 valid: false,
                 touched :false
             },
-            message: {
-                elementType: 'input',
-                elementConfig: {
-                    type: 'text',
-                    placeholder: 'Message'
-                },
-                value: '',
-                validation: {
-                    required: true
-                },
-                valid: false,
-                touched: false
-            },
+            // message: {
+            //     elementType: 'input',
+            //     elementConfig: {
+            //         type: 'text',
+            //         placeholder: 'Message'
+            //     },
+            //     value: '',
+            //     validation: {
+            //         required: true
+            //     },
+            //     valid: false,
+            //     touched: false
+            // },
             // date: {
             //     elementType: 'select',
             //     elementConfig: {
@@ -143,7 +111,39 @@ class SearchTrips extends Component {
             //     },
             //     valid: false,
             //     touched: false
-            // }
+            // },
+                        earliestDepartureTime: {
+                            elementType: 'select',
+                            elementConfig: {
+                                type: 'text',
+                                placeholder: 'Departure time'
+                            },
+                            value: '',
+                            validation: {
+                                required: false,
+                                // minLength: 5,
+                                // maxLength: 5,
+                                //isNumeric: true
+                            },
+                            valid: true,
+                            touched: false
+                        },
+                        latestDepartureTime: {
+                            elementType: 'select',
+                            elementConfig: {
+                                type: 'text',
+                                placeholder: 'Departure time'
+                            },
+                            value: '',
+                            validation: {
+                                required: false,
+                                // minLength: 5,
+                                // maxLength: 5,
+                                //isNumeric: true
+                            },
+                            valid: true,
+                            touched: false
+                        }
         },
         formIsValid: false,
         changedDate:new Date()
@@ -262,6 +262,7 @@ class SearchTrips extends Component {
             <form onSubmit={this.createHandler}>
 
                 {formElementsArray.map(formElement => (
+
                     <Input
                         key={formElement.id}
                         name={formElement.id}
@@ -303,7 +304,7 @@ class SearchTrips extends Component {
                     <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
                     <div>
                         <div className="SearchTrips">
-                            <h4>Search Trips</h4>
+                            Search Trips
                             {form}
                         </div>
                     </div>

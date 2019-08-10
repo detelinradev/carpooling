@@ -12,11 +12,22 @@ import Car from "../../components/TripComponents/Car/Car";
 import * as actions from "../../store/actions";
 import Button from "@material-ui/core/Button";
 import {FaUserEdit} from "react-icons/fa";
+import Avatar from "../../assets/images/image-default.png";
 
 class FullTrip extends Component {
+    state = {
+        src: Avatar,
+    };
 
     componentDidMount() {
         this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver');
+        console.log(this.state.src)
+        if(this.props.driverImage){
+            this.setState({
+                src: this.props.driverImage
+            })
+        }
+        console.log(this.state.src)
     }
 
     async joinTrip() {
@@ -81,7 +92,7 @@ class FullTrip extends Component {
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
-                                 src={this.props.driverImage} alt={''}/>
+                                 src={this.state.src} alt={''}/>
                             <p className="meta-data">{this.props.trip.driver.firstName} {this.props.trip.driver.lastName}</p>
                         </p>
                         <h3><span><FaMedal/></span> Rating <span

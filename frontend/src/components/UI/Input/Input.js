@@ -66,7 +66,9 @@ const input = ( props ) => {
     return (
         <div className="Input">
             <label className="Label">{props.label}</label>
-            <p>{props.name}<p>{inputElement}</p></p>
+            <form style={{textAlign: 'left'}}>
+            {props.name}<br/>{inputElement}
+            </form>
         </div>
     );
 

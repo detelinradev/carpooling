@@ -14,6 +14,7 @@ class Trip extends Component {
     state = {
         src: Avatar,
     };
+
     componentDidMount() {
          this.props.onFetchUserImage(this.props.token, this.props.data.driver.modelId, 'driver');
         console.log(this.state.src);

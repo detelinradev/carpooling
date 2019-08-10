@@ -6,12 +6,10 @@
 }
 
 .SearchTrips {
-    margin: 20px auto;
     width: 40%;
     text-align: center;
     box-shadow: 0 2px 3px #ccc;
     border: 1px solid #eee;
-    padding: 10px;
     box-sizing: border-box;
     background-color: rgba(0, 0, 0, 0.5) !important;
 }
