@@ -29,5 +29,6 @@ public interface UserService {
 
     List<UserDtoResponse> getUsers();
 
+    List<TripDtoResponse> getUserOwnTrips(String username);
 }
 

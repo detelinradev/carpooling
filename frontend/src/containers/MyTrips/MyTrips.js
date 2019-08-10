@@ -10,8 +10,7 @@ import Trip from "../../components/TripComponents/Trip/Trip";
 class MyTrips extends Component {
 
     componentDidMount() {
-        const stringData = '/myTrips';
-        this.props.onFetchTrips(this.props.token,stringData);
+        this.props.onFetchTrips(this.props.token,'/myTrips');
     }
 
     showFullTrip = (trip) => {

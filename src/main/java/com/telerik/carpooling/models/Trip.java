@@ -17,7 +17,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.*;
 
-@EqualsAndHashCode(callSuper = true,exclude = "comments")
+@EqualsAndHashCode(callSuper = true,exclude = {"comments","users"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,6 +52,11 @@ public class Trip extends MappedAudibleBase {
 
     @Size(min = 2,max = 3)
     private String petsAllowed;
+
+    @JsonIgnore
+    @ManyToMany
+    @JsonIgnoreProperties("myTrips")
+    private List<User> users = new ArrayList<>();
 
     @OneToMany(mappedBy = "trip")
     @JsonIgnore

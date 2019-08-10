@@ -121,6 +121,16 @@ public class TripController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping(value = "/myTrips")
+    public ResponseEntity<?> getUserOwnTrips(Authentication authentication) {
+        return Optional
+                .ofNullable(userService.getUserOwnTrips(
+                        authentication.getName()))
+                .map(user -> ResponseEntity.ok().body(user))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+
+    }
+
     @PostMapping(value = "/{id}/passengers")
     public ResponseEntity<?> addPassenger(@PathVariable final String id,
                                           final Authentication authentication) {

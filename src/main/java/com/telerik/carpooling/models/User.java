@@ -10,11 +10,13 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
-@EqualsAndHashCode(callSuper = true,exclude ={"userImage", "car"})
+@EqualsAndHashCode(callSuper = true,exclude ={"userImage", "car", "myTrips"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -59,6 +61,11 @@ public class User extends MappedAudibleBase {
 
     @Size(max = 250)
     private String avatarUri;
+
+    @JsonIgnore
+    @ManyToMany
+    @JsonIgnoreProperties("users")
+    private List<Trip> myTrips = new ArrayList<>();
 
     @JsonIgnore
     @ElementCollection

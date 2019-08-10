@@ -2,6 +2,7 @@ package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.UserDtoRequest;
 import com.telerik.carpooling.models.dtos.UserDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
@@ -71,6 +72,12 @@ public class UserServiceImpl implements UserService {
                 user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).get());
         }
         return users;
+    }
+
+    @Override
+    public List<TripDtoResponse> getUserOwnTrips(String username) {
+
+        return dtoMapper.tripToDtoList(userRepository.findFirstByUsername(username).getMyTrips());
     }
 
     @Override

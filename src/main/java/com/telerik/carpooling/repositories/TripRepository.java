@@ -26,7 +26,7 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
             "(:origin is null or :origin ='' or t.origin = :origin) and" +
             "(:destination is null or :destination ='' or t.destination = :destination) and" +
             "(:departureTime is null or :departureTime ='' or t.departureTime = :departureTime) and" +
-            "(:availablePlaces is null or t.availablePlaces = :availablePlaces) and" +
+            "(:availablePlaces is null or t.availablePlaces >= :availablePlaces) and" +
             "(:smoking is null or :smoking ='' or t.smokingAllowed = :smoking) and" +
             "(:pets is null or :pets ='' or t.petsAllowed = :pets) and" +
             "(:luggage is null or :luggage ='' or t.luggageAllowed = :luggage)")
