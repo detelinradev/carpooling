@@ -40,7 +40,7 @@ export const checkAuthTimeout = (expirationTime) => {
     };
 };
 
-export const auth = (username, password, isSignup,firstName) => {
+export const auth = (username, password, isSignup, firstName, lastName, email, phone) => {
     return dispatch => {
         dispatch(authStart());
 
@@ -50,7 +50,10 @@ export const auth = (username, password, isSignup,firstName) => {
         let authData= {
             username: username,
             password: password,
-            firstName: firstName
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: phone
         };
         if (!isSignup) {
             url = 'http://localhost:8080/users/authenticate';

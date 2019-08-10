@@ -72,7 +72,7 @@ class Auth extends Component {
             firstName: {
                 elementType: 'input',
                 elementConfig: {
-                    type: 'username',
+                    type: 'firstName',
                     placeholder: 'First name'
                 },
                 value: '',
@@ -160,7 +160,13 @@ class Auth extends Component {
 
     submitHandler = ( event ) => {
         event.preventDefault();
-        this.props.onAuth( this.state.controlsLogin.username.value, this.state.controlsLogin.password.value, this.state.isSignup,this.state.controlsSignUp.firstName.value );
+        this.props.onAuth( this.state.controlsLogin.username.value,
+            this.state.controlsLogin.password.value,
+            this.state.isSignup,
+            this.state.controlsSignUp.firstName.value,
+            this.state.controlsSignUp.lastName.value,
+            this.state.controlsSignUp.email.value,
+            this.state.controlsSignUp.phone.value);
     };
     // submitHandlerSignUp = ( event ) => {
     //     event.preventDefault();
@@ -263,7 +269,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAuth: ( username, password, isSignup,firstName ) => dispatch( actions.auth( username, password, isSignup,firstName ) ),
+        onAuth: ( username, password, isSignup,firstName, lastName, email, phone ) => dispatch( actions.auth( username, password, isSignup,firstName, lastName, email, phone ) ),
         onSetAuthRedirectPath: () => dispatch( actions.setAuthRedirectPath( '/' ) )
     };
 };
