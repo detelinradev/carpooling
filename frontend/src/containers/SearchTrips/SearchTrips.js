@@ -241,6 +241,9 @@ class SearchTrips extends Component {
                 tripJoined = 'Request sent'
             }
         }
+        if(trip.driver.username === currentUserName){
+            tripJoined = ''
+        }
 
         console.log(tripJoined)
         this.props.onShowFullTrip(trip,tripJoined,'No');
@@ -277,11 +280,11 @@ class SearchTrips extends Component {
                 >SEARCH</Button>
             </form>
         );
-        if (this.props.loading) {
-            form = <Spinner/>;
-        }
+        // if (this.props.loading) {
+        //     form = <Spinner/>;
+        // }
         let trips = <Spinner/>;
-        if (this.props.trips) {
+        if (!this.props.loading) {
 
             trips = this.props.trips.map(trip => (
                 <Trip

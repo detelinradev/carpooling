@@ -17,39 +17,17 @@ class FullTrip extends Component {
 
     componentDidMount() {
         this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver');
-        // this.checkIfTripJoined();
     }
 
     async joinTrip() {
-        axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
-            headers: {"Authorization": this.props.token}
-        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId,'Yes'))
-            .then(res => this.componentDidMount());
-
-        // this.componentDidMount();
+        const currentUserName = this.props.username;
+        if (this.props.trip.driver.username !== currentUserName) {
+            axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
+                headers: {"Authorization": this.props.token}
+            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'))
+                .then(res => this.componentDidMount());
+        }
     }
-    // joinTripStatus(){
-    //     this.props.tripJoined? 'Request sent': this.props.tripJoined
-    // }
-
-    // checkIfTripJoined() {
-    //     const currentUserName = this.props.username;
-    //     console.log(currentUserName)
-    //     let isJoined = false;
-    //
-    //     let trips = this.props.trip.passengers.map(passenger =>
-    //         (passenger.username === currentUserName)
-    //     );
-    //     isJoined = trips.includes(true)
-    //     if (isJoined) {
-    //         this.setState({
-    //             tripJoined: 'Trip joined'
-    //         });
-    //     }
-    //     console.log(isJoined);
-    //     console.log(this.state.tripJoined)
-    //     console.log(this.props.trip.driver.firstName)
-    // }
 
     render() {
         let comments;
@@ -88,6 +66,9 @@ class FullTrip extends Component {
         }
         if(this.props.tripJoined === 'Request sent'){
             joinTripStatus = 'Request Sent'
+        }
+        if(this.props.tripJoined === ''){
+            joinTripStatus = ''
         }
 
 
