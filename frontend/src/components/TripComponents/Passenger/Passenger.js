@@ -10,7 +10,7 @@ class Passenger extends Component {
 
 
     componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.data.modelId,'passenger');
+        this.props.onFetchUserImage(this.props.token, this.props.data.modelId,'passenger',this.props.data.modelId);
     }
     render() {
         let image = 'https://cdn.pixabay.com/photo/2018/02/08/22/27/flower-3140492__340.jpg';
@@ -44,12 +44,13 @@ class Passenger extends Component {
 const mapStateToProps = state => {
     return {
         token: state.auth.token,
-        passengerImage:state.user.passengerImage
+        passengerImage:state.user.passengerImage,
+        modelId:state.user.modelId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId,userType) => dispatch(actions.fetchImageUser(token, userId,userType)),
+        onFetchUserImage: (token, userId,userType,modelId) => dispatch(actions.fetchImageUser(token, userId,userType,modelId)),
     };
 };
 

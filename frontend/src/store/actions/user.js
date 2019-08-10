@@ -1,24 +1,27 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-baseUrl';
 
-export const fetchImageDriverSuccess = (driverImage) => {
+export const fetchImageDriverSuccess = (driverImage,modelId) => {
     return {
         type: actionTypes.FETCH_DRIVER_IMAGE_SUCCESS,
-        driverImage: driverImage
+        driverImage: driverImage,
+        modelId:modelId
     };
 };
 
-export const fetchImagePassengerSuccess = (passengerImage) => {
+export const fetchImagePassengerSuccess = (passengerImage,modelId) => {
     return {
         type: actionTypes.FETCH_PASSENGER_IMAGE_SUCCESS,
-        passengerImage: passengerImage
+        passengerImage: passengerImage,
+        modelId:modelId
     };
 };
 
-export const fetchImageCommentSuccess = (commentImage) => {
+export const fetchImageCommentSuccess = (commentImage,modelId) => {
     return {
         type: actionTypes.FETCH_COMMENT_IMAGE_SUCCESS,
-        commentImage: commentImage
+        commentImage: commentImage,
+        modelId:modelId
     };
 };
 
@@ -69,7 +72,7 @@ export const fetchImageCarStart = () => {
     };
 };
 
-export const fetchImageUser = (token, userId, userType) => {
+export const fetchImageUser = (token, userId, userType,modelId) => {
     return dispatch => {
         dispatch(fetchImageUserStart());
         const headers = {
@@ -81,11 +84,11 @@ export const fetchImageUser = (token, userId, userType) => {
             .then(blob => URL.createObjectURL(blob))
             .then(res => {
                 if (userType === 'passenger')
-                    dispatch(fetchImagePassengerSuccess(res));
+                    dispatch(fetchImagePassengerSuccess(res,modelId));
                 if (userType === 'driver')
-                    dispatch(fetchImageDriverSuccess(res));
+                    dispatch(fetchImageDriverSuccess(res,modelId));
                 if (userType === 'comment')
-                    dispatch(fetchImageCommentSuccess(res));
+                    dispatch(fetchImageCommentSuccess(res,modelId));
             })
             .catch(err => {
                 if (userType === 'passenger')

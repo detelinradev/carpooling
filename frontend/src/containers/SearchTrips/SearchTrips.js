@@ -325,7 +325,6 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
         onShowFullTrip: (trip,tripJoined,requestSent) => dispatch(actions.showFullTrip(trip,tripJoined,requestSent)),
-        onFetchUserImage:(token,userId)=> dispatch(actions.fetchImageUser(token,userId))
     };
 };
 

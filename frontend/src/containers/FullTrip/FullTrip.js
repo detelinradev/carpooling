@@ -20,7 +20,7 @@ class FullTrip extends Component {
     };
 
     componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver');
+        this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver',this.props.trip.modelId);
         console.log(this.state.src)
         if(this.props.driverImage){
             this.setState({
@@ -46,6 +46,7 @@ class FullTrip extends Component {
             comments = this.props.trip.comments.map(comment => (
                 <Comment
                     key={comment.modelId}
+                    data={comment}
                     message={comment.message}
                     author={comment.author}
                 />
@@ -174,12 +175,13 @@ const mapStateToProps = state => {
         driverImage: state.user.driverImage,
         username: state.auth.userId,
         tripJoined:state.trip.tripJoined,
-        requestSent:state.trip.requestSent
+        requestSent:state.trip.requestSent,
+        modelId:state.user.modelId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId, userType) => dispatch(actions.fetchImageUser(token, userId, userType)),
+        onFetchUserImage: (token, userId, userType,modelId) => dispatch(actions.fetchImageUser(token, userId, userType,modelId)),
         onFetchTrip: (token, tripId,requestSent) => dispatch(actions.fetchTrip(token, tripId,requestSent)),
         // onTripJoined:(tripJoinedStatus) => dispatch(actions.changeTripJoinedStatus(tripJoinedStatus))
     };

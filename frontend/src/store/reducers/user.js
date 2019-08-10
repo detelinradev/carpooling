@@ -7,7 +7,8 @@ const initialState = {
     driverImage:null,
     passengerImage:null,
     commentImage:null,
-    carImage:null
+    carImage:null,
+    modelId:null
 };
 
 const fetchImageUserStart = ( state, action ) => {
@@ -21,20 +22,23 @@ const fetchImageCarStart = ( state, action ) => {
 const fetchImageDriverSuccess = ( state, action ) => {
     return updateObject( state, {
         driverImage: action.driverImage,
-        loading: false
+        loading: false,
+        modelId: action.modelId
     } );
 };
 
 const fetchImagePassengerSuccess = ( state, action ) => {
     return updateObject( state, {
         passengerImage: action.passengerImage,
-        loading: false
+        loading: false,
+        modelId:action.modelId
     } );
 };
 const fetchImageCommentSuccess = ( state, action ) => {
     return updateObject( state, {
         commentImage: action.commentImage,
-        loading: false
+        loading: false,
+        modelId:action.modelId
     } );
 };
 

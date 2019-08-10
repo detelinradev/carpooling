@@ -14,17 +14,18 @@ class Trip extends Component {
     state = {
         src: Avatar,
     };
-
     componentDidMount() {
-         this.props.onFetchUserImage(this.props.token, this.props.data.driver.modelId, 'driver');
+        this.props.onFetchUserImage(this.props.token, this.props.data.driver.modelId, 'driver', this.props.data.modelid);
         console.log(this.state.src);
 
-        if(this.props.driverImage){
-            this.setState({
-                src: this.props.driverImage
-            })
+        if (this.props.data.modelId === this.props.modelId) {
+            if (this.props.driverImage) {
+                this.setState({
+                    src: this.props.driverImage
+                })
+            }
+            console.log(this.state.src)
         }
-        console.log(this.state.src)
     }
 
     render() {
@@ -101,13 +102,14 @@ const mapStateToProps = state => {
         // trips: state.trip.trips,
         // loading: state.trip.loading,
         token: state.auth.token,
-        driverImage: state.user.driverImage
+        driverImage: state.user.driverImage,
+        modelId:state.user.modelId
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId, userType) => dispatch(actions.fetchImageUser(token, userId, userType))
+        onFetchUserImage: (token, userId, userType,modelId) => dispatch(actions.fetchImageUser(token, userId, userType,modelId))
     };
 };
 

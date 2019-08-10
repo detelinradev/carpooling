@@ -10,7 +10,7 @@ class Comment extends Component {
 
 
     componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.author.modelId, 'comment');
+        this.props.onFetchUserImage(this.props.token, this.props.author.modelId, 'comment',this.props.data.modelId);
     }
 
     render() {
@@ -32,12 +32,13 @@ class Comment extends Component {
 const mapStateToProps = state => {
     return {
         token: state.auth.token,
-        commentImage: state.user.commentImage
+        commentImage: state.user.commentImage,
+        modelId:state.user.modelId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId, userType) => dispatch(actions.fetchImageUser(token, userId, userType)),
+        onFetchUserImage: (token, userId, userType,modelId) => dispatch(actions.fetchImageUser(token, userId, userType,modelId)),
     };
 };
 
