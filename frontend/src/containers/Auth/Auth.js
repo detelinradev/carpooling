@@ -160,13 +160,17 @@ class Auth extends Component {
 
     submitHandler = ( event ) => {
         event.preventDefault();
-        this.props.onAuth( this.state.controlsLogin.username.value,
-            this.state.controlsLogin.password.value,
-            this.state.isSignup,
-            this.state.controlsSignUp.firstName.value,
-            this.state.controlsSignUp.lastName.value,
-            this.state.controlsSignUp.email.value,
-            this.state.controlsSignUp.phone.value);
+        if(this.state.isSignup) {
+            this.props.onAuth(this.state.controlsSignUp.username.value,
+                this.state.controlsSignUp.password.value,
+                this.state.isSignup,
+                this.state.controlsSignUp.firstName.value,
+                this.state.controlsSignUp.lastName.value,
+                this.state.controlsSignUp.email.value,
+                this.state.controlsSignUp.phone.value);
+        }else {
+            this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignup);
+        }
     };
     // submitHandlerSignUp = ( event ) => {
     //     event.preventDefault();

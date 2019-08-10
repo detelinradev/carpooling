@@ -82,7 +82,7 @@ export const auth = (username, password, isSignup, firstName, lastName, email, p
                 ));
             })
             .catch(err => {
-                dispatch(authFail(err));
+                dispatch(authFail(err.errors));
             });
     };
 };
