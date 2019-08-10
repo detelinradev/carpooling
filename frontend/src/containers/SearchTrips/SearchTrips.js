@@ -260,9 +260,7 @@ class SearchTrips extends Component {
         }
         let form = (
             <form onSubmit={this.createHandler}>
-
                 {formElementsArray.map(formElement => (
-
                     <Input
                         key={formElement.id}
                         name={formElement.id}
@@ -301,7 +299,6 @@ class SearchTrips extends Component {
         }
             return (
                 <div className="todore">
-                    <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
                     <div>
                         <div className="SearchTrips">
                             Search Trips

@@ -122,7 +122,7 @@ class Car extends Component {
         return (
             <div>
                 <Modal style={{width: 600}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
-                    <NewCar/>
+                    <NewCar showModal={this.state.showModal}/>
                 </Modal>
                 {car}
             </div>

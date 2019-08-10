@@ -95,45 +95,62 @@ class FullTrip extends Component {
                             <img id="postertest" className='poster' style={{width: 128}}
                                  src={this.state.src} alt={''}/>
                             <p className="meta-data">{this.props.trip.driver.firstName} {this.props.trip.driver.lastName}</p>
-                        </p>
-                        <h3><span><FaMedal/></span> Rating <span
-                            className="header"><h1>{
+                            <span><FaMedal/></span> Rating <span
+                            className="header">{
                             <StarRatings
                                 rating={this.props.trip.ratingAsDriver}
                                 starRatedColor="blue"
                                 changeRating={this.changeRating}
                                 numberOfStars={5}
                                 name='rating'
-                            />}</h1></span></h3>
+                                starDimension="30px"
+                                starSpacing="6px"
+                            />}</span>
+                        </p>
                         <div style={{marginRight: 20, verticalAlign: "middle"}}>
                             <Button onClick={() => this.joinTrip()}><h3
                                 className="header">{joinTripStatus} <FaUserEdit/></h3>
                             </Button>
                         </div>
-                        <p className="row-xs-6 info"> Departure Time<p
-                            className="meta-data">{this.props.trip.departureTime}</p>
-                        </p>
-                        <p className="row-xs-6 info">Available Seats<p
-                            className="meta-data">{this.props.trip.availablePlaces}</p>
-                        </p>
-                        <p className="row-xs-6 info">Price<p
-                            className="meta-data">{this.props.trip.costPerPassenger} leva</p>
-                        </p>
-                        <p className="row-xs-6 info">Car<p
-                            className="meta-data">{this.props.trip.car.brand} {this.props.trip.car.model}</p></p>
-                        <p className="row-xs-6 info">Status<p className="meta-data">{this.props.trip.tripStatus}</p></p>
-                        <p className="row-xs-3 info">Message<p className="meta-data">{this.props.trip.message}</p></p>
-                        <p className="row-xs-6 info">Smoking allowed<p
-                            className="meta-data">{this.props.trip.smokingAllowed}</p>
-                        </p>
-                        <p className="row-xs-6 info">Pets allowed<p
-                            className="meta-data">{this.props.trip.petsAllowed}</p></p>
-                        <p className="row-xs-6 info">Luggage allowed<p
-                            className="meta-data">{this.props.trip.luggageAllowed}</p>
-                        </p>
-                        <p className="row-xs-6 info">Air-conditioned<p
-                            className="meta-data">{this.props.trip.car.airConditioned}</p>
-                        </p>
+
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Departure Time<p className="row-xs-6 info meta-data">{this.props.trip.departureTime}</p>
+
+                            <hr/>
+                            Smoking allowed<p className="row-xs-6 info meta-data">{this.props.trip.smokingAllowed}</p>
+                        </div>
+
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Available Seats<p className="row-xs-6 info meta-data">{this.props.trip.availablePlaces}</p>
+                            <hr/>
+                            Air-conditioned<p className="row-xs-6 info meta-data">{this.props.trip.car.airConditioned}</p>
+                        </div>
+
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Price<br/><p className="row-xs-6 info meta-data">{this.props.trip.costPerPassenger} leva</p>
+                            <hr/>
+                            Luggage allowed<p className="row-xs-6 info meta-data">{this.props.trip.luggageAllowed}</p>
+                        </div>
+
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Status<br/><p className="row-xs-6 info meta-data">{this.props.trip.tripStatus}</p>
+                            <hr/>
+                            Pets allowed<p className="row-xs-6 info meta-data">{this.props.trip.petsAllowed}</p>
+                        </div>
+
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Car Brand<br/><p className="row-xs-6 info meta-data">{this.props.trip.car.brand}</p>
+                            <hr/>
+                            Car Model<p className="row-xs-6 info meta-data">{this.props.trip.car.model}</p>
+                        </div>
+
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Message<p className="row-xs-6 info meta-data">{this.props.trip.message}</p>
+                        </div>
+
+
+
+
 
 
                     </div>

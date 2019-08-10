@@ -113,6 +113,54 @@ class NewTrip extends Component {
                 valid: false,
                 touched: false
             },
+            smokingAllowed: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Smoking Allowed'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                    minLength: 2,
+                    maxLength: 3,
+                },
+                valid: false,
+                touched: false
+            },
+            petsAllowed: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Pets Allowed'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                    minLength: 2,
+                    maxLength: 3,
+                },
+                valid: false,
+                touched: false
+            },
+            luggageAllowed: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Luggage Allowed'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                    minLength: 2,
+                    maxLength: 3,
+                },
+                valid: false,
+                touched: false
+            }
+
+
+
             // date: {
             //     elementType: 'select',
             //     elementConfig: {
@@ -171,10 +219,10 @@ class NewTrip extends Component {
         }
         let form = (
             <form onSubmit={this.createHandler}>
-
                 {formElementsArray.map(formElement => (
                     <Input
                         key={formElement.id}
+                        name={formElement.id}
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
                         value={formElement.config.value}
@@ -190,11 +238,9 @@ class NewTrip extends Component {
             form = <Spinner/>;
         }
         return (
-            <div>
-            <div className="NewTrip">
-                <h4 className="header">Enter your Trip Data</h4>
+            <div className="NewTrip todore">
+                Enter your Trip Data
                 {form}
-            </div>
             </div>
         );
     }

@@ -67,7 +67,7 @@ const input = ( props ) => {
         <div className="Input">
             <label className="Label">{props.label}</label>
             <form style={{textAlign: 'left'}}>
-            {props.name}<br/>{inputElement}
+            {props.name}&nbsp;&nbsp;{inputElement}
             </form>
         </div>
     );

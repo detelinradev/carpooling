@@ -51,7 +51,6 @@ class Auth extends Component {
                 value: '',
                 validation: {
                     required: true,
-                    // isEmail: true
                 },
                 valid: false,
                 touched: false
@@ -79,6 +78,48 @@ class Auth extends Component {
                 value: '',
                 validation: {
                     required: true,
+                },
+                valid: false,
+                touched: false
+            },
+            lastName: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'lastName',
+                    placeholder: 'Last name'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                },
+                valid: false,
+                touched: false
+            },
+            email: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'email',
+                    placeholder: 'Email'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                    // isEmail: true
+                },
+                valid: false,
+                touched: false
+            },
+            phone: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'phone',
+                    placeholder: 'Phone'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                    isNumeric: true,
+
                     // isEmail: true
                 },
                 valid: false,

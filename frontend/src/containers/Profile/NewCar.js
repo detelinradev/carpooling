@@ -9,6 +9,8 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import * as actions from '../../store/actions/index';
 import {updateObject, checkValidity} from '../../shared/utility';
 import 'react-dates/initialize';
+import './NewCar.css';
+import CarAvatar from "../../assets/images/cars-noimage_sedan-lrg.png";
 
 
 class NewCar extends Component {
@@ -87,52 +89,7 @@ class NewCar extends Component {
                 },
                 valid: false,
                 touched: false
-            },
-            smokingAllowed: {
-                elementType: 'input',
-                elementConfig: {
-                    type: 'text',
-                    placeholder: 'Smoking'
-                },
-                value: '',
-                validation: {
-                    required: true,
-                    minLength: 2,
-                    maxLength: 3,
-                },
-                valid: false,
-                touched :false
-            },
-            petsAllowed: {
-                elementType: 'input',
-                elementConfig: {
-                    type: 'text',
-                    placeholder: 'Pets'
-                },
-                value: '',
-                validation: {
-                    required: true,
-                    minLength: 2,
-                    maxLength: 3,
-                },
-                valid: false,
-                touched: false
-            },
-            luggageAllowed: {
-                elementType: 'input',
-                elementConfig: {
-                    type: 'text',
-                    placeholder: 'Luggage'
-                },
-                value: '',
-                validation: {
-                    required: true,
-                    minLength: 2,
-                    maxLength: 3,
-                },
-                valid: false,
-                touched: false
-            },
+            }
 
         },
         formIsValid: false,
@@ -148,7 +105,9 @@ class NewCar extends Component {
         }
 
         this.props.onCreateCar(formData, this.props.token);
-
+        this.setState({
+        [this.props.showModal]: !this.props.showModal
+        });
     };
 
     inputChangedHandler = (event, inputIdentifier) => {
@@ -178,8 +137,7 @@ class NewCar extends Component {
             });
         }
         let form = (
-            <form style={{textAlign: 'center'}} onSubmit={this.createHandler}>
-
+            <form style={{textAlign: 'left'}} onSubmit={this.createHandler}>
                 {formElementsArray.map(formElement => (
                     <Input
                         key={formElement.id}
@@ -191,7 +149,9 @@ class NewCar extends Component {
                         touched={formElement.config.touched}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
-                <Button btnType="Success" disabled={!this.state.formIsValid}>CREATE</Button>
+                <div style={{textAlign: 'center'}}>
+                <Button btnType="Success" disabled={!this.state.formIsValid} onClick={() => this.createHandler()}>CREATE</Button>
+                </div>
             </form>
         );
         if (this.props.loading) {
@@ -199,10 +159,8 @@ class NewCar extends Component {
         }
         return (
             <div>
-                <div>
-                    <h4 style={{textAlign: 'center'}}>Enter your Car Data</h4>
+                    Enter your Car Data
                     {form}
-                </div>
             </div>
         );
     }

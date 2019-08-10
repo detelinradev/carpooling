@@ -5,6 +5,7 @@ import axios from '../../axios-baseUrl';
 import {FaAndroid} from 'react-icons/fa';
 import * as actions from '../../store/actions/index';
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 
 
 class Home extends Component {
@@ -13,13 +14,27 @@ class Home extends Component {
     render() {
         if (this.props.token) {
             return (
-                <div className="todore">
+                <Auxiliary>
+                    <h1 className="header">
+                        WELCOME
+                    </h1>
+                <div className="hometext">
                     <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
-                </div>)
+                    <hr style={{width: '70%'}}/>
+                    <h2 style={{textAlign: "center"}}>
+                        SEARCH AMONG ALL KIND OF VEHICLES AND DESTINATIONS!
+                    </h2>
+                    <h3>
+                        This app can help you find the most suitable type of transport for you at the right time
+                        <br/>
+                        You can create and search a trip as easy as clicking several buttons
+                    </h3>
+                </div>
+                </Auxiliary>)
         }
 
         return (
-            <div className="todore">
+            <div className="hometext">
 
                 <h1 className="header">THE PERFECT PLACE TO FIND <FaAndroid/><br/> THE FASTEST WAY TO TRAVEL</h1>
                 <hr style={{width: '70%'}}/>

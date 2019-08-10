@@ -14,6 +14,7 @@ class Trip extends Component {
     state = {
         src: Avatar,
     };
+
     componentDidMount() {
         this.props.onFetchUserImage(this.props.token, this.props.data.driver.modelId, 'driver', this.props.data.modelid);
         console.log(this.state.src);
@@ -48,41 +49,37 @@ class Trip extends Component {
                                 className="header">DETAILS <FaUserEdit/></h3>
                             </Button>
                         </div>
-                        <div className="comps" style={{margin: 15}}>
-                        <p className="row-xs-6 info"> Departure Time<p
-                            className="meta-data">{this.props.data.departureTime}</p>
-                        </p>
+
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Departure Time<p
+                            className="row-xs-6 info meta-data">{this.props.data.departureTime}</p>
+
                             <hr/>
-                        <p className="row-xs-6 info">Smoking allowed<p
-                            className="meta-data">{this.props.data.smokingAllowed}</p>
-                        </p>
+                            Smoking allowed<p
+                            className="row-xs-6 info meta-data">{this.props.data.smokingAllowed}</p>
                         </div>
 
-                        <div  className="comps" style={{margin: 15}}>
-                        <p className="row-xs-6 info">Available Seats<p
-                            className="meta-data">{this.props.data.availablePlaces}</p>
-                        </p>
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Available Seats<p
+                            className="row-xs-6 info meta-data">{this.props.data.availablePlaces}</p>
                             <hr/>
-                        <p className="row-xs-6 info">Air-conditioned<p
-                            className="meta-data">{this.props.data.car.airConditioned}</p>
-                        </p>
+                            Air-conditioned<p
+                            className="row-xs-6 info meta-data">{this.props.data.car.airConditioned}</p>
                         </div>
 
-                        <div  className="comps" style={{margin: 15}}>
-                        <p className="row-xs-6 info">Price<p
-                            className="meta-data">{this.props.data.costPerPassenger} leva</p>
-                        </p>
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Price<br/><p
+                            className="row-xs-6 info meta-data">{this.props.data.costPerPassenger} leva</p>
                             <hr/>
-                        <p className="row-xs-6 info">Luggage allowed<p
-                            className="meta-data">{this.props.data.luggageAllowed}</p>
-                        </p>
+                            Luggage allowed<p
+                            className="row-xs-6 info meta-data">{this.props.data.luggageAllowed}</p>
                         </div>
 
-                        <div className="comps"  style={{margin: 15}}>
-                        <p className="row-xs-6 info">Status<p className="meta-data">{this.props.data.tripStatus}</p></p>
+                        <div className="comps" style={{ paddingTop: 40}}>
+                            Status<br/><p className="row-xs-6 info meta-data">{this.props.data.tripStatus}</p>
                             <hr/>
-                        <p className="row-xs-6 info">Pets allowed<p
-                            className="meta-data">{this.props.data.petsAllowed}</p></p>
+                            Pets allowed<p
+                            className="row-xs-6 info meta-data">{this.props.data.petsAllowed}</p>
                         </div>
 
                     </div>
@@ -103,13 +100,13 @@ const mapStateToProps = state => {
         // loading: state.trip.loading,
         token: state.auth.token,
         driverImage: state.user.driverImage,
-        modelId:state.user.modelId
+        modelId: state.user.modelId
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId, userType,modelId) => dispatch(actions.fetchImageUser(token, userId, userType,modelId))
+        onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId))
     };
 };
 
