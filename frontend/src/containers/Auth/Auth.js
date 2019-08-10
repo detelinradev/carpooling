@@ -169,13 +169,9 @@ class Auth extends Component {
                 this.state.controlsSignUp.email.value,
                 this.state.controlsSignUp.phone.value);
         }else {
-            this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignup);
+            this.props.onAuth(this.state.controlsLogin.username.value, this.state.controlsLogin.password.value, this.state.isSignup);
         }
     };
-    // submitHandlerSignUp = ( event ) => {
-    //     event.preventDefault();
-    //     this.props.onAuth( this.state.controlsSignUp.username.value, this.state.controlsSignUp.password.value, this.state.isSignup,this.state.controlsSignUp.firstName );
-    // };
 
     switchAuthModeHandler = () => {
         this.setState( prevState => {
