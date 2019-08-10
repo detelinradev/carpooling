@@ -54,12 +54,13 @@ export const createInit = () => {
     };
 };
 
-export const showFullTrip = ( trip,tripJoined,requestSent) => {
+export const showFullTrip = ( trip,tripJoined,requestSent,isMyTrip) => {
     return {
         type: actionTypes.SHOW_FULL_TRIP,
         trip:trip,
         tripJoined:tripJoined,
-        requestSent:requestSent
+        requestSent:requestSent,
+        isMyTrip:isMyTrip
     };
 };
 

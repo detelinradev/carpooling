@@ -35,8 +35,7 @@ class FullTrip extends Component {
         if (this.props.trip.driver.username !== currentUserName) {
             axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
                 headers: {"Authorization": this.props.token}
-            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'))
-                .then(res => this.componentDidMount());
+            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
         }
     }
 
@@ -90,6 +89,7 @@ class FullTrip extends Component {
                 <div style={{marginLeft: 100}}>
                     <div
                         className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination}</div>
+                    <div>{this.props.isMyTrip === 'MyTrip'? 'Driver': null}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
@@ -193,7 +193,9 @@ const mapStateToProps = state => {
         username: state.auth.userId,
         tripJoined:state.trip.tripJoined,
         requestSent:state.trip.requestSent,
-        modelId:state.user.modelId
+        modelId:state.user.modelId,
+        isMyTrip: state.trip.isMyTrip
+
     }
 };
 const mapDispatchToProps = dispatch => {

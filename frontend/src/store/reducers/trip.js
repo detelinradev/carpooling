@@ -7,7 +7,8 @@ const initialState = {
     purchased: false,
     trip:null,
     tripJoined:'Join Trip',
-    requestSent:'No'
+    requestSent:'No',
+    isMyTrip:''
 };
 
 const createInit = ( state, action ) => {
@@ -18,7 +19,8 @@ const showFullTrip = ( state, action ) => {
     return updateObject( state, {
         trip: action.trip,
         tripJoined:action.tripJoined,
-        requestSent: action.requestSent
+        requestSent: action.requestSent,
+        isMyTrip: action.isMyTrip
     } );
 };
 

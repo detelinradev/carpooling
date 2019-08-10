@@ -38,6 +38,7 @@ class Trip extends Component {
                 <div className=" Post">
                     <div
                         className="proba Trip additional-details hed">{this.props.data.origin} -> {this.props.data.destination}</div>
+                    <div>{this.props.userRole?this.props.userRole:null}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}

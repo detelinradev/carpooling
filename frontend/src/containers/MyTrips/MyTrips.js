@@ -40,7 +40,7 @@ class MyTrips extends Component {
         }
 
         console.log(tripJoined)
-        this.props.onShowFullTrip(trip,tripJoined,'No');
+        this.props.onShowFullTrip(trip,tripJoined,'No','MyTrip');
         this.props.history.push('/fullTrip');
     };
     render() {
@@ -51,6 +51,7 @@ class MyTrips extends Component {
                 <Trip
                     key={trip.id}
                     data = {trip}
+                    userRole={trip.driver.username === this.props.username?'driver':'passenger'}
                     driver={trip.driver}
                     passengers={trip.passengers}
                     comments={trip.comments}
@@ -86,7 +87,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
-        onShowFullTrip: (trip,tripJoined,requestSent) => dispatch(actions.showFullTrip(trip,tripJoined,requestSent)),
+        onShowFullTrip: (trip,tripJoined,requestSent,isMyTrip) => dispatch(actions.showFullTrip(trip,tripJoined,requestSent,isMyTrip)),
         onFetchUserImage:(token,userId)=> dispatch(actions.fetchImageUser(token,userId))
     };
 };
