@@ -40,7 +40,12 @@ class MyTrips extends Component {
         }
 
         console.log(tripJoined)
-        this.props.onShowFullTrip(trip,tripJoined,'No','MyTrip');
+
+        let myTrip ='passenger';
+        if(trip.driver.username === this.props.username){
+            myTrip = 'driver'
+        }
+        this.props.onShowFullTrip(trip,tripJoined,'No',myTrip);
         this.props.history.push('/fullTrip');
     };
     render() {

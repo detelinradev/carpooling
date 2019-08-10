@@ -82,6 +82,22 @@ class FullTrip extends Component {
             joinTripStatus = ''
         }
 
+        let myTrip;
+        if(this.props.isMyTrip !== ''){
+            if(this.props.isMyTrip === 'driver'){
+
+                myTrip={
+
+                }
+            }
+            if(this.props.isMyTrip === 'passenger'){
+
+                myTrip={
+
+                }
+            }
+        }
+
 
         let trip = <Spinner/>;
         if (!this.props.loading) {
@@ -89,7 +105,8 @@ class FullTrip extends Component {
                 <div style={{marginLeft: 100}}>
                     <div
                         className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination}</div>
-                    <div>{this.props.isMyTrip === 'MyTrip'? 'Driver': null}</div>
+                    <div>{this.props.isMyTrip === 'driver'? 'Driver': null}</div>
+                    <div>{this.props.isMyTrip === 'passenger'? 'Passenger': null}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
@@ -147,12 +164,6 @@ class FullTrip extends Component {
                         <div className="comps" style={{ paddingTop: 40}}>
                             Message<p className="row-xs-6 info meta-data">{this.props.trip.message}</p>
                         </div>
-
-
-
-
-
-
                     </div>
                     {car}
                     <div className="Comment">
@@ -170,9 +181,11 @@ class FullTrip extends Component {
                         </h1>
                         {passengers}
                     </div>
+                    {myTrip}
                 </div>
             )
         }
+
 
         return (
             <div className="todore">
