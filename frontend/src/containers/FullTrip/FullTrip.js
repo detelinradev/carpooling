@@ -52,7 +52,7 @@ class FullTrip extends Component {
    //     this.setState({tripStatus: tripStatus})
    //  }
     async changeTripStatus(tripStatus){
-        axios.post('/trips/' + this.props.trip.modelId + '?' +tripStatus, null, {
+        axios.patch('/trips/' + this.props.trip.modelId + '?status=' +tripStatus, null, {
             headers: {"Authorization": this.props.token}
         }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
     }
