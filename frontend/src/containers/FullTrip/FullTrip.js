@@ -15,15 +15,17 @@ import {FaUserEdit} from "react-icons/fa";
 import Avatar from "../../assets/images/image-default.png";
 import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css'
+import DropdownButton from "react-bootstrap/DropdownButton";
 
 class FullTrip extends Component {
     state = {
         src: Avatar,
+        tripStatus:''
     };
 
     async componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver',this.props.trip.modelId);
-        console.log(this.state.src)
+        //this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver',this.props.trip.modelId);
+        // console.log(this.state.src)
         const getDriverAvatarResponse = await
         fetch("http://localhost:8080/users/avatar/" + this.props.trip.driver.modelId)
             .then(response => response.blob());
@@ -34,11 +36,14 @@ class FullTrip extends Component {
                 src: URL.createObjectURL(getDriverAvatarResponse)
             })
         }
+        if(this.state.tripStatus !== ''){
+
+        }
 
     }
 
     async joinTrip() {
-        console.log(this.props.trip.modelId)
+        // console.log(this.props.trip.modelId)
         const currentUserName = this.props.username;
         if (this.props.trip.driver.username !== currentUserName) {
             axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
@@ -46,15 +51,23 @@ class FullTrip extends Component {
             }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
         }
     }
-   async changeTripStatus(tripStatus){
-       console.log(this.props.trip.modelId)
-        // const currentUserName = this.props.username;
-        // if (this.props.trip.driver.username !== currentUserName) {
-            axios.post('/trips/' + this.props.trip.modelId + '?' +tripStatus, null, {
-                headers: {"Authorization": this.props.token}
-            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
+   // getTripStatus(tripStatus){
+   //     this.setState({tripStatus: tripStatus})
+   //  }
+    async changeTripStatus(tripStatus){
+        axios.post('/trips/' + this.props.trip.modelId + '?' +tripStatus, null, {
+            headers: {"Authorization": this.props.token}
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
+    }
 
-
+    async cancelTrip(){
+        const currentUserName = this.props.username;
+        let passengerID =this.props.trip.passengers.map(passenger =>
+            (passenger.username === currentUserName)?passenger.modelId:null
+        );
+        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerID + '?status=CANCELED', null, {
+            headers: {"Authorization": this.props.token}
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'No'));
     }
 
     render() {
@@ -104,30 +117,30 @@ class FullTrip extends Component {
         let myTrip='';
         if(this.props.isMyTrip !== ''){
             if(this.props.isMyTrip === 'driver'){
-                const options = [
-                    'ONGOING', 'DONE', 'CANCELED'
-                ];
-                const defaultOption = options[0];
+                // const optionsDriver = [
+                //     'ONGOING', 'DONE', 'CANCELED'
+                // ];
+                // const defaultOption = optionsDriver[0];
 
                 myTrip=(
-
                    <div>
-
-                       <Dropdown options={options} onChange={this.changeTripStatus} value={defaultOption} placeholder="Select an option" />
                        {/*<DropdownButton id="dropdown-item-button" title="Dropdown button">*/}
-                       {/*    <Dropdown.Item as="button">Action</Dropdown.Item>*/}
-                       {/*    <Dropdown.Item as="button">Another action</Dropdown.Item>*/}
-                       {/*    <Dropdown.Item as="button">Something else</Dropdown.Item>*/}
+                       {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING </Button></Dropdown.Item>*/}
+                       {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
+                       {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
                        {/*</DropdownButton>*/}
                    </div>
-
                 )
             }
             if(this.props.isMyTrip === 'passenger'){
 
-                myTrip={
-
-                }
+                myTrip=(
+                <div style={{marginRight: 20, verticalAlign: "middle"}}>
+                    <Button onClick={() => this.cancelTrip()}><h3
+                        className="header">CANCEL TRIP PARTICIPATION<FaUserEdit/></h3>
+                    </Button>
+                </div>
+                )
             }
         }
 
@@ -235,18 +248,18 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         trip: state.trip.trip,
-        driverImage: state.user.driverImage,
+        // driverImage: state.user.driverImage,
         username: state.auth.userId,
         tripJoined:state.trip.tripJoined,
         requestSent:state.trip.requestSent,
-        modelId:state.user.modelId,
+        // modelId:state.user.modelId,
         isMyTrip: state.trip.isMyTrip
 
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId, userType,modelId) => dispatch(actions.fetchImageUser(token, userId, userType,modelId)),
+        // onFetchUserImage: (token, userId, userType,modelId) => dispatch(actions.fetchImageUser(token, userId, userType,modelId)),
         onFetchTrip: (token, tripId,requestSent) => dispatch(actions.fetchTrip(token, tripId,requestSent)),
         // onTripJoined:(tripJoinedStatus) => dispatch(actions.changeTripJoinedStatus(tripJoinedStatus))
     };

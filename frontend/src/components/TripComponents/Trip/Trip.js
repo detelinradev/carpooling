@@ -125,14 +125,14 @@ const mapStateToProps = state => {
         // trips: state.trip.trips,
         // loading: state.trip.loading,
         token: state.auth.token,
-        driverImage: state.user.driverImage,
+       driverImage: state.user.driverImage,
         modelId: state.user.modelId
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId))
+       onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId))
     };
 };
 
