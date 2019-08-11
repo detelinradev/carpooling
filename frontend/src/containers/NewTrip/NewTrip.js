@@ -72,20 +72,6 @@ class NewTrip extends Component {
                 valid: false,
                 touched: false
             },
-            tripDuration: {
-                elementType: 'input',
-                elementConfig: {
-                    type: 'number',
-                    placeholder: 'Trip duration'
-                },
-                value: '',
-                validation: {
-                    required: true,
-                    isNumeric: true
-                },
-                valid: false,
-                touched: false
-            },
             costPerPassenger: {
                 elementType: 'input',
                 elementConfig: {
@@ -95,10 +81,10 @@ class NewTrip extends Component {
                 value: '',
                 validation: {
                     required: true,
-                   isNumeric: true
+                    isNumeric: true
                 },
                 valid: false,
-                touched :false
+                touched: false
             },
             message: {
                 elementType: 'input',
@@ -176,16 +162,50 @@ class NewTrip extends Component {
             // }
         },
         formIsValid: false,
+        startLocation: 0,
+        endLocation: 0,
+        travelDistance: 0,
+        tripDuration: 0,
 
     };
 
-    createHandler = (event) => {
+    async getCoordinates() {
+        await axios.get("http://dev.virtualearth.net/REST/v1/Locations/"+this.state.createForm.origin.value+"?key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
+            .then(response => {
+                console.log(this.state.createForm.origin.value);
+
+                this.setState({
+                    startLocation: response.data.resourceSets[0].resources[0].point.coordinates
+                });
+            });
+
+        await axios.get("http://dev.virtualearth.net/REST/v1/Locations/"+this.state.createForm.destination.value+"?key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
+            .then(response => {
+                this.setState({
+                    endLocation: response.data.resourceSets[0].resources[0].point.coordinates
+                });
+            });
+
+        await axios.get("https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins="+this.state.startLocation+"&destinations="+this.state.endLocation+"&travelMode=driving&key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
+            .then(response => {
+                this.setState({
+                    travelDistance: response.data.resourceSets[0].resources[0].results[0].travelDistance,
+                    tripDuration: response.data.resourceSets[0].resources[0].results[0].travelDuration,
+                });
+            });
+
+    }
+
+    createHandler = async (event) => {
         event.preventDefault();
 
         const formData = {};
         for (let formElementIdentifier in this.state.createForm) {
             formData[formElementIdentifier] = this.state.createForm[formElementIdentifier].value;
         }
+        await this.getCoordinates();
+        formData["tripDuration"] = this.state.tripDuration;
+        // formData["tripDistance"] = this.state.tripDistance;
 
         this.props.onCreateTrip(formData, this.props.token);
 
@@ -240,6 +260,7 @@ class NewTrip extends Component {
         return (
             <div className="NewTrip todore">
                 Enter your Trip Data
+                {/*<button onClick={() => this.getCoordinates()}>test</button>*/}
                 {form}
             </div>
         );
