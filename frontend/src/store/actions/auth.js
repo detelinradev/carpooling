@@ -82,10 +82,6 @@ export const auth = (username, password, isSignup, firstName, lastName, email, p
 
         let url = 'http://localhost:8080/users/register';
         let currentUserName= username;
-        let  authDataLogin= {
-            username: username,
-            password: password
-        };
         let authData= {
             username: username,
             password: password,

@@ -62,8 +62,6 @@ class App extends Component {
                     <Route path="/myProfile" component={asyncProfile} />
                     <Route path="/auth" component={asyncAuth} />
                     <Route path="/" exact component={Home} />
-                    <Route path="/" component={Home} />
-
                     <Redirect to="/" />
                 </Switch>
             );

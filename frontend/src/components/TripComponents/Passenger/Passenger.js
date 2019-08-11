@@ -10,7 +10,9 @@ import Avatar from '../../../assets/images/image-default.png'
 
 class Passenger extends Component {
     state = {
-        src: Avatar
+        src: Avatar,
+        newFeedback: '',
+        newRate: '',
     };
 
     async componentDidMount() {
@@ -27,7 +29,60 @@ class Passenger extends Component {
         }
     }
 
+    giveFeedbackHandler = async () => {
+        console.log(this.props.trip.modelId)
+        console.log( this.props.data.modelId)
+        let feedback = this.state.newFeedback;
+        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId +"/feedback", {feedback}, {
+            headers: {"Authorization": this.props.token}
+        });
+    };
+
+    ratePassengerHandler = async () => {
+        let rate = this.state.newRate;
+        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId+"/rate", {rate}, {
+            headers: {"Authorization": this.props.token}
+        });
+    };
+    feedbackInputChangedHandler = (event) => {
+        event.preventDefault();
+        this.setState({newFeedback: event.target.value});
+    };
+
+    rateInputChangedHandler = (event) => {
+        event.preventDefault();
+        this.setState({newRating: event.target.value});
+    };
+
+
     render() {
+        let formFeedback = null;
+        if (this.props.isMyTrip) {
+            formFeedback = (
+                <div>
+                    <p
+                        className="header">->GIVE FEEDBACK
+                    </p>
+                    <input
+                        value={this.state.newComment}
+                        onChange={(event) => this.feedbackInputChangedHandler(event)}/>
+                </div>
+            )
+        }
+
+        let formRating = null;
+        if (this.props.isMyTrip) {
+            formRating = (
+                <div>
+                    <p
+                        className="header">*RATE THE PASSENGER
+                    </p>
+                    <input
+                        value={this.state.newComment}
+                        onChange={(event) => this.rateInputChangedHandler(event)}/>
+                </div>
+            )
+        }
 
         return (
             <div style={{float: "left"}} className=" Post">
@@ -48,7 +103,18 @@ class Passenger extends Component {
                             starDimension="30px"
                             starSpacing="6px"
                         />}</p></p>
+                    <div>
+                        <form onSubmit={this.ratePassengerHandler}>
+                            {formRating}
+                        </form>
+                    </div>
+                    <div>
+                        <form onSubmit={this.giveFeedbackHandler}>
+                            {formFeedback}
+                        </form>
+                    </div>
                 </div>
+
             </div>)
     }
 
@@ -58,7 +124,8 @@ const mapStateToProps = state => {
     return {
         token: state.auth.token,
         passengerImage: state.user.passengerImage,
-        modelId: state.user.modelId
+        modelId: state.user.modelId,
+        isMyTrip: state.trip.isMyTrip
     }
 };
 const mapDispatchToProps = dispatch => {

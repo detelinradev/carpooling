@@ -13,7 +13,6 @@ import * as actions from "../../store/actions";
 import Button from "@material-ui/core/Button";
 import {FaUserEdit} from "react-icons/fa";
 import Avatar from "../../assets/images/image-default.png";
-import {checkValidity, updateObject} from "../../shared/utility";
 
 class FullTrip extends Component {
     state = {
@@ -71,11 +70,12 @@ class FullTrip extends Component {
     }
 
     inputChangedHandler = (event) => {
+        event.preventDefault();
         this.setState({newComment: event.target.value});
     };
 
 
-    commentHandler = async () => {
+    async commentHandler() {
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/comments?comment=" + this.state.newComment, null, {
             headers: {"Authorization": this.props.token}
         });
@@ -149,7 +149,7 @@ class FullTrip extends Component {
                 myTrip = (
                     <div style={{marginRight: 20, verticalAlign: "middle"}}>
                         <Button onClick={() => this.cancelTrip()}><h3
-                            className="header">CANCEL TRIP PARTICIPATION<FaUserEdit/></h3>
+                            className="header">LEAVE TRIP<FaUserEdit/></h3>
                         </Button>
                     </div>
                 )
@@ -160,12 +160,19 @@ class FullTrip extends Component {
         if (this.props.isMyTrip) {
             form = (
                 <div>
-                <p
-                    className="header">+ADD COMMENT
-                </p>
-                <input
-                    value={this.state.newComment}
-                    onChange={(event) => this.inputChangedHandler(event)}/>
+                    <form onSubmit={()=> this.commentHandler()}>
+                        {
+                            <div>
+                                <p
+                                    className="header">+ADD COMMENT
+                                </p>
+                                <input
+                                    value={this.state.newComment}
+                                    onChange={(event) => this.inputChangedHandler(event)}/>
+                            </div>
+                        }
+                        <Button btnType="Success">SUBMIT</Button>
+                    </form>
                 </div>
             )
         }
@@ -240,11 +247,7 @@ class FullTrip extends Component {
                     </div>
                     {car}
                     <div className="Comments">
-                        <div>
-                            <form onSubmit={this.commentHandler}>
-                                {form}
-                            </form>
-                        </div>
+                        {form}
                         <br/>
                         {comments}
                     </div>
@@ -253,7 +256,7 @@ class FullTrip extends Component {
                             PASSENGERS
                         </h1>
                         {passengers}
-                    {myTrip}
+                        {myTrip}
                     </div>
                 </div>
             )
