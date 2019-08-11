@@ -46,7 +46,7 @@ class NewTrip extends Component {
                 touched: false
             },
             departureTime: {
-                elementType: 'select',
+                elementType: 'date',
                 elementConfig: {
                     type: 'text',
                     placeholder: 'Departure time'
