@@ -30,7 +30,7 @@ class Passenger extends Component {
     render() {
 
         return (
-            <div className=" Post">
+            <div style={{float: "left"}} className=" Post">
 
                 <div className="Trip additional-details  cardcont  meta-data-container">
                     <p className="meta-data">{this.props.data.firstName} {this.props.data.lastName}</p>
