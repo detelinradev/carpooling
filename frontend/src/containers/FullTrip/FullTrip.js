@@ -13,9 +13,6 @@ import * as actions from "../../store/actions";
 import Button from "@material-ui/core/Button";
 import {FaUserEdit} from "react-icons/fa";
 import Avatar from "../../assets/images/image-default.png";
-import Dropdown from 'react-dropdown'
-import 'react-dropdown/style.css'
-import DropdownButton from "react-bootstrap/DropdownButton";
 
 class FullTrip extends Component {
     state = {
@@ -124,11 +121,20 @@ class FullTrip extends Component {
 
                 myTrip=(
                    <div>
+                       <div className="dropdown">
+                           <button className="dropbtn">Change status</button>
+                           <div className="dropdown-content">
+                               <a onClick={() => this.changeTripStatus('ONGOING')} >ACCEPT</a>
+                               <a >REJECT</a>
+                               <a >MAGIQ</a>
+                           </div>
+                       </div>
                        {/*<DropdownButton id="dropdown-item-button" title="Dropdown button">*/}
                        {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
                        {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
                        {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
                        {/*</DropdownButton>*/}
+
                    </div>
                 )
             }
