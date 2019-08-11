@@ -41,7 +41,7 @@ const input = ( props ) => {
                     showTimeSelect
                     timeFormat="HH:mm"
                     timeIntervals={15}
-                    dateFormat="dd-mm-yyyy HH:mm"
+                    dateFormat="dd-MM-yyyy HH:mm"
                     timeCaption="time"
                 />
             );

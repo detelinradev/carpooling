@@ -16,6 +16,8 @@ import DatePicker from "react-datepicker/es";
 
 class NewTrip extends Component {
     state = {
+        startDate: new Date(),
+        changedDate:new Date(),
         //focused: false,
         createForm: {
             origin: {
@@ -44,22 +46,22 @@ class NewTrip extends Component {
                 valid: false,
                 touched: false
             },
-            // departureTime: {
-            //     elementType: 'input',
-            //     elementConfig: {
-            //         type: 'text',
-            //         placeholder: 'Departure time'
-            //     },
-            //     value: '',
-            //     validation: {
-            //         required: true,
-            //         // minLength: 5,
-            //         // maxLength: 5,
-            //         //isNumeric: true
-            //     },
-            //     valid: false,
-            //     touched: false
-            // },
+            departureTime: {
+                elementType: 'select',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Departure time'
+                },
+                value: '',
+                validation: {
+                    required: false,
+                    // minLength: 5,
+                    // maxLength: 5,
+                    //isNumeric: true
+                },
+                valid: true,
+                touched: false
+            },
             availablePlaces: {
                 elementType: 'input',
                 elementConfig: {
@@ -168,7 +170,7 @@ class NewTrip extends Component {
         endLocation: 0,
         travelDistance: 0,
         tripDuration: 0,
-        departureTime: undefined
+        //departureTime: undefined
 
     };
 
@@ -201,7 +203,8 @@ class NewTrip extends Component {
 
     createHandler = async (event) => {
         event.preventDefault();
-
+console.log(this.state.startDate)
+console.log(this.state.createForm.departureTime.value)
         const formData = {};
         for (let formElementIdentifier in this.state.createForm) {
             formData[formElementIdentifier] = this.state.createForm[formElementIdentifier].value;
@@ -209,7 +212,8 @@ class NewTrip extends Component {
         await this.getCoordinates();
         formData["tripDuration"] = this.state.tripDuration;
         // formData["tripDistance"] = this.state.tripDistance;
-        formData["departureTime"]= DateTimeFormat(this.state.departureTime, "yyyy-mm-dd HH:MM");
+       formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
+       console.log(DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM"))
 
         this.props.onCreateTrip(formData, this.props.token);
 
@@ -282,19 +286,21 @@ class NewTrip extends Component {
                         invalid={!formElement.config.valid}
                         shouldValidate={formElement.config.validation}
                         touched={formElement.config.touched}
+                        startDate={this.state.startDate}
+                        dateChange={(date) => this.inputDateChangedHandler(date,formElement.id)}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
-                <DatePicker
-                    placeholderText="Click to select a date"
-                    selected={departureTime}
-                    onChange={(date) => this.inputDateChangedHandler(date,"departureTime")}
-                    // value={props.value}
-                    showTimeSelect
-                    timeFormat="HH:MM"
-                    timeIntervals={15}
-                    dateFormat="dd-mm-yyyy HH:MM"
-                    timeCaption="time"
-                /><br/>
+                {/*<DatePicker*/}
+                {/*    placeholderText="Click to select a date"*/}
+                {/*    selected={this.state.startDate}*/}
+                {/*    onChange={(date) => this.inputDateChangedHandler(date,"departureTime")}*/}
+                {/*    // value={props.value}*/}
+                {/*    showTimeSelect*/}
+                {/*    timeFormat="HH:MM"*/}
+                {/*    timeIntervals={15}*/}
+                {/*    dateFormat="dd-mm-yyyy HH:MM"*/}
+                {/*    timeCaption="time"*/}
+                {/*/><br/>*/}
                 <Button btnType="Success" disabled={!this.state.formIsValid}>CREATE</Button>
             </form>
         );

@@ -125,7 +125,7 @@ class FullTrip extends Component {
                 myTrip=(
                    <div>
                        {/*<DropdownButton id="dropdown-item-button" title="Dropdown button">*/}
-                       {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING </Button></Dropdown.Item>*/}
+                       {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
                        {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
                        {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
                        {/*</DropdownButton>*/}
