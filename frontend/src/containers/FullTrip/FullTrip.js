@@ -13,6 +13,9 @@ import * as actions from "../../store/actions";
 import Button from "@material-ui/core/Button";
 import {FaUserEdit} from "react-icons/fa";
 import Avatar from "../../assets/images/image-default.png";
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-dropdown'
+import 'react-dropdown/style.css'
 
 class FullTrip extends Component {
     state = {
@@ -31,12 +34,23 @@ class FullTrip extends Component {
     }
 
     async joinTrip() {
+        console.log(this.props.trip.modelId)
         const currentUserName = this.props.username;
         if (this.props.trip.driver.username !== currentUserName) {
             axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
                 headers: {"Authorization": this.props.token}
             }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
         }
+    }
+   async changeTripStatus(tripStatus){
+       console.log(this.props.trip.modelId)
+        // const currentUserName = this.props.username;
+        // if (this.props.trip.driver.username !== currentUserName) {
+            axios.post('/trips/' + this.props.trip.modelId + '?' +tripStatus, null, {
+                headers: {"Authorization": this.props.token}
+            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
+
+
     }
 
     render() {
@@ -82,13 +96,28 @@ class FullTrip extends Component {
             joinTripStatus = ''
         }
 
-        let myTrip;
+
+        let myTrip='';
         if(this.props.isMyTrip !== ''){
             if(this.props.isMyTrip === 'driver'){
+                const options = [
+                    'ONGOING', 'DONE', 'CANCELED'
+                ];
+                const defaultOption = options[0];
 
-                myTrip={
+                myTrip=(
 
-                }
+                   <div>
+
+                       <Dropdown options={options} onChange={this.changeTripStatus} value={defaultOption} placeholder="Select an option" />
+                       {/*<DropdownButton id="dropdown-item-button" title="Dropdown button">*/}
+                       {/*    <Dropdown.Item as="button">Action</Dropdown.Item>*/}
+                       {/*    <Dropdown.Item as="button">Another action</Dropdown.Item>*/}
+                       {/*    <Dropdown.Item as="button">Something else</Dropdown.Item>*/}
+                       {/*</DropdownButton>*/}
+                   </div>
+
+                )
             }
             if(this.props.isMyTrip === 'passenger'){
 
