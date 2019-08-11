@@ -88,13 +88,16 @@ h1 {
     margin-bottom: 20px;
 }
 
-.Comment {
-
+.Comments {
     height: 320px;
     width: 585px;
     background-color: rgba(0, 0, 0, 0.5) !important;
     box-shadow: 0 2px 3px #ccc;
     overflow-y: scroll;
+    text-align: center;
+    color: white;
+    margin-top: 35px;
+    padding-top: 15px;
 }
 
 .metadata {

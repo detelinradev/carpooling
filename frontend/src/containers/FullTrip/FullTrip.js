@@ -13,19 +13,21 @@ import * as actions from "../../store/actions";
 import Button from "@material-ui/core/Button";
 import {FaUserEdit} from "react-icons/fa";
 import Avatar from "../../assets/images/image-default.png";
+import {checkValidity, updateObject} from "../../shared/utility";
 
 class FullTrip extends Component {
     state = {
         src: Avatar,
-        tripStatus:''
+        tripStatus: '',
+        newComment: '',
     };
 
     async componentDidMount() {
         // this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver',this.props.trip.modelId);
         // console.log(this.state.src)
         const getDriverAvatarResponse = await
-        fetch("http://localhost:8080/users/avatar/" + this.props.trip.driver.modelId)
-            .then(response => response.blob());
+            fetch("http://localhost:8080/users/avatar/" + this.props.trip.driver.modelId)
+                .then(response => response.blob());
 
 
         if (getDriverAvatarResponse.size > 100) {
@@ -33,7 +35,7 @@ class FullTrip extends Component {
                 src: URL.createObjectURL(getDriverAvatarResponse)
             })
         }
-        if(this.state.tripStatus !== ''){
+        if (this.state.tripStatus !== '') {
 
         }
 
@@ -48,24 +50,37 @@ class FullTrip extends Component {
             }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
         }
     }
-   // getTripStatus(tripStatus){
-   //     this.setState({tripStatus: tripStatus})
-   //  }
-    async changeTripStatus(tripStatus){
-        axios.patch('/trips/' + this.props.trip.modelId + '?status=' +tripStatus, null, {
+
+    // getTripStatus(tripStatus){
+    //     this.setState({tripStatus: tripStatus})
+    //  }
+    async changeTripStatus(tripStatus) {
+        axios.patch('/trips/' + this.props.trip.modelId + '?status=' + tripStatus, null, {
             headers: {"Authorization": this.props.token}
         }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
     }
 
-    async cancelTrip(){
+    async cancelTrip() {
         const currentUserName = this.props.username;
-        let passengerID =this.props.trip.passengers.map(passenger =>
-            (passenger.username === currentUserName)?passenger.modelId:null
+        let passengerID = this.props.trip.passengers.map(passenger =>
+            (passenger.username === currentUserName) ? passenger.modelId : null
         );
         axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerID + '?status=CANCELED', null, {
             headers: {"Authorization": this.props.token}
         }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'No'));
     }
+
+    inputChangedHandler = (event) => {
+        this.setState({newComment: event.target.value});
+    };
+
+
+    commentHandler = async () => {
+        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/comments?comment=" + this.state.newComment, null, {
+            headers: {"Authorization": this.props.token}
+        });
+    };
+
 
     render() {
         let comments;
@@ -98,47 +113,61 @@ class FullTrip extends Component {
             />
         );
 
-        let joinTripStatus='Trip joined';
-        if(this.props.tripJoined === 'Join Trip'){
+        let joinTripStatus = 'Trip joined';
+        if (this.props.tripJoined === 'Join Trip') {
             joinTripStatus = 'Join trip';
-            if(this.props.requestSent === 'Yes'){
+            if (this.props.requestSent === 'Yes') {
                 joinTripStatus = 'Request sent'
             }
         }
-        if(this.props.tripJoined === 'Request sent'){
+        if (this.props.tripJoined === 'Request sent') {
             joinTripStatus = 'Request Sent'
         }
-        if(this.props.tripJoined === ''){
+        if (this.props.tripJoined === '') {
             joinTripStatus = ''
         }
 
 
-        let myTrip='';
-        if(this.props.isMyTrip !== ''){
-            if(this.props.isMyTrip === 'driver'){
-                myTrip=(
-                   <div>
-                       <div className="dropdown">
-                           <button className="dropbtn">Change trip status</button>
-                           <div className="dropdown-content">
-                               <a onClick={() => this.changeTripStatus('ONGOING')} >ONGOING</a>
-                               <a onClick={() => this.changeTripStatus('DONE')} >DONE</a>
-                               <a onClick={() => this.changeTripStatus('CANCELED')} >CANCELED</a>
-                           </div>
-                       </div>
-                   </div>
+        let myTrip = '';
+        if (this.props.isMyTrip !== '') {
+            if (this.props.isMyTrip === 'driver') {
+                myTrip = (
+                    <div>
+                        <div className="dropdown">
+                            <button className="dropbtn">Change trip status</button>
+                            <div className="dropdown-content">
+                                <a onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</a>
+                                <a onClick={() => this.changeTripStatus('DONE')}>DONE</a>
+                                <a onClick={() => this.changeTripStatus('CANCELED')}>CANCELED</a>
+                            </div>
+                        </div>
+                    </div>
                 )
             }
-            if(this.props.isMyTrip === 'passenger'){
+            if (this.props.isMyTrip === 'passenger') {
 
-                myTrip=(
-                <div style={{marginRight: 20, verticalAlign: "middle"}}>
-                    <Button onClick={() => this.cancelTrip()}><h3
-                        className="header">CANCEL TRIP PARTICIPATION<FaUserEdit/></h3>
-                    </Button>
-                </div>
+                myTrip = (
+                    <div style={{marginRight: 20, verticalAlign: "middle"}}>
+                        <Button onClick={() => this.cancelTrip()}><h3
+                            className="header">CANCEL TRIP PARTICIPATION<FaUserEdit/></h3>
+                        </Button>
+                    </div>
                 )
             }
+        }
+
+        let form = null;
+        if (this.props.isMyTrip) {
+            form = (
+                <div>
+                <p
+                    className="header">+ADD COMMENT
+                </p>
+                <input
+                    value={this.state.newComment}
+                    onChange={(event) => this.inputChangedHandler(event)}/>
+                </div>
+            )
         }
 
 
@@ -148,8 +177,8 @@ class FullTrip extends Component {
                 <div style={{marginLeft: 100}}>
                     <div
                         className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination}</div>
-                    <div>{this.props.isMyTrip === 'driver'? 'Driver': null}</div>
-                    <div>{this.props.isMyTrip === 'passenger'? 'Passenger': null}</div>
+                    <div>{this.props.isMyTrip === 'driver' ? 'Driver' : null}</div>
+                    <div>{this.props.isMyTrip === 'passenger' ? 'Passenger' : null}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
@@ -173,49 +202,47 @@ class FullTrip extends Component {
                             </Button>
                         </div>
 
-                        <div className="comps" style={{ paddingTop: 40}}>
+                        <div className="comps" style={{paddingTop: 40}}>
                             Departure Time<p className="row-xs-6 info meta-data">{this.props.trip.departureTime}</p>
 
                             <hr/>
                             Smoking allowed<p className="row-xs-6 info meta-data">{this.props.trip.smokingAllowed}</p>
                         </div>
 
-                        <div className="comps" style={{ paddingTop: 40}}>
+                        <div className="comps" style={{paddingTop: 40}}>
                             Available Seats<p className="row-xs-6 info meta-data">{this.props.trip.availablePlaces}</p>
                             <hr/>
-                            Air-conditioned<p className="row-xs-6 info meta-data">{this.props.trip.car.airConditioned}</p>
+                            Air-conditioned<p
+                            className="row-xs-6 info meta-data">{this.props.trip.car.airConditioned}</p>
                         </div>
 
-                        <div className="comps" style={{ paddingTop: 40}}>
+                        <div className="comps" style={{paddingTop: 40}}>
                             Price<br/><p className="row-xs-6 info meta-data">{this.props.trip.costPerPassenger} leva</p>
                             <hr/>
                             Luggage allowed<p className="row-xs-6 info meta-data">{this.props.trip.luggageAllowed}</p>
                         </div>
 
-                        <div className="comps" style={{ paddingTop: 40}}>
+                        <div className="comps" style={{paddingTop: 40}}>
                             Status<br/><p className="row-xs-6 info meta-data">{this.props.trip.tripStatus}</p>
                             <hr/>
                             Pets allowed<p className="row-xs-6 info meta-data">{this.props.trip.petsAllowed}</p>
                         </div>
 
-                        <div className="comps" style={{ paddingTop: 40}}>
+                        <div className="comps" style={{paddingTop: 40}}>
                             Car Brand<br/><p className="row-xs-6 info meta-data">{this.props.trip.car.brand}</p>
                             <hr/>
                             Car Model<p className="row-xs-6 info meta-data">{this.props.trip.car.model}</p>
                         </div>
 
-                        <div className="comps" style={{ paddingTop: 40}}>
+                        <div className="comps" style={{paddingTop: 40}}>
                             Message<p className="row-xs-6 info meta-data">{this.props.trip.message}</p>
                         </div>
                     </div>
                     {car}
-                    <div className="Comment">
+                    <div className="Comments">
                         <div>
-                            <form onSubmit={this.submitHandler}>
-                                {/*{form}*/}
-                                <Button ><h3
-                                    className="header">+ADD COMMENT<FaUserEdit/></h3>
-                                </Button>
+                            <form onSubmit={this.commentHandler}>
+                                {form}
                             </form>
                         </div>
                         <br/>
@@ -226,8 +253,8 @@ class FullTrip extends Component {
                             PASSENGERS
                         </h1>
                         {passengers}
-                    </div>
                     {myTrip}
+                    </div>
                 </div>
             )
         }
@@ -250,8 +277,8 @@ const mapStateToProps = state => {
         trip: state.trip.trip,
         // driverImage: state.user.driverImage,
         username: state.auth.userId,
-        tripJoined:state.trip.tripJoined,
-        requestSent:state.trip.requestSent,
+        tripJoined: state.trip.tripJoined,
+        requestSent: state.trip.requestSent,
         // modelId:state.user.modelId,
         isMyTrip: state.trip.isMyTrip
 
@@ -260,7 +287,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         // onFetchUserImage: (token, userId, userType,modelId) => dispatch(actions.fetchImageUser(token, userId, userType,modelId)),
-        onFetchTrip: (token, tripId,requestSent) => dispatch(actions.fetchTrip(token, tripId,requestSent)),
+        onFetchTrip: (token, tripId, requestSent) => dispatch(actions.fetchTrip(token, tripId, requestSent)),
         // onTripJoined:(tripJoinedStatus) => dispatch(actions.changeTripJoinedStatus(tripJoinedStatus))
     };
 };

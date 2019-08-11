@@ -189,7 +189,7 @@ class NewTrip extends Component {
         await this.getCoordinates();
         formData["tripDuration"] = this.state.tripDuration;
        // formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
-       formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-MM-dd HH:mm");
+       formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
 
         this.props.onCreateTrip(formData, this.props.token);
 
