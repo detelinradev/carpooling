@@ -9,13 +9,13 @@ import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import {checkValidity, updateObject} from "../../shared/utility";
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
+import DateTimeFormat from "dateformat";
 
 
 class SearchTrips extends Component {
 
     state = {
         startDate: new Date(),
-        //focused: false,
         createForm: {
             origin: {
                 elementType: 'input',
@@ -57,11 +57,11 @@ class SearchTrips extends Component {
                 valid: false,
                 touched: false
             },
-            // tripDuration: {
+            // costPerPassenger: {
             //     elementType: 'input',
             //     elementConfig: {
-            //         type: 'number',
-            //         placeholder: 'Trip duration'
+            //         type: 'text',
+            //         placeholder: 'Cost per passenger'
             //     },
             //     value: '',
             //     validation: {
@@ -71,99 +71,92 @@ class SearchTrips extends Component {
             //     valid: false,
             //     touched: false
             // },
-            costPerPassenger: {
-                elementType: 'input',
+            earliestDepartureTime: {
+                elementType: 'date',
                 elementConfig: {
                     type: 'text',
-                    placeholder: 'Cost per passenger'
+                    placeholder: 'Departure time'
                 },
                 value: '',
-                validation: {
-                    required: true,
-                    isNumeric: true
-                },
-                valid: false,
-                touched :false
+                validation: {},
+                valid: true,
+                touched: false
             },
-            // message: {
-            //     elementType: 'input',
-            //     elementConfig: {
-            //         type: 'text',
-            //         placeholder: 'Message'
-            //     },
-            //     value: '',
-            //     validation: {
-            //         required: true
-            //     },
-            //     valid: false,
-            //     touched: false
-            // },
-            // date: {
-            //     elementType: 'select',
-            //     elementConfig: {
-            //         type: 'text',
-            //         placeholder: 'message'
-            //     },
-            //     value: null,
-            //     validation: {
-            //         required: true
-            //     },
-            //     valid: false,
-            //     touched: false
-            // },
-                        earliestDepartureTime: {
-                            elementType: 'select',
-                            elementConfig: {
-                                type: 'text',
-                                placeholder: 'Departure time'
-                            },
-                            value: '',
-                            validation: {
-                                required: false,
-                                // minLength: 5,
-                                // maxLength: 5,
-                                //isNumeric: true
-                            },
-                            valid: true,
-                            touched: false
-                        },
-                        latestDepartureTime: {
-                            elementType: 'select',
-                            elementConfig: {
-                                type: 'text',
-                                placeholder: 'Departure time'
-                            },
-                            value: '',
-                            validation: {
-                                required: false,
-                                // minLength: 5,
-                                // maxLength: 5,
-                                //isNumeric: true
-                            },
-                            valid: true,
-                            touched: false
-                        }
+            latestDepartureTime: {
+                elementType: 'date',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Departure time'
+                },
+                value: '',
+                validation: {},
+                valid: true,
+                touched: false
+            },
+            smokingAllowed: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: 'yes', displayValue: 'yes'},
+                        {value: 'no', displayValue: 'no'}
+                    ]
+                },
+                value: '',
+                validation: {},
+                valid: true
+            },
+            petsAllowed: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: 'yes', displayValue: 'yes'},
+                        {value: 'no', displayValue: 'no'}
+                    ]
+                },
+                value: '',
+                validation: {},
+                valid: true
+            },
+            luggageAllowed: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: 'yes', displayValue: 'yes'},
+                        {value: 'no', displayValue: 'no'}
+                    ]
+                },
+                value: '',
+                validation: {},
+                valid: true
+            },
+            airConditioned: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: 'yes', displayValue: 'yes'},
+                        {value: 'no', displayValue: 'no'}
+                    ]
+                },
+                value: '',
+                validation: {},
+                valid: true
+            }
         },
         formIsValid: false,
-        changedDate:new Date()
+        changedDate: new Date()
 
     };
 
-    // handleChange =(date) => {
-    //     console.log(date)
-    //
-    //     this.setState({
-    //         changedDate : date
-    //     })
-    //     // this.inputChangedHandler(date,'departureTime')
-    // };
-
-    inputDateChangedHandler = (date,name) => {
+    inputDateChangedHandler = (date, name) => {
         console.log(date)
         console.log(name)
         this.setState({
-                    startDate : date
-                });
+            startDate: date
+        });
 
         const updatedFormElement = updateObject(this.state.createForm[name], {
             value: date,
@@ -184,20 +177,143 @@ class SearchTrips extends Component {
 
     createHandler = (event) => {
         event.preventDefault();
+        if( this.state.createForm.earliestDepartureTime.value !== '') {
+            this.state.createForm.earliestDepartureTime.value = DateTimeFormat(this.state.createForm.earliestDepartureTime.value, "yyyy-mm-dd HH:MM");
+        }
+        if( this.state.createForm.latestDepartureTime.value !== '') {
+            this.state.createForm.latestDepartureTime.value = DateTimeFormat(this.state.createForm.latestDepartureTime.value, "yyyy-mm-dd HH:MM");
+        }
 
-        let stringData ="?";
-        let questionMark="";
+        let stringData = "?";
+        let questionMark = "";
         for (let formElementIdentifier in this.state.createForm) {
-            if(this.state.createForm[formElementIdentifier].value !=='') {
+            if (this.state.createForm[formElementIdentifier].value !== '') {
                 stringData = stringData + questionMark + formElementIdentifier + '=' + this.state.createForm[formElementIdentifier].value;
                 questionMark = '&';
             }
         }
         this.setState({
-            startDate : new Date()
+            startDate: new Date(),
+            createForm: {
+                origin: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Origin'
+                    },
+                    value: '',
+                    validation: {
+                        required: true
+                    },
+                    valid: false,
+                    touched: false
+                },
+                destination: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Destination'
+                    },
+                    value: '',
+                    validation: {
+                        required: true
+                    },
+                    valid: false,
+                    touched: false
+                },
+                availablePlaces: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'number',
+                        placeholder: 'Available places'
+                    },
+                    value: '',
+                    validation: {
+                        required: true,
+                        isNumeric: true
+                    },
+                    valid: false,
+                    touched: false
+                },
+                earliestDepartureTime: {
+                    elementType: 'date',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Departure time'
+                    },
+                    value: '',
+                    validation: {},
+                    valid: true,
+                    touched: false
+                },
+                latestDepartureTime: {
+                    elementType: 'date',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Departure time'
+                    },
+                    value: '',
+                    validation: {},
+                    valid: true,
+                    touched: false
+                },
+                smokingAllowed: {
+                    elementType: 'select',
+                    elementConfig: {
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: 'yes', displayValue: 'yes'},
+                            {value: 'no', displayValue: 'no'}
+                        ]
+                    },
+                    value: '',
+                    validation: {},
+                    valid: true
+                },
+                petsAllowed: {
+                    elementType: 'select',
+                    elementConfig: {
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: 'yes', displayValue: 'yes'},
+                            {value: 'no', displayValue: 'no'}
+                        ]
+                    },
+                    value: '',
+                    validation: {},
+                    valid: true
+                },
+                luggageAllowed: {
+                    elementType: 'select',
+                    elementConfig: {
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: 'yes', displayValue: 'yes'},
+                            {value: 'no', displayValue: 'no'}
+                        ]
+                    },
+                    value: '',
+                    validation: {},
+                    valid: true
+                },
+                airConditioned: {
+                    elementType: 'select',
+                    elementConfig: {
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: 'yes', displayValue: 'yes'},
+                            {value: 'no', displayValue: 'no'}
+                        ]
+                    },
+                    value: '',
+                    validation: {},
+                    valid: true
+                }
+            },
+            formIsValid: false,
+            changedDate: new Date()
         });
-        this.props.onFetchTrips(this.props.token,stringData);
-
+        this.props.onFetchTrips(this.props.token, stringData);
     };
 
     inputChangedHandler = (event, inputIdentifier) => {
@@ -228,10 +344,10 @@ class SearchTrips extends Component {
         );
         isJoined = passengers.includes(true);
         if (isJoined) {
-            tripJoined ='Trip joined'
+            tripJoined = 'Trip joined'
         }
         let isRequested;
-        if(trip.notApprovedPassengers) {
+        if (trip.notApprovedPassengers) {
             let notApproved = trip.notApprovedPassengers.map(passenger =>
                 (passenger.username === currentUserName)
             );
@@ -240,12 +356,12 @@ class SearchTrips extends Component {
                 tripJoined = 'Request sent'
             }
         }
-        if(trip.driver.username === currentUserName){
+        if (trip.driver.username === currentUserName) {
             tripJoined = ''
         }
 
         console.log(tripJoined)
-        this.props.onShowFullTrip(trip,tripJoined,'No');
+        this.props.onShowFullTrip(trip, tripJoined, 'No');
         this.props.history.push('/fullTrip');
     };
 
@@ -265,12 +381,12 @@ class SearchTrips extends Component {
                         name={formElement.id}
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
-                        // value={this.props.changedDate}
+                        value={formElement.config.value}
                         invalid={!formElement.config.valid}
                         shouldValidate={formElement.config.validation}
                         touched={formElement.config.touched}
                         startDate={this.state.startDate}
-                        dateChange={(date) => this.inputDateChangedHandler(date,formElement.id)}
+                        dateChange={(date) => this.inputDateChangedHandler(date, formElement.id)}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
                 <Button btnType="Success"
@@ -287,25 +403,25 @@ class SearchTrips extends Component {
             trips = this.props.trips.map(trip => (
                 <Trip
                     key={trip.id}
-                    data = {trip}
+                    data={trip}
                     driver={trip.driver}
                     passengers={trip.passengers}
                     comments={trip.comments}
-                    car ={trip.car}
+                    car={trip.car}
                     showFullTrip={this.showFullTrip}
                 />
             ))
         }
-            return (
-                <div className="todore">
-                    <div>
-                        <div className="SearchTrips">
-                            Search Trips
-                            {form}
-                        </div>
+        return (
+            <div className="todore">
+                <div>
+                    <div className="SearchTrips">
+                        Search Trips
+                        {form}
                     </div>
-                    {trips}
-                </div>)
+                </div>
+                {trips}
+            </div>)
     }
 }
 
@@ -314,13 +430,13 @@ const mapStateToProps = state => {
         trips: state.trip.trips,
         loading: state.trip.loading,
         token: state.auth.token,
-        username:state.auth.userId
+        username: state.auth.userId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
-        onShowFullTrip: (trip,tripJoined,requestSent) => dispatch(actions.showFullTrip(trip,tripJoined,requestSent)),
+        onFetchTrips: (token, formData) => dispatch(actions.fetchTrips(token, formData)),
+        onShowFullTrip: (trip, tripJoined, requestSent) => dispatch(actions.showFullTrip(trip, tripJoined, requestSent)),
     };
 };
 

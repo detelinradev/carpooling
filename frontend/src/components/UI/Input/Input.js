@@ -31,7 +31,7 @@ const input = ( props ) => {
                 value={props.value}
                 onChange={props.changed} />;
             break;
-        case ( 'select' ):
+        case ( 'date' ):
             inputElement = (
                 <DatePicker 
                     placeholderText="Click to select a date"
@@ -46,13 +46,20 @@ const input = ( props ) => {
                 />
             );
             break;
-        // case ( 'select' ):
-        //     inputElement = (
-        //         <Calendar
-        //             newDate={props.value}/>
-        //
-        //     );
-        //     break;
+        case ( 'select' ):
+            inputElement = (
+                <select
+                    className={inputClasses.join(' ')}
+                    value={props.value}
+                    onChange={props.changed}>
+                    {props.elementConfig.options.map(option => (
+                        <option key={option.value} value={option.value}>
+                            {option.displayValue}
+                        </option>
+                    ))}
+                </select>
+            );
+            break;
         default:
             inputElement = <input
                 className={inputClasses.join(' ')}

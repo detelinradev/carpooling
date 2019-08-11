@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.security.InvalidParameterException;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +74,13 @@ public class TripServiceImpl implements TripService {
                                           String latestDepartureTime, String availablePlaces, String smoking,
                                           String pets, String luggage) {
 
+        System.out.println(1);
+        System.out.println(earliestDepartureTime);
+        System.out.println(latestDepartureTime);
+        System.out.println(2);
+        System.out.println(parseDateTime(earliestDepartureTime));
+        System.out.println(parseDateTime(latestDepartureTime));
+        System.out.println(3);
 
         if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
                 (pets == null || (pets.equalsIgnoreCase("yes") || pets.equalsIgnoreCase("no"))) &&
@@ -97,19 +105,6 @@ public class TripServiceImpl implements TripService {
                             (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
                             smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null)));
         } else return null;
-    }
-
-    private LocalDateTime parseDateTime(String departureTime) {
-        LocalDateTime departureTimeFormat;
-
-        if(departureTime != null) {
-            try {
-                return departureTimeFormat = LocalDateTime.parse(departureTime);
-            } catch (Exception e) {
-                log.error("Exception during parsing", e);
-            }
-        }
-        return null;
     }
 
     @Override
@@ -331,6 +326,21 @@ public class TripServiceImpl implements TripService {
                 log.error("Exception during parsing", e);
             }
             return longID;
+        }
+        return null;
+    }
+
+    private LocalDateTime parseDateTime(String departureTime) {
+        LocalDateTime departureTimeFormat;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        if(departureTime != null) {
+            try {
+                departureTimeFormat = LocalDateTime.parse(departureTime,dateTimeFormatter);
+                return departureTimeFormat;
+            } catch (Exception e) {
+                log.error("Exception during parsing", e);
+            }
         }
         return null;
     }

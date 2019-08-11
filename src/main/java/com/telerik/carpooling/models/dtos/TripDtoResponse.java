@@ -27,7 +27,7 @@ public class TripDtoResponse {
     @Size(max = 200)
     private String message;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 //    @JsonFormat(pattern = "yyyy-mm-dd HH:MM")
     private LocalDateTime departureTime;

@@ -24,8 +24,7 @@ public class TripDtoEdit {
     private String message;
 
     @NotNull
-    @Future
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 //    @JsonFormat(pattern = "yyyy-mm-dd HH:MM")
     private LocalDateTime departureTime;

@@ -212,7 +212,7 @@ class FullTrip extends Component {
                     <div className="Comment">
                         <div>
                             <form onSubmit={this.submitHandler}>
-                                {form}
+                                {/*{form}*/}
                                 <Button ><h3
                                     className="header">+ADD COMMENT<FaUserEdit/></h3>
                                 </Button>
