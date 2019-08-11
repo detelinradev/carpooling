@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import './SearchTrips.css';
 import axios from '../../axios-baseUrl';
-import {FaAndroid} from 'react-icons/fa';
 import * as actions from '../../store/actions/index';
 import Trip from "../../components/TripComponents/Trip/Trip";
 import Spinner from "../../components/UI/Spinner/Spinner";

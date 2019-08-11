@@ -10,7 +10,6 @@ import * as actions from '../../store/actions/index';
 import {updateObject, checkValidity} from '../../shared/utility';
 import 'react-dates/initialize';
 import './NewCar.css';
-import CarAvatar from "../../assets/images/cars-noimage_sedan-lrg.png";
 
 
 class NewCar extends Component {

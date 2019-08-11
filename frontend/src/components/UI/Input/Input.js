@@ -1,7 +1,6 @@
 import React from 'react';
 
 import './Input.css';
-import Calendar from "../../../containers/NewTrip/Calendar";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";

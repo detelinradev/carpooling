@@ -1,33 +1,47 @@
 import React, {Component} from 'react';
 import './Trip.css';
 import Button from "@material-ui/core/Button";
-import Auxiliary from "../../../hoc/Auxiliary/Auxiliary";
-import {FaUserEdit} from "react-icons/fa";
+import {FaMedal, FaUserEdit} from "react-icons/fa";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
 import * as actions from "../../../store/actions";
-import Spinner from "../../UI/Spinner/Spinner";
 import Avatar from "../../../assets/images/image-default.png";
+import StarRatings from "react-star-ratings";
 
 class Trip extends Component {
     state = {
         src: Avatar,
     };
 
-    componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.data.driver.modelId, 'driver', this.props.data.modelid);
-        console.log(this.state.src);
+    async componentDidMount() {
+        if(this.props.data) {
+            await this.props.onFetchUserImage(this.props.token, this.props.data.driver.modelId, 'driver', this.props.data.modelId);
+        }
+            const getDriverAvatarResponse = await
+                fetch("http://localhost:8080/users/avatar/" + this.props.data.driver.modelId)
+                    .then(response => response.blob());
 
-        if (this.props.data.modelId === this.props.modelId) {
-            if (this.props.driverImage) {
+            if (getDriverAvatarResponse.size > 100) {
                 this.setState({
-                    src: this.props.driverImage
+                    src: URL.createObjectURL(getDriverAvatarResponse)
                 })
             }
-            console.log(this.state.src)
-        }
+
     }
+    //
+    // async componentDidMount() {
+    //     const getDriverAvatarResponse = await
+    //         fetch("http://localhost:8080/users/avatar/" + this.props.data.driver.modelId)
+    //             .then(response => response.blob());
+    //
+    //     if (getDriverAvatarResponse.size > 100) {
+    //         this.setState({
+    //             src: URL.createObjectURL(getDriverAvatarResponse)
+    //         })
+    //     }
+    //
+    // }
 
     render() {
 
@@ -40,11 +54,22 @@ class Trip extends Component {
                         className="proba Trip additional-details hed">{this.props.data.origin} -> {this.props.data.destination}</div>
                     <div>{this.props.userRole?this.props.userRole:null}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">
-                        <p className="image">
+                        <div className="image ">
                             <img id="postertest" className='poster' style={{width: 128}}
                                  src={this.state.src} alt={''}/>
                             <p className="meta-data">{this.props.data.driver.firstName} {this.props.data.driver.lastName}</p>
-                        </p>
+                            <span><FaMedal/></span> Rating <div
+                            className="header">{
+                            <StarRatings
+                                rating={this.props.data.driver.ratingAsDriver}
+                                starRatedColor="yellow"
+                                changeRating={this.changeRating}
+                                numberOfStars={5}
+                                name='rating'
+                                starDimension="30px"
+                                starSpacing="6px"
+                            />}</div>
+                        </div>
                         <div className="ed">
                             <Button onClick={() => this.props.showFullTrip(this.props.data)}><h3
                                 className="header">DETAILS <FaUserEdit/></h3>

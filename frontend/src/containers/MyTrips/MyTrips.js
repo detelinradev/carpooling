@@ -86,7 +86,7 @@ const mapStateToProps = state => {
         trips: state.trip.trips,
         loading: state.trip.loading,
         token: state.auth.token,
-        username:state.auth.userId
+        username:state.auth.userId,
     }
 };
 const mapDispatchToProps = dispatch => {

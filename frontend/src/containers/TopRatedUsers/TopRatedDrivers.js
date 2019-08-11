@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import axios from '../../axios-baseUrl';
 import Driver from "./Driver";
-import {fetchImageCarFail} from "../../store/actions/user";
-import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import './TopRatedDrivers.css';
 import Passengers from "./Passengers";
 
@@ -45,7 +43,7 @@ class topRatedDrivers extends Component {
 
 
         let drivers = this.state.drivers.map(driver => (
-            <div className="users">
+            <div key={driver.modelId} className="users">
                 <Driver
                     key={driver.modelId}
                     driver={driver}
@@ -54,7 +52,7 @@ class topRatedDrivers extends Component {
         ));
 
         let passengers = this.state.passengers.map(passenger => (
-            <div className="users">
+            <div key={passenger.modelId} className="users">
                 <Passengers
                     key={passenger.modelId}
                     passenger={passenger}

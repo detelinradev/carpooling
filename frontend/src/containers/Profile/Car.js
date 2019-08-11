@@ -29,17 +29,17 @@ class Car extends Component {
                 { headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
 
-        if(getCarResponse) {
-            this.setState({
-                car: getCarResponse.data
-            })
-        }
-
             if(getCarAvatarResponse.size>100){
                 this.setState({
                     src: URL.createObjectURL(getCarAvatarResponse)
                 })
             }
+
+        if(getCarResponse) {
+            this.setState({
+                car: getCarResponse.data
+            })
+        }
     }
 
 

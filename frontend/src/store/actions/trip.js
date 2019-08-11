@@ -40,7 +40,7 @@ export const createTrip = (TripData, token ) => {
 
             } )
             .then(()=>{
-                this.props.history.replace( '/' );
+                this.props.history.push( '/' );
             })
             .catch( error => {
                 dispatch( createTripFail( error ) );

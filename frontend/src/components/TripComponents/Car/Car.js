@@ -12,11 +12,15 @@ class Car extends Component {
     };
 
 
-    componentDidMount() {
+    async componentDidMount() {
         this.props.onFetchCarImage(this.props.token, this.props.trip.driver.modelId);
-        if (this.props.carImage) {
+        const getCarAvatarResponse = await
+        fetch('http://localhost:8080/users/avatar/car/' + this.props.trip.driver.modelId)
+            .then(response => response.blob());
+
+        if(getCarAvatarResponse.size>100){
             this.setState({
-                src: this.state.carImage
+                src: URL.createObjectURL(getCarAvatarResponse)
             })
         }
     }
