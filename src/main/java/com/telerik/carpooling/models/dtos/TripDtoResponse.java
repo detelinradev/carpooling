@@ -1,5 +1,6 @@
 package com.telerik.carpooling.models.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.Comment;
@@ -8,9 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -24,8 +27,9 @@ public class TripDtoResponse {
     @Size(max = 200)
     private String message;
 
-    @Size(max = 50)
-    private String departureTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(pattern = "yyyy-mm-dd HH:MM")
+    private LocalDateTime departureTime;
 
     @Size(max = 20)
     private String origin;

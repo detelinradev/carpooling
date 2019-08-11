@@ -1,20 +1,24 @@
 package com.telerik.carpooling.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
-import com.telerik.carpooling.models.dtos.UserDtoResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @EqualsAndHashCode(callSuper = true,exclude = {"comments","users"})
@@ -29,7 +33,11 @@ public class Trip extends MappedAudibleBase {
 
     private String destination;
 
-    private String departureTime;
+    @NotNull
+    @Future
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(pattern = "yyyy-mm-dd HH:MM")
+    private LocalDateTime departureTime;
 
     @Column(nullable = false)
     @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")

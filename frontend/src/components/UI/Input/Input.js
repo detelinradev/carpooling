@@ -41,10 +41,9 @@ const input = ( props ) => {
                     showTimeSelect
                     timeFormat="HH:mm"
                     timeIntervals={15}
-                    dateFormat="MMMM d, yyyy h:mm aa"
+                    dateFormat="dd-mm-yyyy HH:mm"
                     timeCaption="time"
                 />
-
             );
             break;
         // case ( 'select' ):
