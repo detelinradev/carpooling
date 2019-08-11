@@ -7,20 +7,30 @@ import axios from "../../../axios-baseUrl";
 import Avatar from '../../../assets/images/image-default.png'
 
 class Comment extends Component {
+    state = {
+        src: Avatar
+    };
 
+    async componentDidMount() {
+        // this.props.onFetchUserImage(this.props.token, this.props.author.modelId, 'comment', this.props.data.modelId);
 
-    componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.author.modelId, 'comment',this.props.data.modelId);
+        const getDriverAvatarResponse = await
+            fetch("http://localhost:8080/users/avatar/" + this.props.author.modelId)
+                .then(response => response.blob());
+
+        if (getDriverAvatarResponse.size > 100) {
+            this.setState({
+                src: URL.createObjectURL(getDriverAvatarResponse)
+            })
+        }
     }
 
     render() {
-        let image = Avatar;
-        if (this.props.commentImage)
-            image = this.props.commentImage;
+
         return (
-            <div >
-                <img id="postertest"  style={{width: 30, height: 30, marginTop: 10}}
-                     src={image} alt={''}/>
+            <div>
+                <img id="postertest" style={{width: 30, height: 30, marginTop: 10}}
+                     src={this.state.src} alt={''}/>
                 <p>&nbsp;&nbsp;{this.props.author.firstName} {this.props.author.lastName}:&nbsp;&nbsp;</p>
                 <p className="metadata">{this.props.message}</p>
             </div>
@@ -33,12 +43,12 @@ const mapStateToProps = state => {
     return {
         token: state.auth.token,
         commentImage: state.user.commentImage,
-        modelId:state.user.modelId
+        modelId: state.user.modelId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId, userType,modelId) => dispatch(actions.fetchImageUser(token, userId, userType,modelId)),
+        onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId)),
     };
 };
 

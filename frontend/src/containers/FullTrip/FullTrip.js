@@ -21,7 +21,7 @@ class FullTrip extends Component {
     };
 
     async componentDidMount() {
-        //this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver',this.props.trip.modelId);
+        // this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver',this.props.trip.modelId);
         // console.log(this.state.src)
         const getDriverAvatarResponse = await
         fetch("http://localhost:8080/users/avatar/" + this.props.trip.driver.modelId)
