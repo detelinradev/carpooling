@@ -73,6 +73,7 @@ class FullTrip extends Component {
             comments = this.props.trip.comments.map(comment => (
                 <Comment
                     key={comment.modelId}
+                    isMyTrip={this.props.isMyTrip}
                     data={comment}
                     message={comment.message}
                     author={comment.author}
@@ -85,6 +86,7 @@ class FullTrip extends Component {
             passengers = this.props.trip.passengers.map(passenger => (
                 <Passenger
                     key={passenger.id}
+                    isMyTrip={this.props.isMyTrip}
                     data={passenger}
                 />
             ));
@@ -114,27 +116,16 @@ class FullTrip extends Component {
         let myTrip='';
         if(this.props.isMyTrip !== ''){
             if(this.props.isMyTrip === 'driver'){
-                // const optionsDriver = [
-                //     'ONGOING', 'DONE', 'CANCELED'
-                // ];
-                // const defaultOption = optionsDriver[0];
-
                 myTrip=(
                    <div>
                        <div className="dropdown">
-                           <button className="dropbtn">Change status</button>
+                           <button className="dropbtn">Change trip status</button>
                            <div className="dropdown-content">
-                               <a onClick={() => this.changeTripStatus('ONGOING')} >ACCEPT</a>
-                               <a >REJECT</a>
-                               <a >MAGIQ</a>
+                               <a onClick={() => this.changeTripStatus('ONGOING')} >ONGOING</a>
+                               <a onClick={() => this.changeTripStatus('DONE')} >DONE</a>
+                               <a onClick={() => this.changeTripStatus('CANCELED')} >CANCELED</a>
                            </div>
                        </div>
-                       {/*<DropdownButton id="dropdown-item-button" title="Dropdown button">*/}
-                       {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
-                       {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
-                       {/*    <Dropdown.Item as= <Button onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</Dropdown.Item>*/}
-                       {/*</DropdownButton>*/}
-
                    </div>
                 )
             }
@@ -220,9 +211,12 @@ class FullTrip extends Component {
                     {car}
                     <div className="Comment">
                         <div>
-                            <Button ><h3
-                                className="header">+ADD COMMENT<FaUserEdit/></h3>
-                            </Button>
+                            <form onSubmit={this.submitHandler}>
+                                {form}
+                                <Button ><h3
+                                    className="header">+ADD COMMENT<FaUserEdit/></h3>
+                                </Button>
+                            </form>
                         </div>
                         <br/>
                         {comments}

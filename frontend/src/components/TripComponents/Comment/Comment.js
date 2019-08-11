@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
 import Avatar from '../../../assets/images/image-default.png'
+import Button from "@material-ui/core/Button";
 
 class Comment extends Component {
     state = {
@@ -26,7 +27,6 @@ class Comment extends Component {
     }
 
     render() {
-
         return (
             <div>
                 <img id="postertest" style={{width: 30, height: 30, marginTop: 10}}

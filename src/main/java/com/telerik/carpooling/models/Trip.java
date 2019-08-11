@@ -36,7 +36,8 @@ public class Trip extends MappedAudibleBase {
     @NotNull
     @Future
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "yyyy-mm-dd HH:MM")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+//    @JsonFormat(pattern = "yyyy-mm-dd HH:MM")
     private LocalDateTime departureTime;
 
     @Column(nullable = false)
