@@ -72,8 +72,6 @@ public class TripServiceImpl implements TripService {
                                           String origin, String destination, String earliestDepartureTime,
                                           String latestDepartureTime, String availablePlaces, String smoking,
                                           String pets, String luggage) {
-//         LocalDateTime earliestDepartureTimeFormat = LocalDateTime.parse(earliestDepartureTime);
-//         LocalDateTime latestDepartureTimeFormat = LocalDateTime.parse(latestDepartureTime);
 
 
         if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
@@ -95,10 +93,23 @@ public class TripServiceImpl implements TripService {
                                     .findAny()
                                     .orElse(null),
                             userRepository.findFirstByUsername(driverUsername),
-                            origin, destination, earliestDepartureTime,
+                            origin, destination, parseDateTime(earliestDepartureTime),parseDateTime(latestDepartureTime),
                             (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
                             smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null)));
         } else return null;
+    }
+
+    private LocalDateTime parseDateTime(String departureTime) {
+        LocalDateTime departureTimeFormat;
+
+        if(departureTime != null) {
+            try {
+                return departureTimeFormat = LocalDateTime.parse(departureTime);
+            } catch (Exception e) {
+                log.error("Exception during parsing", e);
+            }
+        }
+        return null;
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,8 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
             "(:driver is null or t.driver = :driver) and" +
             "(:origin is null or :origin ='' or t.origin = :origin) and" +
             "(:destination is null or :destination ='' or t.destination = :destination) and" +
-            "(:departureTime is null or :departureTime ='' or t.departureTime = :departureTime) and" +
+            "(:earliestDepartureTime is null  or t.departureTime >= :earliestDepartureTime) and" +
+            "(:latestDepartureTime is null  or t.departureTime <= :latestDepartureTime) and" +
             "(:availablePlaces is null or t.availablePlaces >= :availablePlaces) and" +
             "(:smoking is null or :smoking ='' or t.smokingAllowed = :smoking) and" +
             "(:pets is null or :pets ='' or t.petsAllowed = :pets) and" +
@@ -34,7 +36,8 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
                                            @Param(value = "driver") User driver,
                                            @Param(value = "origin") String origin,
                                            @Param(value = "destination") String destination,
-                                           @Param(value = "departureTime") String departureTime,
+                                           @Param(value = "earliestDepartureTime") LocalDateTime EarliestDepartureTime,
+                                           @Param(value = "latestDepartureTime") LocalDateTime latestDepartureTime,
                                            @Param(value = "availablePlaces") Integer availablePlaces,
                                            @Param(value = "smoking") String smoking,
                                            @Param(value = "pets") String pets,
