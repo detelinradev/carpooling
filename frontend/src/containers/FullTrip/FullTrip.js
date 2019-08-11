@@ -13,7 +13,6 @@ import * as actions from "../../store/actions";
 import Button from "@material-ui/core/Button";
 import {FaUserEdit} from "react-icons/fa";
 import Avatar from "../../assets/images/image-default.png";
-import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css'
 
@@ -22,15 +21,20 @@ class FullTrip extends Component {
         src: Avatar,
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver',this.props.trip.modelId);
         console.log(this.state.src)
-        if(this.props.driverImage){
+        const getDriverAvatarResponse = await
+        fetch("http://localhost:8080/users/avatar/" + this.props.trip.driver.modelId)
+            .then(response => response.blob());
+
+
+        if (getDriverAvatarResponse.size > 100) {
             this.setState({
-                src: this.props.driverImage
+                src: URL.createObjectURL(getDriverAvatarResponse)
             })
         }
-        console.log(this.state.src)
+
     }
 
     async joinTrip() {
@@ -145,7 +149,7 @@ class FullTrip extends Component {
                             className="header">{
                             <StarRatings
                                 rating={this.props.trip.ratingAsDriver}
-                                starRatedColor="blue"
+                                starRatedColor="yellow"
                                 changeRating={this.changeRating}
                                 numberOfStars={5}
                                 name='rating'

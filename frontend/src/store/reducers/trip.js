@@ -33,11 +33,11 @@ const createTripStart = ( state, action ) => {
 };
 
 const createTripSuccess = ( state, action ) => {
-    const newTrip = updateObject( action.tripData, { id: action.tripId } );
+    // const newTrip = updateObject( action.tripData, { id: action.tripId } );
     return updateObject( state, {
         loading: false,
         purchased: true,
-        trips: state.trips.concat( newTrip )
+        // trips: state.trips.concat( newTrip )
     } );
 };
 
