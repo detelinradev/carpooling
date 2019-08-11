@@ -5,17 +5,29 @@ import * as actions from "../../../store/actions";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
+import Avatar from '../../../assets/images/image-default.png'
+
 
 class Passenger extends Component {
+    state = {
+        src: Avatar
+    };
 
+    async componentDidMount() {
+        // this.props.onFetchUserImage(this.props.token, this.props.data.modelId,'passenger',this.props.data.modelId);
 
-    componentDidMount() {
-        this.props.onFetchUserImage(this.props.token, this.props.data.modelId,'passenger',this.props.data.modelId);
+        const getDriverAvatarResponse = await
+            fetch("http://localhost:8080/users/avatar/" + this.props.data.modelId)
+                .then(response => response.blob());
+
+        if (getDriverAvatarResponse.size > 100) {
+            this.setState({
+                src: URL.createObjectURL(getDriverAvatarResponse)
+            })
+        }
     }
+
     render() {
-        let image = 'https://cdn.pixabay.com/photo/2018/02/08/22/27/flower-3140492__340.jpg';
-        if(this.props.passengerImage)
-            image = this.props.passengerImage;
 
         return (
             <div className=" Post">
@@ -24,7 +36,7 @@ class Passenger extends Component {
                     <p className="meta-data">{this.props.data.firstName} {this.props.data.lastName}</p>
                     <p className="image">
                         <img id="postertest" className='poster' style={{width: 128}}
-                             src={image} alt={''}/></p>
+                             src={this.state.src} alt={''}/></p>
 
                     <p className="row-xs-6 info">Rating<p className="meta-data">{
                         <StarRatings
@@ -41,17 +53,18 @@ class Passenger extends Component {
     }
 
 }
+
 const mapStateToProps = state => {
     return {
         token: state.auth.token,
-        passengerImage:state.user.passengerImage,
-        modelId:state.user.modelId
+        passengerImage: state.user.passengerImage,
+        modelId: state.user.modelId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId,userType,modelId) => dispatch(actions.fetchImageUser(token, userId,userType,modelId)),
+        onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId)),
     };
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(Passenger, axios));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Passenger, axios));
