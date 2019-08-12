@@ -1,6 +1,7 @@
 package com.telerik.carpooling.models.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.Comment;
@@ -14,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -48,6 +50,8 @@ public class TripDtoResponse {
     private Set<CommentDtoResponse> comments;
 
     private Set<UserDtoResponse>notApprovedPassengers;
+
+    private Map<UserDtoResponse, PassengerStatus> passengerStatus;
 
     @Max(value = Integer.MAX_VALUE)
     private Integer tripDuration;

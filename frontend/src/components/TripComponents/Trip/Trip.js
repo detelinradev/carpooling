@@ -15,9 +15,6 @@ class Trip extends Component {
     };
 
     async componentDidMount() {
-        if(this.props.data) {
-            await this.props.onFetchUserImage(this.props.token, this.props.data.driver.modelId, 'driver', this.props.data.modelId);
-        }
             const getDriverAvatarResponse = await
                 fetch("http://localhost:8080/users/avatar/" + this.props.data.driver.modelId)
                     .then(response => response.blob());
@@ -47,7 +44,7 @@ class Trip extends Component {
 
         // let trip = this.props.error ? <p>Trips can't be loaded!</p> : <Spinner />;
         let trip = null;
-        if (this.props.driverImage) {
+        // if (this.props.driverImage) {
             trip = (
                 <div className=" Post">
                     <div
@@ -111,7 +108,6 @@ class Trip extends Component {
                     </div>
                 </div>
             )
-        }
         return (
             <div>
                 {trip}
@@ -125,14 +121,14 @@ const mapStateToProps = state => {
         // trips: state.trip.trips,
         // loading: state.trip.loading,
         token: state.auth.token,
-       driverImage: state.user.driverImage,
-        modelId: state.user.modelId
+       // driverImage: state.user.driverImage,
+       //  modelId: state.user.modelId
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-       onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId))
+       // onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId))
     };
 };
 

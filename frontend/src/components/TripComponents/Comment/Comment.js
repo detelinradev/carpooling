@@ -13,7 +13,6 @@ class Comment extends Component {
     };
 
     async componentDidMount() {
-        // this.props.onFetchUserImage(this.props.token, this.props.author.modelId, 'comment', this.props.data.modelId);
 
         const getDriverAvatarResponse = await
             fetch("http://localhost:8080/users/avatar/" + this.props.author.modelId)
@@ -41,14 +40,14 @@ class Comment extends Component {
 
 const mapStateToProps = state => {
     return {
-        token: state.auth.token,
-        commentImage: state.user.commentImage,
-        modelId: state.user.modelId
+        // token: state.auth.token,
+        // commentImage: state.user.commentImage,
+        // modelId: state.user.modelId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId)),
+        // onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId)),
     };
 };
 

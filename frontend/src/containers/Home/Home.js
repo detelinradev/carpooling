@@ -47,16 +47,16 @@ class Home extends Component {
 
 const mapStateToProps = state => {
     return {
-        trips: state.trip.trips,
-        loading: state.trip.loading,
-        token: state.auth.token,
+        // trips: state.trip.trips,
+        // loading: state.trip.loading,
+        // token: state.auth.token,
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
-        onShowFullTrip: (trip) => dispatch(actions.showFullTrip(trip)),
-        onFetchUserImage:(token,userId)=> dispatch(actions.fetchImageUser(token,userId))
+        // onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
+        // onShowFullTrip: (trip) => dispatch(actions.showFullTrip(trip)),
+        // onFetchUserImage:(token,userId)=> dispatch(actions.fetchImageUser(token,userId))
     };
 };
 

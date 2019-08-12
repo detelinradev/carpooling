@@ -335,33 +335,51 @@ class SearchTrips extends Component {
     };
 
     showFullTrip = (trip) => {
-        let isJoined;
-        console.log(trip)
+        // let isJoined;
+        // console.log(trip)
+
+        // let tripJoined = 'Join Trip';
+
+        // isJoined = passengers.includes(true);
+        // if (isJoined) {
+        //     tripJoined = 'Trip joined'
+        // }
+        // let isRequested;
+        // if (trip.notApprovedPassengers) {
+        //     let notApproved = trip.notApprovedPassengers.map(passenger =>
+        //         (passenger.username === currentUserName)
+        //     );
+        //     isRequested = notApproved.includes(true);
+        //     if (isRequested) {
+        //         tripJoined = 'Request sent'
+        //     }
+        // }
         const currentUserName = this.props.username;
-        let tripJoined = 'Join Trip';
-        let passengers = trip.passengers.map(passenger =>
-            (passenger.username === currentUserName)
-        );
-        isJoined = passengers.includes(true);
-        if (isJoined) {
-            tripJoined = 'Trip joined'
-        }
-        let isRequested;
-        if (trip.notApprovedPassengers) {
-            let notApproved = trip.notApprovedPassengers.map(passenger =>
+        const isDriver = trip.driver.username === currentUserName;
+        let isPassenger;
+        let passengerStatus =null;
+        if(!isDriver) {
+
+            let passengers = trip.passengers.map(passenger =>
                 (passenger.username === currentUserName)
             );
-            isRequested = notApproved.includes(true);
-            if (isRequested) {
-                tripJoined = 'Request sent'
+            isPassenger = passengers.includes(true);
+            if(isPassenger){
+                let some =Object.entries(trip.passengerStatus).map(key=>
+                    (key[0].includes('username='+currentUserName))? passengerStatus = key[1]:null
+                );
+                console.log(some);
             }
         }
-        if (trip.driver.username === currentUserName) {
-            tripJoined = ''
-        }
+        console.log(isPassenger);
+        console.log(isDriver);
+        console.log(passengerStatus);
 
-        console.log(tripJoined)
-        this.props.onShowFullTrip(trip, tripJoined, 'No');
+
+        let tripRole = null;
+        if(isPassenger) tripRole = 'passenger';
+        if(isDriver) tripRole = 'driver';
+        this.props.onShowFullTrip(trip, tripRole,passengerStatus);
         this.props.history.push('/fullTrip');
     };
 
@@ -436,7 +454,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token, formData) => dispatch(actions.fetchTrips(token, formData)),
-        onShowFullTrip: (trip, tripJoined, requestSent) => dispatch(actions.showFullTrip(trip, tripJoined, requestSent)),
+        onShowFullTrip: (trip, tripRole, passengerStatus) => dispatch(actions.showFullTrip(trip, tripRole, passengerStatus)),
     };
 };
 

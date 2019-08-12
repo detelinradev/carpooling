@@ -16,7 +16,6 @@ class Passenger extends Component {
     };
 
     async componentDidMount() {
-        // this.props.onFetchUserImage(this.props.token, this.props.data.modelId,'passenger',this.props.data.modelId);
 
         const getDriverAvatarResponse = await
             fetch("http://localhost:8080/users/avatar/" + this.props.data.modelId)
@@ -29,18 +28,20 @@ class Passenger extends Component {
         }
     }
 
-    giveFeedbackHandler = async () => {
+    giveFeedbackHandler = async (event) => {
+        event.preventDefault();
         console.log(this.props.trip.modelId)
-        console.log( this.props.data.modelId)
+        console.log(this.props.data.modelId)
         let feedback = this.state.newFeedback;
-        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId +"/feedback", {feedback}, {
+        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/feedback", {feedback}, {
             headers: {"Authorization": this.props.token}
         });
     };
 
-    ratePassengerHandler = async () => {
+    ratePassengerHandler = async (event) => {
+        event.preventDefault();
         let rate = this.state.newRate;
-        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId+"/rate", {rate}, {
+        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/rate", {rate}, {
             headers: {"Authorization": this.props.token}
         });
     };
@@ -54,68 +55,102 @@ class Passenger extends Component {
         this.setState({newRating: event.target.value});
     };
 
+    async changePassengerStatus(passengerStatus) {
+        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + this.props.data.modelId + '?status=' + passengerStatus, null, {
+            headers: {"Authorization": this.props.token}
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
+    }
+
 
     render() {
-        let formFeedback = null;
-        if (this.props.isMyTrip) {
-            formFeedback = (
-                <div>
-                    <p
-                        className="header">->GIVE FEEDBACK
-                    </p>
-                    <input
-                        value={this.state.newComment}
-                        onChange={(event) => this.feedbackInputChangedHandler(event)}/>
-                </div>
-            )
-        }
+       let currentPassengerStatus=Object.entries(this.props.trip.passengerStatus).map(key=>
+                (key[0].includes('username='+this.props.data.username))? key[1]:null)
+        console.log(currentPassengerStatus[0])
+        console.log(this.props.data.username)
+        if ((currentPassengerStatus[0] === 'PENDING' && this.props.data.username === this.props.username)
+            ||(currentPassengerStatus[0] === 'PENDING' && this.props.username === this.props.trip.driver.username)
+        || (currentPassengerStatus[0] !== 'PENDING')) {
 
-        let formRating = null;
-        if (this.props.isMyTrip) {
-            formRating = (
-                <div>
-                    <p
-                        className="header">*RATE THE PASSENGER
-                    </p>
-                    <input
-                        value={this.state.newComment}
-                        onChange={(event) => this.rateInputChangedHandler(event)}/>
-                </div>
-            )
-        }
-
-        return (
-            <div style={{float: "left"}} className=" Post">
-
-                <div className="Trip additional-details  cardcont  meta-data-container">
-                    <p className="meta-data">{this.props.data.firstName} {this.props.data.lastName}</p>
-                    <p className="image">
-                        <img id="postertest" className='poster' style={{width: 128}}
-                             src={this.state.src} alt={''}/></p>
-
-                    <p className="row-xs-6 info">Rating<p className="meta-data">{
-                        <StarRatings
-                            rating={this.props.data.rating}
-                            starRatedColor="blue"
-                            //changeRating={this.changeRating}
-                            numberOfStars={5}
-                            name='rating'
-                            starDimension="30px"
-                            starSpacing="6px"
-                        />}</p></p>
+            let formFeedback = null;
+            let formRating = null;
+            let changePassengerStatus = '';
+            if (this.props.isMyTrip) {
+                formFeedback = (
                     <div>
-                        <form onSubmit={this.ratePassengerHandler}>
+                        <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
+                            <p
+                                className="header">->GIVE FEEDBACK
+                            </p>
+                            <input
+                                value={this.state.newComment}
+                                onChange={(event) => this.feedbackInputChangedHandler(event)}/>
+                        </form>
+                    </div>
+                );
+                formRating = (
+                    <div>
+                        <form onSubmit={(event) => this.ratePassengerHandler(event)}>
+                            <p
+                                className="header">*RATE THE PASSENGER
+                            </p>
+                            <input
+                                value={this.state.newComment}
+                                onChange={(event) => this.rateInputChangedHandler(event)}/>
+                        </form>
+                    </div>
+                );
+                if (this.props.tripRole === 'driver') {
+                    changePassengerStatus = (
+                        <div>
+                            <div className="dropdown">
+                                <button className="dropbtn">Change passenger status</button>
+                                <div className="dropdown-content">
+                                    <a onClick={() => this.changePassengerStatus('ACCEPTED')}>ACCEPTED</a>
+                                    <a onClick={() => this.changePassengerStatus('REJECTED')}>REJECTED</a>
+                                    <a onClick={() => this.changePassengerStatus('ABSENT')}>ABSENT</a>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+            }
+
+            return (
+                <div style={{float: "left"}} className=" Post">
+
+                    <div className="Trip additional-details  cardcont  meta-data-container">
+                        <p className="meta-data">{this.props.data.firstName} {this.props.data.lastName}</p>
+                        <p className="image">
+                            <img id="postertest" className='poster' style={{width: 128}}
+                                 src={this.state.src} alt={''}/></p>
+
+                        <p className="row-xs-6 info">Rating<p className="meta-data">{
+                            <StarRatings
+                                rating={this.props.data.rating}
+                                starRatedColor="blue"
+                                //changeRating={this.changeRating}
+                                numberOfStars={5}
+                                name='rating'
+                                starDimension="30px"
+                                starSpacing="6px"
+                            />}</p></p>
+                        <p className="row-xs-6 info">Passenger status : {currentPassengerStatus}</p>
+                        <div>
                             {formRating}
-                        </form>
-                    </div>
-                    <div>
-                        <form onSubmit={this.giveFeedbackHandler}>
+                        </div>
+                        <div>
+                            {changePassengerStatus}
+                        </div>
+                        <div>
                             {formFeedback}
-                        </form>
+                        </div>
+                        <p className="meta-data">{this.props.data.passengerStatus}</p>
                     </div>
-                </div>
 
-            </div>)
+                </div>)
+        }else {
+            return null
+        }
     }
 
 }
@@ -123,14 +158,19 @@ class Passenger extends Component {
 const mapStateToProps = state => {
     return {
         token: state.auth.token,
-        passengerImage: state.user.passengerImage,
-        modelId: state.user.modelId,
-        isMyTrip: state.trip.isMyTrip
+        // passengerImage: state.user.passengerImage,
+        // modelId: state.user.modelId,
+        tripRole: state.trip.tripRole,
+        trip: state.trip.trip,
+        passengerStatus: state.trip.passengerStatus,
+        isMyTrip: state.trip.isMyTrip,
+        username:state.auth.userId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId)),
+        // onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId)),
+        onFetchTrip: (token, tripId, requestSent) => dispatch(actions.fetchTrip(token, tripId, requestSent)),
     };
 };
 

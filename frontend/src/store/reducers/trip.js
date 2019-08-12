@@ -6,9 +6,9 @@ const initialState = {
     loading: false,
     purchased: false,
     trip:null,
-    tripJoined:'Join Trip',
-    requestSent:'No',
-    isMyTrip:''
+    tripRole:null,
+    passengerStatus:null,
+    isMyTrip:null
 };
 
 const createInit = ( state, action ) => {
@@ -18,15 +18,11 @@ const createInit = ( state, action ) => {
 const showFullTrip = ( state, action ) => {
     return updateObject( state, {
         trip: action.trip,
-        tripJoined:action.tripJoined,
-        requestSent: action.requestSent,
+        tripRole: action.tripRole,
+        passengerStatus: action.passengerStatus,
         isMyTrip: action.isMyTrip
     } );
 };
-
-// const changeJoinTripStatus = ( state, action ) => {
-//     return updateObject( state, { tripJoined: action.tripJoined } );
-// };
 
 const createTripStart = ( state, action ) => {
     return updateObject( state, { loading: true } );
@@ -37,7 +33,6 @@ const createTripSuccess = ( state, action ) => {
     return updateObject( state, {
         loading: false,
         purchased: true,
-        // trips: state.trips.concat( newTrip )
     } );
 };
 
@@ -63,7 +58,7 @@ const fetchTripsSuccess = ( state, action ) => {
 const fetchTripSuccess = ( state, action ) => {
     return updateObject( state, {
         trip: action.trip,
-        requestSent:action.requestSent,
+        // requestSent:action.requestSent,
         loading: false
     } );
 };

@@ -13,10 +13,10 @@ export {
     showFullTrip
 } from './trip';
 
-export {
-    fetchImageCar,
-    fetchImageUser
-} from './user';
+// export {
+//     fetchImageCar,
+//     fetchImageUser
+// } from './user';
 
 export {
     createCar,

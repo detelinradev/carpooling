@@ -13,7 +13,7 @@ class Car extends Component {
 
 
     async componentDidMount() {
-        this.props.onFetchCarImage(this.props.token, this.props.trip.driver.modelId);
+        // this.props.onFetchCarImage(this.props.token, this.props.trip.driver.modelId);
         const getCarAvatarResponse = await
         fetch('http://localhost:8080/users/avatar/car/' + this.props.trip.driver.modelId)
             .then(response => response.blob());
@@ -53,12 +53,12 @@ class Car extends Component {
     return {
         trip:state.trip.trip,
         token: state.auth.token,
-        carImage:state.user.carImage
+        // carImage:state.user.carImage
     }
 };
     const mapDispatchToProps = dispatch => {
     return {
-        onFetchCarImage: (token, userId) => dispatch(actions.fetchImageCar(token, userId)),
+        // onFetchCarImage: (token, userId) => dispatch(actions.fetchImageCar(token, userId)),
     };
 };
 

@@ -17,13 +17,11 @@ import Avatar from "../../assets/images/image-default.png";
 class FullTrip extends Component {
     state = {
         src: Avatar,
-        tripStatus: '',
+        // tripStatus: '',
         newComment: '',
     };
 
     async componentDidMount() {
-        // this.props.onFetchUserImage(this.props.token, this.props.trip.driver.modelId, 'driver',this.props.trip.modelId);
-        // console.log(this.state.src)
         const getDriverAvatarResponse = await
             fetch("http://localhost:8080/users/avatar/" + this.props.trip.driver.modelId)
                 .then(response => response.blob());
@@ -41,7 +39,6 @@ class FullTrip extends Component {
     }
 
     async joinTrip() {
-        // console.log(this.props.trip.modelId)
         const currentUserName = this.props.username;
         if (this.props.trip.driver.username !== currentUserName) {
             axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
@@ -50,9 +47,6 @@ class FullTrip extends Component {
         }
     }
 
-    // getTripStatus(tripStatus){
-    //     this.setState({tripStatus: tripStatus})
-    //  }
     async changeTripStatus(tripStatus) {
         axios.patch('/trips/' + this.props.trip.modelId + '?status=' + tripStatus, null, {
             headers: {"Authorization": this.props.token}
@@ -70,15 +64,16 @@ class FullTrip extends Component {
     }
 
     inputChangedHandler = (event) => {
-        event.preventDefault();
         this.setState({newComment: event.target.value});
     };
 
 
-    async commentHandler() {
+    async commentHandler(event) {
+        event.preventDefault();
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/comments?comment=" + this.state.newComment, null, {
             headers: {"Authorization": this.props.token}
-        });
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'No'));
+        this.setState({newComment: ''});
     };
 
 
@@ -113,24 +108,28 @@ class FullTrip extends Component {
             />
         );
 
-        let joinTripStatus = 'Trip joined';
-        if (this.props.tripJoined === 'Join Trip') {
-            joinTripStatus = 'Join trip';
-            if (this.props.requestSent === 'Yes') {
-                joinTripStatus = 'Request sent'
+        let joinTripStatus = null;
+        console.log(this.props.passengerStatus)
+        if (this.props.passengerStatus) {
+            if (this.props.passengerStatus === 'PENDING') {
+                joinTripStatus = 'Request sent';
+            }
+            if (this.props.passengerStatus === 'ACCEPTED') {
+                joinTripStatus = 'Trip joined'
+            }
+            if (this.props.passengerStatus === 'REJECTED') {
+                joinTripStatus = 'Driver denied'
+            }
+            if (this.props.passengerStatus === 'ABSENT') {
+                joinTripStatus = 'You missed it'
             }
         }
-        if (this.props.tripJoined === 'Request sent') {
-            joinTripStatus = 'Request Sent'
-        }
-        if (this.props.tripJoined === '') {
-            joinTripStatus = ''
-        }
 
 
-        let myTrip = '';
-        if (this.props.isMyTrip !== '') {
-            if (this.props.isMyTrip === 'driver') {
+        let myTrip = null;
+        let form = null;
+        if (this.props.isMyTrip) {
+            if (this.props.tripRole === 'driver') {
                 myTrip = (
                     <div>
                         <div className="dropdown">
@@ -144,7 +143,7 @@ class FullTrip extends Component {
                     </div>
                 )
             }
-            if (this.props.isMyTrip === 'passenger') {
+            if (this.props.tripRole === 'passenger') {
 
                 myTrip = (
                     <div style={{marginRight: 20, verticalAlign: "middle"}}>
@@ -154,38 +153,28 @@ class FullTrip extends Component {
                     </div>
                 )
             }
-        }
-
-        let form = null;
-        if (this.props.isMyTrip) {
             form = (
                 <div>
-                    <form onSubmit={()=> this.commentHandler()}>
+                    <form onSubmit={(event) => this.commentHandler(event)}>
                         {
                             <div>
-                                <p
-                                    className="header">+ADD COMMENT
-                                </p>
+                                <p className="header">+ADD COMMENT</p>
                                 <input
                                     value={this.state.newComment}
                                     onChange={(event) => this.inputChangedHandler(event)}/>
                             </div>
                         }
-                        <Button btnType="Success">SUBMIT</Button>
                     </form>
                 </div>
             )
         }
-
 
         let trip = <Spinner/>;
         if (!this.props.loading) {
             trip = (
                 <div style={{marginLeft: 100}}>
                     <div
-                        className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination}</div>
-                    <div>{this.props.isMyTrip === 'driver' ? 'Driver' : null}</div>
-                    <div>{this.props.isMyTrip === 'passenger' ? 'Passenger' : null}</div>
+                        className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination} {this.props.tripRole? 'YOU ARE : ' + this.props.tripRole : null}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
@@ -204,7 +193,7 @@ class FullTrip extends Component {
                             />}</span>
                         </p>
                         <div style={{marginRight: 20, verticalAlign: "middle"}}>
-                            <Button onClick={() => this.joinTrip()}><h3
+                            <Button onClick={() => this.joinTrip()} disabled={this.props.tripRole}><h3
                                 className="header">{joinTripStatus} <FaUserEdit/></h3>
                             </Button>
                         </div>
@@ -278,20 +267,17 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         trip: state.trip.trip,
-        // driverImage: state.user.driverImage,
         username: state.auth.userId,
-        tripJoined: state.trip.tripJoined,
-        requestSent: state.trip.requestSent,
-        // modelId:state.user.modelId,
+        // modelId: state.user.modelId,
+        tripRole: state.trip.tripRole,
+        passengerStatus: state.trip.passengerStatus,
         isMyTrip: state.trip.isMyTrip
 
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        // onFetchUserImage: (token, userId, userType,modelId) => dispatch(actions.fetchImageUser(token, userId, userType,modelId)),
-        onFetchTrip: (token, tripId, requestSent) => dispatch(actions.fetchTrip(token, tripId, requestSent)),
-        // onTripJoined:(tripJoinedStatus) => dispatch(actions.changeTripJoinedStatus(tripJoinedStatus))
+        onFetchTrip: (token, tripId, passengerStatus) => dispatch(actions.fetchTrip(token, tripId, passengerStatus)),
     };
 };
 
