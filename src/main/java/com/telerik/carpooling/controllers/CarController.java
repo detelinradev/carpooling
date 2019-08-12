@@ -3,6 +3,7 @@ package com.telerik.carpooling.controllers;
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.dtos.CarDtoRequest;
 import com.telerik.carpooling.models.dtos.CarDtoResponse;
+import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.CarService;
@@ -23,24 +24,25 @@ public class CarController {
 
     private final UserRepository userRepository;
     private final CarService carService;
+    private final DtoMapper dtoMapper;
 
     @PostMapping(value = "/car")
-    public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final CarDtoRequest car,
+    public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final Car car,
                                                     final Authentication authentication){
 
         return Optional
-                .ofNullable(carService.createCar(car, userRepository.findFirstByUsername(
-                        authentication.getName())))
+                .ofNullable(dtoMapper.objectToDto(carService.createCar(car, userRepository.findFirstByUsername(
+                        authentication.getName()))))
                 .map(carDto -> ResponseEntity.ok().body(carDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping(value = "/car")
-    public ResponseEntity<CarDtoResponse> updateCar(@Valid @RequestBody final CarDtoResponse car,
+    public ResponseEntity<CarDtoResponse> updateCar(@Valid @RequestBody final Car car,
                                                     final Authentication authentication){
         return Optional
-                .ofNullable(carService.updateCar(car ,userRepository.findFirstByUsername(
-                        authentication.getName())))
+                .ofNullable(dtoMapper.objectToDto(carService.updateCar(car ,userRepository.findFirstByUsername(
+                        authentication.getName()))))
                 .map(carDto -> ResponseEntity.ok().body(carDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
@@ -48,8 +50,8 @@ public class CarController {
     @GetMapping(value = "/car")
     public ResponseEntity<CarDtoResponse> getCar(final Authentication authentication){
         return Optional
-                .ofNullable(carService.getCar(userRepository.findFirstByUsername(
-                        authentication.getName())))
+                .ofNullable(dtoMapper.objectToDto(carService.getCar(userRepository.findFirstByUsername(
+                        authentication.getName()))))
                 .map(car -> ResponseEntity.ok().body(car))
                 .orElseGet(() -> ResponseEntity.ok().build());
     }

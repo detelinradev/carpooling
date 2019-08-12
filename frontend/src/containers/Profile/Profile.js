@@ -34,7 +34,6 @@ class Profile extends Component {
             fetch('http://localhost:8080/users/avatarMe',
                 {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
-
         if (getAvatarResponse.size > 100) {
             this.setState({
                 src: URL.createObjectURL(getAvatarResponse)

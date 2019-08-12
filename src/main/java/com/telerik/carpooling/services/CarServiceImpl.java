@@ -21,26 +21,21 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    public CarDtoResponse getCar(User user) {
-
-        return dtoMapper.objectToDto(user.getCar());
+    public Car getCar(User user) {
+        return user.getCar();
     }
 
     @Override
-    public CarDtoResponse createCar(CarDtoRequest carDtoRequest, User owner) {
-
-        Car car = dtoMapper.dtoToObject(carDtoRequest);
+    public Car createCar(Car car, User owner) {
         car.setOwner(owner);
-//        owner.setCar(car);
-        return dtoMapper.objectToDto(carRepository.save(car));
+        return carRepository.save(car);
     }
 
     @Override
-    public CarDtoResponse updateCar(CarDtoResponse carDtoResponse, User owner) {
-        Car car = dtoMapper.dtoToObject(carDtoResponse);
+    public Car updateCar(Car car, User owner) {
         car.setModelId(owner.getCar().getModelId());
         car.setOwner(owner);
-        return dtoMapper.objectToDto(carRepository.save(car));
+        return carRepository.save(car);
     }
 
 }
