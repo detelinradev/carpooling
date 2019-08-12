@@ -335,25 +335,6 @@ class SearchTrips extends Component {
     };
 
     showFullTrip = (trip) => {
-        // let isJoined;
-        // console.log(trip)
-
-        // let tripJoined = 'Join Trip';
-
-        // isJoined = passengers.includes(true);
-        // if (isJoined) {
-        //     tripJoined = 'Trip joined'
-        // }
-        // let isRequested;
-        // if (trip.notApprovedPassengers) {
-        //     let notApproved = trip.notApprovedPassengers.map(passenger =>
-        //         (passenger.username === currentUserName)
-        //     );
-        //     isRequested = notApproved.includes(true);
-        //     if (isRequested) {
-        //         tripJoined = 'Request sent'
-        //     }
-        // }
         const currentUserName = this.props.username;
         const isDriver = trip.driver.username === currentUserName;
         let isPassenger;

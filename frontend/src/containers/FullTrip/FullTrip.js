@@ -17,8 +17,9 @@ import Avatar from "../../assets/images/image-default.png";
 class FullTrip extends Component {
     state = {
         src: Avatar,
-        // tripStatus: '',
         newComment: '',
+        rating: 0,
+        newRate:null
     };
 
     async componentDidMount() {
@@ -32,10 +33,21 @@ class FullTrip extends Component {
                 src: URL.createObjectURL(getDriverAvatarResponse)
             })
         }
-        if (this.state.tripStatus !== '') {
+       this.getDriverRate()
 
-        }
+    }
 
+    async getDriverRate() {
+        const getMeResponse = await
+            axios.get('/users/' + this.props.trip.driver.username, {
+                headers:
+                    {"Authorization": this.props.token}
+            });
+
+        this.setState({
+            rating: getMeResponse.data.ratingAsDriver
+
+        })
     }
 
     async joinTrip() {
@@ -75,6 +87,21 @@ class FullTrip extends Component {
             headers: {"Authorization": this.props.token}
         }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
         this.setState({newComment: ''});
+    };
+
+    rateDriverHandler = async (event) => {
+        event.preventDefault();
+        let rate = this.state.newRate;
+        console.log(rate.toString())
+        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/driver/rate", this.state.newRate, {
+            headers: {"Authorization": this.props.token, "Content-Type":"application/json"}
+        }).then(res => this.getDriverRate());
+        this.setState({newRate: ''});
+    };
+
+    rateInputChangedHandler = (event) => {
+        event.preventDefault();
+        this.setState({newRate: event.target.value});
     };
 
 
@@ -130,7 +157,21 @@ class FullTrip extends Component {
         console.log(this.props.passengerStatus === 'CANCELED')
         let myTrip = null;
         let form = null;
+        let formRating = null;
         if (this.props.isMyTrip) {
+            formRating = (
+                <div>
+                    <form onSubmit={(event) => this.rateDriverHandler(event)}>
+                        <p
+                            className="header">RATE DRIVER
+                        </p>
+                        <input
+                            value={this.state.newRate}
+                            onChange={(event) => this.rateInputChangedHandler(event)}/>
+                    </form>
+                </div>
+            );
+
             if (this.props.tripRole === 'driver') {
                 myTrip = (
                     <div>
@@ -149,7 +190,7 @@ class FullTrip extends Component {
 
                 myTrip = (
                     <div style={{marginRight: 20, verticalAlign: "middle"}}>
-                        <Button onClick={() => this.cancelTrip()} disabled={(this.props.passengerStatus === 'CANCELED')}><h3
+                        <Button onClick={() => this.cancelTrip()} visible={this.props.passengerStatus !== 'CANCELED'}><h3
                             className="header">LEAVE TRIP<FaUserEdit/></h3>
                         </Button>
                     </div>
@@ -185,7 +226,7 @@ class FullTrip extends Component {
                             <span><FaMedal/></span> Rating <span
                             className="header">{
                             <StarRatings
-                                rating={this.props.trip.ratingAsDriver}
+                                rating={this.state.rating}
                                 starRatedColor="yellow"
                                 changeRating={this.changeRating}
                                 numberOfStars={5}
@@ -194,6 +235,7 @@ class FullTrip extends Component {
                                 starSpacing="6px"
                             />}</span>
                         </p>
+                        {formRating}
                         <div style={{marginRight: 20, verticalAlign: "middle"}}>
                             <Button onClick={() => this.joinTrip()} disabled={this.props.tripRole}><h3
                                 className="header">{joinTripStatus} <FaUserEdit/></h3>

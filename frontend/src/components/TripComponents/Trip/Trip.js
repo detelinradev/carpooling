@@ -12,6 +12,7 @@ import StarRatings from "react-star-ratings";
 class Trip extends Component {
     state = {
         src: Avatar,
+        rating:0
     };
 
     async componentDidMount() {
@@ -25,27 +26,21 @@ class Trip extends Component {
                 })
             }
 
+        const getMeResponse = await
+            axios.get('/users/' +this.props.data.driver.username, {
+                headers:
+                    {"Authorization": this.props.token}
+            });
+
+        this.setState({
+            rating: getMeResponse.data.ratingAsDriver
+
+        })
     }
-    //
-    // async componentDidMount() {
-    //     const getDriverAvatarResponse = await
-    //         fetch("http://localhost:8080/users/avatar/" + this.props.data.driver.modelId)
-    //             .then(response => response.blob());
-    //
-    //     if (getDriverAvatarResponse.size > 100) {
-    //         this.setState({
-    //             src: URL.createObjectURL(getDriverAvatarResponse)
-    //         })
-    //     }
-    //
-    // }
 
     render() {
 
-        // let trip = this.props.error ? <p>Trips can't be loaded!</p> : <Spinner />;
-        let trip = null;
-        // if (this.props.driverImage) {
-            trip = (
+          let trip = (
                 <div className=" Post">
                     <div
                         className="proba Trip additional-details hed">{this.props.data.origin} -> {this.props.data.destination}</div>
@@ -58,7 +53,7 @@ class Trip extends Component {
                             <span><FaMedal/></span> Rating <div
                             className="header">{
                             <StarRatings
-                                rating={this.props.data.driver.ratingAsDriver}
+                                rating={this.state.rating}
                                 starRatedColor="yellow"
                                 changeRating={this.changeRating}
                                 numberOfStars={5}

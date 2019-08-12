@@ -13,6 +13,7 @@ class Passenger extends Component {
         src: Avatar,
         newFeedback: '',
         newRate: '',
+        rating:0
     };
 
     async componentDidMount() {
@@ -26,28 +27,36 @@ class Passenger extends Component {
                 src: URL.createObjectURL(getDriverAvatarResponse)
             })
         }
+        const getMeResponse = await
+            axios.get('/users/' +this.props.data.username, {
+                headers:
+                    {"Authorization": this.props.token}
+            });
+
+        this.setState({
+            rating: getMeResponse.data.ratingAsPassenger
+
+        })
     }
 
     giveFeedbackHandler = async (event) => {
         event.preventDefault();
         console.log(this.props.trip.modelId)
         console.log(this.props.data.modelId)
-        let feedback = this.state.newFeedback;
-        // console.log(feedback.value)
-        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/feedback", {feedback}, {
-            headers: {"Authorization": this.props.token}
-        });
+        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/feedback", this.state.newFeedback, {
+            headers: {"Authorization": this.props.token, "Content-Type":"application/json"}
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
         this.setState({newFeedback: ''});
     };
 
     ratePassengerHandler = async (event) => {
         event.preventDefault();
-        let rate = this.state.newRate;
-        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/rate", {rate}, {
-            headers: {"Authorization": this.props.token}
-        });
+        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/rate", this.state.newRate, {
+            headers: {"Authorization": this.props.token, "Content-Type":"application/json"}
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
         this.setState({newRate: ''});
     };
+
     feedbackInputChangedHandler = (event) => {
         event.preventDefault();
         this.setState({newFeedback: event.target.value});
@@ -55,13 +64,13 @@ class Passenger extends Component {
 
     rateInputChangedHandler = (event) => {
         event.preventDefault();
-        this.setState({newRating: event.target.value});
+        this.setState({newRate: event.target.value});
     };
 
     async changePassengerStatus(passengerStatus) {
         axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + this.props.data.modelId + '?status=' + passengerStatus, null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
     }
 
 
@@ -81,30 +90,32 @@ class Passenger extends Component {
             let formRating = null;
             let changePassengerStatus = '';
             if (this.props.isMyTrip) {
-                formFeedback = (
-                    <div>
-                        <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
-                            <p
-                                className="header">->GIVE FEEDBACK
-                            </p>
-                            <input
-                                value={this.state.newComment}
-                                onChange={(event) => this.feedbackInputChangedHandler(event)}/>
-                        </form>
-                    </div>
-                );
-                formRating = (
-                    <div>
-                        <form onSubmit={(event) => this.ratePassengerHandler(event)}>
-                            <p
-                                className="header">*RATE THE PASSENGER
-                            </p>
-                            <input
-                                value={this.state.newComment}
-                                onChange={(event) => this.rateInputChangedHandler(event)}/>
-                        </form>
-                    </div>
-                );
+                if(this.props.data.username !== this.props.username) {
+                    formFeedback = (
+                        <div>
+                            <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
+                                <p
+                                    className="header">->GIVE FEEDBACK
+                                </p>
+                                <input
+                                    value={this.state.newComment}
+                                    onChange={(event) => this.feedbackInputChangedHandler(event)}/>
+                            </form>
+                        </div>
+                    );
+                    formRating = (
+                        <div>
+                            <form onSubmit={(event) => this.ratePassengerHandler(event)}>
+                                <p
+                                    className="header">*RATE THE PASSENGER
+                                </p>
+                                <input
+                                    value={this.state.newRate}
+                                    onChange={(event) => this.rateInputChangedHandler(event)}/>
+                            </form>
+                        </div>
+                    );
+                }
                 if (this.props.tripRole === 'driver') {
                     changePassengerStatus = (
                         <div>
@@ -132,7 +143,7 @@ class Passenger extends Component {
 
                         <p className="row-xs-6 info">Rating<p className="meta-data">{
                             <StarRatings
-                                rating={this.props.data.rating}
+                                rating={this.state.rating}
                                 starRatedColor="blue"
                                 //changeRating={this.changeRating}
                                 numberOfStars={5}
@@ -164,8 +175,6 @@ class Passenger extends Component {
 const mapStateToProps = state => {
     return {
         token: state.auth.token,
-        // passengerImage: state.user.passengerImage,
-        // modelId: state.user.modelId,
         tripRole: state.trip.tripRole,
         trip: state.trip.trip,
         passengerStatus: state.trip.passengerStatus,
@@ -175,7 +184,6 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        // onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId)),
         onFetchTrip: (token, tripId, requestSent) => dispatch(actions.fetchTrip(token, tripId, requestSent)),
     };
 };
