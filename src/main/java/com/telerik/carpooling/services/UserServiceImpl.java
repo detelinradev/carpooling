@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptEncoder;
 
     @Override
-    public UserDtoResponse save(final UserDtoRequest user) {
+    public User save(final UserDtoRequest user) {
         User newUser = new User();
         newUser.setUsername(user.getUsername());
         newUser.setFirstName(user.getFirstName());
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         newUser.setRole("USER");
         newUser.setIsDeleted(false);
         newUser.setPhone(user.getPhone());
-        return dtoMapper.objectToDto(userRepository.save(newUser));
+        return userRepository.save(newUser);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDtoResponse getUser(String username) {
-         UserDtoResponse user = dtoMapper.objectToDto(userRepository.findFirstByUsername(username));
+    public User getUser(String username) {
+         User user = userRepository.findFirstByUsername(username);
         if (ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).isPresent())
             user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).get());
         if (ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).isPresent())

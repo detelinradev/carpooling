@@ -5,6 +5,7 @@ import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.UserDtoRequest;
 import com.telerik.carpooling.models.dtos.UserDtoResponse;
+import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.ImageService;
 import com.telerik.carpooling.services.services.contracts.UserService;
@@ -38,6 +39,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final ImageService imageService;
+    private final DtoMapper dtoMapper;
 
     @GetMapping
     public ResponseEntity<List<UserDtoResponse>> getUsers (){
@@ -127,7 +129,7 @@ public class UserController {
     @PostMapping(value = "/register")
     public ResponseEntity<UserDtoResponse> save(@Valid @RequestBody final UserDtoRequest user) {
         return Optional
-                .ofNullable(userService.save(user))
+                .ofNullable(dtoMapper.objectToDto(userService.save(user)))
                 .map(userDtoResponse -> ResponseEntity.ok().body(userDtoResponse))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
