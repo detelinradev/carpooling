@@ -43,24 +43,25 @@ class FullTrip extends Component {
         if (this.props.trip.driver.username !== currentUserName) {
             axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
                 headers: {"Authorization": this.props.token}
-            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
+            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId,'PENDING'));
         }
     }
 
     async changeTripStatus(tripStatus) {
         axios.patch('/trips/' + this.props.trip.modelId + '?status=' + tripStatus, null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'Yes'));
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
     }
 
     async cancelTrip() {
         const currentUserName = this.props.username;
-        let passengerID = this.props.trip.passengers.map(passenger =>
-            (passenger.username === currentUserName) ? passenger.modelId : null
+        let passengerId = null;
+        let passengers = this.props.trip.passengers.map(passenger =>
+            (passenger.username === currentUserName) ? passengerId = passenger.modelId : null
         );
-        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerID + '?status=CANCELED', null, {
+        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerId + '?status=CANCELED', null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'No'));
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId,'CANCELED'));
     }
 
     inputChangedHandler = (event) => {
@@ -72,7 +73,7 @@ class FullTrip extends Component {
         event.preventDefault();
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/comments?comment=" + this.state.newComment, null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'No'));
+        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
         this.setState({newComment: ''});
     };
 
@@ -108,7 +109,7 @@ class FullTrip extends Component {
             />
         );
 
-        let joinTripStatus = null;
+        let joinTripStatus = 'Join trip';
         console.log(this.props.passengerStatus)
         if (this.props.passengerStatus) {
             if (this.props.passengerStatus === 'PENDING') {
@@ -126,6 +127,7 @@ class FullTrip extends Component {
         }
 
 
+        console.log(this.props.passengerStatus === 'CANCELED')
         let myTrip = null;
         let form = null;
         if (this.props.isMyTrip) {
@@ -147,7 +149,7 @@ class FullTrip extends Component {
 
                 myTrip = (
                     <div style={{marginRight: 20, verticalAlign: "middle"}}>
-                        <Button onClick={() => this.cancelTrip()}><h3
+                        <Button onClick={() => this.cancelTrip()} disabled={(this.props.passengerStatus === 'CANCELED')}><h3
                             className="header">LEAVE TRIP<FaUserEdit/></h3>
                         </Button>
                     </div>
@@ -174,7 +176,7 @@ class FullTrip extends Component {
             trip = (
                 <div style={{marginLeft: 100}}>
                     <div
-                        className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination} {this.props.tripRole? 'YOU ARE : ' + this.props.tripRole : null}</div>
+                        className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
@@ -268,7 +270,6 @@ const mapStateToProps = state => {
         token: state.auth.token,
         trip: state.trip.trip,
         username: state.auth.userId,
-        // modelId: state.user.modelId,
         tripRole: state.trip.tripRole,
         passengerStatus: state.trip.passengerStatus,
         isMyTrip: state.trip.isMyTrip
@@ -277,7 +278,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchTrip: (token, tripId, passengerStatus) => dispatch(actions.fetchTrip(token, tripId, passengerStatus)),
+        onFetchTrip: (token, tripId,passengerStatus) => dispatch(actions.fetchTrip(token, tripId,passengerStatus)),
     };
 };
 

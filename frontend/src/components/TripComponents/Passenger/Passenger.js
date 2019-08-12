@@ -33,9 +33,11 @@ class Passenger extends Component {
         console.log(this.props.trip.modelId)
         console.log(this.props.data.modelId)
         let feedback = this.state.newFeedback;
+        // console.log(feedback.value)
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/feedback", {feedback}, {
             headers: {"Authorization": this.props.token}
         });
+        this.setState({newFeedback: ''});
     };
 
     ratePassengerHandler = async (event) => {
@@ -44,6 +46,7 @@ class Passenger extends Component {
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/rate", {rate}, {
             headers: {"Authorization": this.props.token}
         });
+        this.setState({newRate: ''});
     };
     feedbackInputChangedHandler = (event) => {
         event.preventDefault();
@@ -63,13 +66,16 @@ class Passenger extends Component {
 
 
     render() {
-       let currentPassengerStatus=Object.entries(this.props.trip.passengerStatus).map(key=>
-                (key[0].includes('username='+this.props.data.username))? key[1]:null)
-        console.log(currentPassengerStatus[0])
+        let currentPassengerStatus = null;
+        let currentPassengers = Object.entries(this.props.trip.passengerStatus).map(key =>
+            (key[0].includes('username=' + this.props.data.username)) ? currentPassengerStatus = key[1] : null)
+        console.log(currentPassengerStatus)
         console.log(this.props.data.username)
-        if ((currentPassengerStatus[0] === 'PENDING' && this.props.data.username === this.props.username)
-            ||(currentPassengerStatus[0] === 'PENDING' && this.props.username === this.props.trip.driver.username)
-        || (currentPassengerStatus[0] !== 'PENDING')) {
+        if ((currentPassengerStatus === 'PENDING' && this.props.data.username === this.props.username)
+            || (currentPassengerStatus === 'PENDING' && this.props.username === this.props.trip.driver.username)
+            || (currentPassengerStatus === 'REJECTED' && this.props.data.username === this.props.username)
+            || (currentPassengerStatus === 'REJECTED' && this.props.username === this.props.trip.driver.username)
+            || (currentPassengerStatus !== 'PENDING' && currentPassengerStatus !== 'REJECTED')) {
 
             let formFeedback = null;
             let formRating = null;
@@ -148,7 +154,7 @@ class Passenger extends Component {
                     </div>
 
                 </div>)
-        }else {
+        } else {
             return null
         }
     }
@@ -164,7 +170,7 @@ const mapStateToProps = state => {
         trip: state.trip.trip,
         passengerStatus: state.trip.passengerStatus,
         isMyTrip: state.trip.isMyTrip,
-        username:state.auth.userId
+        username: state.auth.userId
     }
 };
 const mapDispatchToProps = dispatch => {

@@ -228,7 +228,6 @@ public class TripServiceImpl implements TripService {
             } else if (trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.PENDING)) {
                 trip.get().getNotApprovedPassengers().remove(passenger.get());
             }
-            trip.get().getPassengers().remove(passenger.get());
             trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.REJECTED);
             return tripRepository.save(trip.get());
         }

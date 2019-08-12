@@ -58,7 +58,7 @@ const fetchTripsSuccess = ( state, action ) => {
 const fetchTripSuccess = ( state, action ) => {
     return updateObject( state, {
         trip: action.trip,
-        // requestSent:action.requestSent,
+        passengerStatus:action.passengerStatus,
         loading: false
     } );
 };

@@ -78,11 +78,11 @@ export const fetchTripsSuccess = ( trips ) => {
     };
 };
 
-export const fetchTripSuccess = ( trip,requestSent ) => {
+export const fetchTripSuccess = ( trip,passengerStatus ) => {
     return {
         type: actionTypes.FETCH_TRIP_SUCCESS,
         trip: trip,
-        // requestSent:requestSent
+        passengerStatus: passengerStatus
     };
 };
 
@@ -137,7 +137,7 @@ export const fetchTrips = (token,queryParams) => {
     };
 };
 
-export const fetchTrip = (token,tripId) => {
+export const fetchTrip = (token,tripId,passengerStatus) => {
     return dispatch => {
         dispatch(fetchTripStart());
         const headers = {
@@ -146,7 +146,7 @@ export const fetchTrip = (token,tripId) => {
         };
         axios.get( '/trips/' +tripId , {headers})
             .then( res => {
-                dispatch(fetchTripSuccess(res.data))
+                dispatch(fetchTripSuccess(res.data,passengerStatus))
             })
             .catch( err => {
                 dispatch(fetchTripFail(err));
