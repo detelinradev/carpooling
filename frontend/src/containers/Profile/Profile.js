@@ -130,7 +130,7 @@ class Profile extends Component {
         data.append('upfile', this.state.file);
         console.log(data.getAll("upfile"));
         fetch('http://localhost:8080/users/avatar', {
-            method: 'PUT',
+            method: 'POST',
             headers: {"Authorization": this.props.token},
             body: data
         }).then(response => {
