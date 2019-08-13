@@ -229,7 +229,7 @@ class FullTrip extends Component {
                 );
                  updateTrip = (
 
-                    <Modal style={{width: 600,marginBottom:200}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
+                    <Modal style={{width: 600}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
                         <UpdateTrip
                             showModal={this.state.showModal}
                             data={this.props.trip}

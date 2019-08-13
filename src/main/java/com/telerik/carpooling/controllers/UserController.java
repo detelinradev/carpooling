@@ -42,15 +42,15 @@ public class UserController {
     private final DtoMapper dtoMapper;
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers (){
+    public ResponseEntity<?> getUsers (){
         return Optional
-                .ofNullable(userService.getUsers())
+                .ofNullable(dtoMapper.userToDtoList(userService.getUsers()))
                 .map(users -> ResponseEntity.ok().body(users))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping (value = "/top-rated-drivers")
-    public ResponseEntity<List<User>> getTopRatedDrivers() {
+    public ResponseEntity<?> getTopRatedDrivers() {
         List<User> users = userService.getUsers();
         users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
 
@@ -59,13 +59,13 @@ public class UserController {
                 .collect(Collectors.toList());
 
         return Optional
-                .of(finalUserList)
+                .of(dtoMapper.userToDtoList(finalUserList))
                 .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping (value = "/top-rated-passengers")
-    public ResponseEntity<List<User>> getTopRatedPassengers() {
+    public ResponseEntity<?> getTopRatedPassengers() {
         List<User> users = userService.getUsers();
         users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
 
@@ -74,7 +74,7 @@ public class UserController {
                 .collect(Collectors.toList());
 
         return Optional
-                .of(finalUserList)
+                .of(dtoMapper.userToDtoList(finalUserList))
                 .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -82,16 +82,18 @@ public class UserController {
     @PutMapping
     //@PreAuthorize(value = "hasRole(ADMIN)")
     public ResponseEntity<?> editUser(@Valid @RequestBody UserDtoResponse userDtoResponse){
+        User user =dtoMapper.dtoToObject(userDtoResponse);
+
         return Optional
-                .ofNullable(userService.updateUser(userDtoResponse))
-                .map(user -> ResponseEntity.ok().build())
+                .ofNullable( userService.updateUser(user))
+                .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping (value = "/{username}")
     public ResponseEntity<?> getUser(@PathVariable() String username){
         return Optional
-                .ofNullable(userService.getUser(username))
+                .ofNullable(dtoMapper.objectToDto(userService.getUser(username)))
                 .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -99,38 +101,39 @@ public class UserController {
     @GetMapping(value = "/me")
     public ResponseEntity<?> getUserOwnInfo(Authentication authentication) {
         return Optional
-                .ofNullable(userService.getUser(
-                        authentication.getName()))
+                .ofNullable(dtoMapper.objectToDto(userService.getUser(
+                        authentication.getName())))
                 .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
 
     }
 
     @PatchMapping(value = "/me/update-password")
-    public ResponseEntity<User> updateUserOwnInfo(@RequestParam final String password, final Authentication authentication) {
+    public ResponseEntity<?> updateUserOwnInfo(@RequestParam final String password, final Authentication authentication) {
 
         return Optional
                 .ofNullable(userService.updateCurrentUserPassword(password, userRepository.findFirstByUsername(
                         authentication.getName())))
-                .map(user -> ResponseEntity.ok().body(user))
+                .map(user -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
 
     }
 
     @PatchMapping(value = "/me/update-email")
-    public ResponseEntity<User> updateUserOwnEmail(@RequestParam final String email, final Authentication authentication) {
+    public ResponseEntity<?> updateUserOwnEmail(@RequestParam final String email, final Authentication authentication) {
         return Optional
                 .ofNullable(userService.updateCurrentUserEmail(email, userRepository.findFirstByUsername(
                         authentication.getName())))
-                .map(user -> ResponseEntity.ok().body(user))
+                .map(user -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<UserDtoResponse> save(@Valid @RequestBody final User user) {
+    public ResponseEntity<?> save(@Valid @RequestBody final UserDtoRequest userDtoRequest) {
+        User user = dtoMapper.dtoToObject(userDtoRequest);
         return Optional
-                .ofNullable(dtoMapper.objectToDto(userService.save(user)))
-                .map(userDtoResponse -> ResponseEntity.ok().body(userDtoResponse))
+                .ofNullable(userService.save(user))
+                .map(userDtoResponse -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 

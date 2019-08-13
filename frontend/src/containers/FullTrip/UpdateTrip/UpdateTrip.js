@@ -398,7 +398,7 @@ class UpdateTrip extends Component {
             form = <Spinner/>;
         }
         return (
-            <div className="NewTrip todore">
+            <div className="UpdateTrip todore">
                 Update your Trip Data
                 {form}
             </div>

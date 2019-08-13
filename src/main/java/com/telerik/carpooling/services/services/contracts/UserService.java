@@ -23,7 +23,7 @@ public interface UserService {
 
     User leaveFeedbackPassenger(String tripID, User user,String passengerID, String feedback);
 
-    User updateUser(UserDtoResponse userDtoResponse);
+    User updateUser(User user);
 
     User getUser(String username);
 
