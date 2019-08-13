@@ -9,7 +9,7 @@ import './index.css';
 import App from './App';
 import authReducer from './store/reducers/auth';
 import  tripReducer from './store/reducers/trip';
-// import  userReducer from './store/reducers/user';
+import  carReducer from './store/reducers/car';
 
 
 
@@ -23,6 +23,7 @@ const composeEnhancers = process.env.NODE_ENV === 'development'
 const rootReducer = combineReducers({
     auth: authReducer,
     trip : tripReducer,
+    car: carReducer
     // user : userReducer
 });
 

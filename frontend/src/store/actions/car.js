@@ -1,12 +1,10 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-baseUrl';
 
-export const createCarSuccess = ( id, carData ) => {
-    return {
-        type: actionTypes.CREATE_CAR_SUCCESS,
-        tripId: id,
-        tripData: carData
-    };
+export const createCarSuccess = (  ) => {
+return {
+    type: actionTypes.CREATE_CAR_SUCCESS,
+        };
 };
 
 export const createCarFail = ( error ) => {
@@ -19,6 +17,12 @@ export const createCarFail = ( error ) => {
 export const createCarStart = () => {
     return {
         type: actionTypes.CREATE_CAR_START
+    };
+};
+
+export const carFinishCreate = ( ) => {
+    return {
+        type: actionTypes.CREATE_FINISH_CAR
     };
 };
 
@@ -36,12 +40,9 @@ export const createCar = (CarData, token ) => {
         axios.post ( '/car' ,CarData,{headers}
         )
             .then( response => {
-                dispatch( createCarSuccess( response.data.name, CarData ) );
+                dispatch( createCarSuccess( ) );
 
             } )
-            .then(()=>{
-                this.props.history.replace( '/MyProfile' );
-            })
             .catch( error => {
                 dispatch( createCarFail( error ) );
             } );

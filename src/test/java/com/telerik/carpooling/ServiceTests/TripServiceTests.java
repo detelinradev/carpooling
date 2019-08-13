@@ -178,28 +178,28 @@ public class TripServiceTests {
 
         Assert.assertEquals(trip, tripService.addPassenger("1", user));
     }
+//
+//    @Test
+//    public void AddPassenger_Should_When_NotPresent() {
+//        long longid = Long.parseLong("1");
+//        when(tripRepository.findById(longid)).thenReturn(Optional.of(trip));
+//        when(tripRepository.save(trip)).thenReturn(trip);
+//        when(userRepository.save(user)).thenReturn(user);
+////        when(tripService.parseStringToLong("1")).thenReturn(1L);
+//
+//        Assert.assertEquals(trip, tripService.addPassenger("1", user));
+//    }
 
-    @Test
-    public void AddPassenger_Should_When_NotPresent() {
-        long longid = Long.parseLong("1");
-        when(tripRepository.findById(longid)).thenReturn(Optional.of(trip));
-        when(tripRepository.save(trip)).thenReturn(trip);
-        when(userRepository.save(user)).thenReturn(user);
-//        when(tripService.parseStringToLong("1")).thenReturn(1L);
-
-        Assert.assertEquals(trip, tripService.addPassenger("1", user));
-    }
-
-    @Test
-    public void _Should_When_NotPresent() {
-        User passenger = new User();
-        passenger.setModelId(1L);
-        tripService.addPassenger("1", passenger);
-//        when(tripRepository.findById(1L)).thenReturn(Optional.of(trip));
-//        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(tripService.changePassengerStatus("1", user, "2", PassengerStatus.CANCELED)).thenReturn(trip);
-        Assert.assertEquals(trip, tripService.changePassengerStatus("1", user, "2", PassengerStatus.CANCELED));
-    }
+//    @Test
+//    public void _Should_When_NotPresent() {
+//        User passenger = new User();
+//        passenger.setModelId(1L);
+//        tripService.addPassenger("1", passenger);
+////        when(tripRepository.findById(1L)).thenReturn(Optional.of(trip));
+////        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+//        when(tripService.changePassengerStatus("1", user, "2", PassengerStatus.CANCELED)).thenReturn(trip);
+//        Assert.assertEquals(trip, tripService.changePassengerStatus("1", user, "2", PassengerStatus.CANCELED));
+//    }
 
 
 
