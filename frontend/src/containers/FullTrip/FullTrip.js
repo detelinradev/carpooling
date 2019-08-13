@@ -122,7 +122,7 @@ class FullTrip extends Component {
         this.setState({newFeedback: ''});
     };
 
-    toggleModal(){
+    toggleModal() {
         this.setState({
             showModal: !this.state.showModal
         })
@@ -188,7 +188,8 @@ class FullTrip extends Component {
             }
         }
 
-
+        let buttonUpdateTrip=null;
+        let updateTrip = null;
         let formFeedback = null;
         let formChangeTripStatus = null;
         let formComment = null;
@@ -222,6 +223,21 @@ class FullTrip extends Component {
             }
 
             if (this.props.tripRole === 'driver') {
+
+                buttonUpdateTrip=(
+                    <button className="Car" onClick={() => this.toggleModal()}><h1>UPDATE TRIP</h1></button>
+                );
+                 updateTrip = (
+
+                    <Modal style={{width: 600,marginBottom:200}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
+                        <UpdateTrip
+                            showModal={this.state.showModal}
+                            data={this.props.trip}
+                        />
+                    </Modal>
+
+                );
+
                 formChangeTripStatus = (
                     <div>
                         <div className="dropdown">
@@ -261,6 +277,7 @@ class FullTrip extends Component {
             )
         }
 
+
         let trip = <Spinner/>;
         if (!this.props.loading) {
             trip = (
@@ -290,7 +307,7 @@ class FullTrip extends Component {
                                 className="header">{joinTripStatus} <FaUserEdit/></h3>
                             </Button>
                         </div>
-                        <button className="Car" onClick={() => this.toggleModal()}><h1>UPDATE TRIP</h1></button>
+                        {buttonUpdateTrip}
 
                         <div className="comps" style={{paddingTop: 40}}>
                             Departure Time<p className="row-xs-6 info meta-data">{this.props.trip.departureTime}</p>
@@ -353,12 +370,7 @@ class FullTrip extends Component {
                     {trip}
                 </div>
                 <div>
-                    <Modal style={{width: 600}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
-                        <UpdateTrip
-                            showModal={this.state.showModal}
-                            data={this.props.trip}
-                        />
-                    </Modal>
+                    {updateTrip}
                     {car}
                 </div>
             </div>
