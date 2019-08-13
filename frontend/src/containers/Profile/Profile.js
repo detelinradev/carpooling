@@ -62,10 +62,10 @@ class Profile extends Component {
     }
 
 
-    editHandler() {
-        this.setState({
-            edit: !this.state.edit
-        });
+        editHandler() {
+            this.setState({
+                edit: !this.state.edit
+            });
 
     }
 

@@ -42,8 +42,7 @@ class Trip extends Component {
           let trip = (
                 <div className=" Post">
                     <div
-                        className="proba Trip additional-details hed">{this.props.data.origin} -> {this.props.data.destination}</div>
-                    <div>{this.props.userRole?this.props.userRole:null}</div>
+                        className="proba Trip additional-details hed">{this.props.data.origin} -> {this.props.data.destination} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; YOUR ROLE:{this.props.userRole?this.props.userRole:null}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <div className="image ">
                             <img id="postertest" className='poster' style={{width: 128}}

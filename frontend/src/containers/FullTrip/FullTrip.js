@@ -206,7 +206,7 @@ class FullTrip extends Component {
             joinTrip = (
                 <div style={{marginRight: 20, verticalAlign: "middle"}}>
                     <Button onClick={() => this.joinTrip()}><h3
-                        className="header">{joinTripStatus} <FaUserEdit/></h3>
+                        className="header">{joinTripStatus} </h3>
                     </Button>
                 </div>
             );
@@ -253,7 +253,7 @@ class FullTrip extends Component {
                 formDeleteTrip = (
                     <div style={{marginRight: 20, verticalAlign: "middle"}}>
                         <Button onClick={() => this.deleteTrip()}><h3
-                            className="header">DELETE TRIP<FaUserEdit/></h3>
+                            className="header">DELETE TRIP</h3>
                         </Button>
                     </div>
                 );
@@ -290,7 +290,7 @@ class FullTrip extends Component {
                 formChangeTripStatus = (
                     <div style={{marginRight: 20, verticalAlign: "middle"}}>
                         <Button onClick={() => this.cancelTrip()}><h3
-                            className="header">LEAVE TRIP<FaUserEdit/></h3>
+                            className="header">LEAVE TRIP</h3>
                         </Button>
                     </div>
                 );
@@ -338,16 +338,17 @@ class FullTrip extends Component {
                         </p>
                         {formRating} {formFeedback} {formDeleteTrip}
                         {joinTrip}
+                        {formChangeTripStatus}
                         {buttonUpdateTrip}
 
-                        <div className="comps" style={{paddingTop: 40}}>
-                            Departure Time<p className="row-xs-6 info meta-data">{this.props.trip.departureTime}</p>
+                        <div className="comps" style={{paddingTop: 30}}>
+                            Departure Time<p style={{fontSize: 18}} className="row-xs-6 info meta-data">{this.props.trip.departureTime}</p>
 
                             <hr/>
-                            Smoking allowed<p className="row-xs-6 info meta-data">{this.props.trip.smokingAllowed}</p>
+                            Smoking allowed<p  className="row-xs-6 info meta-data">{this.props.trip.smokingAllowed}</p>
                         </div>
 
-                        <div className="comps" style={{paddingTop: 40}}>
+                        <div className="comps" style={{paddingTop: 25}}>
                             Available Seats<p className="row-xs-6 info meta-data">{this.props.trip.availablePlaces}</p>
                             <hr/>
                             Air-conditioned<p
@@ -387,7 +388,7 @@ class FullTrip extends Component {
                             PASSENGERS
                         </h1>
                         {passengers}
-                        {formChangeTripStatus}
+
                     </div>
                 </div>
             )
@@ -402,7 +403,6 @@ class FullTrip extends Component {
                 </div>
                 <div>
                     {updateTrip}
-                    {/*{car}*/}
                 </div>
             </div>
 

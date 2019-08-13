@@ -138,26 +138,26 @@ class Passenger extends Component {
                             <img id="postertest" className='poster' style={{width: 128}}
                                  src={this.state.src} alt={''}/></p>
 
-                        <p className="row-xs-6 info">Rating<p className="meta-data">{
+                        <p style={{width: 240}} className="row-xs-6 info">Rating<p className="meta-data">{
                             <StarRatings
                                 rating={this.state.rating}
-                                starRatedColor="blue"
+                                starRatedColor="yellow"
                                 //changeRating={this.changeRating}
                                 numberOfStars={5}
                                 name='rating'
-                                starDimension="30px"
-                                starSpacing="6px"
+                                starDimension="20px"
+                                starSpacing="4px"
                             />}</p></p>
-                        <p className="row-xs-6 info">Passenger status : {currentPassengerStatus}</p>
-                        <div>
-                            {formRating}
-                        </div>
-                        <div>
+                        <p style={{marginTop: 20}} className="row-xs-6 info">Passenger status : {currentPassengerStatus}</p>
+                        <div style={{marginTop: 20}}>
                             {changePassengerStatus}
                         </div>
-                        <div>
+                        <a>
+                            {formRating}
+                        </a>
+                        <a>
                             {formFeedback}
-                        </div>
+                        </a>
                         <p className="meta-data">{this.props.data.passengerStatus}</p>
                     </div>
 
