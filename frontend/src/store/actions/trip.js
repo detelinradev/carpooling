@@ -58,6 +58,13 @@ export const tripFinishUpdate = ( tripUpdated ) => {
     };
 };
 
+export const tripCreated = ( tripCreated ) => {
+    return {
+        type: actionTypes.TRIP_CREATED,
+        tripCreated:tripCreated
+    };
+};
+
 export const updateTripFail = ( error ) => {
     return {
         type: actionTypes.UPDATE_TRIP_FAIL,

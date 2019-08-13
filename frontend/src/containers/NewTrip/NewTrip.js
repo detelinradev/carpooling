@@ -154,6 +154,8 @@ class NewTrip extends Component {
    componentDidUpdate(prevProps, prevState, snapshot) {
        if(this.props.tripCreated)
        this.props.history.push( '/' );
+       this.props.onTripCreated(false);
+
    }
 
     async getCoordinates() {
@@ -419,7 +421,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCreateTrip: (create, token) => dispatch(actions.createTrip(create, token))
+        onCreateTrip: (create, token) => dispatch(actions.createTrip(create, token)),
+        onTripCreated:(tripCreated) => dispatch(actions.tripCreated(tripCreated))
     };
 };
 

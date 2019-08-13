@@ -12,7 +12,8 @@ export {
     fetchTrips,
     fetchTrip,
     showFullTrip,
-    tripFinishUpdate
+    tripFinishUpdate,
+    tripCreated
 } from './trip';
 
 // export {

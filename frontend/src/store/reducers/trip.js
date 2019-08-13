@@ -32,6 +32,12 @@ const tripFinishUpdate = (state,action) =>{
     } );
 };
 
+const tripCreated = (state,action) =>{
+    return updateObject( state, {
+        tripCreated: action.tripCreated,
+    } );
+};
+
 const createTripStart = ( state, action ) => {
     return updateObject( state, { loading: true } );
 };
