@@ -151,6 +151,10 @@ class NewTrip extends Component {
         tripDuration: 0,
 
     };
+   componentDidUpdate(prevProps, prevState, snapshot) {
+       if(this.props.tripCreated)
+       this.props.history.push( '/' );
+   }
 
     async getCoordinates() {
         await axios.get("http://dev.virtualearth.net/REST/v1/Locations/"+this.state.createForm.origin.value+"?key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
@@ -328,7 +332,6 @@ class NewTrip extends Component {
             tripDuration: 0,
 
         })
-
     };
 
     inputChangedHandler = (event, inputIdentifier) => {
@@ -410,6 +413,7 @@ const mapStateToProps = state => {
     return {
         loading: state.trip.loading,
         token: state.auth.token,
+        tripCreated:state.trip.tripCreated
     }
 };
 

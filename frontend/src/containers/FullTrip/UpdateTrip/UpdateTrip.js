@@ -16,7 +16,7 @@ import DateTimeFormat from "dateformat";
 class UpdateTrip extends Component {
     state = {
         startDate: new Date(),
-        changedDate:new Date(),
+        changedDate: new Date(),
         createForm: {
             origin: {
                 elementType: 'input',
@@ -28,7 +28,7 @@ class UpdateTrip extends Component {
                 validation: {
                     required: true
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             destination: {
@@ -41,7 +41,7 @@ class UpdateTrip extends Component {
                 validation: {
                     required: true
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             departureTime: {
@@ -68,7 +68,7 @@ class UpdateTrip extends Component {
                     required: true,
                     isNumeric: true
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             costPerPassenger: {
@@ -82,7 +82,7 @@ class UpdateTrip extends Component {
                     required: true,
                     isNumeric: true
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             message: {
@@ -95,7 +95,7 @@ class UpdateTrip extends Component {
                 validation: {
                     required: true
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             smokingAllowed: {
@@ -110,7 +110,7 @@ class UpdateTrip extends Component {
                     minLength: 2,
                     maxLength: 3,
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             petsAllowed: {
@@ -125,7 +125,7 @@ class UpdateTrip extends Component {
                     minLength: 2,
                     maxLength: 3,
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             luggageAllowed: {
@@ -140,7 +140,7 @@ class UpdateTrip extends Component {
                     minLength: 2,
                     maxLength: 3,
                 },
-                valid: false,
+                valid: true,
                 touched: false
             }
         },
@@ -149,11 +149,23 @@ class UpdateTrip extends Component {
         endLocation: 0,
         travelDistance: 0,
         tripDuration: 0,
+        modelId: 0
 
     };
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.tripUpdate) {
+            // this.props.onFetchTrip(this.props.data.modelId, this.props.token)
+            //     if(!this.props.loading){
+            // this.props.history.push('/myTrips');
+            // console.log(44)
+            // /;   }
+
+        }
+    }
+
     async getCoordinates() {
-        await axios.get("http://dev.virtualearth.net/REST/v1/Locations/"+this.state.createForm.origin.value+"?key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
+        await axios.get("http://dev.virtualearth.net/REST/v1/Locations/" + this.state.createForm.origin.value + "?key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
             .then(response => {
                 console.log(this.state.createForm.origin.value);
 
@@ -162,14 +174,14 @@ class UpdateTrip extends Component {
                 });
             });
 
-        await axios.get("http://dev.virtualearth.net/REST/v1/Locations/"+this.state.createForm.destination.value+"?key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
+        await axios.get("http://dev.virtualearth.net/REST/v1/Locations/" + this.state.createForm.destination.value + "?key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
             .then(response => {
                 this.setState({
                     endLocation: response.data.resourceSets[0].resources[0].point.coordinates
                 });
             });
 
-        await axios.get("https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins="+this.state.startLocation+"&destinations="+this.state.endLocation+"&travelMode=driving&key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
+        await axios.get("https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins=" + this.state.startLocation + "&destinations=" + this.state.endLocation + "&travelMode=driving&key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
             .then(response => {
                 this.setState({
                     travelDistance: response.data.resourceSets[0].resources[0].results[0].travelDistance,
@@ -186,14 +198,15 @@ class UpdateTrip extends Component {
             formData[formElementIdentifier] = this.state.createForm[formElementIdentifier].value;
         }
         await this.getCoordinates();
+        formData['modelId'] = this.props.data.modelId;
         formData["tripDuration"] = this.state.tripDuration;
         // formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
-        formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
+        formData["departureTime"] = DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
 
         this.props.onUpdateTrip(formData, this.props.token);
         this.setState({
             startDate: new Date(),
-            changedDate:new Date(),
+            changedDate: new Date(),
             createForm: {
                 origin: {
                     elementType: 'input',
@@ -326,6 +339,7 @@ class UpdateTrip extends Component {
             endLocation: 0,
             travelDistance: 0,
             tripDuration: 0,
+            modelId: 0
 
         })
 
@@ -349,9 +363,9 @@ class UpdateTrip extends Component {
         this.setState({createForm: updatedCreateForm, formIsValid: formIsValid});
     };
 
-    inputDateChangedHandler = (date,name) => {
+    inputDateChangedHandler = (date, name) => {
         this.setState({
-            startDate : date
+            startDate: date
         });
 
         const updatedFormElement = updateObject(this.state.createForm[name], {
@@ -388,7 +402,7 @@ class UpdateTrip extends Component {
                         shouldValidate={formElement.config.validation}
                         touched={formElement.config.touched}
                         startDate={this.state.startDate}
-                        dateChange={(date) => this.inputDateChangedHandler(date,formElement.id)}
+                        dateChange={(date) => this.inputDateChangedHandler(date, formElement.id)}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
                 <Button btnType="Success" disabled={!this.state.formIsValid}>UPDATE</Button>
@@ -410,12 +424,14 @@ const mapStateToProps = state => {
     return {
         loading: state.trip.loading,
         token: state.auth.token,
+        tripUpdate: state.trip.tripUpdated
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onUpdateTrip: (create, token) => dispatch(actions.updateTrip(create, token))
+        onUpdateTrip: (create, token) => dispatch(actions.updateTrip(create, token)),
+        onFetchTrip: (token, tripId) => dispatch(actions.fetchTrip(token, tripId)),
     };
 };
 

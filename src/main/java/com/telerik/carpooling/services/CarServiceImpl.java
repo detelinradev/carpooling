@@ -17,7 +17,6 @@ public class CarServiceImpl implements CarService {
 
 
     private final CarRepository carRepository;
-    private final DtoMapper dtoMapper;
 
 
     @Override

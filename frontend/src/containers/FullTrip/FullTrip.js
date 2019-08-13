@@ -14,7 +14,6 @@ import Button from "@material-ui/core/Button";
 import {FaUserEdit} from "react-icons/fa";
 import Avatar from "../../assets/images/image-default.png";
 import Modal from "../../components/UI/Modal/Modal";
-import NewCar from "../Profile/NewCar";
 import UpdateTrip from "./UpdateTrip/UpdateTrip";
 
 class FullTrip extends Component {
@@ -42,6 +41,13 @@ class FullTrip extends Component {
 
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.tripUpdate) {
+            this.props.history.push('/MyTrips');
+            this.props.onTripFinishUpdate(false)
+        }
+    }
+
     async getDriverRate() {
         const getMeResponse = await
             axios.get('/users/' + this.props.trip.driver.username, {
@@ -62,6 +68,13 @@ class FullTrip extends Component {
                 headers: {"Authorization": this.props.token}
             }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'PENDING'));
         }
+    }
+
+    async deleteTrip() {
+            axios.patch('/trips/' + this.props.trip.modelId + '/delete', null, {
+                headers: {"Authorization": this.props.token}
+            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
+
     }
 
     async changeTripStatus(tripStatus) {
@@ -194,6 +207,7 @@ class FullTrip extends Component {
         let formChangeTripStatus = null;
         let formComment = null;
         let formRating = null;
+        let formDeleteTrip = null;
         if (this.props.isMyTrip) {
             if (this.props.tripRole !== 'driver' && this.props.trip.tripStatus === 'DONE') {
                 formRating = (
@@ -223,6 +237,14 @@ class FullTrip extends Component {
             }
 
             if (this.props.tripRole === 'driver') {
+
+                formDeleteTrip = (
+                    <div style={{marginRight: 20, verticalAlign: "middle"}}>
+                        <Button onClick={() => this.deleteTrip()}><h3
+                            className="header">DELETE TRIP<FaUserEdit/></h3>
+                        </Button>
+                    </div>
+                )
 
                 buttonUpdateTrip=(
                     <button className="Car" onClick={() => this.toggleModal()}><h1>UPDATE TRIP</h1></button>
@@ -279,6 +301,7 @@ class FullTrip extends Component {
 
 
         let trip = <Spinner/>;
+        console.log(this.props.trip)
         if (!this.props.loading) {
             trip = (
                 <div style={{marginLeft: 100}}>
@@ -301,7 +324,7 @@ class FullTrip extends Component {
                                 starSpacing="6px"
                             />}</span>
                         </p>
-                        {formRating} {formFeedback}
+                        {formRating} {formFeedback} {formDeleteTrip}
                         <div style={{marginRight: 20, verticalAlign: "middle"}}>
                             <Button onClick={() => this.joinTrip()} disabled={this.props.tripRole}><h3
                                 className="header">{joinTripStatus} <FaUserEdit/></h3>
@@ -388,13 +411,15 @@ const mapStateToProps = state => {
         username: state.auth.userId,
         tripRole: state.trip.tripRole,
         passengerStatus: state.trip.passengerStatus,
-        isMyTrip: state.trip.isMyTrip
+        isMyTrip: state.trip.isMyTrip,
+        tripUpdate:state.trip.tripUpdated
 
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrip: (token, tripId, passengerStatus) => dispatch(actions.fetchTrip(token, tripId, passengerStatus)),
+        onTripFinishUpdate:(tripUpdated) => dispatch(actions.tripFinishUpdate(tripUpdated))
     };
 };
 

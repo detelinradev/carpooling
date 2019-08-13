@@ -8,7 +8,9 @@ const initialState = {
     trip:null,
     tripRole:null,
     passengerStatus:null,
-    isMyTrip:null
+    isMyTrip:null,
+    tripCreated:false,
+    tripUpdated:false
 };
 
 const createInit = ( state, action ) => {
@@ -24,6 +26,12 @@ const showFullTrip = ( state, action ) => {
     } );
 };
 
+const tripFinishUpdate = (state,action) =>{
+    return updateObject( state, {
+        tripUpdated: action.tripUpdated,
+    } );
+};
+
 const createTripStart = ( state, action ) => {
     return updateObject( state, { loading: true } );
 };
@@ -32,7 +40,7 @@ const createTripSuccess = ( state, action ) => {
     // const newTrip = updateObject( action.tripData, { id: action.tripId } );
     return updateObject( state, {
         loading: false,
-        purchased: true,
+        tripCreated: true,
     } );
 };
 
@@ -52,8 +60,7 @@ const updateTripSuccess = ( state, action ) => {
     // const newTrip = updateObject( action.tripData, { id: action.tripId } );
     return updateObject( state, {
         loading: false,
-        // purchased: true,
-        trip:action.trip
+        tripUpdated: true,
     } );
 };
 
@@ -97,6 +104,7 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.UPDATE_TRIP_START: return updateTripStart( state, action );
         case actionTypes.UPDATE_TRIP_SUCCESS: return updateTripSuccess( state, action );
         case actionTypes.UPDATE_TRIP_FAIL: return updateTripFail( state, action );
+        case actionTypes.TRIP_FINISH_UPDATE: return tripFinishUpdate( state, action );
         case actionTypes.FETCH_TRIPS_START: return fetchTripsStart( state, action );
         case actionTypes.FETCH_TRIP_START: return fetchTripStart( state, action );
         case actionTypes.FETCH_TRIPS_SUCCESS: return fetchTripsSuccess( state, action );

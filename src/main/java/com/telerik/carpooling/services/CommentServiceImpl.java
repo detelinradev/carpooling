@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthor(user);
         comment.setMessage(message);
 
-        Optional<Trip> trip = tripRepository.findById(longTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(longTripID);
         if (trip.isPresent()) {
             trip.get().getComments().add(comment);
             comment.setTrip(trip.get());

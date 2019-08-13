@@ -11,7 +11,8 @@ export {
     createInit,
     fetchTrips,
     fetchTrip,
-    showFullTrip
+    showFullTrip,
+    tripFinishUpdate
 } from './trip';
 
 // export {

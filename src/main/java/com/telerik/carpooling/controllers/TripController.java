@@ -4,7 +4,6 @@ import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.dtos.TripDtoEdit;
-import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.TripRepository;
@@ -19,12 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(maxAge = 3600)
@@ -90,13 +86,13 @@ public class TripController {
     public ResponseEntity<?> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit,
                                         final Authentication authentication,
                                         HttpServletResponse httpServletResponse) throws IOException {
-        Optional<Trip> trip = tripRepository.findById(tripDtoEdit.getModelId());
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripDtoEdit.getModelId());
         if (trip.isPresent()) {
             if (!trip.get().getCreator().equals(authentication.getName()))
                 httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         }
         return Optional
-                .ofNullable(tripService.updateTrip(tripDtoEdit))
+                .ofNullable(tripService.updateTrip(dtoMapper.dtoToObject(tripDtoEdit)))
                 .map(tripResponseDto -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -115,7 +111,7 @@ public class TripController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getTrips(@PathVariable String id) {
+    public ResponseEntity<TripDtoResponse> getTrips(@PathVariable String id) {
 
         return Optional
                 .ofNullable(dtoMapper.objectToDto(tripService.getTrip(id)))
@@ -151,6 +147,16 @@ public class TripController {
         return Optional
                 .ofNullable(tripService.changePassengerStatus(tripId, userRepository.findFirstByUsername(
                         authentication.getName()), passengerId, passengerStatus))
+                .map(k -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping(value = "/{tripId}/delete")
+    public ResponseEntity<?> changePassengerStatus(@PathVariable final String tripId,
+                                                   final Authentication authentication){
+        return Optional
+                .ofNullable(tripService.deleteTrip(tripId, userRepository.findFirstByUsername(
+                        authentication.getName())))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

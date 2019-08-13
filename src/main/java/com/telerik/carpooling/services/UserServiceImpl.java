@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
 
         long intTripID = parseStringToLong(tripID);
 
-        Optional<Trip> trip = tripRepository.findById(intTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(intTripID);
 
         if (trip.isPresent()) {
             User driver = trip.get().getDriver();
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
         long intTripID = parseStringToLong(tripID);
         long intPassengerID = parseStringToLong(passengerID);
 
-        Optional<Trip> trip = tripRepository.findById(intTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(intTripID);
         Optional<User> passenger = userRepository.findById(intPassengerID);
 
         if (trip.isPresent() && passenger.isPresent()) {

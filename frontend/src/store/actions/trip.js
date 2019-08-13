@@ -1,11 +1,10 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-baseUrl';
 
-export const createTripSuccess = ( id, tripData ) => {
+
+export const createTripSuccess = () => {
     return {
         type: actionTypes.CREATE_TRIP_SUCCESS,
-        tripId: id,
-        tripData: tripData
     };
 };
 
@@ -36,12 +35,9 @@ export const createTrip = (TripData, token ) => {
         axios.post ( '/trips' ,TripData,{headers}
          )
             .then( response => {
-                dispatch( createTripSuccess( response.data.name, TripData ) );
+                dispatch( createTripSuccess() );
 
             } )
-            .then(()=>{
-                this.props.history.push( '/' );
-            })
             .catch( error => {
                 dispatch( createTripFail( error ) );
             } );
@@ -49,11 +45,16 @@ export const createTrip = (TripData, token ) => {
 };
 
 
-export const updateTripSuccess = ( trip ) => {
+export const updateTripSuccess = (  ) => {
     return {
         type: actionTypes.UPDATE_TRIP_SUCCESS,
-        // tripId: id,
-        trip: trip
+    };
+};
+
+export const tripFinishUpdate = ( tripUpdated ) => {
+    return {
+        type: actionTypes.TRIP_FINISH_UPDATE,
+        tripUpdated:tripUpdated
     };
 };
 
@@ -82,11 +83,10 @@ export const updateTrip = (TripData, token ) => {
         axios.put ( '/trips' ,TripData,{headers}
         )
             .then( response => {
-                dispatch( updateTripSuccess( TripData ) );
-
+                dispatch( updateTripSuccess() );
             } )
             .then(()=>{
-                this.props.history.push( '/FullTrip' );
+                this.props.history.push( '/myTrips' );
             })
             .catch( error => {
                 dispatch( updateTripFail( error ) );

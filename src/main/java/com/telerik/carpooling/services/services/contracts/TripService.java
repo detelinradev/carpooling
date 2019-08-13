@@ -14,7 +14,7 @@ public interface TripService {
 
     Trip createTrip(Trip trip, User driver);
 
-    Trip updateTrip(TripDtoEdit trip);
+    Trip updateTrip(Trip trip);
 
     Trip addPassenger(String tripID, User user);
 
@@ -30,5 +30,6 @@ public interface TripService {
                                    String destination, String earliestDepartureTime, String latestDepartureTime,
                                    String availablePlaces, String smoking, String pets, String luggage);
 
+    Trip deleteTrip(String tripId, User user);
 }
 
