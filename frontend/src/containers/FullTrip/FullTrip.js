@@ -166,11 +166,13 @@ class FullTrip extends Component {
 
         let passengers;
         if (this.props.trip.passengers) {
+
             passengers = this.props.trip.passengers.map(passenger => (
                 <Passenger
                     key={passenger.id}
                     isMyTrip={this.props.isMyTrip}
                     data={passenger}
+                    // trip={this.props.trip}
                 />
             ));
         }
@@ -236,7 +238,7 @@ class FullTrip extends Component {
                 </div>
             );
 
-            if (this.props.tripRole === 'passenger' && this.props.trip.tripStatus === 'DONE') {
+            if (this.props.tripRole === 'passenger' && this.props.trip.tripStatus === 'DONE' && this.props.passengerStatus !== "PENDING") {
                 formRating = (
                     <div>
                         <form onSubmit={(event) => this.rateDriverHandler(event)}>
@@ -284,7 +286,11 @@ class FullTrip extends Component {
                 );
 
                 buttonUpdateTrip = (
-                    <button className="Car" onClick={() => this.toggleModal()}><h1>UPDATE TRIP</h1></button>
+                    <div style={{marginRight: 20, verticalAlign: "middle"}}>
+                        <Button onClick={() => this.toggleModal()}><h3
+                            className="header">UPDATE TRIP</h3>
+                        </Button>
+                    </div>
                 );
                 updateTrip = (
 
@@ -337,10 +343,14 @@ class FullTrip extends Component {
                                 starSpacing="6px"
                             />}</span>
                         </p>
-                        {formRating} {formFeedback} {formDeleteTrip}
+                        <div>
+                        {formRating}
+                        {formFeedback}
+                        {formDeleteTrip}
                         {joinTrip}
-                        {formChangeTripStatus}
                         {buttonUpdateTrip}
+                        {formChangeTripStatus}
+                        </div>
 
                         <div className="comps" style={{paddingTop: 30}}>
                             Departure Time<p style={{fontSize: 18}}
@@ -381,6 +391,7 @@ class FullTrip extends Component {
                     </div>
                     {car}
                     <div className="Comments">
+                        Comments
                         {formComment}
                         <br/>
                         {comments}
@@ -403,7 +414,7 @@ class FullTrip extends Component {
                     <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
                     {trip}
                 </div>
-                <div>
+                <div >
                     {updateTrip}
                 </div>
             </div>

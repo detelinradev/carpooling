@@ -87,7 +87,11 @@ class Passenger extends Component {
             let formRating = null;
             let changePassengerStatus = '';
             if (this.props.isMyTrip) {
-                if(this.props.trip.driver.username === this.props.username) {
+                let currentPassengerStatus = null;
+                let some =Object.entries(this.props.trip.passengerStatus).map(key=>
+                    (key[0].includes('username='+this.props.data.username))? currentPassengerStatus = key[1]:null);
+
+                if(this.props.tripRole === 'driver' && this.props.tripStatus === "DONE" && currentPassengerStatus !== "PENDING") {
                     formFeedback = (
                         <div>
                             <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
@@ -113,7 +117,8 @@ class Passenger extends Component {
                         </div>
                     );
                 }
-                if (this.props.tripRole === 'driver') {
+
+                if (this.props.tripRole === 'driver' ) {
                     changePassengerStatus = (
                         <div>
                             <div className="dropdown">
@@ -176,7 +181,8 @@ const mapStateToProps = state => {
         trip: state.trip.trip,
         passengerStatus: state.trip.passengerStatus,
         isMyTrip: state.trip.isMyTrip,
-        username: state.auth.userId
+        username: state.auth.userId,
+        tripStatus: state.trip.tripStatus
     }
 };
 const mapDispatchToProps = dispatch => {
