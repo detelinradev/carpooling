@@ -59,7 +59,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<User> getUsers(Integer pageNumber,Integer pageSize,String username,String firstName,String lastName,String email,
+                              String phone) {
+
         List<User> users = userRepository.findAllByIsDeletedIsFalse();
         for(User user : users){
             if (ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).isPresent())

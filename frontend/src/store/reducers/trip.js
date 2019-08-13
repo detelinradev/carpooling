@@ -94,7 +94,10 @@ const fetchTripSuccess = ( state, action ) => {
 };
 
 const fetchTripsFail = ( state, action ) => {
-    return updateObject( state, { loading: false } );
+    return updateObject( state, {
+        loading: false ,
+        trips:[]
+    } );
 };
 
 const fetchTripFail = ( state, action ) => {

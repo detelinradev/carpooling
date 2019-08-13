@@ -41,41 +41,55 @@ public class UserController {
     private final ImageService imageService;
     private final DtoMapper dtoMapper;
 
-//    @GetMapping
-//    public ResponseEntity<?> getUsers(@RequestParam(value = "_end", required = false)
-//                                              Integer pageNumber,
-//                                      @RequestParam(value = "_start", required = false)
-//                                              Integer pageSize,
-//                                      @RequestParam(value = "username", required = false)
-//                                              String username,
-//                                      @RequestParam(value = "firstName", required = false)
-//                                              String firstName,
-//                                      @RequestParam(value = "lastName", required = false)
-//                                              String lastName,
-//                                      @RequestParam(value = "email", required = false)
-//                                              String email,
-//                                      @RequestParam(value = "phone", required = false)
-//                                              String phone){
-//
-//        return Optional
-//                .ofNullable(dtoMapper.tripToDtoList(userService.getUsers(pageNumber, pageSize, username, firstName, lastName, email,
-//                        phone)))
-//                .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
-//                .orElseGet(() -> ResponseEntity.notFound().build());
-//    }
-
-
     @GetMapping
-    public ResponseEntity<?> getUsers (){
+    public ResponseEntity<?> getUsers(@RequestParam(value = "_end", required = false)
+                                              Integer pageNumber,
+                                      @RequestParam(value = "_start", required = false)
+                                              Integer pageSize,
+                                      @RequestParam(value = "username", required = false)
+                                              String username,
+                                      @RequestParam(value = "firstName", required = false)
+                                              String firstName,
+                                      @RequestParam(value = "lastName", required = false)
+                                              String lastName,
+                                      @RequestParam(value = "email", required = false)
+                                              String email,
+                                      @RequestParam(value = "phone", required = false)
+                                              String phone){
+
         return Optional
-                .ofNullable(dtoMapper.userToDtoList(userService.getUsers()))
-                .map(users -> ResponseEntity.ok().body(users))
+                .ofNullable(dtoMapper.userToDtoList(userService.getUsers(pageNumber, pageSize, username, firstName, lastName, email,
+                        phone)))
+                .map(userDtoResponse -> ResponseEntity.ok().body(userDtoResponse))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
+//    @GetMapping
+//    public ResponseEntity<?> getUsers (){
+//        return Optional
+//                .ofNullable(dtoMapper.userToDtoList(userService.getUsers()))
+//                .map(users -> ResponseEntity.ok().body(users))
+//                .orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+
     @GetMapping (value = "/top-rated-drivers")
-    public ResponseEntity<?> getTopRatedDrivers() {
-        List<User> users = userService.getUsers();
+    public ResponseEntity<?> getTopRatedDrivers(@RequestParam(value = "_end", required = false)
+                                                            Integer pageNumber,
+                                                @RequestParam(value = "_start", required = false)
+                                                            Integer pageSize,
+                                                @RequestParam(value = "username", required = false)
+                                                            String username,
+                                                @RequestParam(value = "firstName", required = false)
+                                                            String firstName,
+                                                @RequestParam(value = "lastName", required = false)
+                                                            String lastName,
+                                                @RequestParam(value = "email", required = false)
+                                                            String email,
+                                                @RequestParam(value = "phone", required = false)
+                                                            String phone) {
+        List<User> users = userService.getUsers(pageNumber, pageSize, username, firstName, lastName, email,
+                phone);
         users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
 
         List<User>finalUserList =users.stream()
@@ -89,8 +103,22 @@ public class UserController {
     }
 
     @GetMapping (value = "/top-rated-passengers")
-    public ResponseEntity<?> getTopRatedPassengers() {
-        List<User> users = userService.getUsers();
+    public ResponseEntity<?> getTopRatedPassengers(@RequestParam(value = "_end", required = false)
+            Integer pageNumber,
+                                                   @RequestParam(value = "_start", required = false)
+                                                               Integer pageSize,
+                                                   @RequestParam(value = "username", required = false)
+                                                               String username,
+                                                   @RequestParam(value = "firstName", required = false)
+                                                               String firstName,
+                                                   @RequestParam(value = "lastName", required = false)
+                                                               String lastName,
+                                                   @RequestParam(value = "email", required = false)
+                                                               String email,
+                                                   @RequestParam(value = "phone", required = false)
+                                                               String phone) {
+        List<User> users = userService.getUsers(pageNumber, pageSize, username, firstName, lastName, email,
+                phone);
         users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
 
         List<User>finalUserList =users.stream()

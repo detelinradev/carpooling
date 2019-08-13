@@ -27,7 +27,8 @@ public interface UserService {
 
     User getUser(String username);
 
-    List<User> getUsers();
+    List<User> getUsers(Integer pageNumber,Integer pageSize,String username,String firstName,String lastName,String email,
+                       String phone);
 
     List<TripDtoResponse> getUserOwnTrips(String username);
 }
