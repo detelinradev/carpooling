@@ -41,6 +41,30 @@ public class UserController {
     private final ImageService imageService;
     private final DtoMapper dtoMapper;
 
+//    @GetMapping
+//    public ResponseEntity<?> getUsers(@RequestParam(value = "_end", required = false)
+//                                              Integer pageNumber,
+//                                      @RequestParam(value = "_start", required = false)
+//                                              Integer pageSize,
+//                                      @RequestParam(value = "username", required = false)
+//                                              String username,
+//                                      @RequestParam(value = "firstName", required = false)
+//                                              String firstName,
+//                                      @RequestParam(value = "lastName", required = false)
+//                                              String lastName,
+//                                      @RequestParam(value = "email", required = false)
+//                                              String email,
+//                                      @RequestParam(value = "phone", required = false)
+//                                              String phone){
+//
+//        return Optional
+//                .ofNullable(dtoMapper.tripToDtoList(userService.getUsers(pageNumber, pageSize, username, firstName, lastName, email,
+//                        phone)))
+//                .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
+//                .orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+
+
     @GetMapping
     public ResponseEntity<?> getUsers (){
         return Optional

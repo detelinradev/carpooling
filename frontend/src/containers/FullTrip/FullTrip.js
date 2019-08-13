@@ -71,9 +71,9 @@ class FullTrip extends Component {
     }
 
     async deleteTrip() {
-            axios.patch('/trips/' + this.props.trip.modelId + '/delete', null, {
-                headers: {"Authorization": this.props.token}
-            }).then(res => this.props.history.push('/myTrips'));
+        axios.patch('/trips/' + this.props.trip.modelId + '/delete', null, {
+            headers: {"Authorization": this.props.token}
+        }).then(res => this.props.history.push('/myTrips'));
 
     }
 
@@ -92,7 +92,7 @@ class FullTrip extends Component {
         axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerId + '?status=CANCELED', null, {
             headers: {"Authorization": this.props.token}
         }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'CANCELED'));
-        this.props.history.push('/myTrips');
+        this.props.history.push('/myTrips')
     }
 
     inputChangedHandler = (event) => {
@@ -201,8 +201,8 @@ class FullTrip extends Component {
                 }
             }
         }
-        let joinTrip=null;
-        if(this.props.trip.tripStatus === 'AVAILABLE' &&this.props.tripRole !== 'driver')
+        let joinTrip = null;
+        if (this.props.trip.tripStatus === 'AVAILABLE' && this.props.tripRole !== 'driver')
             joinTrip = (
                 <div style={{marginRight: 20, verticalAlign: "middle"}}>
                     <Button onClick={() => this.joinTrip()}><h3
@@ -212,41 +212,66 @@ class FullTrip extends Component {
             );
 
 
-        let buttonUpdateTrip=null;
+        let buttonUpdateTrip = null;
         let updateTrip = null;
         let formFeedback = null;
         let formChangeTripStatus = null;
         let formComment = null;
         let formRating = null;
         let formDeleteTrip = null;
-            if(this.props.isMyTrip && this.props.tripRole !== 'driver') {
+        if (this.props.isMyTrip) {
 
-                if (this.props.trip.tripStatus === 'DONE') {
-                    formRating = (
-                        <div>
-                            <form onSubmit={(event) => this.rateDriverHandler(event)}>
-                                <p
-                                    className="header">RATE DRIVER
-                                </p>
+            formComment = (
+                <div>
+                    <form onSubmit={(event) => this.commentHandler(event)}>
+                        {
+                            <div>
+                                <p className="header">+ADD COMMENT</p>
                                 <input
-                                    value={this.state.newRate}
-                                    onChange={(event) => this.rateInputChangedHandler(event)}/>
-                            </form>
-                        </div>
-                    );
-                    formFeedback = (
-                        <div>
-                            <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
-                                <p
-                                    className="header">LEAVE FEEDBACK
-                                </p>
-                                <input
-                                    value={this.state.newFeedback}
-                                    onChange={(event) => this.feedbackInputChangedHandler(event)}/>
-                            </form>
-                        </div>
-                    );
-                }
+                                    value={this.state.newComment}
+                                    onChange={(event) => this.inputChangedHandler(event)}/>
+                            </div>
+                        }
+                    </form>
+                </div>
+            );
+
+            if (this.props.tripRole === 'passenger' && this.props.trip.tripStatus === 'DONE') {
+                formRating = (
+                    <div>
+                        <form onSubmit={(event) => this.rateDriverHandler(event)}>
+                            <p
+                                className="header">RATE DRIVER
+                            </p>
+                            <input
+                                value={this.state.newRate}
+                                onChange={(event) => this.rateInputChangedHandler(event)}/>
+                        </form>
+                    </div>
+                );
+                formFeedback = (
+                    <div>
+                        <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
+                            <p
+                                className="header">LEAVE FEEDBACK
+                            </p>
+                            <input
+                                value={this.state.newFeedback}
+                                onChange={(event) => this.feedbackInputChangedHandler(event)}/>
+                        </form>
+                    </div>
+                );
+            }
+            if (this.props.tripRole === 'passenger' && this.props.passengerStatus !== 'CANCELED') {
+
+                formChangeTripStatus = (
+                    <div style={{marginRight: 20, verticalAlign: "middle"}}>
+                        <Button onClick={() => this.cancelTrip()}><h3
+                            className="header">LEAVE TRIP</h3>
+                        </Button>
+                    </div>
+                );
+            }
 
             if (this.props.tripRole === 'driver') {
 
@@ -258,10 +283,10 @@ class FullTrip extends Component {
                     </div>
                 );
 
-                buttonUpdateTrip=(
+                buttonUpdateTrip = (
                     <button className="Car" onClick={() => this.toggleModal()}><h1>UPDATE TRIP</h1></button>
                 );
-                 updateTrip = (
+                updateTrip = (
 
                     <Modal style={{width: 600}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
                         <UpdateTrip
@@ -285,30 +310,6 @@ class FullTrip extends Component {
                     </div>
                 )
             }
-            if (this.props.tripRole === 'passenger' && this.props.passengerStatus !== 'CANCELED') {
-
-                formChangeTripStatus = (
-                    <div style={{marginRight: 20, verticalAlign: "middle"}}>
-                        <Button onClick={() => this.cancelTrip()}><h3
-                            className="header">LEAVE TRIP</h3>
-                        </Button>
-                    </div>
-                );
-            }
-            formComment = (
-                <div>
-                    <form onSubmit={(event) => this.commentHandler(event)}>
-                        {
-                            <div>
-                                <p className="header">+ADD COMMENT</p>
-                                <input
-                                    value={this.state.newComment}
-                                    onChange={(event) => this.inputChangedHandler(event)}/>
-                            </div>
-                        }
-                    </form>
-                </div>
-            )
         }
 
 
@@ -342,10 +343,11 @@ class FullTrip extends Component {
                         {buttonUpdateTrip}
 
                         <div className="comps" style={{paddingTop: 30}}>
-                            Departure Time<p style={{fontSize: 18}} className="row-xs-6 info meta-data">{this.props.trip.departureTime}</p>
+                            Departure Time<p style={{fontSize: 18}}
+                                             className="row-xs-6 info meta-data">{this.props.trip.departureTime}</p>
 
                             <hr/>
-                            Smoking allowed<p  className="row-xs-6 info meta-data">{this.props.trip.smokingAllowed}</p>
+                            Smoking allowed<p className="row-xs-6 info meta-data">{this.props.trip.smokingAllowed}</p>
                         </div>
 
                         <div className="comps" style={{paddingTop: 25}}>
@@ -420,14 +422,14 @@ const mapStateToProps = state => {
         tripRole: state.trip.tripRole,
         passengerStatus: state.trip.passengerStatus,
         isMyTrip: state.trip.isMyTrip,
-        tripUpdate:state.trip.tripUpdated
+        tripUpdate: state.trip.tripUpdated
 
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrip: (token, tripId, passengerStatus) => dispatch(actions.fetchTrip(token, tripId, passengerStatus)),
-        onTripFinishUpdate:(tripUpdated) => dispatch(actions.tripFinishUpdate(tripUpdated))
+        onTripFinishUpdate: (tripUpdated) => dispatch(actions.tripFinishUpdate(tripUpdated))
     };
 };
 
