@@ -73,7 +73,7 @@ class FullTrip extends Component {
     async deleteTrip() {
             axios.patch('/trips/' + this.props.trip.modelId + '/delete', null, {
                 headers: {"Authorization": this.props.token}
-            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
+            }).then(res => this.props.history.push('/myTrips'));
 
     }
 
@@ -92,6 +92,7 @@ class FullTrip extends Component {
         axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerId + '?status=CANCELED', null, {
             headers: {"Authorization": this.props.token}
         }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'CANCELED'));
+        this.props.history.push('/myTrips');
     }
 
     inputChangedHandler = (event) => {
@@ -200,6 +201,16 @@ class FullTrip extends Component {
                 }
             }
         }
+        let joinTrip=null;
+        if(this.props.trip.tripStatus === 'AVAILABLE' &&this.props.tripRole !== 'driver')
+            joinTrip = (
+                <div style={{marginRight: 20, verticalAlign: "middle"}}>
+                    <Button onClick={() => this.joinTrip()}><h3
+                        className="header">{joinTripStatus} <FaUserEdit/></h3>
+                    </Button>
+                </div>
+            );
+
 
         let buttonUpdateTrip=null;
         let updateTrip = null;
@@ -208,33 +219,34 @@ class FullTrip extends Component {
         let formComment = null;
         let formRating = null;
         let formDeleteTrip = null;
-        if (this.props.isMyTrip) {
-            if (this.props.tripRole !== 'driver' && this.props.trip.tripStatus === 'DONE') {
-                formRating = (
-                    <div>
-                        <form onSubmit={(event) => this.rateDriverHandler(event)}>
-                            <p
-                                className="header">RATE DRIVER
-                            </p>
-                            <input
-                                value={this.state.newRate}
-                                onChange={(event) => this.rateInputChangedHandler(event)}/>
-                        </form>
-                    </div>
-                );
-                formFeedback = (
-                    <div>
-                        <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
-                            <p
-                                className="header">LEAVE FEEDBACK
-                            </p>
-                            <input
-                                value={this.state.newFeedback}
-                                onChange={(event) => this.feedbackInputChangedHandler(event)}/>
-                        </form>
-                    </div>
-                );
-            }
+            if(this.props.isMyTrip && this.props.tripRole !== 'driver') {
+
+                if (this.props.trip.tripStatus === 'DONE') {
+                    formRating = (
+                        <div>
+                            <form onSubmit={(event) => this.rateDriverHandler(event)}>
+                                <p
+                                    className="header">RATE DRIVER
+                                </p>
+                                <input
+                                    value={this.state.newRate}
+                                    onChange={(event) => this.rateInputChangedHandler(event)}/>
+                            </form>
+                        </div>
+                    );
+                    formFeedback = (
+                        <div>
+                            <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
+                                <p
+                                    className="header">LEAVE FEEDBACK
+                                </p>
+                                <input
+                                    value={this.state.newFeedback}
+                                    onChange={(event) => this.feedbackInputChangedHandler(event)}/>
+                            </form>
+                        </div>
+                    );
+                }
 
             if (this.props.tripRole === 'driver') {
 
@@ -244,7 +256,7 @@ class FullTrip extends Component {
                             className="header">DELETE TRIP<FaUserEdit/></h3>
                         </Button>
                     </div>
-                )
+                );
 
                 buttonUpdateTrip=(
                     <button className="Car" onClick={() => this.toggleModal()}><h1>UPDATE TRIP</h1></button>
@@ -281,7 +293,7 @@ class FullTrip extends Component {
                             className="header">LEAVE TRIP<FaUserEdit/></h3>
                         </Button>
                     </div>
-                )
+                );
             }
             formComment = (
                 <div>
@@ -325,11 +337,7 @@ class FullTrip extends Component {
                             />}</span>
                         </p>
                         {formRating} {formFeedback} {formDeleteTrip}
-                        <div style={{marginRight: 20, verticalAlign: "middle"}}>
-                            <Button onClick={() => this.joinTrip()} disabled={this.props.tripRole}><h3
-                                className="header">{joinTripStatus} <FaUserEdit/></h3>
-                            </Button>
-                        </div>
+                        {joinTrip}
                         {buttonUpdateTrip}
 
                         <div className="comps" style={{paddingTop: 40}}>
@@ -394,7 +402,7 @@ class FullTrip extends Component {
                 </div>
                 <div>
                     {updateTrip}
-                    {car}
+                    {/*{car}*/}
                 </div>
             </div>
 

@@ -3,23 +3,19 @@ package com.telerik.carpooling.services;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
-import com.telerik.carpooling.models.dtos.UserDtoRequest;
-import com.telerik.carpooling.models.dtos.UserDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.RatingRepository;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
-import com.telerik.carpooling.services.services.contracts.RatingService;
 import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,8 +72,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<TripDtoResponse> getUserOwnTrips(String username) {
+        List<Trip> tripNotDeleted = userRepository.findFirstByUsername(username).getMyTrips()
+                .stream().filter(trip -> trip.getIsDeleted() == null)
+                .collect(Collectors.toList());
 
-        return dtoMapper.tripToDtoList(userRepository.findFirstByUsername(username).getMyTrips());
+        return dtoMapper.tripToDtoList(tripNotDeleted);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class UserServiceImpl implements UserService {
 
         long intTripID = parseStringToLong(tripID);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(intTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
 
         if (trip.isPresent()) {
             User driver = trip.get().getDriver();
@@ -118,7 +117,7 @@ public class UserServiceImpl implements UserService {
         long intTripID = parseStringToLong(tripID);
         long intPassengerID = parseStringToLong(passengerID);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(intTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
         Optional<User> passenger = userRepository.findById(intPassengerID);
 
         if (trip.isPresent() && passenger.isPresent()) {

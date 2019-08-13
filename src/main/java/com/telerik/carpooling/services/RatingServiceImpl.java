@@ -25,7 +25,7 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public Rating rateDriver(String tripID, User passenger, Integer rating) {
         long intTripID = parseStringToInt(tripID);
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(intTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
         if (trip.isPresent()&&rating>0 && rating <6) {
             User driver = trip.get().getDriver();
             if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
@@ -43,7 +43,7 @@ public class RatingServiceImpl implements RatingService {
         long intTripID = parseStringToInt(tripID);
         long intPassengerID = parseStringToInt(passengerID);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(intTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
         Optional<User> passenger = userRepository.findById(intPassengerID);
 
         if (trip.isPresent() && passenger.isPresent()&&rating>0 && rating <6 ) {

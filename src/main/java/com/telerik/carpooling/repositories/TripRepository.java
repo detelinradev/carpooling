@@ -17,7 +17,9 @@ import java.util.Optional;
 @Repository
 public interface TripRepository extends JpaRepository<Trip,Long> {
 
-    Optional<Trip> findByModelIdAndIsDeletedIsFalse(Long id);
+    @Query("SELECT t from Trip t where t.modelId=:id and t.isDeleted is null")
+    Optional<Trip> findByModelIdAndIsDeleted(@Param(value = "id") Long id);
+//    Optional<Trip> findByModelIdAndIsDeleted(Long id);
 
     @Query("select t from Trip t " +
             "join User u on t.driver = u.id " +
@@ -31,7 +33,8 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
             "(:availablePlaces is null or t.availablePlaces >= :availablePlaces) and" +
             "(:smoking is null or :smoking ='' or t.smokingAllowed = :smoking) and" +
             "(:pets is null or :pets ='' or t.petsAllowed = :pets) and" +
-//            " t.isDeleted = false and" +
+            "(:pets is null or :pets ='' or t.petsAllowed = :pets) and" +
+            "(t.isDeleted is null) and" +
             "(:luggage is null or :luggage ='' or t.luggageAllowed = :luggage)")
     List<Trip> findTripsByPassedParameters(@Param(value = "tripStatus") TripStatus status,
                                            @Param(value = "driver") User driver,

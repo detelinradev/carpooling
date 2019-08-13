@@ -153,17 +153,6 @@ class UpdateTrip extends Component {
 
     };
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.tripUpdate) {
-            // this.props.onFetchTrip(this.props.data.modelId, this.props.token)
-            //     if(!this.props.loading){
-            // this.props.history.push('/myTrips');
-            // console.log(44)
-            // /;   }
-
-        }
-    }
-
     async getCoordinates() {
         await axios.get("http://dev.virtualearth.net/REST/v1/Locations/" + this.state.createForm.origin.value + "?key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
             .then(response => {

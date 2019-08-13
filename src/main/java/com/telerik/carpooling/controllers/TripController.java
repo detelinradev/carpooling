@@ -86,7 +86,7 @@ public class TripController {
     public ResponseEntity<?> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit,
                                         final Authentication authentication,
                                         HttpServletResponse httpServletResponse) throws IOException {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripDtoEdit.getModelId());
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripDtoEdit.getModelId());
         if (trip.isPresent()) {
             if (!trip.get().getCreator().equals(authentication.getName()))
                 httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -152,7 +152,7 @@ public class TripController {
     }
 
     @PatchMapping(value = "/{tripId}/delete")
-    public ResponseEntity<?> changePassengerStatus(@PathVariable final String tripId,
+    public ResponseEntity<?> deleteTrip(@PathVariable final String tripId,
                                                    final Authentication authentication){
         return Optional
                 .ofNullable(tripService.deleteTrip(tripId, userRepository.findFirstByUsername(

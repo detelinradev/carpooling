@@ -4,7 +4,6 @@ import com.telerik.carpooling.models.Comment;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.CommentDtoResponse;
-import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.CommentRepository;
 import com.telerik.carpooling.repositories.TripRepository;
@@ -38,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setAuthor(user);
         comment.setMessage(message);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(longTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
         if (trip.isPresent()) {
             trip.get().getComments().add(comment);
             comment.setTrip(trip.get());

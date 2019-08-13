@@ -4,7 +4,6 @@ import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.TripService;
@@ -53,7 +52,7 @@ public class TripServiceImpl implements TripService {
     public Trip getTrip(String tripID) {
 
         long longTripID = parseStringToLong(tripID);
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(longTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
         return trip.map(tripRepository::save).orElse(null);
     }
 
@@ -94,7 +93,9 @@ public class TripServiceImpl implements TripService {
 
         long tripID = parseStringToLong(tripId);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripID);
+
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
+        System.out.println(trip.isPresent());
         if(trip.isPresent()) {
             if (trip.get().getDriver().getUsername().equals(user.getUsername()))
                 trip.get().setIsDeleted(true);
@@ -108,7 +109,7 @@ public class TripServiceImpl implements TripService {
 
         long intTripID = parseStringToLong(tripID);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(intTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
 
         if (trip.isPresent() && trip.get().getDriver().equals(user)) {
             if (tripStatus.equals(TripStatus.BOOKED)
@@ -132,7 +133,7 @@ public class TripServiceImpl implements TripService {
     public Trip addPassenger(String tripID, User passenger) {
 
         long intTripID = parseStringToLong(tripID);
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(intTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
         if (trip.isPresent()) {
             if (trip.get().getTripStatus().equals(TripStatus.AVAILABLE)
                     && !trip.get().getDriver().equals(passenger)) {
@@ -155,7 +156,7 @@ public class TripServiceImpl implements TripService {
         long intTripID = parseStringToLong(tripID);
         long intPassengerID = parseStringToLong(passengerID);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(intTripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
         Optional<User> passenger = userRepository.findById(intPassengerID);
 
         if (trip.isPresent() && passenger.isPresent()) {
@@ -183,7 +184,7 @@ public class TripServiceImpl implements TripService {
     }
 
     private Trip cancelPassenger(User user, Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
 
         if (trip.isPresent()) {
 
@@ -209,7 +210,7 @@ public class TripServiceImpl implements TripService {
     }
 
     private Trip rejectPassenger(Long passengerID, Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
         Optional<User> passenger = userRepository.findById(passengerID);
         if (trip.isPresent() && passenger.isPresent()) {
             if (trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.ACCEPTED)) {
@@ -229,9 +230,9 @@ public class TripServiceImpl implements TripService {
     }
 
     private Trip acceptPassenger(Long passengerID, Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
         Optional<User> passenger = userRepository.findById(passengerID);
-        if (trip.isPresent() && passenger.isPresent()) {
+        if (trip.isPresent() && passenger.isPresent() && !passenger.get().getPassengerStatus().toString().equals("CANCELED")) {
             trip.get().getNotApprovedPassengers().remove(passenger.get());
             trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.ACCEPTED);
             trip.get().getPassengersAllowedToRate().add(passenger.get());
@@ -252,7 +253,7 @@ public class TripServiceImpl implements TripService {
     }
 
     private Trip absentPassenger(Long tripID, Long passengerID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
         Optional<User> passenger = userRepository.findById(passengerID);
 
         if (trip.isPresent() && passenger.isPresent()) {
@@ -270,7 +271,7 @@ public class TripServiceImpl implements TripService {
     }
 
     private Trip markTripAsBooked(Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
 
         if (trip.isPresent()) {
             trip.get().setTripStatus(TripStatus.BOOKED);
@@ -284,7 +285,7 @@ public class TripServiceImpl implements TripService {
     }
 
     private Trip markTripAsOngoing(Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
 
         if (trip.isPresent()) {
             trip.get().setTripStatus(TripStatus.ONGOING);
@@ -294,7 +295,7 @@ public class TripServiceImpl implements TripService {
     }
 
     private Trip markTripAsDone(Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
 
         if (trip.isPresent()) {
             trip.get().setTripStatus(TripStatus.DONE);
@@ -304,7 +305,7 @@ public class TripServiceImpl implements TripService {
     }
 
     private Trip markTripAsCanceled(Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeletedIsFalse(tripID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
 
         trip.ifPresent(value -> value.setTripStatus(TripStatus.CANCELED));
         return null;
