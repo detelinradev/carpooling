@@ -38,10 +38,9 @@ public class TripServiceImpl implements TripService {
     private final DtoMapper dtoMapper;
 
     @Override
-    public Trip createTrip(TripDtoRequest tripRequestDto, User driver) {
+    public Trip createTrip(Trip trip, User driver) {
 
         if (driver.getCar() != null) {
-            Trip trip = dtoMapper.dtoToObject(tripRequestDto);
             trip.setDriver(driver);
             trip.setCar(driver.getCar());
             trip.setTripStatus(TripStatus.AVAILABLE);
@@ -61,26 +60,18 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public TripDtoResponse getTrip(String tripID) {
+    public Trip getTrip(String tripID) {
 
         long intTripID = parseStringToLong(tripID);
         Optional<Trip> trip = tripRepository.findById(intTripID);
-        return trip.map(value -> dtoMapper.objectToDto(tripRepository.save(value))).orElse(null);
+        return trip.map(tripRepository::save).orElse(null);
     }
 
     @Override
-    public List<TripDtoResponse> getTrips(Integer pageNumber, Integer pageSize, String tripStatus, String driverUsername,
+    public List<Trip> getTrips(Integer pageNumber, Integer pageSize, String tripStatus, String driverUsername,
                                           String origin, String destination, String earliestDepartureTime,
                                           String latestDepartureTime, String availablePlaces, String smoking,
                                           String pets, String luggage) {
-
-        System.out.println(1);
-        System.out.println(earliestDepartureTime);
-        System.out.println(latestDepartureTime);
-        System.out.println(2);
-        System.out.println(parseDateTime(earliestDepartureTime));
-        System.out.println(parseDateTime(latestDepartureTime));
-        System.out.println(3);
 
         if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
                 (pets == null || (pets.equalsIgnoreCase("yes") || pets.equalsIgnoreCase("no"))) &&
@@ -94,7 +85,7 @@ public class TripServiceImpl implements TripService {
                                 .orElse("")))) &&
                 ((driverUsername == null) || (userRepository.findFirstByUsername(driverUsername) != null)) &&
                 ((pageNumber != null && pageSize != null) || (pageNumber == null && pageSize == null))) {
-            return dtoMapper.tripToDtoList(
+            return
                     tripRepository.findTripsByPassedParameters(
                             Arrays.stream(TripStatus.values())
                                     .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
@@ -103,8 +94,9 @@ public class TripServiceImpl implements TripService {
                             userRepository.findFirstByUsername(driverUsername),
                             origin, destination, parseDateTime(earliestDepartureTime),parseDateTime(latestDepartureTime),
                             (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
-                            smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null)));
-        } else return null;
+                            smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+        }
+        else return null;
     }
 
     @Override
@@ -138,8 +130,6 @@ public class TripServiceImpl implements TripService {
         long intTripID = parseStringToLong(tripID);
         Optional<Trip> trip = tripRepository.findById(intTripID);
         if (trip.isPresent()) {
-            System.out.println(trip.get().getTripStatus());
-            System.out.println(trip.get().getDriver().equals(passenger));
             if (trip.get().getTripStatus().equals(TripStatus.AVAILABLE)
                     && !trip.get().getDriver().equals(passenger)) {
                 trip.get().getPassengerStatus().put(passenger, PassengerStatus.PENDING);

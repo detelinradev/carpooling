@@ -40,7 +40,7 @@ public class TripController {
     private final RatingService ratingService;
 
     @GetMapping
-    public ResponseEntity<List<TripDtoResponse>> getTrips(@RequestParam(value = "_end", required = false)
+    public ResponseEntity<List<Trip>> getTrips(@RequestParam(value = "_end", required = false)
                                                                   Integer pageNumber,
                                                           @RequestParam(value = "_start", required = false)
                                                                   Integer pageSize,
@@ -74,7 +74,7 @@ public class TripController {
 
 
     @PostMapping
-    public ResponseEntity<?> createTrip(@Valid @RequestBody final TripDtoRequest trip,
+    public ResponseEntity<?> createTrip(@Valid @RequestBody final Trip trip,
                                         final Authentication authentication)  {
 
         return Optional
@@ -113,7 +113,7 @@ public class TripController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<TripDtoResponse> getTrips(@PathVariable String id) {
+    public ResponseEntity<Trip> getTrips(@PathVariable String id) {
 
         return Optional
                 .ofNullable(tripService.getTrip(id))

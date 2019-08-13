@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface TripService {
 
-    Trip createTrip(TripDtoRequest trip, User driver);
+    Trip createTrip(Trip trip, User driver);
 
     Trip updateTrip(TripDtoEdit trip);
 
@@ -24,9 +24,9 @@ public interface TripService {
     Trip changeTripStatus(String tripID,
                           User user, TripStatus tripStatus);
 
-    TripDtoResponse getTrip(String tripID);
+    Trip getTrip(String tripID);
 
-    List<TripDtoResponse> getTrips(Integer pageEnd, Integer pageStart, String tripStatus, String driverUsername, String origin,
+    List<Trip> getTrips(Integer pageEnd, Integer pageStart, String tripStatus, String driverUsername, String origin,
                                    String destination, String earliestDepartureTime, String latestDepartureTime,
                                    String availablePlaces, String smoking, String pets, String luggage);
 

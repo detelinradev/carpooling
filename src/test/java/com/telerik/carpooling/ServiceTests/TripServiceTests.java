@@ -14,18 +14,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -64,6 +64,7 @@ public class TripServiceTests {
 
 
     private Trip trip;
+    private Trip trip2;
     private User user;
     private Car car;
     private Image image;
@@ -71,6 +72,7 @@ public class TripServiceTests {
     private Comment comment;
     private Rating ratingAsDriver;
     private Rating ratingAsPassenger;
+    private List<Trip> trips;
 
 
     @Spy
@@ -92,6 +94,7 @@ public class TripServiceTests {
 
         this.car = new Car("model", "brand", "color", 2018, "yes", carImage, user, null);
         this.carImage = new Image("fileName", "picture", content, car);
+
         this.image.setModelId(2L);
         this.trip = new Trip("Sofia",
                 "Burgas",
@@ -115,28 +118,74 @@ public class TripServiceTests {
                 null,
                 null,
                 null);
+        trips = new ArrayList<>();
+        trip2 = new Trip("Sofia", "Burgas", LocalDateTime.now(),
+                3, 3, 3, "message", null, "no", "no", "no", userRepository.findAll(),
+                null, null, null, null, null, null, null, null, null, null);
+        trip.setModelId(1L);
+        trips.add(trip);
+        trips.add(trip2);
 
 
     }
 
     @Test
     public void find_Should_ReturnAll() {
-        //Arrange
-        List<Trip> trips = new ArrayList<>();
-        Trip trip2 = new Trip("Sofia", "Burgas", LocalDateTime.now(),
-                3, 3, 3, "message", null, "no", "no", "no", userRepository.findAll(),
-                null, null, null, null, null, null, null, null, null, null);
-        trips.add(trip);
-        trips.add(trip2);
+        //Act
 
+        when(userRepository.findFirstByUsername("username1")).thenReturn(user);
+        when( tripService.getTrips(null,null,null,null,null,null,null,null,null,null,null,null)).thenReturn(trips);
+        tripService.getTrips(null,null,null,null,null,null,null,null,null,null,null,null);
+        //Assert
+        Assert.assertEquals(trips, tripService.getTrips(null,null,null,null,null,null,null,null,null,null,null,null));
+    }
+
+    @Test
+    public void create_trip_Should_CreateNewTrip() {
 
         //Act
-        when(trips.get(0)).thenReturn(trip);
-        tripService.getTrip("1");
+        user.setCar(car);
+        car.setOwner(user);
+        when(userService.getUser("username1")).thenReturn(user);
+        when(carRepository.findById(1L)).thenReturn(Optional.of(car));
         //Assert
-        Assert.assertEquals(trips, tripService.getTrips(null, null, null, null, null, null, null, null, null, null, null, null));
-//                tripService.getTrips(null,null,null,null,null,null,null,null,null,null,null,null
+        Assert.assertEquals(trip, tripService.createTrip(trip, user));
     }
+
+//    @Test (expected = NullPointerException.class)
+//    public void create_trip_Should_ThrowException_IfNoCarIsPresent() {
+//
+//user.setCar(null);
+//
+//        Mockito.when(userService.getUser("username1")).thenReturn(user);
+//        Mockito.when(carService.getCar(user)).thenReturn(null);
+//        tripService.createTrip(trip, user);
+////        verify(tripService, Mockito.times(0)).createTrip(trip, user);
+//
+//    }
+
+    @Test(expected = NullPointerException.class)
+    public void changeTripStatus_Should_ThrowException_When_NotPresent() {
+        when(tripService.changeTripStatus("1", user, TripStatus.BOOKED)).thenReturn(null);
+        tripService.changeTripStatus("1", user, TripStatus.BOOKED);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void AddPassenger_Should_ThrowException_When_NotPresent() {
+        when(tripService.addPassenger("1", user)).thenReturn(null);
+
+
+        Assert.assertEquals(trip, tripService.addPassenger("1", user));
+    }
+
+    @Test
+    public void AddPassenger_Should_When_NotPresent() {
+Long number = 1L;
+        when(tripService.addPassenger(number.toString(), user)).thenReturn(trip);
+
+        Assert.assertEquals(trip, tripService.addPassenger("1", user));
+    }
+
 
 
 }
