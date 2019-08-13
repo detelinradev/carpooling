@@ -11,6 +11,7 @@ import Avatar from '../../assets/images/image-default.png';
 import {TiUser, TiGroup} from "react-icons/ti";
 import {FaEnvelopeOpen, FaPhone, FaMedal, FaUserEdit} from "react-icons/fa";
 import StarRatings from 'react-star-ratings';
+import * as actions from "../../store/actions";
 
 
 class Profile extends Component {
@@ -53,6 +54,12 @@ class Profile extends Component {
 
         })
     };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.carCreated) {
+            this.props.history.push('/myProfile');
+        }
+    }
 
 
     editHandler() {
@@ -253,7 +260,19 @@ const mapStateToProps = state => {
     return {
         loading: state.trip.loading,
         token: state.auth.token,
+        tripUpdate:state.trip.tripUpdated,
+        // carCreated:state.car.carCreated,
+        // onCarFinishCreate:(carCreated) => dispatch(actions.carFinishCreate(carCreated)),
+
     }
 };
 
-export default connect(mapStateToProps)(withErrorHandler(Profile, axios));
+const mapDispatchToProps = dispatch => {
+    return {
+        onCreateCar: (create, token) => dispatch(actions.createCar(create, token))
+        // onFetchTrip: (token, tripId, passengerStatus) => dispatch(actions.fetchTrip(token, tripId, passengerStatus)),
+        // onTripFinishUpdate:(tripUpdated) => dispatch(actions.tripFinishUpdate(tripUpdated))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps())(withErrorHandler(Profile, axios));

@@ -122,25 +122,25 @@ public class UserServiceTests {
         Assert.assertEquals(first, userService.getUser("username1"));
     }
 
-    @Test
-    public void save() {
-        User user = new User("firstName", "lastName", "username1",
-                "email@gmail.com", "0888999888", 3.2, 3.3,
-                "Password!1", "USER", null, "URI", null,
-                null, null, null, null);
-        User newUser = new User();
-        newUser.setUsername(user.getUsername());
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        newUser.setPassword(bCryptEncoder.encode(user.getPassword()));
-        newUser.setEmail(user.getEmail());
-        newUser.setRole("USER");
-        newUser.setIsDeleted(false);
-        newUser.setPhone(user.getPhone());
-        when(userRepository.save(user)).thenReturn(newUser);
-
-        Assert.assertEquals(newUser, userService.save(user));
-    }
+//    @Test
+//    public void save() {
+//        User user = new User("firstName", "lastName", "username1",
+//                "email@gmail.com", "0888999888", 3.2, 3.3,
+//                "Password!1", "USER", null, "URI", null,
+//                null, null, null, null);
+//        User newUser = new User();
+//        newUser.setUsername(user.getUsername());
+//        newUser.setFirstName(user.getFirstName());
+//        newUser.setLastName(user.getLastName());
+//        newUser.setPassword(bCryptEncoder.encode(user.getPassword()));
+//        newUser.setEmail(user.getEmail());
+//        newUser.setRole("USER");
+//        newUser.setIsDeleted(false);
+//        newUser.setPhone(user.getPhone());
+//        when(userRepository.save(user)).thenReturn(newUser);
+//
+//        Assert.assertEquals(newUser, userService.save(user));
+//    }
 
 
 

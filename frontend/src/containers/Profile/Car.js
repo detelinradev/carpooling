@@ -6,6 +6,7 @@ import axios from '../../axios-baseUrl';
 import Modal from "../../components/UI/Modal/Modal";
 import CarAvatar from "../../assets/images/cars-noimage_sedan-lrg.png";
 import NewCar from "./NewCar";
+import * as actions from "../../store/actions";
 
 class Car extends Component {
 
@@ -15,7 +16,7 @@ class Car extends Component {
         src: CarAvatar,
         error:'',
         msg:'',
-        file:''
+        file:'',
     };
 
     async componentDidMount() {
@@ -40,7 +41,10 @@ class Car extends Component {
                 car: getCarResponse.data
             })
         }
+
     }
+
+
 
 
     onFileChange = (event) => {
@@ -134,7 +138,14 @@ const mapStateToProps = state => {
     return {
         loading: state.trip.loading,
         token: state.auth.token,
+        carCreated:state.car.carCreated,
+
     }
 };
 
-export default connect(mapStateToProps)(withErrorHandler(Car, axios));
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onCreateCar: (create, token) => dispatch(actions.createCar(create, token))    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Car, axios));

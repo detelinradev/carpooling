@@ -247,13 +247,14 @@ const mapStateToProps = state => {
     return {
         loading: state.trip.loading,
         token: state.auth.token,
+        carCreated:state.car.carCreated,
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCreateCar: (create, token) => dispatch(actions.createCar(create, token))
-    };
+        // onCarFinishCreate:(carCreated) => dispatch(actions.carFinishCreate(carCreated)),
+        onCreateCar: (create, token) => dispatch(actions.createCar(create, token))    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(NewCar, axios));

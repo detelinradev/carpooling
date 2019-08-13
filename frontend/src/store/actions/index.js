@@ -22,4 +22,5 @@ export {
 
 export {
     createCar,
+    carFinishCreate,
 } from './car';
