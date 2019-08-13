@@ -60,8 +60,8 @@ class MyTrips extends Component {
             <div className="todore">
                 <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
                 <div>
-                    <div className="SearchTrips">
-                        <h3>My Trips</h3>
+                    <div style={{color: "white"}} className="SearchTrips">
+                        <h1>My Trips</h1>
                     </div>
                     {trips}
                 </div>

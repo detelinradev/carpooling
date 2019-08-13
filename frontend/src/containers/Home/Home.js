@@ -36,7 +36,7 @@ class Home extends Component {
         return (
             <div className="hometext">
 
-                <h1 className="header">THE PERFECT PLACE TO FIND <FaAndroid/><br/> THE FASTEST WAY TO TRAVEL</h1>
+                <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
                 <hr style={{width: '70%'}}/>
                 <h2 style={{textAlign: "center"}}>
                     SEARCH AMONG ALL KIND OF VEHICLES AND DESTINATIONS!

@@ -166,7 +166,6 @@ class FullTrip extends Component {
 
         let passengers;
         if (this.props.trip.passengers) {
-
             passengers = this.props.trip.passengers.map(passenger => (
                 <Passenger
                     key={passenger.id}
@@ -294,7 +293,7 @@ class FullTrip extends Component {
                 );
                 updateTrip = (
 
-                    <Modal style={{width: 600}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
+                    <Modal  show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
                         <UpdateTrip
                             showModal={this.state.showModal}
                             data={this.props.trip}
@@ -397,9 +396,6 @@ class FullTrip extends Component {
                         {comments}
                     </div>
                     <div style={{float: "left"}}>
-                        <h1>
-                            PASSENGERS
-                        </h1>
                         {passengers}
 
                     </div>
@@ -414,9 +410,7 @@ class FullTrip extends Component {
                     <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
                     {trip}
                 </div>
-                <div >
                     {updateTrip}
-                </div>
             </div>
 
         )
