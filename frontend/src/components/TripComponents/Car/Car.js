@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import '../../../containers/Profile/Car.css';
-import * as actions from "../../../store/actions";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
@@ -13,7 +12,6 @@ class Car extends Component {
 
 
     async componentDidMount() {
-        // this.props.onFetchCarImage(this.props.token, this.props.trip.driver.modelId);
         const getCarAvatarResponse = await
         fetch('http://localhost:8080/users/avatar/car/' + this.props.trip.driver.modelId)
             .then(response => response.blob());
@@ -53,13 +51,7 @@ class Car extends Component {
     return {
         trip:state.trip.trip,
         token: state.auth.token,
-        // carImage:state.user.carImage
     }
 };
-    const mapDispatchToProps = dispatch => {
-    return {
-        // onFetchCarImage: (token, userId) => dispatch(actions.fetchImageCar(token, userId)),
-    };
-};
 
-    export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(Car, axios));
+    export default connect(mapStateToProps)(withErrorHandler(Car, axios));

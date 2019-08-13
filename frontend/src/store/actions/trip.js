@@ -48,6 +48,52 @@ export const createTrip = (TripData, token ) => {
     };
 };
 
+
+export const updateTripSuccess = ( trip ) => {
+    return {
+        type: actionTypes.UPDATE_TRIP_SUCCESS,
+        // tripId: id,
+        trip: trip
+    };
+};
+
+export const updateTripFail = ( error ) => {
+    return {
+        type: actionTypes.UPDATE_TRIP_FAIL,
+        error: error
+    };
+};
+
+export const updateTripStart = () => {
+    return {
+        type: actionTypes.UPDATE_TRIP_START
+    };
+};
+
+export const updateTrip = (TripData, token ) => {
+
+
+    return dispatch => {
+        dispatch( updateTripStart() );
+        const headers = {
+            "Content-Type":"application/json",
+            'Authorization':token
+        };
+        axios.put ( '/trips' ,TripData,{headers}
+        )
+            .then( response => {
+                dispatch( updateTripSuccess( TripData ) );
+
+            } )
+            .then(()=>{
+                this.props.history.push( '/FullTrip' );
+            })
+            .catch( error => {
+                dispatch( updateTripFail( error ) );
+            } );
+    };
+};
+
 export const createInit = () => {
     return {
         type: actionTypes.CREATE_INIT
@@ -63,13 +109,6 @@ export const showFullTrip = ( trip,tripRole,passengerStatus,isMyTrip) => {
         isMyTrip:isMyTrip
     };
 };
-
-// export const changeJoinTripStatus = ( tripJoined) => {
-//     return {
-//         type: actionTypes.CHANGE_TRIP_JOIN_STATUS,
-//         tripJoined:tripJoined
-//     };
-// };
 
 export const fetchTripsSuccess = ( trips ) => {
     return {

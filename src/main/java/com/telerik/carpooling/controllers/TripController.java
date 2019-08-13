@@ -6,6 +6,7 @@ import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.dtos.TripDtoEdit;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.CommentService;
@@ -38,9 +39,10 @@ public class TripController {
     private final UserRepository userRepository;
     private final CommentService commentService;
     private final RatingService ratingService;
+    private final DtoMapper dtoMapper;
 
     @GetMapping
-    public ResponseEntity<List<Trip>> getTrips(@RequestParam(value = "_end", required = false)
+    public ResponseEntity<?> getTrips(@RequestParam(value = "_end", required = false)
                                                                   Integer pageNumber,
                                                           @RequestParam(value = "_start", required = false)
                                                                   Integer pageSize,
@@ -66,8 +68,8 @@ public class TripController {
                                                                   String luggage) {
 
         return Optional
-                .ofNullable(tripService.getTrips(pageNumber, pageSize, tripStatus, driverUsername, origin, destination,
-                        earliestDepartureTime, latestDepartureTime, availablePlaces, smoking, pets, luggage))
+                .ofNullable(dtoMapper.tripToDtoList(tripService.getTrips(pageNumber, pageSize, tripStatus, driverUsername, origin, destination,
+                        earliestDepartureTime, latestDepartureTime, availablePlaces, smoking, pets, luggage)))
                 .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -113,10 +115,10 @@ public class TripController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Trip> getTrips(@PathVariable String id) {
+    public ResponseEntity<?> getTrips(@PathVariable String id) {
 
         return Optional
-                .ofNullable(tripService.getTrip(id))
+                .ofNullable(dtoMapper.objectToDto(tripService.getTrip(id)))
                 .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

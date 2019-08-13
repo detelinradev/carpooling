@@ -14,7 +14,6 @@ import './NewCar.css';
 
 class NewCar extends Component {
     state = {
-        //focused: false,
         createForm: {
             brand: {
                 elementType: 'input',
@@ -107,6 +106,85 @@ class NewCar extends Component {
         this.setState({
         [this.props.showModal]: !this.props.showModal
         });
+        this.setState({
+            createForm: {
+                brand: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Brand'
+                    },
+                    value: '',
+                    validation: {
+                        required: false,
+                        minLength: 2,
+                    },
+                    valid: false,
+                    touched: false
+                },
+                model: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Model'
+                    },
+                    value: '',
+                    validation: {
+                        required: true,
+                        minLength: 2,
+                    },
+                    valid: false,
+                    touched: false
+                },
+                color: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Color'
+                    },
+                    value: '',
+                    validation: {
+                        required: true,
+                        minLength: 2
+                    },
+                    valid: false,
+                    touched: false
+                },
+                firstRegistration: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'number',
+                        placeholder: 'First registration'
+                    },
+                    value: '',
+                    validation: {
+                        required: true,
+                        isNumeric: true,
+                        minValue: 1950,
+                        maxValue: 2019
+                    },
+                    valid: false,
+                    touched: false
+                },
+                airConditioned: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'text',
+                        placeholder: 'Air conditioned'
+                    },
+                    value: '',
+                    validation: {
+                        required: true,
+                        minLength: 2,
+                        maxLength: 3,
+                    },
+                    valid: false,
+                    touched: false
+                }
+
+            },
+            formIsValid: false,
+        })
     };
 
     inputChangedHandler = (event, inputIdentifier) => {

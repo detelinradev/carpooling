@@ -57,20 +57,6 @@ class SearchTrips extends Component {
                 valid: false,
                 touched: false
             },
-            // costPerPassenger: {
-            //     elementType: 'input',
-            //     elementConfig: {
-            //         type: 'text',
-            //         placeholder: 'Cost per passenger'
-            //     },
-            //     value: '',
-            //     validation: {
-            //         required: true,
-            //         isNumeric: true
-            //     },
-            //     valid: false,
-            //     touched: false
-            // },
             earliestDepartureTime: {
                 elementType: 'date',
                 elementConfig: {
@@ -349,13 +335,8 @@ class SearchTrips extends Component {
                 let some =Object.entries(trip.passengerStatus).map(key=>
                     (key[0].includes('username='+currentUserName))? passengerStatus = key[1]:null
                 );
-                console.log(some);
             }
         }
-        console.log(isPassenger);
-        console.log(isDriver);
-        console.log(passengerStatus);
-
 
         let tripRole = null;
         if(isPassenger) tripRole = 'passenger';
@@ -393,11 +374,9 @@ class SearchTrips extends Component {
                 >SEARCH</Button>
             </form>
         );
-        // if (this.props.loading) {
-        //     form = <Spinner/>;
-        // }
         let trips = <Spinner/>;
         if (!this.props.loading) {
+            console.log(this.props.trips)
 
             trips = this.props.trips.map(trip => (
                 <Trip

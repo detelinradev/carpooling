@@ -39,7 +39,6 @@ class Profile extends Component {
                 src: URL.createObjectURL(getAvatarResponse)
             })
         }
-        console.log(this.state.src);
 
 
         const getMeResponse = await
@@ -131,7 +130,7 @@ class Profile extends Component {
         data.append('upfile', this.state.file);
         console.log(data.getAll("upfile"));
         fetch('http://localhost:8080/users/avatar', {
-            method: 'POST',
+            method: 'PUT',
             headers: {"Authorization": this.props.token},
             body: data
         }).then(response => {

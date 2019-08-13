@@ -39,6 +39,11 @@ class Passenger extends Component {
         })
     }
 
+    feedbackInputChangedHandler = (event) => {
+        event.preventDefault();
+        this.setState({newFeedback: event.target.value});
+    };
+
     giveFeedbackHandler = async (event) => {
         event.preventDefault();
         console.log(this.props.trip.modelId)
@@ -57,11 +62,6 @@ class Passenger extends Component {
         this.setState({newRate: ''});
     };
 
-    feedbackInputChangedHandler = (event) => {
-        event.preventDefault();
-        this.setState({newFeedback: event.target.value});
-    };
-
     rateInputChangedHandler = (event) => {
         event.preventDefault();
         this.setState({newRate: event.target.value});
@@ -78,27 +78,24 @@ class Passenger extends Component {
         let currentPassengerStatus = null;
         let currentPassengers = Object.entries(this.props.trip.passengerStatus).map(key =>
             (key[0].includes('username=' + this.props.data.username)) ? currentPassengerStatus = key[1] : null)
-        console.log(currentPassengerStatus)
-        console.log(this.props.data.username)
         if ((currentPassengerStatus === 'PENDING' && this.props.data.username === this.props.username)
             || (currentPassengerStatus === 'PENDING' && this.props.username === this.props.trip.driver.username)
             || (currentPassengerStatus === 'REJECTED' && this.props.data.username === this.props.username)
-            || (currentPassengerStatus === 'REJECTED' && this.props.username === this.props.trip.driver.username)
             || (currentPassengerStatus !== 'PENDING' && currentPassengerStatus !== 'REJECTED')) {
 
             let formFeedback = null;
             let formRating = null;
             let changePassengerStatus = '';
             if (this.props.isMyTrip) {
-                if(this.props.data.username !== this.props.username) {
+                if(this.props.trip.driver.username === this.props.username) {
                     formFeedback = (
                         <div>
                             <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
                                 <p
-                                    className="header">->GIVE FEEDBACK
+                                    className="header">LEAVE FEEDBACK
                                 </p>
                                 <input
-                                    value={this.state.newComment}
+                                    value={this.state.newFeedback}
                                     onChange={(event) => this.feedbackInputChangedHandler(event)}/>
                             </form>
                         </div>
@@ -107,7 +104,7 @@ class Passenger extends Component {
                         <div>
                             <form onSubmit={(event) => this.ratePassengerHandler(event)}>
                                 <p
-                                    className="header">*RATE THE PASSENGER
+                                    className="header">RATE THE PASSENGER
                                 </p>
                                 <input
                                     value={this.state.newRate}

@@ -4,7 +4,7 @@ import { updateObject } from '../../shared/utility';
 const initialState = {
     trips: [],
     loading: false,
-    purchased: false,
+    // purchased: false,
     trip:null,
     tripRole:null,
     passengerStatus:null,
@@ -38,6 +38,23 @@ const createTripSuccess = ( state, action ) => {
 
 const createTripFail = ( state, action ) => {
     return updateObject( state, { loading: false } );
+};
+
+const updateTripFail = ( state, action ) => {
+    return updateObject( state, { loading: false } );
+};
+
+const updateTripStart = ( state, action ) => {
+    return updateObject( state, { loading: true } );
+};
+
+const updateTripSuccess = ( state, action ) => {
+    // const newTrip = updateObject( action.tripData, { id: action.tripId } );
+    return updateObject( state, {
+        loading: false,
+        // purchased: true,
+        trip:action.trip
+    } );
 };
 
 const fetchTripsStart = ( state, action ) => {
@@ -77,6 +94,9 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.CREATE_TRIP_START: return createTripStart( state, action );
         case actionTypes.CREATE_TRIP_SUCCESS: return createTripSuccess( state, action );
         case actionTypes.CREATE_TRIP_FAIL: return createTripFail( state, action );
+        case actionTypes.UPDATE_TRIP_START: return updateTripStart( state, action );
+        case actionTypes.UPDATE_TRIP_SUCCESS: return updateTripSuccess( state, action );
+        case actionTypes.UPDATE_TRIP_FAIL: return updateTripFail( state, action );
         case actionTypes.FETCH_TRIPS_START: return fetchTripsStart( state, action );
         case actionTypes.FETCH_TRIP_START: return fetchTripStart( state, action );
         case actionTypes.FETCH_TRIPS_SUCCESS: return fetchTripsSuccess( state, action );

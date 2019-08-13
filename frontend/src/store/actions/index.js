@@ -7,6 +7,7 @@ export {
 
 export {
     createTrip,
+    updateTrip,
     createInit,
     fetchTrips,
     fetchTrip,

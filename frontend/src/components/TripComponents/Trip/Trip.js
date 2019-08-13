@@ -5,7 +5,6 @@ import {FaMedal, FaUserEdit} from "react-icons/fa";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
-import * as actions from "../../../store/actions";
 import Avatar from "../../../assets/images/image-default.png";
 import StarRatings from "react-star-ratings";
 
@@ -102,7 +101,7 @@ class Trip extends Component {
 
                     </div>
                 </div>
-            )
+            );
         return (
             <div>
                 {trip}
