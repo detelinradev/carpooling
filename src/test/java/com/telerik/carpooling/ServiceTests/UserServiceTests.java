@@ -1,6 +1,7 @@
 package com.telerik.carpooling.ServiceTests;
 
 
+import com.telerik.carpooling.models.Rating;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.UserDtoRequest;
 import com.telerik.carpooling.models.dtos.UserDtoResponse;
@@ -14,15 +15,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class UserServiceTests {
@@ -34,6 +39,8 @@ public class UserServiceTests {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    BCryptPasswordEncoder bCryptEncoder;
 
     @Mock
     CarRepository carRepository;
@@ -62,8 +69,9 @@ public class UserServiceTests {
     @Mock
     DtoMapper dtoMapper;
 
-    @Mock
-    UserService userService;
+    @Spy
+    @InjectMocks
+    UserServiceImpl userService;
 
 
     @Test
@@ -73,28 +81,119 @@ public class UserServiceTests {
                 "email@gmail.com", "0888999888", 3.2, 3.3,
                 "Password!1", "USER", null, "URI", null,
                 null, null, null, null);
-        UserDtoRequest req = new UserDtoRequest();
-        req.setUsername("username1");
-        UserDtoResponse res = new UserDtoResponse();
-        res.setUsername("username1");
         User second = new User("firstNamesaf", "lastNamefsa", "username2",
                 "email@gmail.com", "0888999888", 3.2, 3.3,
                 "Password!1", "USER", null, "URI", null,
                 null, null, null, null);
-        List<UserDtoResponse> users = new ArrayList<>();
-//        users.add(req);
-//        users.add(res);
+        first.setModelId(1L);
+        Optional<Double> rating1;
+        rating1 = Optional.of(3.3);
+        Optional<Double> rating2;
+        rating2 = Optional.of(3.2);
+        List<User> users = new ArrayList<>();
+        users.add(first);
+        users.add(second);
+
 
         //Act
-        when(userService.getUser("username1")).thenReturn(first);
-//        when(userRepository.findAllByIsDeletedIsFalse()).thenReturn(users);
-//        when(userService.getUserOwnTrips("username1")).thenReturn(null);
+        when(userRepository.findAllByIsDeletedIsFalse()).thenReturn(users);
+        when(ratingRepository.findAverageRatingByUserAsPassenger(1L)).thenReturn(rating1);
+        when(ratingRepository.findAverageRatingByUserAsDriver(1L)).thenReturn(rating2);
 
         //Assert
         Assert.assertEquals(users, userService.getUsers());
     }
 
     @Test
-    public void safa() {
+    public void getUser() {
+        User first = new User("firstName", "lastName", "username1",
+                "email@gmail.com", "0888999888", 3.2, 3.3,
+                "Password!1", "USER", null, "URI", null,
+                null, null, null, null);
+        first.setModelId(1L);
+        Optional<Double> rating1;
+        rating1 = Optional.of(3.3);
+        Optional<Double> rating2;
+        rating2 = Optional.of(3.2);
+        when(userRepository.findFirstByUsername("username1")).thenReturn(first);
+        when(ratingRepository.findAverageRatingByUserAsPassenger(1L)).thenReturn(rating1);
+        when(ratingRepository.findAverageRatingByUserAsDriver(1L)).thenReturn(rating2);
+
+        Assert.assertEquals(first, userService.getUser("username1"));
     }
+
+    @Test
+    public void save() {
+        User user = new User("firstName", "lastName", "username1",
+                "email@gmail.com", "0888999888", 3.2, 3.3,
+                "Password!1", "USER", null, "URI", null,
+                null, null, null, null);
+        User newUser = new User();
+        newUser.setUsername(user.getUsername());
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setPassword(bCryptEncoder.encode(user.getPassword()));
+        newUser.setEmail(user.getEmail());
+        newUser.setRole("USER");
+        newUser.setIsDeleted(false);
+        newUser.setPhone(user.getPhone());
+        when(userRepository.save(user)).thenReturn(newUser);
+
+        Assert.assertEquals(newUser, userService.save(user));
+    }
+
+
+
+    @Test
+    public void updatePassword_Should_callRepository_when_UserHasAuthority()
+    {
+        //Arrange
+        User toBeEdited = new User("firstName", "lastName", "username1",
+                "email@gmail.com", "0888999888", 3.2, 3.3,
+                "Password!1", "USER", null, "URI", null,
+                null, null, null, null);
+        toBeEdited.setModelId(2L);
+
+        User currentUser = new User("firstName", "lastName", "username2",
+                "email@gmail.com", "0888999888", 3.2, 3.3,
+                "Password!1", "USER", null, "URI", null,
+                null, null, null, null);
+        currentUser.setModelId(1L);
+        currentUser.setRole("USER");
+
+        //Act
+        when(userRepository.findById(2L)).thenReturn(Optional.of(toBeEdited));
+        userService.updateCurrentUserPassword("newPassword",currentUser);
+
+        //Assert
+        verify(userService, times(1)).updateCurrentUserPassword("newPassword",currentUser);
+    }
+
+    @Test
+    public void updateEmail_Should_callRepository_when_UserHasAuthority()
+    {
+        //Arrange
+        User toBeEdited = new User("firstName", "lastName", "username1",
+                "email@gmail.com", "0888999888", 3.2, 3.3,
+                "Password!1", "USER", null, "URI", null,
+                null, null, null, null);
+        toBeEdited.setModelId(2L);
+
+        User currentUser = new User("firstName", "lastName", "username2",
+                "email@gmail.com", "0888999888", 3.2, 3.3,
+                "Password!1", "USER", null, "URI", null,
+                null, null, null, null);
+        currentUser.setModelId(1L);
+        currentUser.setRole("USER");
+
+        //Act
+        when(userRepository.findById(2L)).thenReturn(Optional.of(toBeEdited));
+        userService.updateCurrentUserEmail("newEmail@gmail.com",currentUser);
+
+        //Assert
+        verify(userService, times(1)).updateCurrentUserEmail("newEmail@gmail.com",currentUser);
+    }
+
+
+
 }

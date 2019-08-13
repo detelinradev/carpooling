@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface UserService {
    // Optional<User> findUser(Long userId);
 
-    User save(UserDtoRequest user);
+    User save(User user);
 
     User updateCurrentUserPassword(String password, User user);
 
@@ -27,7 +27,7 @@ public interface UserService {
 
     User getUser(String username);
 
-    List<UserDtoResponse> getUsers();
+    List<User> getUsers();
 
     List<TripDtoResponse> getUserOwnTrips(String username);
 }

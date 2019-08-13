@@ -1,6 +1,7 @@
 package com.telerik.carpooling.ServiceTests;
 
 
+import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.*;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
@@ -134,10 +135,10 @@ public class TripServiceTests {
         //Act
 
         when(userRepository.findFirstByUsername("username1")).thenReturn(user);
-        when( tripService.getTrips(null,null,null,null,null,null,null,null,null,null,null,null)).thenReturn(trips);
-        tripService.getTrips(null,null,null,null,null,null,null,null,null,null,null,null);
+        when(tripService.getTrips(null, null, null, null, null, null, null, null, null, null, null, null)).thenReturn(trips);
+        tripService.getTrips(null, null, null, null, null, null, null, null, null, null, null, null);
         //Assert
-        Assert.assertEquals(trips, tripService.getTrips(null,null,null,null,null,null,null,null,null,null,null,null));
+        Assert.assertEquals(trips, tripService.getTrips(null, null, null, null, null, null, null, null, null, null, null, null));
     }
 
     @Test
@@ -180,11 +181,26 @@ public class TripServiceTests {
 
     @Test
     public void AddPassenger_Should_When_NotPresent() {
-Long number = 1L;
-        when(tripService.addPassenger(number.toString(), user)).thenReturn(trip);
+        long longid = Long.parseLong("1");
+        when(tripRepository.findById(longid)).thenReturn(Optional.of(trip));
+        when(tripRepository.save(trip)).thenReturn(trip);
+        when(userRepository.save(user)).thenReturn(user);
+//        when(tripService.parseStringToLong("1")).thenReturn(1L);
 
         Assert.assertEquals(trip, tripService.addPassenger("1", user));
     }
+
+    @Test
+    public void _Should_When_NotPresent() {
+        User passenger = new User();
+        passenger.setModelId(1L);
+        tripService.addPassenger("1", passenger);
+//        when(tripRepository.findById(1L)).thenReturn(Optional.of(trip));
+//        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(tripService.changePassengerStatus("1", user, "2", PassengerStatus.CANCELED)).thenReturn(trip);
+        Assert.assertEquals(trip, tripService.changePassengerStatus("1", user, "2", PassengerStatus.CANCELED));
+    }
+
 
 
 

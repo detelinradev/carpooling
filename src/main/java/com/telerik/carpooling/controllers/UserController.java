@@ -42,7 +42,7 @@ public class UserController {
     private final DtoMapper dtoMapper;
 
     @GetMapping
-    public ResponseEntity<List<UserDtoResponse>> getUsers (){
+    public ResponseEntity<List<User>> getUsers (){
         return Optional
                 .ofNullable(userService.getUsers())
                 .map(users -> ResponseEntity.ok().body(users))
@@ -50,11 +50,11 @@ public class UserController {
     }
 
     @GetMapping (value = "/top-rated-drivers")
-    public ResponseEntity<List<UserDtoResponse>> getTopRatedDrivers() {
-        List<UserDtoResponse> users = userService.getUsers();
+    public ResponseEntity<List<User>> getTopRatedDrivers() {
+        List<User> users = userService.getUsers();
         users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
 
-        List<UserDtoResponse>finalUserList =users.stream()
+        List<User>finalUserList =users.stream()
                 .limit(10)
                 .collect(Collectors.toList());
 
@@ -65,11 +65,11 @@ public class UserController {
     }
 
     @GetMapping (value = "/top-rated-passengers")
-    public ResponseEntity<List<UserDtoResponse>> getTopRatedPassengers() {
-        List<UserDtoResponse> users = userService.getUsers();
+    public ResponseEntity<List<User>> getTopRatedPassengers() {
+        List<User> users = userService.getUsers();
         users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
 
-        List<UserDtoResponse>finalUserList =users.stream()
+        List<User>finalUserList =users.stream()
                 .limit(10)
                 .collect(Collectors.toList());
 
@@ -127,7 +127,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<UserDtoResponse> save(@Valid @RequestBody final UserDtoRequest user) {
+    public ResponseEntity<UserDtoResponse> save(@Valid @RequestBody final User user) {
         return Optional
                 .ofNullable(dtoMapper.objectToDto(userService.save(user)))
                 .map(userDtoResponse -> ResponseEntity.ok().body(userDtoResponse))
