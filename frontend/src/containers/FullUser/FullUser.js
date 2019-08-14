@@ -19,7 +19,9 @@ class FullUser extends Component {
         src: Avatar,
         srcCar: CarAvatar,
         showModal: false,
-        car: ''
+        car: '',
+        error: null,
+        success: null,
     };
 
 
@@ -60,6 +62,7 @@ class FullUser extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.userUpdate) {
+            this.setState({success: 'User information successfully updated'});
             this.props.onFetchUser(this.props.token,this.props.user.username);
             this.props.onUserFinishUpdate(false);
             this.toggleModal()
@@ -80,6 +83,12 @@ class FullUser extends Component {
         })
     }
 
+    errorConfirmedHandler = () => {
+        this.setState({
+            error: null,
+            success: null
+        });
+    };
 
     render() {
         let updateUser = (
@@ -111,6 +120,14 @@ class FullUser extends Component {
             </div>
         );
 
+        let responseMessage = (
+            <Modal
+                show={this.state.success}
+                modalClosed={this.errorConfirmedHandler}>
+                {this.state.error ? this.state.error : null}
+                {this.state.success ? this.state.success : null}
+            </Modal>
+        );
 
         return (
             <div>
@@ -173,6 +190,7 @@ class FullUser extends Component {
                     </div>
                     {car}
                     {updateUser}
+                    {responseMessage}
                 </div>
             </div>
 

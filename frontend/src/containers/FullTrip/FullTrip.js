@@ -23,6 +23,8 @@ class FullTrip extends Component {
         newRate: null,
         newFeedback: null,
         showModal: false,
+        error: null,
+        success: null,
     };
 
     async componentDidMount() {
@@ -42,7 +44,7 @@ class FullTrip extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.tripUpdate) {
-            this.props.onFetchTrip(this.props.token,this.props.trip.modelId);
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
             this.props.onTripFinishUpdate(false);
             this.toggleModal();
         }
@@ -66,21 +68,29 @@ class FullTrip extends Component {
         if (this.props.trip.driver.username !== currentUserName) {
             axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
                 headers: {"Authorization": this.props.token}
-            }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'PENDING'));
+            }).then(res => {
+                this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'PENDING');
+                this.setState({success: 'Trip successfully joined'});
+            });
         }
     }
 
     async deleteTrip() {
         axios.patch('/trips/' + this.props.trip.modelId + '/delete', null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => this.props.history.push('/myTrips'));
+        }).then(res => {
+            this.props.history.push('/myTrips');
+        });
 
     }
 
     async changeTripStatus(tripStatus) {
         axios.patch('/trips/' + this.props.trip.modelId + '?status=' + tripStatus, null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
+        }).then(res => {
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.setState({success: 'Trip status changed to ' + tripStatus});
+        });
     }
 
     async cancelTrip() {
@@ -91,8 +101,11 @@ class FullTrip extends Component {
         );
         axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerId + '?status=CANCELED', null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'CANCELED'));
-        this.props.history.push('/myTrips')
+        }).then(res => {
+                this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'CANCELED');
+                this.setState({success: 'Trip successfully canceled'});
+            }
+        );
     }
 
     inputChangedHandler = (event) => {
@@ -104,7 +117,10 @@ class FullTrip extends Component {
         event.preventDefault();
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/comments?comment=" + this.state.newComment, null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
+        }).then(res => {
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.setState({success: 'Comment successfully added'});
+        });
         this.setState({newComment: ''});
     };
 
@@ -114,7 +130,10 @@ class FullTrip extends Component {
         console.log(rate.toString())
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/driver/rate", this.state.newRate, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
-        }).then(res => this.getDriverRate());
+        }).then(res => {
+            this.getDriverRate();
+            this.setState({success: 'Driver successfully rated'});
+        });
         this.setState({newRate: ''});
     };
 
@@ -132,7 +151,10 @@ class FullTrip extends Component {
         event.preventDefault();
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/driver/feedback", this.state.newFeedback, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
-        }).then(res => this.props.onFetchTrip(this.props.token, this.props.trip.modelId));
+        }).then(res => {
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.setState({success: 'Feedback successfully send'});
+        });
         this.setState({newFeedback: ''});
     };
 
@@ -141,6 +163,13 @@ class FullTrip extends Component {
             showModal: !this.state.showModal
         })
     }
+
+    errorConfirmedHandler = () => {
+        this.setState({
+            error: null,
+            success: null
+        });
+    };
 
     render() {
         let comments;
@@ -284,7 +313,7 @@ class FullTrip extends Component {
                 );
                 updateTrip = (
 
-                    <Modal  show={this.state.showModal} modalClosed={() => this.toggleModal()}>
+                    <Modal show={this.state.showModal} modalClosed={() => this.toggleModal()}>
                         <UpdateTrip
                             showModal={this.state.showModal}
                             data={this.props.trip}
@@ -307,6 +336,14 @@ class FullTrip extends Component {
                 )
             }
         }
+        let responseMessage = (
+            <Modal
+                show={this.state.success}
+                modalClosed={this.errorConfirmedHandler}>
+                {this.state.error ? this.state.error : null}
+                {this.state.success ? this.state.success : null}
+            </Modal>
+        );
 
 
         let trip = <Spinner/>;
@@ -333,12 +370,12 @@ class FullTrip extends Component {
                             />}</span>
                         </p>
                         <div>
-                        {formRating}
-                        {formFeedback}
-                        {formDeleteTrip}
-                        {joinTrip}
-                        {buttonUpdateTrip}
-                        {formChangeTripStatus}
+                            {formRating}
+                            {formFeedback}
+                            {formDeleteTrip}
+                            {joinTrip}
+                            {buttonUpdateTrip}
+                            {formChangeTripStatus}
                         </div>
 
                         <div className="comps" style={{paddingTop: 30}}>
@@ -383,6 +420,7 @@ class FullTrip extends Component {
                         Comments
                         {formComment}
                         <br/>
+                        {responseMessage}
                         {comments}
                     </div>
                     <div style={{float: "left"}}>
@@ -400,7 +438,7 @@ class FullTrip extends Component {
                     <h1 className="header">THE PERFECT PLACE TO FIND <br/> THE FASTEST WAY TO TRAVEL</h1>
                     {trip}
                 </div>
-                    {updateTrip}
+                {updateTrip}
             </div>
 
         )

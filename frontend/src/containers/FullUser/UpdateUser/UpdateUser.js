@@ -8,6 +8,7 @@ import * as actions from '../../../store/actions';
 import {updateObject, checkValidity} from '../../../shared/utility';
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
+import Modal from "../../../components/UI/Modal/Modal";
 
 class UpdateUser extends Component {
     state = {
@@ -129,7 +130,6 @@ class UpdateUser extends Component {
         this.setState({controls: updatedCreateForm, formIsValid: formIsValid});
     };
 
-
     render() {
         const formElementsArray = [];
         for (let key in this.state.controls) {
@@ -159,19 +159,11 @@ class UpdateUser extends Component {
         if (this.props.loading) {
             form = <Spinner/>;
         }
-        let errorMessage = null;
-
-        if (this.props.error) {
-            errorMessage = (
-                <p>{this.props.error.message}</p>
-            );
-        }
 
         return (
             <div>
                 Update User Data
                 {form}
-                {errorMessage}
             </div>
         );
     }
