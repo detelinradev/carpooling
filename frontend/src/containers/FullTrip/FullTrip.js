@@ -44,6 +44,7 @@ class FullTrip extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.tripUpdate) {
+            this.setState({success: 'Trip successfully updated'});
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
             this.props.onTripFinishUpdate(false);
             this.toggleModal();
@@ -420,7 +421,6 @@ class FullTrip extends Component {
                         Comments
                         {formComment}
                         <br/>
-                        {responseMessage}
                         {comments}
                     </div>
                     <div style={{float: "left"}}>
@@ -439,6 +439,7 @@ class FullTrip extends Component {
                     {trip}
                 </div>
                 {updateTrip}
+                {responseMessage}
             </div>
 
         )

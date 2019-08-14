@@ -12,6 +12,9 @@ class MyTrips extends Component {
     componentDidMount() {
         this.props.onFetchTrips(this.props.token,'/myTrips');
     }
+    componentWillUnmount() {
+        this.props.onDismountMyTrips()
+    }
 
     showFullTrip = (trip) => {
         const currentUserName = this.props.username;
@@ -83,6 +86,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
         onShowFullTrip: (trip,tripJoined,requestSent,tripRole,passengerStatus,isMyTrip) => dispatch(actions.showFullTrip(trip,tripJoined,requestSent,tripRole,passengerStatus,isMyTrip)),
+        onDismountMyTrips: () => dispatch(actions.dismountSearch()),
     };
 };
 
