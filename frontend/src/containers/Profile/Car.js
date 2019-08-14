@@ -9,42 +9,40 @@ import NewCar from "./NewCar";
 import * as actions from "../../store/actions";
 
 class Car extends Component {
-
     state = {
         car: {},
-        showModal: false,
+        // showModal: false,
         src: CarAvatar,
-        error:'',
-        msg:'',
-        file:'',
+        error: '',
+        msg: '',
+        file: '',
     };
 
+
     async componentDidMount() {
-            const getCarResponse = await axios.get('/carMe', {
-                headers:
-                    {"Authorization": this.props.token}
-            });
+        const getCarResponse = await axios.get('/carMe', {
+            headers:
+                {"Authorization": this.props.token}
+        });
 
         const getCarAvatarResponse = await
             fetch('http://localhost:8080/users/avatarMe/car',
-                { headers: {"Authorization": this.props.token}})
+                {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
 
-            if(getCarAvatarResponse.size>100){
-                this.setState({
-                    src: URL.createObjectURL(getCarAvatarResponse)
-                })
-            }
+        if (getCarAvatarResponse.size > 100) {
+            this.setState({
+                src: URL.createObjectURL(getCarAvatarResponse)
+            })
+        }
 
-        if(getCarResponse) {
+        if (getCarResponse) {
             this.setState({
                 car: getCarResponse.data
             })
         }
 
     }
-
-
 
 
     onFileChange = (event) => {
@@ -56,11 +54,11 @@ class Car extends Component {
     uploadFile = (event) => {
         event.preventDefault();
         this.setState({error: '', msg: ''});
-        if(!this.state.file) {
+        if (!this.state.file) {
             this.setState({error: 'Please upload a file.'})
             return;
         }
-        if(this.state.file.size >= 2000000) {
+        if (this.state.file.size >= 2000000) {
             this.setState({error: 'File size exceeds limit of 2MB.'})
             return;
         }
@@ -79,55 +77,53 @@ class Car extends Component {
         });
     };
 
-    toggleModal(){
-        this.setState({
-            showModal: !this.state.showModal
-        })
-    }
-
-
-    editCloseHandler() {
-        this.setState({
-            showModal: !this.state.showModal
-        });
-    }
-
+    //
+    // toggleModal(){
+    //     this.setState({
+    //         showModal: !this.state.showModal
+    //     })
+    // }
+    //
+    // editCloseHandler() {
+    //     this.setState({
+    //         showModal: !this.state.showModal
+    //     });
+    // }
 
     render() {
 
         const car =
             this.state.car ? (
-                    <div className="Car" >
+                    <div className="Car">
                         <ul>
-                        <img style={{maxWidth: 350}}
-                            src={this.state.src}
-                            alt="car pooling"/>
-                        <div>
-                            <input onChange={this.onFileChange} type="file"/>
-                            <br/>
-                            <button onClick={this.uploadFile}>Upload</button>
-                        </div>
+                            <img style={{maxWidth: 350}}
+                                 src={this.state.src}
+                                 alt="car pooling"/>
+                            <div>
+                                <input onChange={this.onFileChange} type="file"/>
+                                <br/>
+                                <button onClick={this.uploadFile}>Upload</button>
+                            </div>
                         </ul>
                         <ul>
-                        <div>
-                            <h2>Brand: <span className="header">{this.state.car.brand}<br/></span></h2>
-                            <h2>Model: <span className="header">{this.state.car.model}</span></h2>
-                            <h2>Color: <span className="header">{this.state.car.color}</span></h2>
-                            <h2>First registration: <span className="header">{this.state.car.firstRegistration}</span></h2>
-                            <h2>A/C: <span className="header">{this.state.car.airConditioned}</span></h2>
-                        </div>
+                            <div>
+                                <h2>Brand: <span className="header">{this.state.car.brand}<br/></span></h2>
+                                <h2>Model: <span className="header">{this.state.car.model}</span></h2>
+                                <h2>Color: <span className="header">{this.state.car.color}</span></h2>
+                                <h2>First registration: <span className="header">{this.state.car.firstRegistration}</span>
+                                </h2>
+                                <h2>A/C: <span className="header">{this.state.car.airConditioned}</span></h2>
+                            </div>
                         </ul>
                     </div>
                 ) :
                 (
-                    <button className="Car" onClick={() => this.toggleModal()}><h1>+CREATE CAR</h1></button>
+                    <NewCar/>
                 );
 
         return (
             <div>
-                <Modal style={{width: 600}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
-                    <NewCar showModal={this.state.showModal}/>
-                </Modal>
+
                 {car}
             </div>
         );
@@ -138,7 +134,7 @@ const mapStateToProps = state => {
     return {
         loading: state.trip.loading,
         token: state.auth.token,
-        carCreated:state.car.carCreated,
+        carCreated: state.car.carCreated,
 
     }
 };
@@ -146,6 +142,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCreateCar: (create, token) => dispatch(actions.createCar(create, token))    };
+        onCreateCar: (create, token) => dispatch(actions.createCar(create, token))
+    };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Car, axios));
