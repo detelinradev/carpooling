@@ -152,7 +152,7 @@ class Auth extends Component {
                 touched: true
             } )
         } );
-        this.setState( { controls: updatedControls } );
+        this.setState( { controlsSignUp: updatedControls } );
     };
 
     submitHandler = ( event ) => {

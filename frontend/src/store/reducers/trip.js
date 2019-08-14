@@ -31,6 +31,12 @@ const tripFinishUpdate = (state,action) =>{
     } );
 };
 
+const dismountSearch = ( state, action ) => {
+    return updateObject( state, {
+        trips: [],
+    } );
+};
+
 const tripCreated = (state,action) =>{
     return updateObject( state, {
         tripCreated: action.tripCreated,
@@ -42,7 +48,6 @@ const createTripStart = ( state, action ) => {
 };
 
 const createTripSuccess = ( state, action ) => {
-    // const newTrip = updateObject( action.tripData, { id: action.tripId } );
     return updateObject( state, {
         loading: false,
         tripCreated: true,
@@ -107,6 +112,7 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.CREATE_INIT: return createInit( state, action );
         case actionTypes.CREATE_TRIP_START: return createTripStart( state, action );
         case actionTypes.CREATE_TRIP_SUCCESS: return createTripSuccess( state, action );
+        case actionTypes.TRIP_CREATED: return tripCreated( state, action );
         case actionTypes.CREATE_TRIP_FAIL: return createTripFail( state, action );
         case actionTypes.UPDATE_TRIP_START: return updateTripStart( state, action );
         case actionTypes.UPDATE_TRIP_SUCCESS: return updateTripSuccess( state, action );
@@ -119,6 +125,7 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.FETCH_TRIPS_FAIL: return fetchTripsFail( state, action );
         case actionTypes.FETCH_TRIP_FAIL: return fetchTripFail( state, action );
         case actionTypes.SHOW_FULL_TRIP: return showFullTrip(state, action);
+        case actionTypes.DISMOUNT_SEARCH: return dismountSearch(state, action);
         default: return state;
     }
 };

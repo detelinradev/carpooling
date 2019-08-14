@@ -136,6 +136,9 @@ class SearchTrips extends Component {
         changedDate: new Date()
 
     };
+    componentWillUnmount() {
+        this.props.onDismountSearch()
+    }
 
     inputDateChangedHandler = (date, name) => {
         console.log(date)
@@ -411,6 +414,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token, formData) => dispatch(actions.fetchTrips(token, formData)),
         onShowFullTrip: (trip, tripRole, passengerStatus) => dispatch(actions.showFullTrip(trip, tripRole, passengerStatus)),
+        onDismountSearch: () => dispatch(actions.dismountSearch()),
     };
 };
 

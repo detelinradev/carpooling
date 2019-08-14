@@ -13,7 +13,8 @@ export {
     fetchTrip,
     showFullTrip,
     tripFinishUpdate,
-    tripCreated
+    tripCreated,
+    dismountSearch
 } from './trip';
 
 export {
@@ -22,7 +23,8 @@ export {
     fetchUser,
     showFullUser,
     userFinishUpdate,
-    userCreated
+    userCreated,
+    dismountAdmin
 } from './user';
 
 export {

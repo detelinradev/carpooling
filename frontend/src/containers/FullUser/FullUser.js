@@ -59,9 +59,11 @@ class FullUser extends Component {
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.userUpdated) {
-            this.props.history.push('/admin');
-            this.props.onUserFinishUpdate(false)
+        if (this.props.userUpdate) {
+            this.props.onFetchUser(this.props.token,this.props.user.username);
+            this.props.onUserFinishUpdate(false);
+            this.toggleModal()
+
         }
     }
 
@@ -169,16 +171,16 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         user: state.user.user,
-        userUpdated: state.user.userUpdated,
+        userUpdate: state.user.userUpdated
 
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchTrip: (token, tripId, passengerStatus) => dispatch(actions.fetchTrip(token, tripId, passengerStatus)),
-        onUserFinishUpdate: (userUpdated) => dispatch(actions.userFinishUpdate(userUpdated)),
+        onFetchUser:(token,userId) => dispatch(actions.fetchUser(token,userId)),
+        onUserFinishUpdate: (userUpdated) => dispatch(actions.userFinishUpdate(userUpdated))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps())(withErrorHandler(FullUser, axios));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(FullUser, axios));

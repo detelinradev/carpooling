@@ -152,10 +152,10 @@ class NewTrip extends Component {
 
     };
    componentDidUpdate(prevProps, prevState, snapshot) {
-       if(this.props.tripCreated)
-       this.props.history.push( '/' );
-       this.props.onTripCreated(false);
-
+       if(this.props.tripCreated) {
+           this.props.history.push('/myTrips');
+           this.props.onTripCreated(false);
+       }
    }
 
     async getCoordinates() {
@@ -193,7 +193,6 @@ class NewTrip extends Component {
         }
         await this.getCoordinates();
         formData["tripDuration"] = this.state.tripDuration;
-       // formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
        formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
 
         this.props.onCreateTrip(formData, this.props.token);

@@ -189,7 +189,6 @@ class UpdateTrip extends Component {
         await this.getCoordinates();
         formData['modelId'] = this.props.data.modelId;
         formData["tripDuration"] = this.state.tripDuration;
-        // formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
         formData["departureTime"] = DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
 
         this.props.onUpdateTrip(formData, this.props.token);
@@ -413,7 +412,6 @@ const mapStateToProps = state => {
     return {
         loading: state.trip.loading,
         token: state.auth.token,
-        tripUpdate: state.trip.tripUpdated
     }
 };
 

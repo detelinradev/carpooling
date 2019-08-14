@@ -88,6 +88,9 @@ class Admin extends Component {
         formIsValid: false
     };
 
+    componentWillUnmount() {
+       this.props.onDismountAdmin()
+    }
 
     createHandler = (event) => {
         event.preventDefault();
@@ -260,6 +263,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchUsers: (token, formData) => dispatch(actions.fetchUsers(token, formData)),
         onShowFullUser: (user) => dispatch(actions.showFullUser(user)),
+        onDismountAdmin: () => dispatch(actions.dismountAdmin()),
     };
 };
 

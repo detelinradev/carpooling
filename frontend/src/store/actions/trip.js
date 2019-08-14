@@ -44,6 +44,12 @@ export const createTrip = (TripData, token ) => {
     };
 };
 
+export const dismountSearch = () => {
+    return {
+        type: actionTypes.DISMOUNT_SEARCH
+    };
+};
+
 
 export const updateTripSuccess = (  ) => {
     return {

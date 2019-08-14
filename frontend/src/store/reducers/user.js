@@ -29,6 +29,12 @@ const updateUserStart = ( state, action ) => {
     return updateObject( state, { loading: true } );
 };
 
+const dismountAdmin = ( state, action ) => {
+    return updateObject( state, {
+        users: [],
+    } );
+};
+
 const updateUserSuccess = ( state, action ) => {
     return updateObject( state, {
         loading: false,
@@ -84,6 +90,7 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.FETCH_USERS_FAIL: return fetchUsersFail( state, action );
         case actionTypes.FETCH_USER_FAIL: return fetchUserFail( state, action );
         case actionTypes.SHOW_FULL_USER: return showFullUser(state, action);
+        case actionTypes.DISMOUNT_ADMIN: return dismountAdmin(state, action);
         default: return state;
     }
 };

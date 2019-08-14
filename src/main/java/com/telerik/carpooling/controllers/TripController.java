@@ -4,6 +4,7 @@ import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.dtos.TripDtoEdit;
+import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.TripRepository;
@@ -76,8 +77,9 @@ public class TripController {
 
 
     @PostMapping
-    public ResponseEntity<?> createTrip(@Valid @RequestBody final Trip trip,
+    public ResponseEntity<?> createTrip(@Valid @RequestBody final TripDtoRequest tripDtoRequest,
                                         final Authentication authentication) {
+        Trip trip = dtoMapper.dtoToObject(tripDtoRequest);
 
         return Optional
                 .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(

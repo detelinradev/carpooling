@@ -42,8 +42,9 @@ class FullTrip extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.tripUpdate) {
-            this.props.history.push('/MyTrips');
-            this.props.onTripFinishUpdate(false)
+            this.props.onFetchTrip(this.props.token,this.props.trip.modelId);
+            this.props.onTripFinishUpdate(false);
+            this.toggleModal();
         }
     }
 
@@ -309,7 +310,6 @@ class FullTrip extends Component {
 
 
         let trip = <Spinner/>;
-        console.log(this.props.trip)
         if (!this.props.loading) {
             trip = (
                 <div style={{marginLeft: 100}}>

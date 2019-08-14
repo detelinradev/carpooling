@@ -27,6 +27,11 @@ export const updateUserFail = ( error ) => {
         error: error
     };
 };
+export const dismountAdmin = () => {
+    return {
+        type: actionTypes.DISMOUNT_ADMIN
+    };
+};
 
 export const updateUserStart = () => {
     return {
