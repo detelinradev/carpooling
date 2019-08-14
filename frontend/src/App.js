@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Route, Switch, withRouter, Redirect,  } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {Route, Switch, withRouter, Redirect,} from 'react-router-dom';
+import {connect} from 'react-redux';
 import asyncComponent from './hoc/asyncComponent/asyncComponent';
 
 import Layout from './hoc/Layout/Layout';
@@ -9,8 +9,6 @@ import * as actions from './store/actions/index';
 import './App.css';
 import Home from './containers/Home/Home';
 import TopRatedDrivers from "./containers/TopRatedUsers/TopRatedDrivers";
-
-
 
 
 const asyncAuth = asyncComponent(() => {
@@ -39,36 +37,52 @@ const asyncFullUser = asyncComponent(() => {
 });
 
 class App extends Component {
-    componentDidMount () {
+    componentDidMount() {
         this.props.onTryAutoSignup();
     }
 
-    render () {
+    render() {
         let routes = (
             <Switch>
-                <Route path="/auth" component={asyncAuth} />
-                <Route path="/" exact component={Home} />
-                <Redirect to="/" />
+                <Route path="/auth" component={asyncAuth}/>
+                <Route path="/" exact component={Home}/>
+                <Redirect to="/"/>
             </Switch>
         );
         let topRated;
 
-        if ( this.props.isAuthenticated ) {
-            routes = (
-                <Switch>
-                    <Route path="/logout" component={Logout} />
-                    <Route path="/admin" component={asyncAdmin} />
-                    <Route path="/fullUser" component={asyncFullUser} />
-                    <Route path="/fullTrip" component={asyncFullTrip} />
-                    <Route path="/createTrip" component={asyncCreateTrip} />
-                    <Route path="/searchTrips" component={asyncSearchTrips} />
-                    <Route path="/myTrips" component={asyncMyTrips} />
-                    <Route path="/myProfile" component={asyncProfile} />
-                    <Route path="/auth" component={asyncAuth} />
-                    <Route path="/" exact component={Home} />
-                    <Redirect to="/" />
-                </Switch>
-            );
+        if (this.props.isAuthenticated) {
+            if (this.props.isAdmin) {
+                routes = (
+                    <Switch>
+                        <Route path="/logout" component={Logout}/>
+                        <Route path="/admin" component={asyncAdmin}/>
+                        <Route path="/fullUser" component={asyncFullUser}/>
+                        <Route path="/fullTrip" component={asyncFullTrip}/>
+                        <Route path="/createTrip" component={asyncCreateTrip}/>
+                        <Route path="/searchTrips" component={asyncSearchTrips}/>
+                        <Route path="/myTrips" component={asyncMyTrips}/>
+                        <Route path="/myProfile" component={asyncProfile}/>
+                        <Route path="/auth" component={asyncAuth}/>
+                        <Route path="/" exact component={Home}/>
+                        <Redirect to="/"/>
+                    </Switch>)
+            } else
+
+                routes = (
+                    <Switch>
+                        <Route path="/logout" component={Logout}/>
+                        <Route path="/fullUser" component={asyncFullUser}/>
+                        <Route path="/fullTrip" component={asyncFullTrip}/>
+                        <Route path="/createTrip" component={asyncCreateTrip}/>
+                        <Route path="/searchTrips" component={asyncSearchTrips}/>
+                        <Route path="/myTrips" component={asyncMyTrips}/>
+                        <Route path="/myProfile" component={asyncProfile}/>
+                        <Route path="/auth" component={asyncAuth}/>
+                        <Route path="/" exact component={Home}/>
+                        <Redirect to="/"/>
+                    </Switch>
+                );
             topRated = (
                 <TopRatedDrivers/>
             )
@@ -88,14 +102,14 @@ class App extends Component {
 const mapStateToProps = state => {
     return {
         isAuthenticated: state.auth.token !== null,
-        isAdmin:state.auth.userRole === 'ADMIN'
+        isAdmin: state.auth.userRole === 'ADMIN'
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onTryAutoSignup: () => dispatch( actions.authCheckState() )
+        onTryAutoSignup: () => dispatch(actions.authCheckState())
     };
 };
 
-export default withRouter( connect( mapStateToProps, mapDispatchToProps )( App ) );
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

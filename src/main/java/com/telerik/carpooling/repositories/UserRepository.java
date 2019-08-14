@@ -19,8 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByIsDeletedIsFalse();
 
-    List<User> findAllByIsDeletedIsTrue(Pageable pageable);
-
     Optional<User> findById(Long id);
 
     @Query("select u from User u " +

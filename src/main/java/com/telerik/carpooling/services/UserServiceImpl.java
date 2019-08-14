@@ -83,6 +83,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User deleteUser(String userId) {
+        Optional<User> user = userRepository.findById(parseStringToLong(userId));
+        if(user.isPresent()) {
+            user.get().setIsDeleted(true);
+           return userRepository.save(user.get());
+        }
+
+        return null;
+    }
+
+    @Override
     public User updateCurrentUserPassword(final String password, final User user) {
         if (isPasswordValid(password)) {
             user.setPassword(bCryptEncoder.encode(password));

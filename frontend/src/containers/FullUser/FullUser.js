@@ -67,6 +67,13 @@ class FullUser extends Component {
         }
     }
 
+    async deleteUser() {
+        axios.patch('/users/' + this.props.user.modelId + '/delete', null, {
+            headers: {"Authorization": this.props.token}
+        }).then(res => this.props.history.push('/admin'));
+
+    }
+
     toggleModal() {
         this.setState({
             showModal: !this.state.showModal
@@ -114,6 +121,11 @@ class FullUser extends Component {
                     <div className="Profile">
                         <ul style={{marginRight: 50, maxWidth: 350}}>
                             <img src={this.state.src} alt="Not found!"/>
+                            <div className="edit">
+                                <Button onClick={() => this.deleteUser()}><h3 className="header">DELETE
+                                    USER <FaUserEdit/></h3>
+                                </Button>
+                            </div>
                         </ul>
                         <ul style={{maxWidth: 350}}>
                             <h2><TiUser/> Name: <span
@@ -121,6 +133,8 @@ class FullUser extends Component {
                             <h2><TiGroup/> Username: <span className="header">{this.props.user.username}</span></h2>
                             <h2><FaEnvelopeOpen/> Email: <span className="header">{this.props.user.email}</span></h2>
                             <h2><FaPhone/> Phone: <span className="header">{this.props.user.phone}</span></h2>
+                            <h2><TiUser/> User role: <span
+                                className="header">{this.props.user.role}</span></h2>
                             <hr/>
                             <div className="edit">
                                 <Button onClick={() => this.toggleModal()}><h3 className="header">EDIT
@@ -171,7 +185,7 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         user: state.user.user,
-        userUpdate: state.user.userUpdated
+        userUpdate: state.user.userUpdated,
 
     }
 };

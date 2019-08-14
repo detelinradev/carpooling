@@ -151,6 +151,14 @@ public class UserController {
 
     }
 
+    @PatchMapping(value = "/{userId}/delete")
+    public ResponseEntity<?> deleteTrip(@PathVariable final String userId) {
+        return Optional
+                .ofNullable(userService.deleteUser(userId))
+                .map(k -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PatchMapping(value = "/me/update-password")
     public ResponseEntity<?> updateUserOwnInfo(@RequestParam final String password, final Authentication authentication) {
 

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-   // Optional<User> findUser(Long userId);
 
     User save(User user);
 
@@ -31,5 +30,8 @@ public interface UserService {
                        String phone);
 
     List<TripDtoResponse> getUserOwnTrips(String username);
+
+    User deleteUser(String userId);
 }
+
 
