@@ -30,7 +30,7 @@ class User extends Component {
         let user = (
             <div className=" Post">
                 <div className="Trip additional-details  cardcont  meta-data-container">
-                    <div className="image ">
+                    <div className="image " style={{width: 300}}>
                         <img id="postertest" className='poster' style={{width: 128}}
                              src={this.state.src} alt={''}/>
                         <p className="meta-data">{this.props.data.firstName} {this.props.data.lastName}</p>
@@ -63,7 +63,7 @@ class User extends Component {
                         </Button>
                     </div>
 
-                    <div className="comps" style={{ paddingTop: 40}}>
+                    <div className="comps" style={{ paddingTop: 40, width: 200}}>
                         Username<br/><p
                         className="row-xs-6 info meta-data">{this.props.data.username}</p>
                         <hr/>
@@ -71,12 +71,12 @@ class User extends Component {
                         className="row-xs-6 info meta-data">{this.props.data.role}</p>
                     </div>
 
-                    <div className="comps" style={{ paddingTop: 40}}>
+                    <div className="comps" style={{ paddingTop: 40, width: 350}}>
                         Email<p
                         className="row-xs-6 info meta-data">{this.props.data.email}</p>
                     </div>
 
-                    <div className="comps" style={{ paddingTop: 40}}>
+                    <div className="comps" style={{ paddingTop: 40, width: 200}}>
                         Phone<p
                         className="row-xs-6 info meta-data">{this.props.data.phone}</p>
                     </div>
