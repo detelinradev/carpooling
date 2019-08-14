@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
                 .compact();
         res.addHeader("Authorization", PREFIX + " " + JwtToken);
         res.addHeader("Access-Control-Expose-Headers", "Authorization");
+        res.addHeader("Access-Control-Expose-Headers", "userRole");
         res.addHeader("userRole",authentication.getAuthorities().stream().findFirst().toString().substring(14,19));
     }
 

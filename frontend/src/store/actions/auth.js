@@ -8,7 +8,7 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (token, userId,userRole) => {
+export const authSuccess = (token, userId, userRole) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         idToken: token,
@@ -16,7 +16,7 @@ export const authSuccess = (token, userId,userRole) => {
         userRole: userRole
     };
 };
-export const login = (username,password,isSignUp) => {
+export const login = (username, password, isSignUp) => {
     if (isSignUp) {
         return dispatch => {
             dispatch(authStart());
@@ -38,7 +38,7 @@ export const login = (username,password,isSignUp) => {
                         // response.data.localId
                         currentUserName
                     );
-                    dispatch(authSuccess(response.headers.authorization, currentUserName,response.headers.userRole));
+                    dispatch(authSuccess(response.headers.authorization, currentUserName, response.headers.userRole));
                     dispatch(checkAuthTimeout(
                         // response.data.expiresIn
                         fakeExpiresIn
@@ -78,12 +78,12 @@ export const checkAuthTimeout = (expirationTime) => {
 
 export const auth = (username, password, isSignup, firstName, lastName, email, phone) => {
     return dispatch => {
+
         dispatch(authStart());
 
-
         let url = 'http://localhost:8080/users/register';
-        let currentUserName= username;
-        let authData= {
+        let currentUserName = username;
+        let authData = {
             username: username,
             password: password,
             firstName: firstName,
@@ -91,33 +91,30 @@ export const auth = (username, password, isSignup, firstName, lastName, email, p
             email: email,
             phone: phone
         };
+
         if (!isSignup) {
             url = 'http://localhost:8080/users/authenticate';
-            authData= {
+            authData = {
                 username: username,
                 password: password
             };
         }
-      axios.post(url, authData)
+        axios.post(url, authData)
             .then(response => {
-                const fakeExpiresIn = 3600;
+                const expiresIn = 3600;
                 const expirationDate = new Date(new Date().getTime() +
-                    fakeExpiresIn* 1000);
+                    expiresIn * 1000);
+
                 localStorage.setItem('token', response.headers.authorization);
                 localStorage.setItem('expirationDate', expirationDate);
-                localStorage.setItem('userId',
-                    // response.data.localId
-                    currentUserName
-                );
-                dispatch(authSuccess(response.headers.authorization, currentUserName,response.headers.userRole));
-                dispatch(checkAuthTimeout(
-                    // response.data.expiresIn
-                    fakeExpiresIn
-                ));
+                localStorage.setItem('userId', currentUserName);
+
+                dispatch(authSuccess(response.headers.authorization, currentUserName, response.headers.userrole));
+                dispatch(checkAuthTimeout(expiresIn));
             })
-          .then(response => {
-              dispatch(login(username, password, isSignup));
-          })
+            .then(response => {
+                dispatch(login(username, password, isSignup));
+            })
             .catch(err => {
                 dispatch(authFail(err.errors));
             });
