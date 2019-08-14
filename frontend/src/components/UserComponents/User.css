@@ -1,0 +1,149 @@
+.Trip {
+    width: 90%;
+    box-shadow: 0 2px 3px #ccc;
+    box-sizing: border-box;
+    display: flex;
+}
+
+
+.cardcont {
+
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/*.test {*/
+/*    margin-left: 30px;*/
+/*}*/
+
+.divche {
+    display: flex;
+    flex-flow: row wrap;
+
+}
+
+.Post {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    width: 80%;
+    margin-bottom: 20px;
+    text-align: center;
+    margin-left: 150px;
+
+}
+
+.poster-container {
+    width: 100%;
+
+}
+
+.info {
+    /*margin: 20px;*/
+    text-align: center;
+}
+
+.image {
+    text-align: center;
+    margin-right: 20px;
+}
+
+.poster {
+    width: 100%;
+    border-radius: 0 0 3px 3px;
+}
+
+.row {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+
+.proba {
+    padding-left: 10px;
+    margin-top: 10px;
+    background-color: black;
+}
+
+.meta-data-container {
+    padding: 15px;
+    color: lightGrey;
+}
+
+.ed {
+    text-align: center;
+    transition-property: background-color;
+    transition-duration: 1s;
+    transition-timing-function: linear;
+    transition-delay: 1s;
+    margin-top: 10px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+
+h1 {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 2.2em;
+}
+
+/*.additional-details {*/
+/*    font-family: oswald;*/
+/*}*/
+
+.genre-list {
+    color: mediumseagreen;
+    font-size: 1.4em;
+}
+
+.production-list {
+    margin-bottom: 20px;
+}
+
+.meta-data {
+    color: mediumseagreen;
+    font-size: 1.6em;
+    line-height: 1.1em;
+}
+
+.hed {
+    color: whitesmoke;
+    font-weight: bolder;
+    font-size: 1.6em;
+    line-height: 1.1em;
+}
+
+
+.tagline {
+    padding-bottom: 0.25em;
+    color: mediumseagreen;
+    font-size: 1.3em;
+    font-family: oswald;
+}
+
+.right {
+    text-align: right;
+}
+
+
+.poster-container .poster {
+    border-radius: 3px 0 0 3px;
+}
+
+.save:hover {
+    background-color: lightblue;
+}
+
+.cont {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+.comps {
+    width: 150px;
+    box-shadow: 0 2px 2px 3px #ccc;
+    box-sizing: border-box;
+    justify-content: center;
+    margin: 15px;
+    padding: 15px;
+}

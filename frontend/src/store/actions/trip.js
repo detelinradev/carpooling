@@ -92,9 +92,6 @@ export const updateTrip = (TripData, token ) => {
             .then( response => {
                 dispatch( updateTripSuccess() );
             } )
-            .then(()=>{
-                this.props.history.push( '/myTrips' );
-            })
             .catch( error => {
                 dispatch( updateTripFail( error ) );
             } );

@@ -39,33 +39,37 @@ public class TripController {
 
     @GetMapping
     public ResponseEntity<?> getTrips(@RequestParam(value = "_end", required = false)
-                                                                  Integer pageNumber,
-                                                          @RequestParam(value = "_start", required = false)
-                                                                  Integer pageSize,
-                                                          @RequestParam(value = "status", required = false)
-                                                                  String tripStatus,
-                                                          @RequestParam(value = "driver", required = false)
-                                                                  String driverUsername,
-                                                          @RequestParam(value = "origin", required = false)
-                                                                  String origin,
-                                                          @RequestParam(value = "destination", required = false)
-                                                                  String destination,
-                                                          @RequestParam(value = "earliestDepartureTime", required = false)
-                                                                  String earliestDepartureTime,
-                                                          @RequestParam(value = "latestDepartureTime", required = false)
-                                                                  String latestDepartureTime,
-                                                          @RequestParam(value = "availablePlaces", required = false)
-                                                                  String availablePlaces,
-                                                          @RequestParam(value = "smoking", required = false)
-                                                                  String smoking,
-                                                          @RequestParam(value = "pets", required = false)
-                                                                  String pets,
-                                                          @RequestParam(value = "luggage", required = false)
-                                                                  String luggage) {
+                                              Integer pageNumber,
+                                      @RequestParam(value = "_start", required = false)
+                                              Integer pageSize,
+                                      @RequestParam(value = "status", required = false)
+                                              String tripStatus,
+                                      @RequestParam(value = "driver", required = false)
+                                              String driverUsername,
+                                      @RequestParam(value = "origin", required = false)
+                                              String origin,
+                                      @RequestParam(value = "destination", required = false)
+                                              String destination,
+                                      @RequestParam(value = "earliestDepartureTime", required = false)
+                                              String earliestDepartureTime,
+                                      @RequestParam(value = "latestDepartureTime", required = false)
+                                              String latestDepartureTime,
+                                      @RequestParam(value = "availablePlaces", required = false)
+                                              String availablePlaces,
+                                      @RequestParam(value = "smokingAllowed", required = false)
+                                              String smoking,
+                                      @RequestParam(value = "petsAllowed", required = false)
+                                              String pets,
+                                      @RequestParam(value = "luggageAllowed", required = false)
+                                              String luggage,
+                                      @RequestParam(value = "airConditioned", required = false)
+                                              String airConditioned)
+
+    {
 
         return Optional
                 .ofNullable(dtoMapper.tripToDtoList(tripService.getTrips(pageNumber, pageSize, tripStatus, driverUsername, origin, destination,
-                        earliestDepartureTime, latestDepartureTime, availablePlaces, smoking, pets, luggage)))
+                        earliestDepartureTime, latestDepartureTime, availablePlaces, smoking, pets, luggage,airConditioned)))
                 .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -73,7 +77,7 @@ public class TripController {
 
     @PostMapping
     public ResponseEntity<?> createTrip(@Valid @RequestBody final Trip trip,
-                                        final Authentication authentication)  {
+                                        final Authentication authentication) {
 
         return Optional
                 .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(
@@ -153,7 +157,7 @@ public class TripController {
 
     @PatchMapping(value = "/{tripId}/delete")
     public ResponseEntity<?> deleteTrip(@PathVariable final String tripId,
-                                                   final Authentication authentication){
+                                        final Authentication authentication) {
         return Optional
                 .ofNullable(tripService.deleteTrip(tripId, userRepository.findFirstByUsername(
                         authentication.getName())))

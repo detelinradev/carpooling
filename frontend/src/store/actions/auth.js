@@ -8,11 +8,12 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (token, userId) => {
+export const authSuccess = (token, userId,userRole) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         idToken: token,
-        userId: userId
+        userId: userId,
+        userRole: userRole
     };
 };
 export const login = (username,password,isSignUp) => {
@@ -37,7 +38,7 @@ export const login = (username,password,isSignUp) => {
                         // response.data.localId
                         currentUserName
                     );
-                    dispatch(authSuccess(response.headers.authorization, currentUserName));
+                    dispatch(authSuccess(response.headers.authorization, currentUserName,response.headers.userRole));
                     dispatch(checkAuthTimeout(
                         // response.data.expiresIn
                         fakeExpiresIn
@@ -108,7 +109,7 @@ export const auth = (username, password, isSignup, firstName, lastName, email, p
                     // response.data.localId
                     currentUserName
                 );
-                dispatch(authSuccess(response.headers.authorization, currentUserName));
+                dispatch(authSuccess(response.headers.authorization, currentUserName,response.headers.userRole));
                 dispatch(checkAuthTimeout(
                     // response.data.expiresIn
                     fakeExpiresIn

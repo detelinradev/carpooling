@@ -34,7 +34,9 @@ public class UserDtoResponse {
     @Email
     private String email;
 
-    @Range(min = 10, max = 10)
+    private String role;
+
+    @Size(min = 9, max = 10)
     private String phone;
 
     private Double ratingAsDriver;

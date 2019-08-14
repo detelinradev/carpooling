@@ -34,6 +34,9 @@ const asyncMyTrips = asyncComponent(() => {
 const asyncAdmin = asyncComponent(() => {
     return import('./containers/Admin/Admin');
 });
+const asyncFullUser = asyncComponent(() => {
+    return import('./containers/FullUser/FullUser');
+});
 
 class App extends Component {
     componentDidMount () {
@@ -55,6 +58,7 @@ class App extends Component {
                 <Switch>
                     <Route path="/logout" component={Logout} />
                     <Route path="/admin" component={asyncAdmin} />
+                    <Route path="/fullUser" component={asyncFullUser} />
                     <Route path="/fullTrip" component={asyncFullTrip} />
                     <Route path="/createTrip" component={asyncCreateTrip} />
                     <Route path="/searchTrips" component={asyncSearchTrips} />
@@ -76,9 +80,6 @@ class App extends Component {
                     {routes}
                     {topRated}
                 </Layout>
-                    {/*<footer className="footer">*/}
-                    {/*    footer*/}
-                    {/*</footer>*/}
             </div>
         );
     }
@@ -86,7 +87,8 @@ class App extends Component {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.token !== null
+        isAuthenticated: state.auth.token !== null,
+        isAdmin:state.auth.userRole === 'ADMIN'
     };
 };
 

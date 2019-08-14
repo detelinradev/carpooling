@@ -31,7 +31,6 @@ public class TripDtoResponse {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-//    @JsonFormat(pattern = "yyyy-mm-dd HH:MM")
     private LocalDateTime departureTime;
 
     @Size(max = 20)
@@ -40,7 +39,7 @@ public class TripDtoResponse {
     @Size(max = 20)
     private String destination;
 
-   // @Range(min = 1, max = 8, message = "Please enter total number of seats between 1 and 8!")
+    @Range(min = 1, max = 8, message = "Please enter total number of seats between 1 and 8!")
     private Integer availablePlaces;
 
     private Set<UserDtoResponse> passengers;

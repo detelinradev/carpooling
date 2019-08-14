@@ -18,7 +18,6 @@ import java.util.Optional;
 public class CarpoolingApplication {
 
     public static void main(String[] args) {
-        log.error("test na loggera");
         SpringApplication.run(CarpoolingApplication.class, args);
 
     }

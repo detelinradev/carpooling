@@ -11,7 +11,7 @@ class topRatedDrivers extends Component {
     };
 
     componentDidMount() {
-        axios.get('http://localhost:8080/users/top-rated-drivers')
+        axios.get('http://localhost:8080/users/top-rated-drivers?')
             .then(response => {
                 if (response) {
                     this.setState({
@@ -24,7 +24,7 @@ class topRatedDrivers extends Component {
                 console.log(3);
             });
 
-        axios.get('http://localhost:8080/users/top-rated-passengers')
+        axios.get('http://localhost:8080/users/top-rated-passengers?')
             .then(response => {
                 if (response) {
                     this.setState({

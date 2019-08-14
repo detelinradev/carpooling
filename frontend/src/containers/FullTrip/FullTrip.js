@@ -11,7 +11,6 @@ import {FaMedal} from "react-icons/fa";
 import Car from "../../components/TripComponents/Car/Car";
 import * as actions from "../../store/actions";
 import Button from "@material-ui/core/Button";
-import {FaUserEdit} from "react-icons/fa";
 import Avatar from "../../assets/images/image-default.png";
 import Modal from "../../components/UI/Modal/Modal";
 import UpdateTrip from "./UpdateTrip/UpdateTrip";
@@ -142,14 +141,6 @@ class FullTrip extends Component {
         })
     }
 
-
-    editCloseHandler() {
-        this.setState({
-            showModal: !this.state.showModal
-        });
-    }
-
-
     render() {
         let comments;
         if (this.props.trip.comments) {
@@ -171,7 +162,6 @@ class FullTrip extends Component {
                     key={passenger.id}
                     isMyTrip={this.props.isMyTrip}
                     data={passenger}
-                    // trip={this.props.trip}
                 />
             ));
         }
@@ -293,7 +283,7 @@ class FullTrip extends Component {
                 );
                 updateTrip = (
 
-                    <Modal  show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
+                    <Modal  show={this.state.showModal} modalClosed={() => this.toggleModal()}>
                         <UpdateTrip
                             showModal={this.state.showModal}
                             data={this.props.trip}

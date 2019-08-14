@@ -253,7 +253,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        // onCarFinishCreate:(carCreated) => dispatch(actions.carFinishCreate(carCreated)),
         onCreateCar: (create, token) => dispatch(actions.createCar(create, token))    };
 };
 

@@ -28,7 +28,7 @@ public interface TripService {
 
     List<Trip> getTrips(Integer pageEnd, Integer pageStart, String tripStatus, String driverUsername, String origin,
                                    String destination, String earliestDepartureTime, String latestDepartureTime,
-                                   String availablePlaces, String smoking, String pets, String luggage);
+                                   String availablePlaces, String smoking, String pets, String luggage, String airConditioned);
 
     Trip deleteTrip(String tripId, User user);
 }

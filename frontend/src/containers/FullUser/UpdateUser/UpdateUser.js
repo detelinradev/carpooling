@@ -1,31 +1,31 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import './Admin.css';
-import axios from '../../axios-baseUrl';
-import * as actions from '../../store/actions/index';
-import Spinner from "../../components/UI/Spinner/Spinner";
-import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import {checkValidity, updateObject} from "../../shared/utility";
-import Input from "../../components/UI/Input/Input";
-import Button from "../../components/UI/Button/Button";
-import User from "../../components/UserComponents/User";
+import {Redirect} from 'react-router-dom';
 
+import Input from '../../../components/UI/Input/Input';
+import Button from '../../../components/UI/Button/Button';
+import Spinner from '../../../components/UI/Spinner/Spinner';
+import './UpdateUser.css';
+import * as actions from '../../../store/actions';
+import {updateObject, checkValidity} from '../../../shared/utility';
+import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
+import axios from "../../../axios-baseUrl";
+import DateTimeFormat from "dateformat";
 
-class Admin extends Component {
-
+class UpdateUser extends Component {
     state = {
-        createForm: {
+        controls: {
             username: {
                 elementType: 'input',
                 elementConfig: {
                     type: 'username',
                     placeholder: 'Username'
                 },
-                value: '',
+                value: this.props.user.username,
                 validation: {
                     required: true,
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             firstName: {
@@ -34,11 +34,11 @@ class Admin extends Component {
                     type: 'firstName',
                     placeholder: 'First name'
                 },
-                value: '',
+                value: this.props.user.firstName,
                 validation: {
                     required: true,
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             lastName: {
@@ -47,11 +47,24 @@ class Admin extends Component {
                     type: 'lastName',
                     placeholder: 'Last name'
                 },
-                value: '',
+                value: this.props.user.lastName,
                 validation: {
                     required: true,
                 },
-                valid: false,
+                valid: true,
+                touched: false
+            },
+            role: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'role',
+                    placeholder: 'User role'
+                },
+                value: this.props.user.role,
+                validation: {
+                    required: true,
+                },
+                valid: true,
                 touched: false
             },
             email: {
@@ -60,48 +73,45 @@ class Admin extends Component {
                     type: 'email',
                     placeholder: 'Email'
                 },
-                value: '',
+                value: this.props.user.email,
                 validation: {
                     required: true,
                     isEmail: true
                 },
-                valid: false,
+                valid: true,
                 touched: false
             },
             phone: {
                 elementType: 'input',
                 elementConfig: {
                     type: 'phone',
-                    placeholder: 'Phone',
-                    minLength: 10,
-                    maxLength: 10
+                    placeholder: 'Phone'
                 },
-                value: '',
+                value: this.props.user.phone,
                 validation: {
                     required: true,
                     isNumeric: true,
                 },
-                valid: false,
+                valid: true,
                 touched: false
             }
         },
-        formIsValid: false
+        formIsValid: true
     };
 
-
-    createHandler = (event) => {
+    createHandler = async (event) => {
         event.preventDefault();
-
-        let stringData = "?";
-        let questionMark = "";
-        for (let formElementIdentifier in this.state.createForm) {
-            if (this.state.createForm[formElementIdentifier].value !== '') {
-                stringData = stringData + questionMark + formElementIdentifier + '=' + this.state.createForm[formElementIdentifier].value;
-                questionMark = '&';
-            }
+        const formData = {};
+        for (let formElementIdentifier in this.state.controls) {
+            formData[formElementIdentifier] = this.state.controls[formElementIdentifier].value;
         }
+        formData['modelId'] = this.props.user.modelId;
+        formData['ratingAsDriver'] = 0;
+        formData['ratingAsPassenger'] = 0;
+
+        this.props.onUpdateUser(formData, this.props.token);
         this.setState({
-            createForm: {
+            controls: {
                 username: {
                     elementType: 'input',
                     elementConfig: {
@@ -111,6 +121,20 @@ class Admin extends Component {
                     value: '',
                     validation: {
                         required: true,
+                    },
+                    valid: false,
+                    touched: false
+                },
+                password: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'password',
+                        placeholder: 'Password'
+                    },
+                    value: '',
+                    validation: {
+                        required: true,
+                        minLength: 6
                     },
                     valid: false,
                     touched: false
@@ -141,6 +165,19 @@ class Admin extends Component {
                     valid: false,
                     touched: false
                 },
+                role: {
+                    elementType: 'input',
+                    elementConfig: {
+                        type: 'role',
+                        placeholder: 'User role'
+                    },
+                    value: '',
+                    validation: {
+                        required: true,
+                    },
+                    valid: true,
+                    touched: false
+                },
                 email: {
                     elementType: 'input',
                     elementConfig: {
@@ -165,26 +202,25 @@ class Admin extends Component {
                     validation: {
                         required: true,
                         isNumeric: true,
-                        minLength: 10,
-                        maxLength: 10
                     },
                     valid: false,
                     touched: false
                 }
             },
-            formIsValid: false,
-        });
-        this.props.onFetchUsers(this.props.token, stringData);
+            formIsValid: false
+        })
+
     };
+
 
     inputChangedHandler = (event, inputIdentifier) => {
 
-        const updatedFormElement = updateObject(this.state.createForm[inputIdentifier], {
+        const updatedFormElement = updateObject(this.state.controls[inputIdentifier], {
             value: event.target.value,
-            valid: checkValidity(event.target.value, this.state.createForm[inputIdentifier].validation),
+            valid: checkValidity(event.target.value, this.state.controls[inputIdentifier].validation),
             touched: true
         });
-        const updatedCreateForm = updateObject(this.state.createForm, {
+        const updatedCreateForm = updateObject(this.state.controls, {
             [inputIdentifier]: updatedFormElement
         });
 
@@ -192,22 +228,19 @@ class Admin extends Component {
         for (let inputIdentifier in updatedCreateForm) {
             formIsValid = updatedCreateForm[inputIdentifier].valid && formIsValid;
         }
-        this.setState({createForm: updatedCreateForm, formIsValid: formIsValid});
+        this.setState({controls: updatedCreateForm, formIsValid: formIsValid});
     };
 
-    showFullUser = (user) => {
-        this.props.onShowFullUser(user);
-        this.props.history.push('/fullUser');
-    };
 
     render() {
         const formElementsArray = [];
-        for (let key in this.state.createForm) {
+        for (let key in this.state.controls) {
             formElementsArray.push({
                 id: key,
-                config: this.state.createForm[key]
+                config: this.state.controls[key]
             });
         }
+
         let form = (
             <form onSubmit={this.createHandler}>
                 {formElementsArray.map(formElement => (
@@ -222,45 +255,44 @@ class Admin extends Component {
                         touched={formElement.config.touched}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
-                <Button btnType="Success">SEARCH</Button>
+                <Button btnType="Success" disabled={!this.state.formIsValid}>UPDATE</Button>
             </form>
         );
-
-        let users = <Spinner/>;
-        if (!this.props.loading) {
-            users = this.props.users.map(user => (
-                <User
-                    key={user.id}
-                    data={user}
-                    showFullUser={this.showFullUser}
-                />
-            ))
+        if (this.props.loading) {
+            form = <Spinner/>;
         }
+        let errorMessage = null;
+
+        if (this.props.error) {
+            errorMessage = (
+                <p>{this.props.error.message}</p>
+            );
+        }
+
         return (
-            <div className="todore">
-                <div>
-                    <div className="SearchTrips">
-                        Search Users
-                        {form}
-                    </div>
-                </div>
-                {users}
-            </div>)
+            <div>
+                Update User Data
+                {form}
+                {errorMessage}
+            </div>
+        );
     }
 }
 
 const mapStateToProps = state => {
     return {
-        users: state.user.users,
-        loading: state.trip.loading,
+        loading: state.auth.loading,
+        error: state.auth.error,
+        user: state.user.user,
         token: state.auth.token,
-    }
-};
-const mapDispatchToProps = dispatch => {
-    return {
-        onFetchUsers: (token, formData) => dispatch(actions.fetchUsers(token, formData)),
-        onShowFullUser: (user) => dispatch(actions.showFullUser(user)),
+        userUpdate: state.user.userUpdated
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Admin, axios));
+const mapDispatchToProps = dispatch => {
+    return {
+        onUpdateUser: (userData, token) => dispatch(actions.updateUser(userData, token)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(UpdateUser, axios));

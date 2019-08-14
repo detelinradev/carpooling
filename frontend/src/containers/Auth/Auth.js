@@ -21,7 +21,6 @@ class Auth extends Component {
                 value: '',
                 validation: {
                     required: true,
-                    // isEmail: true
                 },
                 valid: false,
                 touched: false
@@ -104,7 +103,7 @@ class Auth extends Component {
                 value: '',
                 validation: {
                     required: true,
-                    // isEmail: true
+                    isEmail: true
                 },
                 valid: false,
                 touched: false
@@ -119,8 +118,6 @@ class Auth extends Component {
                 validation: {
                     required: true,
                     isNumeric: true,
-
-                    // isEmail: true
                 },
                 valid: false,
                 touched: false
@@ -155,7 +152,7 @@ class Auth extends Component {
                 touched: true
             } )
         } );
-        this.setState( { controlsSignUp: updatedControls } );
+        this.setState( { controls: updatedControls } );
     };
 
     submitHandler = ( event ) => {
@@ -263,7 +260,8 @@ const mapStateToProps = state => {
         loading: state.auth.loading,
         error: state.auth.error,
         isAuthenticated: state.auth.token !== null,
-        authRedirectPath: state.auth.authRedirectPath
+        authRedirectPath: state.auth.authRedirectPath,
+        userRole:state.auth.userRole
     };
 };
 

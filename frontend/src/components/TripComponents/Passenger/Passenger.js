@@ -147,7 +147,6 @@ class Passenger extends Component {
                             <StarRatings
                                 rating={this.state.rating}
                                 starRatedColor="yellow"
-                                //changeRating={this.changeRating}
                                 numberOfStars={5}
                                 name='rating'
                                 starDimension="20px"

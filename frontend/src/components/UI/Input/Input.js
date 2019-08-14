@@ -37,7 +37,6 @@ const input = ( props ) => {
                     placeholderText="Click to select a date"
                     selected={props.startDate}
                     onChange={props.dateChange}
-                    // value={props.value}
                     showTimeSelect
                     timeFormat="HH:mm"
                     timeIntervals={15}

@@ -60,11 +60,11 @@ public class TripServiceImpl implements TripService {
     public List<Trip> getTrips(Integer pageNumber, Integer pageSize, String tripStatus, String driverUsername,
                                           String origin, String destination, String earliestDepartureTime,
                                           String latestDepartureTime, String availablePlaces, String smoking,
-                                          String pets, String luggage) {
+                                          String pets, String luggage,String airConditioned)  {
 
-        System.out.println(parseStringToLong(availablePlaces));
         if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
                 (pets == null || (pets.equalsIgnoreCase("yes") || pets.equalsIgnoreCase("no"))) &&
+                (airConditioned == null || (airConditioned.equalsIgnoreCase("yes") || airConditioned.equalsIgnoreCase("no"))) &&
                 (luggage == null || (luggage.equalsIgnoreCase("yes") || luggage.equalsIgnoreCase("no"))) &&
                 (availablePlaces == null || (parseStringToLong(availablePlaces) > 0 && parseStringToLong(availablePlaces) < 9)) &&
                 (tripStatus == null || (tripStatus.equalsIgnoreCase(
@@ -84,7 +84,7 @@ public class TripServiceImpl implements TripService {
                             userRepository.findFirstByUsername(driverUsername),
                             origin, destination, parseDateTime(earliestDepartureTime),parseDateTime(latestDepartureTime),
                             (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
-                            smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+                            smoking, pets, luggage,airConditioned, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
         }
         else return null;
     }

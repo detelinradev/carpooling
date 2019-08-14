@@ -146,7 +146,6 @@ class SearchTrips extends Component {
 
         const updatedFormElement = updateObject(this.state.createForm[name], {
             value: date,
-            //  valid: checkValidity(date, this.state.createForm['departureTime'].validation),
             touched: true
         });
         const updatedCreateForm = updateObject(this.state.createForm, {
@@ -370,14 +369,11 @@ class SearchTrips extends Component {
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
                 <Button btnType="Success"
-                    // disabled={!this.state.formIsValid}
                 >SEARCH</Button>
             </form>
         );
         let trips = <Spinner/>;
         if (!this.props.loading) {
-            console.log(this.props.trips)
-
             trips = this.props.trips.map(trip => (
                 <Trip
                     key={trip.id}

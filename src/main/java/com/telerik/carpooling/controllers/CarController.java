@@ -47,10 +47,18 @@ public class CarController {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @GetMapping(value = "/car")
-    public ResponseEntity<CarDtoResponse> getCar(final Authentication authentication){
+    @GetMapping(value = "/car/{id}")
+    public ResponseEntity<CarDtoResponse> getCar(@PathVariable final long id){
         return Optional
-                .ofNullable(dtoMapper.objectToDto(carService.getCar(userRepository.findFirstByUsername(
+                .ofNullable(dtoMapper.objectToDto(carService.getCar(id)))
+                .map(car -> ResponseEntity.ok().body(car))
+                .orElseGet(() -> ResponseEntity.ok().build());
+    }
+
+    @GetMapping(value = "/carMe")
+    public ResponseEntity<CarDtoResponse> getCarMeMe(final Authentication authentication){
+        return Optional
+                .ofNullable(dtoMapper.objectToDto(carService.getCarMe(userRepository.findFirstByUsername(
                         authentication.getName()))))
                 .map(car -> ResponseEntity.ok().body(car))
                 .orElseGet(() -> ResponseEntity.ok().build());

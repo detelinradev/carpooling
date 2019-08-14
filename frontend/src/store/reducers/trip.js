@@ -4,7 +4,6 @@ import { updateObject } from '../../shared/utility';
 const initialState = {
     trips: [],
     loading: false,
-    // purchased: false,
     trip:null,
     tripRole:null,
     passengerStatus:null,
@@ -63,7 +62,6 @@ const updateTripStart = ( state, action ) => {
 };
 
 const updateTripSuccess = ( state, action ) => {
-    // const newTrip = updateObject( action.tripData, { id: action.tripId } );
     return updateObject( state, {
         loading: false,
         tripUpdated: true,

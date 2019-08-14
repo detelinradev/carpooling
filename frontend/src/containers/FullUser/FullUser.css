@@ -1,0 +1,121 @@
+.Profile {
+    width: 80%;
+    box-shadow: 0 2px 3px #ccc;
+    box-sizing: border-box;
+    text-align: left;
+    display: flex;
+    flex-flow: row wrap;
+    margin: auto;
+    padding: 24px;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    margin-top: 35px;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    padding-left: 50px;
+    overflow: auto;
+}
+
+.Profile img {
+    height: 256px;
+}
+
+
+.header {
+    color: mediumseagreen;
+    text-align: center;
+}
+
+
+.rating {
+    margin-left: 50px;
+    width: 110%;
+    margin-top: 8px;
+    box-shadow: 0 2px 2px 3px #ccc;
+    box-sizing: border-box;
+    cursor: pointer;
+    justify-content: center;
+    display: flex;
+}
+
+.feedback {
+    width: 100%;
+    box-shadow: 0 2px 2px 3px #ccc;
+    box-sizing: border-box;
+    cursor: pointer;
+    justify-content: center;
+    text-align: left;
+    display: flex;
+    margin-top: 20px;
+    transition-property: background-color;
+    transition-duration: 1s;
+    transition-timing-function: linear;
+    transition-delay: 1s;
+    background-color: #cccccc;
+}
+
+.edit {
+    width: 100%;
+    box-shadow: 0 2px 2px 3px #ccc;
+    cursor: pointer;
+    text-align: center;
+    transition-property: background-color;
+    transition-duration: 1s;
+    transition-timing-function: linear;
+    transition-delay: 1s;
+    margin-top: 10px;
+}
+
+.head {
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    text-align: center;
+    margin-top: 100px;
+    color: mediumseagreen;
+}
+
+.input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+
+}
+
+.save:hover {
+    background-color: lightblue;
+}
+
+.cont {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+.Car {
+    cursor: pointer;
+    justify-content: center;
+    text-align: left;
+    display: flex;
+    flex-flow: row wrap;
+    padding: 15px;
+    width: 80%;
+    box-shadow: 0 2px 3px #ccc;
+    box-sizing: border-box;
+    flex-flow: row wrap;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    margin-top: 35px;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    margin-bottom: 50px;
+}
+
+.Car img {
+    height: 256px;
+}
+
+.Car {
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}

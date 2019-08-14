@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import './Comment.css';
-import * as actions from "../../../store/actions";
 import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
 import Avatar from '../../../assets/images/image-default.png'
-import Button from "@material-ui/core/Button";
 
 class Comment extends Component {
     state = {
@@ -38,17 +36,4 @@ class Comment extends Component {
 
 }
 
-const mapStateToProps = state => {
-    return {
-        // token: state.auth.token,
-        // commentImage: state.user.commentImage,
-        // modelId: state.user.modelId
-    }
-};
-const mapDispatchToProps = dispatch => {
-    return {
-        // onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Comment, axios));
+export default connect()(withErrorHandler(Comment, axios));

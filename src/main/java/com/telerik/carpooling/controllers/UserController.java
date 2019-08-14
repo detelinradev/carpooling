@@ -64,15 +64,6 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
-//    @GetMapping
-//    public ResponseEntity<?> getUsers (){
-//        return Optional
-//                .ofNullable(dtoMapper.userToDtoList(userService.getUsers()))
-//                .map(users -> ResponseEntity.ok().body(users))
-//                .orElseGet(() -> ResponseEntity.notFound().build());
-//    }
-
     @GetMapping (value = "/top-rated-drivers")
     public ResponseEntity<?> getTopRatedDrivers(@RequestParam(value = "_end", required = false)
                                                             Integer pageNumber,
@@ -239,6 +230,7 @@ public class UserController {
 
     @GetMapping("/avatarMe/car")
     public ResponseEntity<byte[]> downloadOwnCarImage(Authentication authentication) {
+        System.out.println(authentication.getAuthorities().stream().findFirst().toString().substring(14,19));
 
         return Optional
                 .ofNullable(imageService.getImage(userRepository.findFirstByUsername(

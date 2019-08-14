@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import './Home.css';
 import axios from '../../axios-baseUrl';
-import {FaAndroid} from 'react-icons/fa';
-import * as actions from '../../store/actions/index';
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 
@@ -45,19 +43,4 @@ class Home extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        // trips: state.trip.trips,
-        // loading: state.trip.loading,
-        // token: state.auth.token,
-    }
-};
-const mapDispatchToProps = dispatch => {
-    return {
-        // onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
-        // onShowFullTrip: (trip) => dispatch(actions.showFullTrip(trip)),
-        // onFetchUserImage:(token,userId)=> dispatch(actions.fetchImageUser(token,userId))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Home, axios));
+export default connect()(withErrorHandler(Home, axios));

@@ -22,7 +22,6 @@ public class TripDtoRequest {
     @Future
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-//    @JsonFormat(pattern = "yyyy-mm-dd HH:MM")
     private LocalDateTime departureTime;
 
     @Size(max = 20)

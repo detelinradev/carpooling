@@ -112,18 +112,8 @@ class Trip extends Component {
 
 const mapStateToProps = state => {
     return {
-        // trips: state.trip.trips,
-        // loading: state.trip.loading,
         token: state.auth.token,
-       // driverImage: state.user.driverImage,
-       //  modelId: state.user.modelId
     }
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-       // onFetchUserImage: (token, userId, userType, modelId) => dispatch(actions.fetchImageUser(token, userId, userType, modelId))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Trip, axios));
+export default connect(mapStateToProps)(withErrorHandler(Trip, axios));

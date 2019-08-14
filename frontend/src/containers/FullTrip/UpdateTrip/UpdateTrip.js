@@ -420,7 +420,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onUpdateTrip: (create, token) => dispatch(actions.updateTrip(create, token)),
-        onFetchTrip: (token, tripId) => dispatch(actions.fetchTrip(token, tripId)),
     };
 };
 

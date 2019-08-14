@@ -216,7 +216,6 @@ class Profile extends Component {
                                     PROFILE <FaUserEdit/></h3>
                                 </Button>
                             </div>
-                            {/*<li className="feedback"><Button><h3 className="header">Show Feedback</h3></Button></li>*/}
                         </ul>
                         <ul style={{maxWidth: 400}}>
                             <li className="rating">
@@ -261,8 +260,6 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         tripUpdate:state.trip.tripUpdated,
-        // carCreated:state.car.carCreated,
-        // onCarFinishCreate:(carCreated) => dispatch(actions.carFinishCreate(carCreated)),
 
     }
 };
@@ -270,8 +267,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onCreateCar: (create, token) => dispatch(actions.createCar(create, token))
-        // onFetchTrip: (token, tripId, passengerStatus) => dispatch(actions.fetchTrip(token, tripId, passengerStatus)),
-        // onTripFinishUpdate:(tripUpdated) => dispatch(actions.tripFinishUpdate(tripUpdated))
     };
 };
 

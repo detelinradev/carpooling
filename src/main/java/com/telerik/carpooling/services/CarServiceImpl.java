@@ -6,9 +6,12 @@ import com.telerik.carpooling.models.dtos.CarDtoRequest;
 import com.telerik.carpooling.models.dtos.CarDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.CarRepository;
+import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -17,11 +20,23 @@ public class CarServiceImpl implements CarService {
 
 
     private final CarRepository carRepository;
+    private final UserRepository userRepository;
 
 
     @Override
-    public Car getCar(User user) {
+    public Car getCarMe(User user) {
         return user.getCar();
+    }
+
+    @Override
+    public Car getCar(long  id) {
+        Optional<User> user =userRepository.findById(id);
+        Car car;
+        if(user.isPresent()) {
+            car = user.get().getCar();
+            return car;
+        }
+        return null;
     }
 
     @Override

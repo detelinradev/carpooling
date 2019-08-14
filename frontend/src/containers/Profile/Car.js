@@ -20,7 +20,7 @@ class Car extends Component {
     };
 
     async componentDidMount() {
-            const getCarResponse = await axios.get('/car', {
+            const getCarResponse = await axios.get('/carMe', {
                 headers:
                     {"Authorization": this.props.token}
             });

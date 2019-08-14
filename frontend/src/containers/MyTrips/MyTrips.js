@@ -83,7 +83,6 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
         onShowFullTrip: (trip,tripJoined,requestSent,tripRole,passengerStatus,isMyTrip) => dispatch(actions.showFullTrip(trip,tripJoined,requestSent,tripRole,passengerStatus,isMyTrip)),
-        // onFetchUserImage:(token,userId)=> dispatch(actions.fetchImageUser(token,userId))
     };
 };
 

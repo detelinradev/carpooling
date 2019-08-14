@@ -16,10 +16,14 @@ export {
     tripCreated
 } from './trip';
 
-// export {
-//     fetchImageCar,
-//     fetchImageUser
-// } from './user';
+export {
+    updateUser,
+    fetchUsers,
+    fetchUser,
+    showFullUser,
+    userFinishUpdate,
+    userCreated
+} from './user';
 
 export {
     createCar,

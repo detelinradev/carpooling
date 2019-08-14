@@ -10,6 +10,7 @@ import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsers(Integer pageNumber,Integer pageSize,String username,String firstName,String lastName,String email,
                               String phone) {
 
-        List<User> users = userRepository.findAllByIsDeletedIsFalse();
+        List<User> users = userRepository.findUsers(username,firstName,lastName,email,phone,(pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
         for(User user : users){
             if (ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).isPresent())
                 user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).get());
