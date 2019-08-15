@@ -233,7 +233,7 @@ public class TripServiceImpl implements TripService {
     private Trip acceptPassenger(Long passengerID, Long tripID) {
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
         Optional<User> passenger = userRepository.findById(passengerID);
-        if (trip.isPresent() && passenger.isPresent() && !passenger.get().getPassengerStatus().toString().equals("CANCELED")) {
+        if (trip.isPresent() && passenger.isPresent() && !trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.CANCELED)) {
             trip.get().getNotApprovedPassengers().remove(passenger.get());
             trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.ACCEPTED);
             trip.get().getPassengersAllowedToRate().add(passenger.get());
