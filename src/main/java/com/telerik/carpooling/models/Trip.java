@@ -38,7 +38,6 @@ public class Trip extends MappedAudibleBase {
 
     @Column(nullable = false)
     @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
-
     private Integer availablePlaces;
 
     private Integer tripDuration;

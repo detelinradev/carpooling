@@ -23,7 +23,7 @@ public interface TripService {
 
     Trip getTrip(String tripID);
 
-    List<Trip> getTrips(Integer pageEnd, Integer pageStart, String tripStatus, String driverUsername, String origin,
+    List<Trip> getTrips(Integer pageEnd, Integer pageStart, String tripStatus, String origin,
                                    String destination, String earliestDepartureTime, String latestDepartureTime,
                                    String availablePlaces, String smoking, String pets, String luggage, String airConditioned);
 

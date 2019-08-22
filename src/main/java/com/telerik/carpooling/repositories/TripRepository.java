@@ -21,11 +21,10 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     Optional<Trip> findByModelIdAndIsDeleted(@Param(value = "id") Long id);
 
     @Query("select t from Trip t " +
-            "join User u on t.driver = u.id " +
-            "join Car c on c.owner = u.id " +
+//            "join User u on t.driver = u.id " +
+//            "join Car c on c.owner = u.id " +
             "where " +
             "(:tripStatus is null or t.tripStatus = :tripStatus) and" +
-            "(:driver is null or t.driver = :driver) and" +
             "(:origin is null or :origin ='' or t.origin = :origin) and" +
             "(:destination is null or :destination ='' or t.destination = :destination) and" +
             "(:earliestDepartureTime is null  or t.departureTime >= :earliestDepartureTime) and" +
@@ -35,10 +34,10 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
             "(:pets is null or :pets ='' or t.petsAllowed = :pets) and" +
             "(:pets is null or :pets ='' or t.petsAllowed = :pets) and" +
             "(t.isDeleted is null) and" +
-            "(:luggage is null or :luggage ='' or t.luggageAllowed = :luggage) and" +
-            "(:airConditioned is null or :airConditioned ='' or c.airConditioned = :airConditioned)")
+            "(:luggage is null or :luggage ='' or t.luggageAllowed = :luggage)"
+//            "(:airConditioned is null or :airConditioned ='' or c.airConditioned = :airConditioned)"
+            )
     List<Trip> findTripsByPassedParameters(@Param(value = "tripStatus") TripStatus status,
-                                           @Param(value = "driver") User driver,
                                            @Param(value = "origin") String origin,
                                            @Param(value = "destination") String destination,
                                            @Param(value = "earliestDepartureTime") LocalDateTime EarliestDepartureTime,
@@ -47,7 +46,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
                                            @Param(value = "smoking") String smoking,
                                            @Param(value = "pets") String pets,
                                            @Param(value = "luggage") String luggage,
-                                           @Param(value = "airConditioned") String airConditioned,
+//                                           @Param(value = "airConditioned") String airConditioned,
                                            Pageable page
     );
 }

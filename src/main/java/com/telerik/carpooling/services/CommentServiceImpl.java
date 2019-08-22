@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -26,12 +28,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDtoResponse createComment(String tripID,
                                             User user, String message) {
-        long longTripID = 0;
-        try {
-            longTripID = Long.parseLong(tripID);
-        } catch (NumberFormatException e) {
-            log.error("Exception during parsing", e);
-        }
+        long longTripID = getLongTripID(tripID);
 
         Comment comment = new Comment();
         comment.setAuthor(user);
@@ -39,11 +36,27 @@ public class CommentServiceImpl implements CommentService {
 
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
         if (trip.isPresent()) {
-            trip.get().getComments().add(comment);
             comment.setTrip(trip.get());
 
             return dtoMapper.objectToDto(commentRepository.save(comment));
         }
         return null;
+    }
+
+    @Override
+    public Set<CommentDtoResponse> getComments(String tripId) {
+        long longTripID = getLongTripID(tripId);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
+        return trip.map(value -> dtoMapper.commentsToCommentsDtoResponses(commentRepository.getAllByTrip(value))).orElse(null);
+    }
+
+    private long getLongTripID(String tripID) {
+        long longTripID = 0;
+        try {
+            longTripID = Long.parseLong(tripID);
+        } catch (NumberFormatException e) {
+            log.error("Exception during parsing", e);
+        }
+        return longTripID;
     }
 }

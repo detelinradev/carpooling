@@ -58,7 +58,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<Trip> getTrips(Integer pageNumber, Integer pageSize, String tripStatus, String driverUsername,
+    public List<Trip> getTrips(Integer pageNumber, Integer pageSize, String tripStatus,
                                String origin, String destination, String earliestDepartureTime,
                                String latestDepartureTime, String availablePlaces, String smoking,
                                String pets, String luggage, String airConditioned) {
@@ -74,7 +74,6 @@ public class TripServiceImpl implements TripService {
                                 .findAny()
                                 .map(TripStatus::getCode)
                                 .orElse("")))) &&
-                ((driverUsername == null) || (userRepository.findFirstByUsername(driverUsername) != null)) &&
                 ((pageNumber != null && pageSize != null) || (pageNumber == null && pageSize == null))) {
             return
                     tripRepository.findTripsByPassedParameters(
@@ -82,10 +81,9 @@ public class TripServiceImpl implements TripService {
                                     .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
                                     .findAny()
                                     .orElse(null),
-                            userRepository.findFirstByUsername(driverUsername),
                             origin, destination, parseDateTime(earliestDepartureTime), parseDateTime(latestDepartureTime),
                             (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
-                            smoking, pets, luggage, airConditioned, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+                            smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
         } else return null;
     }
 

@@ -21,8 +21,6 @@ import java.util.Set;
 public class TripDtoResponse {
     private Long modelId;
 
-    private UserDtoResponse driver;
-
     @Size(max = 200)
     private String message;
 
@@ -39,15 +37,9 @@ public class TripDtoResponse {
     @Range(min = 1, max = 8, message = "Please enter total number of seats between 1 and 8!")
     private Integer availablePlaces;
 
-    private Set<UserDtoResponse> passengers;
-
     private TripStatus tripStatus;
 
-    private Set<CommentDtoResponse> comments;
-
-    private Set<UserDtoResponse>notApprovedPassengers;
-
-    private Map<UserDtoResponse, UserStatus> passengerStatus;
+    private Map<UserDtoResponse, UserStatus> userStatus;
 
     @Max(value = Integer.MAX_VALUE)
     private Integer tripDuration;

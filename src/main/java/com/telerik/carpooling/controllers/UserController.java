@@ -7,7 +7,9 @@ import com.telerik.carpooling.models.dtos.UserDtoRequest;
 import com.telerik.carpooling.models.dtos.UserDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.UserRepository;
+import com.telerik.carpooling.services.services.contracts.FeedbackService;
 import com.telerik.carpooling.services.services.contracts.ImageService;
+import com.telerik.carpooling.services.services.contracts.RatingService;
 import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -39,6 +41,8 @@ public class UserController {
 
     private final UserService userService;
     private final ImageService imageService;
+    private final RatingService ratingService;
+    private final FeedbackService feedbackService;
     private final DtoMapper dtoMapper;
 
     @GetMapping
@@ -241,6 +245,32 @@ public class UserController {
                     .ofNullable(imageService.getImage(userService.getUser(username).getCar().getCarImage().getModelId()))
                     .map(this::createImageModelInResponseEntity)
                     .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping(value = "/{tripId}/users/{userID}/rate")
+    public ResponseEntity<?> rateUser(@PathVariable final String tripId,
+                                      @PathVariable final String userID,
+                                      final Authentication authentication,
+                                      @RequestBody Integer rating) {
+
+        return Optional
+                .ofNullable(ratingService.rateUser(tripId, userService.getUser(
+                        authentication.getName()), userID, rating))
+                .map(tripDtoResponse -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PostMapping(value = "/{tripId}/users/{userID}/feedback")
+    public ResponseEntity<?> leaveFeedback(@PathVariable final String tripId,
+                                           @PathVariable final String userID,
+                                           final Authentication authentication,
+                                           @RequestBody String feedback) {
+
+        return Optional
+                .ofNullable(feedbackService.leaveFeedback(tripId, userService.getUser(
+                        authentication.getName()), userID, feedback))
+                .map(tripDtoResponse -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
 

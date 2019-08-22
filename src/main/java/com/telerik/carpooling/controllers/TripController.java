@@ -27,8 +27,6 @@ public class TripController {
     private final TripService tripService;
     private final UserService userService;
     private final CommentService commentService;
-    private final RatingService ratingService;
-    private final FeedbackService feedbackService;
     private final DtoMapper dtoMapper;
 
     @GetMapping
@@ -38,8 +36,6 @@ public class TripController {
                                               Integer pageSize,
                                       @RequestParam(value = "status", required = false)
                                               String tripStatus,
-                                      @RequestParam(value = "driver", required = false)
-                                              String driverUsername,
                                       @RequestParam(value = "origin", required = false)
                                               String origin,
                                       @RequestParam(value = "destination", required = false)
@@ -62,7 +58,7 @@ public class TripController {
     {
 
         return Optional
-                .ofNullable(dtoMapper.tripToDtoList(tripService.getTrips(pageNumber, pageSize, tripStatus, driverUsername, origin, destination,
+                .ofNullable(dtoMapper.tripToDtoList(tripService.getTrips(pageNumber, pageSize, tripStatus, origin, destination,
                         earliestDepartureTime, latestDepartureTime, availablePlaces, smoking, pets, luggage,airConditioned)))
                 .map(tripDtoResponse -> ResponseEntity.ok().body(tripDtoResponse))
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -152,40 +148,22 @@ public class TripController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping(value = "/{id}/comments")
-    public ResponseEntity<?> createComment(@PathVariable final String id,
+    @PostMapping(value = "/{tripId}/comments")
+    public ResponseEntity<?> createComment(@PathVariable final String tripId,
                                            final Authentication authentication,
                                            @RequestParam(value = "comment") final String message) {
         return Optional
-                .ofNullable(commentService.createComment(id, userService.getUser(
+                .ofNullable(commentService.createComment(tripId, userService.getUser(
                         authentication.getName()), message))
                 .map(commentDto -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PostMapping(value = "/{tripId}/users/{userID}/rate")
-    public ResponseEntity<?> rateUser(@PathVariable final String tripId,
-                                           @PathVariable final String userID,
-                                           final Authentication authentication,
-                                           @RequestBody Integer rating) {
-
+    @GetMapping(value = "/{tripId}/comments")
+    public ResponseEntity<?>getComments(@PathVariable final String tripId){
         return Optional
-                .ofNullable(ratingService.rateUser(tripId, userService.getUser(
-                        authentication.getName()), userID, rating))
-                .map(tripDtoResponse -> ResponseEntity.ok().build())
-                .orElseGet(() -> ResponseEntity.badRequest().build());
-    }
-
-    @PostMapping(value = "/{tripId}/users/{userID}/feedback")
-    public ResponseEntity<?> leaveFeedback(@PathVariable final String tripId,
-                                                    @PathVariable final String userID,
-                                                    final Authentication authentication,
-                                                    @RequestBody String feedback) {
-
-        return Optional
-                .ofNullable(feedbackService.leaveFeedback(tripId, userService.getUser(
-                        authentication.getName()), userID, feedback))
-                .map(tripDtoResponse -> ResponseEntity.ok().build())
+                .ofNullable(commentService.getComments(tripId))
+                .map(commentDto -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 }
