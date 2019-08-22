@@ -91,6 +91,12 @@ public class UserController {
                 .of(dtoMapper.userToDtoList(finalUserList))
                 .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+//        return Optional
+//                .ofNullable(dtoMapper.userToDtoList(userService.getTopRatedDrivers(pageNumber, pageSize, username, firstName, lastName, email,
+//                        phone)))
+//                .map(k -> ResponseEntity.ok().build())
+//                .orElseGet(() -> ResponseEntity.notFound().build());
+
     }
 
     @GetMapping (value = "/top-rated-passengers")
@@ -120,6 +126,11 @@ public class UserController {
                 .of(dtoMapper.userToDtoList(finalUserList))
                 .map(user -> ResponseEntity.ok().body(user))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+//        return Optional
+//                .ofNullable(dtoMapper.userToDtoList(userService.getTopRatedPassengers(pageNumber, pageSize, username, firstName, lastName, email,
+//                        phone)))
+//                .map(k -> ResponseEntity.ok().build())
+//                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping
@@ -206,7 +217,6 @@ public class UserController {
                                                final Authentication authentication) {
 
         URI fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
-        System.out.println(1);
         return Optional
                 .ofNullable(imageService.storeCarImage(file,
                         userRepository.findFirstByUsername(authentication.getName()),fileDownloadUri))

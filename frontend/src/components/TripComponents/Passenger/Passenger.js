@@ -94,11 +94,14 @@ class Passenger extends Component {
     render() {
         let currentPassengerStatus = null;
         let currentPassengers = Object.entries(this.props.trip.passengerStatus).map(key =>
-            (key[0].includes('username=' + this.props.data.username)) ? currentPassengerStatus = key[1] : null)
-        if ((currentPassengerStatus === 'PENDING' && this.props.data.username === this.props.username)
+            (key[0].includes('username=' + this.props.data.username)) ? currentPassengerStatus = key[1] : null);
+        console.log(currentPassengerStatus)
+        if (
+            (currentPassengerStatus === 'PENDING' && this.props.data.username === this.props.username)
             || (currentPassengerStatus === 'PENDING' && this.props.username === this.props.trip.driver.username)
             || (currentPassengerStatus === 'REJECTED' && this.props.data.username === this.props.username)
-            || (currentPassengerStatus !== 'PENDING' && currentPassengerStatus !== 'REJECTED')) {
+            || (currentPassengerStatus !== 'PENDING' && currentPassengerStatus !== 'REJECTED')
+        ) {
 
             let formFeedback = null;
             let formRating = null;
@@ -108,7 +111,10 @@ class Passenger extends Component {
                 let some = Object.entries(this.props.trip.passengerStatus).map(key =>
                     (key[0].includes('username=' + this.props.data.username)) ? currentPassengerStatus = key[1] : null);
 
-                if (this.props.tripRole === 'driver' && this.props.tripStatus === "DONE" && currentPassengerStatus !== "PENDING") {
+                if (this.props.tripRole === 'driver'
+                    && this.props.tripStatus === "DONE"
+                    && currentPassengerStatus !== "PENDING"
+                ) {
                     formFeedback = (
                         <div>
                             <form onSubmit={(event) => this.giveFeedbackHandler(event)}>
@@ -125,7 +131,7 @@ class Passenger extends Component {
                         <div>
                             <form onSubmit={(event) => this.ratePassengerHandler(event)}>
                                 <p
-                                    className="header">RATE THE PASSENGER
+                                    className="header">RATE PASSENGER
                                 </p>
                                 <input
                                     value={this.state.newRate}
@@ -186,13 +192,13 @@ class Passenger extends Component {
                         </div>
                         <a>
                             {formRating}
-                            {responseMessage}
                         </a>
                         <a>
                             {formFeedback}
                         </a>
                         <p className="meta-data">{this.props.data.passengerStatus}</p>
                     </div>
+                    {responseMessage}
 
                 </div>)
         } else {

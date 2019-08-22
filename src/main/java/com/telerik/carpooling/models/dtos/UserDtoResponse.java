@@ -1,10 +1,8 @@
 package com.telerik.carpooling.models.dtos;
 
-import com.telerik.carpooling.enums.PassengerStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.Column;
 import javax.validation.constraints.*;

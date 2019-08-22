@@ -5,23 +5,23 @@ import javax.persistence.Converter;
 import java.util.stream.Stream;
 
 @Converter(autoApply = true)
-public class PassengerStatusConverter implements AttributeConverter<PassengerStatus, String> {
+public class UserStatusConverter implements AttributeConverter<UserStatus, String> {
 
     @Override
-    public String convertToDatabaseColumn(PassengerStatus passengerStatus) {
-        if (passengerStatus == null) {
+    public String convertToDatabaseColumn(UserStatus userStatus) {
+        if (userStatus == null) {
             return null;
         }
-        return passengerStatus.getCode();
+        return userStatus.getCode();
     }
 
     @Override
-    public PassengerStatus convertToEntityAttribute(String code) {
+    public UserStatus convertToEntityAttribute(String code) {
         if (code == null) {
             return null;
         }
 
-        return Stream.of(PassengerStatus.values())
+        return Stream.of(UserStatus.values())
                 .filter(c -> c.getCode().equals(code))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);

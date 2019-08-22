@@ -32,6 +32,11 @@ public interface UserService {
     List<TripDtoResponse> getUserOwnTrips(String username);
 
     User deleteUser(String userId);
+
+    List<User> getTopRatedPassengers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone);
+
+    List<User> getTopRatedDrivers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone);
 }
+
 
 

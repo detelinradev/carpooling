@@ -1,11 +1,8 @@
 package com.telerik.carpooling.models.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.telerik.carpooling.enums.PassengerStatus;
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.enums.TripStatus;
-import com.telerik.carpooling.models.Car;
-import com.telerik.carpooling.models.Comment;
-import com.telerik.carpooling.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,7 +47,7 @@ public class TripDtoResponse {
 
     private Set<UserDtoResponse>notApprovedPassengers;
 
-    private Map<UserDtoResponse, PassengerStatus> passengerStatus;
+    private Map<UserDtoResponse, UserStatus> passengerStatus;
 
     @Max(value = Integer.MAX_VALUE)
     private Integer tripDuration;

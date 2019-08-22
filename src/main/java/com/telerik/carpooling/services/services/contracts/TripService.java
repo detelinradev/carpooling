@@ -1,12 +1,9 @@
 package com.telerik.carpooling.services.services.contracts;
 
-import com.telerik.carpooling.enums.PassengerStatus;
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.TripDtoEdit;
-import com.telerik.carpooling.models.dtos.TripDtoRequest;
-import com.telerik.carpooling.models.dtos.TripDtoResponse;
 
 import java.util.List;
 
@@ -19,7 +16,7 @@ public interface TripService {
     Trip addPassenger(String tripID, User user);
 
     Trip changePassengerStatus(String TripID,
-                               User user, String passengerID, PassengerStatus passengerStatus);
+                               User user, String passengerID, UserStatus userStatus);
 
     Trip changeTripStatus(String tripID,
                           User user, TripStatus tripStatus);

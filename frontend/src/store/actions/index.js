@@ -14,7 +14,8 @@ export {
     showFullTrip,
     tripFinishUpdate,
     tripCreated,
-    dismountSearch
+    dismountSearch,
+    changeTripStatus
 } from './trip';
 
 export {

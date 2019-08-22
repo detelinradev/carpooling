@@ -1,8 +1,7 @@
 package com.telerik.carpooling.controllers;
 
-import com.telerik.carpooling.enums.PassengerStatus;
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.enums.TripStatus;
-import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.dtos.TripDtoEdit;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
@@ -19,9 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Optional;
 
 @CrossOrigin(maxAge = 3600)
@@ -79,24 +76,16 @@ public class TripController {
     @PostMapping
     public ResponseEntity<?> createTrip(@Valid @RequestBody final TripDtoRequest tripDtoRequest,
                                         final Authentication authentication) {
-        Trip trip = dtoMapper.dtoToObject(tripDtoRequest);
 
         return Optional
-                .ofNullable(tripService.createTrip(trip, userRepository.findFirstByUsername(
+                .ofNullable(tripService.createTrip(dtoMapper.dtoToObject(tripDtoRequest), userRepository.findFirstByUsername(
                         authentication.getName())))
                 .map(k -> ResponseEntity.status(HttpStatus.CREATED).build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping
-    public ResponseEntity<?> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit,
-                                        final Authentication authentication,
-                                        HttpServletResponse httpServletResponse) throws IOException {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripDtoEdit.getModelId());
-        if (trip.isPresent()) {
-            if (!trip.get().getCreator().equals(authentication.getName()))
-                httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        }
+    public ResponseEntity<?> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit) {
         return Optional
                 .ofNullable(tripService.updateTrip(dtoMapper.dtoToObject(tripDtoEdit)))
                 .map(tripResponseDto -> ResponseEntity.ok().build())
@@ -149,10 +138,10 @@ public class TripController {
     public ResponseEntity<?> changePassengerStatus(@PathVariable final String tripId,
                                                    @PathVariable final String passengerId,
                                                    final Authentication authentication,
-                                                   @RequestParam(value = "status") PassengerStatus passengerStatus) {
+                                                   @RequestParam(value = "status") UserStatus userStatus) {
         return Optional
                 .ofNullable(tripService.changePassengerStatus(tripId, userRepository.findFirstByUsername(
-                        authentication.getName()), passengerId, passengerStatus))
+                        authentication.getName()), passengerId, userStatus))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

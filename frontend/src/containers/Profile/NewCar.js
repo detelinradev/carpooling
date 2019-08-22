@@ -240,7 +240,7 @@ class NewCar extends Component {
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
                 <div style={{textAlign: 'center'}}>
-                <Button btnType="Success" disabled={!this.state.formIsValid} onSubmit={() =>this.editCloseHandler()}>CREATE</Button>
+                <Button btnType="Success" disabled={!this.state.formIsValid} onSubmit={() =>this.toggleModal()}>CREATE</Button>
                 </div>
             </form>
         );

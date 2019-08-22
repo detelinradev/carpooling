@@ -21,24 +21,25 @@ class MyTrips extends Component {
         const isDriver = trip.driver.username === currentUserName;
         let isPassenger;
         let passengerStatus =null;
-        if(!isDriver) {
+        // if(!isDriver) {
 
             let passengers = trip.passengers.map(passenger =>
                 (passenger.username === currentUserName)
             );
             isPassenger = passengers.includes(true);
-            if(isPassenger){
+            // if(isPassenger){
                 let some =Object.entries(trip.passengerStatus).map(key=>
                     (key[0].includes('username='+currentUserName))? passengerStatus = key[1]:null
                 );
-            }
-        }
+            // }
+        // }
 
         let isMyTrip = true;
         let tripRole = null;
+        let tripStatus = trip.tripStatus;
         if(isPassenger) tripRole = 'passenger';
         if(isDriver) tripRole = 'driver';
-        this.props.onShowFullTrip(trip, tripRole,passengerStatus,isMyTrip);
+        this.props.onShowFullTrip(trip, tripRole,passengerStatus,isMyTrip,tripStatus);
         this.props.history.push('/fullTrip');
     };
     render() {
@@ -85,7 +86,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token,formData) => dispatch(actions.fetchTrips(token, formData)),
-        onShowFullTrip: (trip,tripJoined,requestSent,tripRole,passengerStatus,isMyTrip) => dispatch(actions.showFullTrip(trip,tripJoined,requestSent,tripRole,passengerStatus,isMyTrip)),
+        onShowFullTrip: (trip,tripRole,passengerStatus,isMyTrip,tripStatus) => dispatch(actions.showFullTrip(trip,tripRole,passengerStatus,isMyTrip,tripStatus)),
         onDismountMyTrips: () => dispatch(actions.dismountSearch()),
     };
 };

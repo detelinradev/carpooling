@@ -1,6 +1,6 @@
 package com.telerik.carpooling.services;
 
-import com.telerik.carpooling.enums.PassengerStatus;
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
@@ -30,10 +30,9 @@ public class TripServiceImpl implements TripService {
     public Trip createTrip(Trip trip, User driver) {
 
         if (driver.getCar() != null) {
-            trip.setDriver(driver);
             trip.setCar(driver.getCar());
             trip.setTripStatus(TripStatus.AVAILABLE);
-            trip.getUsers().add(driver);
+            trip.getUserStatus().put(driver,UserStatus.DRIVER);
             tripRepository.save(trip);
             driver.getMyTrips().add(trip);
             userRepository.save(driver);
@@ -138,12 +137,8 @@ public class TripServiceImpl implements TripService {
         if (trip.isPresent()) {
             if (trip.get().getTripStatus().equals(TripStatus.AVAILABLE)
                     && !trip.get().getDriver().equals(passenger)) {
-                trip.get().getPassengerStatus().put(passenger, PassengerStatus.PENDING);
-                trip.get().getNotApprovedPassengers().add(passenger);
-                trip.get().getPassengers().add(passenger);
-                trip.get().getUsers().add(passenger);
+                trip.get().getUserStatus().put(passenger, UserStatus.PENDING);
                 tripRepository.save(trip.get());
-                passenger.getMyTrips().add(trip.get());
                 userRepository.save(passenger);
                 return trip.get();
             }
@@ -152,7 +147,7 @@ public class TripServiceImpl implements TripService {
         return null;
     }
 
-    public Trip changePassengerStatus(String tripID, User user, String passengerID, PassengerStatus statusPassenger) {
+    public Trip changePassengerStatus(String tripID, User user, String passengerID, UserStatus statusPassenger) {
 
         long intTripID = parseStringToLong(tripID);
         long intPassengerID = parseStringToLong(passengerID);
@@ -161,22 +156,22 @@ public class TripServiceImpl implements TripService {
         Optional<User> passenger = userRepository.findById(intPassengerID);
 
         if (trip.isPresent() && passenger.isPresent()) {
-            if (trip.get().getPassengerStatus().keySet().stream().anyMatch(k -> k.equals(user))) {
-                if (statusPassenger.equals(PassengerStatus.CANCELED)) {
+            if (trip.get().getUserStatus().keySet().stream().anyMatch(k -> k.equals(user))) {
+                if (statusPassenger.equals(UserStatus.CANCELED)) {
                     return cancelPassenger(user, intTripID);
                 }
             }
             if (trip.get().getDriver().equals(user)
-                    && trip.get().getPassengerStatus().keySet().stream().anyMatch(k -> k.equals(passenger.get()))) {
-                if (statusPassenger.equals(PassengerStatus.ACCEPTED) &&
+                    && trip.get().getUserStatus().keySet().stream().anyMatch(k -> k.equals(passenger.get()))) {
+                if (statusPassenger.equals(UserStatus.ACCEPTED) &&
                         trip.get().getTripStatus().equals(TripStatus.AVAILABLE)) {
                     return acceptPassenger(intPassengerID, intTripID);
-                } else if (statusPassenger.equals(PassengerStatus.REJECTED)) {
+                } else if (statusPassenger.equals(UserStatus.REJECTED)) {
                     return rejectPassenger(intPassengerID, intTripID);
-                } else if (statusPassenger.equals(PassengerStatus.ABSENT) &&
+                } else if (statusPassenger.equals(UserStatus.ABSENT) &&
                         (trip.get().getTripStatus().equals(TripStatus.AVAILABLE) ||
                                 trip.get().getTripStatus().equals(TripStatus.BOOKED)) &&
-                        user.getPassengerStatus().equals(PassengerStatus.ACCEPTED)) {
+                        user.getPassengerStatus().equals(UserStatus.ACCEPTED)) {
                     return absentPassenger(intTripID, intPassengerID);
                 }
             }
@@ -189,18 +184,15 @@ public class TripServiceImpl implements TripService {
 
         if (trip.isPresent()) {
 
-            if (trip.get().getPassengerStatus().get(user).equals(PassengerStatus.PENDING)) {
-                trip.get().getNotApprovedPassengers().remove(user);
-            } else if (trip.get().getPassengerStatus().get(user).equals(PassengerStatus.ACCEPTED)) {
-                trip.get().getPassengersAllowedToRate().remove(user);
-                trip.get().getPassengersAllowedToGiveFeedback().remove(user);
+            if (trip.get().getUserStatus().get(user).equals(UserStatus.PENDING)) {
+            } else if (trip.get().getUserStatus().get(user).equals(UserStatus.ACCEPTED)) {
                 trip.get().setAvailablePlaces(trip.get().getAvailablePlaces() + 1);
 
                 if (trip.get().getTripStatus().equals(TripStatus.BOOKED)) {
                     trip.get().setTripStatus(TripStatus.AVAILABLE);
                 }
             }
-            trip.get().getPassengerStatus().put(user, PassengerStatus.CANCELED);
+            trip.get().getUserStatus().put(user, UserStatus.CANCELED);
             trip.get().getUsers().remove(user);
             tripRepository.save(trip.get());
             user.getMyTrips().remove(trip.get());
@@ -214,17 +206,14 @@ public class TripServiceImpl implements TripService {
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
         Optional<User> passenger = userRepository.findById(passengerID);
         if (trip.isPresent() && passenger.isPresent()) {
-            if (trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.ACCEPTED)) {
-                trip.get().getPassengersAvailableForRate().remove(passenger.get());
-                trip.get().getPassengersAvailableForFeedback().remove(passenger.get());
+            if (trip.get().getUserStatus().get(passenger.get()).equals(UserStatus.ACCEPTED)) {
                 trip.get().setAvailablePlaces(trip.get().getAvailablePlaces() + 1);
                 if (trip.get().getTripStatus().equals(TripStatus.BOOKED)) {
                     trip.get().setTripStatus(TripStatus.AVAILABLE);
                 }
-            } else if (trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.PENDING)) {
-                trip.get().getNotApprovedPassengers().remove(passenger.get());
+            } else if (trip.get().getUserStatus().get(passenger.get()).equals(UserStatus.PENDING)) {
             }
-            trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.REJECTED);
+            trip.get().getUserStatus().put(passenger.get(), UserStatus.REJECTED);
             return tripRepository.save(trip.get());
         }
         return null;
@@ -233,18 +222,13 @@ public class TripServiceImpl implements TripService {
     private Trip acceptPassenger(Long passengerID, Long tripID) {
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
         Optional<User> passenger = userRepository.findById(passengerID);
-        if (trip.isPresent() && passenger.isPresent() && !trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.CANCELED)) {
-            trip.get().getNotApprovedPassengers().remove(passenger.get());
-            trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.ACCEPTED);
-            trip.get().getPassengersAllowedToRate().add(passenger.get());
-            trip.get().getPassengersAvailableForRate().add(passenger.get());
-            trip.get().getPassengersAllowedToGiveFeedback().add(passenger.get());
-            trip.get().getPassengersAvailableForFeedback().add(passenger.get());
+        if (trip.isPresent() && passenger.isPresent() && !trip.get().getUserStatus().get(passenger.get()).equals(UserStatus.CANCELED)) {
+            trip.get().getUserStatus().put(passenger.get(), UserStatus.ACCEPTED);
             trip.get().setAvailablePlaces(trip.get().getAvailablePlaces() - 1);
             if (trip.get().getAvailablePlaces()
-                    == trip.get().getPassengerStatus().values()
+                    == trip.get().getUserStatus().values()
                     .stream()
-                    .filter(k -> k.equals(PassengerStatus.ACCEPTED))
+                    .filter(k -> k.equals(UserStatus.ACCEPTED))
                     .count()) {
                 trip.get().setTripStatus(TripStatus.BOOKED);
             }
@@ -258,10 +242,7 @@ public class TripServiceImpl implements TripService {
         Optional<User> passenger = userRepository.findById(passengerID);
 
         if (trip.isPresent() && passenger.isPresent()) {
-            trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.ABSENT);
-            trip.get().getPassengersAllowedToRate().remove(passenger.get());
-            trip.get().getPassengersAllowedToGiveFeedback().remove(passenger.get());
-            trip.get().getPassengers().remove(passenger.get());
+            trip.get().getUserStatus().put(passenger.get(), UserStatus.ABSENT);
             trip.get().setAvailablePlaces(trip.get().getAvailablePlaces() + 1);
             if (trip.get().getTripStatus().equals(TripStatus.BOOKED))
                 trip.get().setTripStatus(TripStatus.AVAILABLE);
@@ -276,10 +257,10 @@ public class TripServiceImpl implements TripService {
 
         if (trip.isPresent()) {
             trip.get().setTripStatus(TripStatus.BOOKED);
-            trip.get().getPassengerStatus().values()
+            trip.get().getUserStatus().values()
                     .stream()
-                    .filter(k -> k.equals(PassengerStatus.PENDING))
-                    .forEach(p -> p = PassengerStatus.REJECTED);
+                    .filter(k -> k.equals(UserStatus.PENDING))
+                    .forEach(p -> p = UserStatus.REJECTED);
             return tripRepository.save(trip.get());
         }
         return null;

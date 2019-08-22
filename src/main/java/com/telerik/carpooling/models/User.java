@@ -2,18 +2,14 @@ package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.telerik.carpooling.enums.PassengerStatus;
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.*;
 import org.hibernate.envers.Audited;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @EqualsAndHashCode(callSuper = true,exclude ={"userImage", "car", "myTrips"})
@@ -55,25 +51,7 @@ public class User extends MappedAudibleBase {
     private String password;
 
     @Size(max = 250)
-    private String role;
-
-    private PassengerStatus passengerStatus;
-
-    @Size(max = 250)
     private String avatarUri;
-
-    @JsonIgnore
-    @ManyToMany
-    @JsonIgnoreProperties("users")
-    private List<Trip> myTrips = new ArrayList<>();
-
-    @JsonIgnore
-    @ElementCollection
-    private Set<String> feedbackAsDriver = new HashSet<>();
-
-    @JsonIgnore
-    @ElementCollection
-    private Set<String> feedbackAsPassenger = new HashSet<>();
 
     @JsonIgnore
     @OneToOne(mappedBy = "user")
@@ -84,5 +62,11 @@ public class User extends MappedAudibleBase {
     @OneToOne(mappedBy = "owner")
     @JsonIgnoreProperties("owner")
     private Car car;
+
+    @JsonIgnore
+    @JsonIgnoreProperties("users")
+    @ElementCollection
+    @MapKeyColumn(name = "id")
+    private Map<Trip, UserStatus> myTrips = new HashMap<>();
 
 }

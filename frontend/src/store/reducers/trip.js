@@ -9,7 +9,8 @@ const initialState = {
     passengerStatus:null,
     isMyTrip:null,
     tripCreated:false,
-    tripUpdated:false
+    tripUpdated:false,
+    tripStatus:null
 };
 
 const createInit = ( state, action ) => {
@@ -21,13 +22,20 @@ const showFullTrip = ( state, action ) => {
         trip: action.trip,
         tripRole: action.tripRole,
         passengerStatus: action.passengerStatus,
-        isMyTrip: action.isMyTrip
+        isMyTrip: action.isMyTrip,
+        tripStatus:action.tripStatus
     } );
 };
 
 const tripFinishUpdate = (state,action) =>{
     return updateObject( state, {
         tripUpdated: action.tripUpdated,
+    } );
+};
+
+const tripChangeStatus = (state,action) =>{
+    return updateObject( state, {
+        tripStatus: action.tripStatus,
     } );
 };
 
@@ -126,6 +134,7 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.FETCH_TRIP_FAIL: return fetchTripFail( state, action );
         case actionTypes.SHOW_FULL_TRIP: return showFullTrip(state, action);
         case actionTypes.DISMOUNT_SEARCH: return dismountSearch(state, action);
+        case actionTypes.CHANGE_TRIP_STATUS: return tripChangeStatus(state, action);
         default: return state;
     }
 };

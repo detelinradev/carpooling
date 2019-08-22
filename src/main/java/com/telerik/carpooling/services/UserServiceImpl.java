@@ -94,6 +94,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getTopRatedPassengers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone) {
+        List<User> users = userRepository.findUsers(username,firstName,lastName,email,phone,(pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+        for(User user : users){
+            if (ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).isPresent())
+                user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).get());
+        }
+        users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
+
+        return users.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> getTopRatedDrivers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone) {
+
+        List<User> users = userRepository.findUsers(username,firstName,lastName,email,phone,(pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+        for(User user : users){
+            if (ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).isPresent())
+                user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).get());
+        }
+        users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
+
+        return users.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public User updateCurrentUserPassword(final String password, final User user) {
         if (isPasswordValid(password)) {
             user.setPassword(bCryptEncoder.encode(password));

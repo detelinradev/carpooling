@@ -90,6 +90,7 @@ class FullTrip extends Component {
             headers: {"Authorization": this.props.token}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.props.onTripChangeStatus(tripStatus);
             this.setState({success: 'Trip status changed to ' + tripStatus});
         });
     }
@@ -463,7 +464,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrip: (token, tripId, passengerStatus) => dispatch(actions.fetchTrip(token, tripId, passengerStatus)),
-        onTripFinishUpdate: (tripUpdated) => dispatch(actions.tripFinishUpdate(tripUpdated))
+        onTripFinishUpdate: (tripUpdated) => dispatch(actions.tripFinishUpdate(tripUpdated)),
+        onTripChangeStatus: (tripStatus) => dispatch(actions.changeTripStatus(tripStatus)),
     };
 };
 

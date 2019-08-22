@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import axios from '../../axios-baseUrl';
 import Driver from "./Driver";
-import './TopRatedDrivers.css';
+import './TopRatedUsers.css';
 import Passengers from "./Passengers";
 
-class topRatedDrivers extends Component {
+class topRatedUsers extends Component {
     state = {
         drivers: [],
         passengers: []
@@ -80,4 +80,4 @@ class topRatedDrivers extends Component {
     }
 }
 
-export default topRatedDrivers;
+export default topRatedUsers;

@@ -64,6 +64,13 @@ export const tripFinishUpdate = ( tripUpdated ) => {
     };
 };
 
+export const changeTripStatus = ( tripStatus ) => {
+    return {
+        type: actionTypes.CHANGE_TRIP_STATUS,
+        tripStatus:tripStatus
+    };
+};
+
 export const tripCreated = ( tripCreated ) => {
     return {
         type: actionTypes.TRIP_CREATED,
@@ -110,13 +117,14 @@ export const createInit = () => {
     };
 };
 
-export const showFullTrip = ( trip,tripRole,passengerStatus,isMyTrip) => {
+export const showFullTrip = ( trip,tripRole,passengerStatus,isMyTrip,tripStatus) => {
     return {
         type: actionTypes.SHOW_FULL_TRIP,
         trip:trip,
         tripRole:tripRole,
         passengerStatus:passengerStatus,
-        isMyTrip:isMyTrip
+        isMyTrip:isMyTrip,
+        tripStatus:tripStatus
     };
 };
 
