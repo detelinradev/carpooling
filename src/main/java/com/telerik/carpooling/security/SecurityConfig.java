@@ -59,15 +59,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.cors().and().csrf().disable();
         http.csrf().disable().cors().and().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users/authenticate","/users/register").permitAll()
-                .antMatchers(HttpMethod.GET,
-                            "/trips/**",
-                                       "/users/top-rated-drivers",
-                                        "/users/top-rated-passengers",
-                                         "/users/avatar/**").permitAll()
-                .antMatchers("/api/**").hasRole("ADMIN")
+                .antMatchers("/api/**").hasRole("SERVER_ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new LoginFilter("/users/authenticate", authenticationManager()),
