@@ -13,11 +13,5 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TripMapperResolver {
 
-    private final TripRepository tripRepository;
 
-    @ObjectFactory
-    Trip resolve(TripDtoEdit dto, @TargetType Class<Trip> type) throws IllegalArgumentException {
-        return dto != null && dto.getModelId() != 0 ? tripRepository.findById(dto.getModelId())
-                .orElseThrow(()->new IllegalArgumentException("Invalid ID supplied")) : null;
-    }
 }

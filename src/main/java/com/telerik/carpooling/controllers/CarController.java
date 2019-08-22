@@ -7,6 +7,7 @@ import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.CarService;
+import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -22,27 +23,27 @@ import java.util.Optional;
 @Log4j2
 public class CarController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final CarService carService;
     private final DtoMapper dtoMapper;
 
     @PostMapping(value = "/car")
-    public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final Car car,
+    public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final CarDtoRequest car,
                                                     final Authentication authentication){
 
         return Optional
-                .ofNullable(dtoMapper.objectToDto(carService.createCar(car, userRepository.findFirstByUsername(
-                        authentication.getName()))))
+                .ofNullable(carService.createCar(car, userService.getUser(
+                        authentication.getName())))
                 .map(carDto -> ResponseEntity.ok().body(carDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping(value = "/car")
-    public ResponseEntity<CarDtoResponse> updateCar(@Valid @RequestBody final Car car,
+    public ResponseEntity<CarDtoResponse> updateCar(@Valid @RequestBody final CarDtoResponse car,
                                                     final Authentication authentication){
         return Optional
-                .ofNullable(dtoMapper.objectToDto(carService.updateCar(car ,userRepository.findFirstByUsername(
-                        authentication.getName()))))
+                .ofNullable(carService.updateCar(car ,userService.getUser(
+                        authentication.getName())))
                 .map(carDto -> ResponseEntity.ok().body(carDto))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
@@ -50,7 +51,7 @@ public class CarController {
     @GetMapping(value = "/car/{id}")
     public ResponseEntity<CarDtoResponse> getCar(@PathVariable final long id){
         return Optional
-                .ofNullable(dtoMapper.objectToDto(carService.getCar(id)))
+                .ofNullable(carService.getCar(id))
                 .map(car -> ResponseEntity.ok().body(car))
                 .orElseGet(() -> ResponseEntity.ok().build());
     }
@@ -58,8 +59,8 @@ public class CarController {
     @GetMapping(value = "/carMe")
     public ResponseEntity<CarDtoResponse> getCarMeMe(final Authentication authentication){
         return Optional
-                .ofNullable(dtoMapper.objectToDto(carService.getCarMe(userRepository.findFirstByUsername(
-                        authentication.getName()))))
+                .ofNullable(carService.getCarMe(userService.getUser(
+                        authentication.getName())))
                 .map(car -> ResponseEntity.ok().body(car))
                 .orElseGet(() -> ResponseEntity.ok().build());
     }

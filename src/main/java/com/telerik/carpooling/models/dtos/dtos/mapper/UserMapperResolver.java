@@ -12,11 +12,5 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserMapperResolver {
 
-    private final UserRepository userRepository;
 
-    @ObjectFactory
-    User resolve(UserDtoResponse dto, @TargetType Class<User> type) throws IllegalArgumentException {
-        return dto != null && dto.getModelId() != 0 ? userRepository.findById(dto.getModelId())
-                .orElseThrow(()->new IllegalArgumentException("Invalid ID supplied")) : null;
-    }
 }

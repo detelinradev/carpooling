@@ -13,9 +13,6 @@ import javax.validation.constraints.Size;
 public class CommentDtoResponse {
 
     private Long modelId;
-
     private UserDtoResponse author;
-
-    @Size(min = 1,max = 250)
     private String message;
 }

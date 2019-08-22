@@ -163,7 +163,7 @@ public class TripController {
     public ResponseEntity<?>getComments(@PathVariable final String tripId){
         return Optional
                 .ofNullable(commentService.getComments(tripId))
-                .map(commentDto -> ResponseEntity.ok().build())
+                .map(value -> ResponseEntity.ok().body(value))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 }

@@ -1,9 +1,6 @@
 package com.telerik.carpooling.models.dtos.dtos.mapper;
 
-import com.telerik.carpooling.models.Car;
-import com.telerik.carpooling.models.Comment;
-import com.telerik.carpooling.models.Trip;
-import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.models.*;
 import com.telerik.carpooling.models.dtos.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = { TripMapperResolver.class,CarMapperResolver.class,UserMapperResolver.class })
+        uses = { MapperResolver.class })
 public interface DtoMapper {
 
     TripDtoResponse objectToDto(Trip trip);
@@ -21,8 +18,6 @@ public interface DtoMapper {
     Trip dtoToObject(TripDtoEdit tripDtoEdit);
 
     Trip dtoToObject(TripDtoRequest tripRequestDto);
-
-    Trip dtoToObject(TripDtoResponse tripResponseDto);
 
     CarDtoResponse objectToDto(Car car);
 
@@ -42,9 +37,17 @@ public interface DtoMapper {
 
     Comment dtoToObject(CommentDtoResponse commentDtoResponse);
 
+    FeedbackDtoResponse objectToDto(Feedback feedback);
+
+    Feedback dtoToObject(FeedbackDtoRequest feedbackDtoRequest);
+
+    Feedback dtoToObject(FeedbackDtoResponse feedbackDtoResponse);
+
     Set<UserDtoResponse> usersToUserDtoResponses(Set<User> passengers);
 
     Set<CommentDtoResponse> commentsToCommentsDtoResponses(Set<Comment>comments);
+
+    Set<FeedbackDtoResponse> feedbackToFeedbackDtoResponses(Set<Feedback>feedback);
 
     List<TripDtoResponse> tripToDtoList(List<Trip> trips);
 

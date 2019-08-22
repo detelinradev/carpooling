@@ -14,11 +14,6 @@ import org.springframework.stereotype.Component;
 public class CommentMapperResolver {
 
 
-    private final CommentRepository commentRepository;
 
-    @ObjectFactory
-    Comment resolve(CommentDtoResponse dto, @TargetType Class<Comment> type) {
-        return dto != null && dto.getModelId() != 0 ? commentRepository.findById(dto.getModelId()).orElse(new Comment()) : new Comment();
-    }
 
 }

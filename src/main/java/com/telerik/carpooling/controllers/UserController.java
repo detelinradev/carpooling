@@ -273,6 +273,14 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+    @GetMapping(value = "/{username}/feedback")
+    public ResponseEntity<?>getFeedback(@PathVariable final String username){
+        return Optional
+                .ofNullable(feedbackService.getFeedback(username))
+                .map(value -> ResponseEntity.ok().body(value))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
 
     private ResponseEntity<byte[]> createImageModelInResponseEntity(Image dbFile) {
         HttpHeaders header = new HttpHeaders();
