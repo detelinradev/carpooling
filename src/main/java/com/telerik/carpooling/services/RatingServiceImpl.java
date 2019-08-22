@@ -1,5 +1,6 @@
 package com.telerik.carpooling.services;
 
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.models.Rating;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
@@ -23,33 +24,19 @@ public class RatingServiceImpl implements RatingService {
     private final UserRepository userRepository;
 
     @Override
-    public Rating rateDriver(String tripID, User passenger, Integer rating) {
-        long intTripID = parseStringToInt(tripID);
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
-        if (trip.isPresent()&&rating>0 && rating <6) {
-            User driver = trip.get().getDriver();
-            if (trip.get().getPassengersAllowedToRate().contains(passenger)) {
-                trip.get().getPassengersAllowedToRate().remove(passenger);
-                Rating ratingObject = new Rating(passenger, driver, rating,true);
-                return ratingRepository.save(ratingObject);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Rating ratePassenger(String tripID, User driver, String passengerID, Integer rating) {
+    public Rating rateUser(String tripID, User user, String ratedUserID, Integer rating) {
 
         long intTripID = parseStringToInt(tripID);
-        long intPassengerID = parseStringToInt(passengerID);
+        long intRatedUserID = parseStringToInt(ratedUserID);
 
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
-        Optional<User> passenger = userRepository.findById(intPassengerID);
+        Optional<User> ratedUser = userRepository.findById(intRatedUserID);
 
-        if (trip.isPresent() && passenger.isPresent()&&rating>0 && rating <6 ) {
-            if (trip.get().getPassengersAvailableForRate().contains(passenger.get())) {
-                trip.get().getPassengersAvailableForRate().remove(passenger.get());
-                Rating ratingObject = new Rating(driver, passenger.get(), rating,false);
+        if (trip.isPresent() && ratedUser.isPresent()&&rating>0 && rating <6 ) {
+            if (trip.get().getUserStatus().containsKey(ratedUser.get())
+                    &&trip.get().getUserStatus().containsKey(user)) {
+                boolean isDriver = trip.get().getUserStatus().get(ratedUser.get()).equals(UserStatus.DRIVER);
+                Rating ratingObject = new Rating(user, ratedUser.get(), rating,isDriver);
                 return ratingRepository.save(ratingObject);
             }
         }

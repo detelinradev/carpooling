@@ -18,10 +18,6 @@ public interface UserService {
 
     User updateCurrentUserEmail(String email,User user);
 
-    User leaveFeedbackDriver(String tripID, User user, String feedback);
-
-    User leaveFeedbackPassenger(String tripID, User user,String passengerID, String feedback);
-
     User updateUser(User user);
 
     User getUser(String username);

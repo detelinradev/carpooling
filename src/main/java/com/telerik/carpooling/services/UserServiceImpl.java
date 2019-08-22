@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<TripDtoResponse> getUserOwnTrips(String username) {
-        List<Trip> tripNotDeleted = userRepository.findFirstByUsername(username).getMyTrips()
+        List<Trip> tripNotDeleted = userRepository.findFirstByUsername(username).getMyTrips().keySet()
                 .stream().filter(trip -> trip.getIsDeleted() == null)
                 .collect(Collectors.toList());
 
@@ -136,41 +136,6 @@ public class UserServiceImpl implements UserService {
             user.setEmail(email);
             return userRepository.save(user);
         } else return null;
-    }
-
-    public User leaveFeedbackDriver(String tripID, User passenger, String feedback) {
-
-        long intTripID = parseStringToLong(tripID);
-
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
-
-        if (trip.isPresent()) {
-            User driver = trip.get().getDriver();
-            if (trip.get().getPassengersAllowedToGiveFeedback().contains(passenger)) {
-                trip.get().getPassengersAllowedToGiveFeedback().remove(passenger);
-                driver.getFeedbackAsDriver().add(feedback);
-                return userRepository.save(driver);
-            }
-        }
-        return null;
-    }
-
-    public User leaveFeedbackPassenger(String tripID, User driver, String passengerID, String feedback) {
-
-        long intTripID = parseStringToLong(tripID);
-        long intPassengerID = parseStringToLong(passengerID);
-
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
-        Optional<User> passenger = userRepository.findById(intPassengerID);
-
-        if (trip.isPresent() && passenger.isPresent()) {
-            if (trip.get().getPassengersAvailableForFeedback().contains(passenger.get())) {
-                trip.get().getPassengersAvailableForFeedback().remove(passenger.get());
-                passenger.get().getFeedbackAsPassenger().add(feedback);
-                return userRepository.save(passenger.get());
-            }
-        }
-        return null;
     }
 
     private long parseStringToLong(String tripID) {

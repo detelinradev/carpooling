@@ -8,10 +8,7 @@ import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
-import com.telerik.carpooling.services.services.contracts.CommentService;
-import com.telerik.carpooling.services.services.contracts.RatingService;
-import com.telerik.carpooling.services.services.contracts.TripService;
-import com.telerik.carpooling.services.services.contracts.UserService;
+import com.telerik.carpooling.services.services.contracts.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +25,10 @@ import java.util.Optional;
 public class TripController {
 
     private final TripService tripService;
-    private final TripRepository tripRepository;
     private final UserService userService;
-    private final UserRepository userRepository;
     private final CommentService commentService;
     private final RatingService ratingService;
+    private final FeedbackService feedbackService;
     private final DtoMapper dtoMapper;
 
     @GetMapping
@@ -78,7 +74,7 @@ public class TripController {
                                         final Authentication authentication) {
 
         return Optional
-                .ofNullable(tripService.createTrip(dtoMapper.dtoToObject(tripDtoRequest), userRepository.findFirstByUsername(
+                .ofNullable(tripService.createTrip(dtoMapper.dtoToObject(tripDtoRequest), userService.getUser(
                         authentication.getName())))
                 .map(k -> ResponseEntity.status(HttpStatus.CREATED).build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -100,7 +96,7 @@ public class TripController {
 
         return Optional
                 .ofNullable(tripService.changeTripStatus(tripID,
-                        userRepository.findFirstByUsername(authentication.getName()), tripStatus))
+                        userService.getUser(authentication.getName()), tripStatus))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -128,7 +124,7 @@ public class TripController {
     public ResponseEntity<?> addPassenger(@PathVariable final String id,
                                           final Authentication authentication) {
         return Optional
-                .ofNullable(tripService.addPassenger(id, userRepository.findFirstByUsername(
+                .ofNullable(tripService.addPassenger(id, userService.getUser(
                         authentication.getName())))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -140,7 +136,7 @@ public class TripController {
                                                    final Authentication authentication,
                                                    @RequestParam(value = "status") UserStatus userStatus) {
         return Optional
-                .ofNullable(tripService.changePassengerStatus(tripId, userRepository.findFirstByUsername(
+                .ofNullable(tripService.changePassengerStatus(tripId, userService.getUser(
                         authentication.getName()), passengerId, userStatus))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -150,7 +146,7 @@ public class TripController {
     public ResponseEntity<?> deleteTrip(@PathVariable final String tripId,
                                         final Authentication authentication) {
         return Optional
-                .ofNullable(tripService.deleteTrip(tripId, userRepository.findFirstByUsername(
+                .ofNullable(tripService.deleteTrip(tripId, userService.getUser(
                         authentication.getName())))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -161,57 +157,34 @@ public class TripController {
                                            final Authentication authentication,
                                            @RequestParam(value = "comment") final String message) {
         return Optional
-                .ofNullable(commentService.createComment(id, userRepository.findFirstByUsername(
+                .ofNullable(commentService.createComment(id, userService.getUser(
                         authentication.getName()), message))
                 .map(commentDto -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PostMapping(value = "/{id}/driver/rate")
-    public ResponseEntity<?> rateDriver(@PathVariable final String id,
-                                        final Authentication authentication,
-                                        @RequestBody Integer rating) {
-        return Optional
-                .ofNullable(ratingService.rateDriver(id, userRepository.findFirstByUsername(
-                        authentication.getName()), rating))
-                .map(tripDtoResponse -> ResponseEntity.ok().build())
-                .orElseGet(() -> ResponseEntity.badRequest().build());
-    }
-
-    @PostMapping(value = "/{tripId}/passengers/{passengerId}/rate")
-    public ResponseEntity<?> ratePassenger(@PathVariable final String tripId,
-                                           @PathVariable final String passengerId,
+    @PostMapping(value = "/{tripId}/users/{userID}/rate")
+    public ResponseEntity<?> rateUser(@PathVariable final String tripId,
+                                           @PathVariable final String userID,
                                            final Authentication authentication,
                                            @RequestBody Integer rating) {
 
         return Optional
-                .ofNullable(ratingService.ratePassenger(tripId, userRepository.findFirstByUsername(
-                        authentication.getName()), passengerId, rating))
+                .ofNullable(ratingService.rateUser(tripId, userService.getUser(
+                        authentication.getName()), userID, rating))
                 .map(tripDtoResponse -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PostMapping(value = "/{tripId}/passengers/{passengerId}/feedback")
-    public ResponseEntity<?> leaveFeedbackPassenger(@PathVariable final String tripId,
-                                                    @PathVariable final String passengerId,
+    @PostMapping(value = "/{tripId}/users/{userID}/feedback")
+    public ResponseEntity<?> leaveFeedback(@PathVariable final String tripId,
+                                                    @PathVariable final String userID,
                                                     final Authentication authentication,
                                                     @RequestBody String feedback) {
 
         return Optional
-                .ofNullable(userService.leaveFeedbackPassenger(tripId, userRepository.findFirstByUsername(
-                        authentication.getName()), passengerId, feedback))
-                .map(tripDtoResponse -> ResponseEntity.ok().build())
-                .orElseGet(() -> ResponseEntity.badRequest().build());
-    }
-
-    @PostMapping(value = "/{id}/driver/feedback")
-    public ResponseEntity<?> leaveFeedbackDriver(@PathVariable final String id,
-                                                 final Authentication authentication,
-                                                 @RequestBody String feedback) {
-
-        return Optional
-                .ofNullable(userService.leaveFeedbackDriver(id, userRepository.findFirstByUsername(
-                        authentication.getName()), feedback))
+                .ofNullable(feedbackService.leaveFeedback(tripId, userService.getUser(
+                        authentication.getName()), userID, feedback))
                 .map(tripDtoResponse -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }

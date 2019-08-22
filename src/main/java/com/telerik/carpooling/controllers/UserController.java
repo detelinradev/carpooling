@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -36,12 +37,12 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "users")
 public class UserController {
 
-    private final UserRepository userRepository;
     private final UserService userService;
     private final ImageService imageService;
     private final DtoMapper dtoMapper;
 
     @GetMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> getUsers(@RequestParam(value = "_end", required = false)
                                               Integer pageNumber,
                                       @RequestParam(value = "_start", required = false)
@@ -79,23 +80,11 @@ public class UserController {
                                                             String email,
                                                 @RequestParam(value = "phone", required = false)
                                                             String phone) {
-        List<User> users = userService.getUsers(pageNumber, pageSize, username, firstName, lastName, email,
-                phone);
-        users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
-
-        List<User>finalUserList =users.stream()
-                .limit(10)
-                .collect(Collectors.toList());
-
         return Optional
-                .of(dtoMapper.userToDtoList(finalUserList))
-                .map(user -> ResponseEntity.ok().body(user))
+                .ofNullable(dtoMapper.userToDtoList(userService.getTopRatedDrivers(pageNumber, pageSize, username, firstName, lastName, email,
+                        phone)))
+                .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
-//        return Optional
-//                .ofNullable(dtoMapper.userToDtoList(userService.getTopRatedDrivers(pageNumber, pageSize, username, firstName, lastName, email,
-//                        phone)))
-//                .map(k -> ResponseEntity.ok().build())
-//                .orElseGet(() -> ResponseEntity.notFound().build());
 
     }
 
@@ -114,27 +103,16 @@ public class UserController {
                                                                String email,
                                                    @RequestParam(value = "phone", required = false)
                                                                String phone) {
-        List<User> users = userService.getUsers(pageNumber, pageSize, username, firstName, lastName, email,
-                phone);
-        users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
-
-        List<User>finalUserList =users.stream()
-                .limit(10)
-                .collect(Collectors.toList());
 
         return Optional
-                .of(dtoMapper.userToDtoList(finalUserList))
-                .map(user -> ResponseEntity.ok().body(user))
+                .ofNullable(dtoMapper.userToDtoList(userService.getTopRatedPassengers(pageNumber, pageSize, username, firstName, lastName, email,
+                        phone)))
+                .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
-//        return Optional
-//                .ofNullable(dtoMapper.userToDtoList(userService.getTopRatedPassengers(pageNumber, pageSize, username, firstName, lastName, email,
-//                        phone)))
-//                .map(k -> ResponseEntity.ok().build())
-//                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping
-    //@PreAuthorize(value = "hasRole(ADMIN)")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> editUser(@Valid @RequestBody UserDtoResponse userDtoResponse){
         User user =dtoMapper.dtoToObject(userDtoResponse);
 
@@ -145,6 +123,7 @@ public class UserController {
     }
 
     @GetMapping (value = "/{username}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> getUser(@PathVariable() String username){
         return Optional
                 .ofNullable(dtoMapper.objectToDto(userService.getUser(username)))
@@ -163,7 +142,8 @@ public class UserController {
     }
 
     @PatchMapping(value = "/{userId}/delete")
-    public ResponseEntity<?> deleteTrip(@PathVariable final String userId) {
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<?> deleteUser(@PathVariable final String userId) {
         return Optional
                 .ofNullable(userService.deleteUser(userId))
                 .map(k -> ResponseEntity.ok().build())
@@ -174,7 +154,7 @@ public class UserController {
     public ResponseEntity<?> updateUserOwnInfo(@RequestParam final String password, final Authentication authentication) {
 
         return Optional
-                .ofNullable(userService.updateCurrentUserPassword(password, userRepository.findFirstByUsername(
+                .ofNullable(userService.updateCurrentUserPassword(password, userService.getUser(
                         authentication.getName())))
                 .map(user -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -184,7 +164,7 @@ public class UserController {
     @PatchMapping(value = "/me/update-email")
     public ResponseEntity<?> updateUserOwnEmail(@RequestParam final String email, final Authentication authentication) {
         return Optional
-                .ofNullable(userService.updateCurrentUserEmail(email, userRepository.findFirstByUsername(
+                .ofNullable(userService.updateCurrentUserEmail(email, userService.getUser(
                         authentication.getName())))
                 .map(user -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -207,7 +187,7 @@ public class UserController {
 
         return Optional
                 .ofNullable(imageService.storeUserImage(file,
-                        userRepository.findFirstByUsername(authentication.getName()),fileDownloadUri))
+                        userService.getUser(authentication.getName()),fileDownloadUri))
                 .map(userDtoResponse -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -219,7 +199,7 @@ public class UserController {
         URI fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
         return Optional
                 .ofNullable(imageService.storeCarImage(file,
-                        userRepository.findFirstByUsername(authentication.getName()),fileDownloadUri))
+                        userService.getUser(authentication.getName()),fileDownloadUri))
                 .map(userDtoResponse -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -229,43 +209,38 @@ public class UserController {
     public ResponseEntity<byte[]> downloadUserOwnImage(final Authentication authentication) {
 
         return Optional
-                .ofNullable(imageService.getImage(userRepository.findFirstByUsername(
+                .ofNullable(imageService.getImage(userService.getUser(
                         authentication.getName()).getUserImage().getModelId()))
                 .map(this::createImageModelInResponseEntity)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/avatar/{userId}")
-    public ResponseEntity<byte[]> downloadUserImage(@PathVariable Long userId) {
+    @GetMapping("/avatar/{username}")
+    public ResponseEntity<byte[]> downloadUserImage(@PathVariable String username) {
 
-        if(userRepository.findById(userId).isPresent()) {
             return Optional
-                    .ofNullable(imageService.getImage(userRepository.findById(userId).get().getUserImage().getModelId()))
+                    .ofNullable(imageService.getImage(userService.getUser(username).getUserImage().getModelId()))
                     .map(this::createImageModelInResponseEntity)
                     .orElseGet(() -> ResponseEntity.notFound().build());
-        }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/avatarMe/car")
     public ResponseEntity<byte[]> downloadOwnCarImage(Authentication authentication) {
-        System.out.println(authentication.getAuthorities().stream().findFirst().toString().substring(14,19));
 
         return Optional
-                .ofNullable(imageService.getImage(userRepository.findFirstByUsername(
+                .ofNullable(imageService.getImage(userService.getUser(
                         authentication.getName()).getCar().getCarImage().getModelId()))
                 .map(this::createImageModelInResponseEntity)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/avatar/car/{userId}")
-    public ResponseEntity<byte[]> downloadCarImage(@PathVariable Long userId) {
+    @GetMapping("/avatar/car/{username}")
+    public ResponseEntity<byte[]> downloadCarImage(@PathVariable String username) {
 
-        if(userRepository.findById(userId).isPresent()) {
             return Optional
-                    .ofNullable(imageService.getImage(userRepository.findById(userId).get().getCar().getCarImage().getModelId()))
+                    .ofNullable(imageService.getImage(userService.getUser(username).getCar().getCarImage().getModelId()))
                     .map(this::createImageModelInResponseEntity)
                     .orElseGet(() -> ResponseEntity.notFound().build());
-        }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 

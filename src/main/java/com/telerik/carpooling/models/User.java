@@ -50,6 +50,8 @@ public class User extends MappedAudibleBase {
     @JsonIgnore
     private String password;
 
+    private String role;
+
     @Size(max = 250)
     private String avatarUri;
 
