@@ -25,7 +25,6 @@ public class CarController {
 
     private final UserService userService;
     private final CarService carService;
-    private final DtoMapper dtoMapper;
 
     @PostMapping(value = "/car")
     public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final CarDtoRequest car,

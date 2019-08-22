@@ -9,10 +9,10 @@ public interface CarService {
 
     CarDtoResponse getCar(long id);
 
-    CarDtoRequest createCar(Car car, User owner);
+    CarDtoResponse createCar(CarDtoRequest car, User owner);
 
-    CarDtoResponse updateCar(Car car, User owner);
+    CarDtoResponse updateCar(CarDtoResponse car, User owner);
 
 
-    CarDtoResponse getCarMe(User firstByUsername);
+    CarDtoResponse getCarMe(User user);
 }
