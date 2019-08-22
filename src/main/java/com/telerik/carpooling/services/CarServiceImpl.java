@@ -29,24 +29,19 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDtoResponse getCarMe(User user) {
-        try {
+
+        if (user.getCar() != null)
             return dtoMapper.objectToDto(user.getCar());
-        }catch (NullPointerException e){
-            log.error("User does not have a car", e);
-        }
+
         return null;
     }
 
     @Override
-    public CarDtoResponse getCar(long  id) {
-        Optional<User> user =userRepository.findById(id);
-        try {
-            return user.map(value -> dtoMapper.objectToDto(value.getCar())).orElse(null);
-        }catch (NullPointerException e){
-            log.error("User does not have a car", e);
-        }
-        return null;
+    public CarDtoResponse getCar(long id) {
 
+        Optional<User> user = userRepository.findById(id);
+
+        return user.map(value -> dtoMapper.objectToDto(value.getCar())).orElse(null);
     }
 
     @Override
@@ -59,11 +54,11 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDtoResponse updateCar(CarDtoResponse carDtoResponse, User owner) {
         Car car = dtoMapper.dtoToObject(carDtoResponse);
-        if(car != null) {
+        if (car != null) {
             car.setModelId(owner.getCar().getModelId());
             car.setOwner(owner);
             return dtoMapper.objectToDto(carRepository.save(car));
-        }else return null;
+        } else return null;
     }
 
 }
