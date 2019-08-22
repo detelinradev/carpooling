@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final TripRepository tripRepository;
     private final RatingRepository ratingRepository;
     private final DtoMapper dtoMapper;
     private final BCryptPasswordEncoder bCryptEncoder;

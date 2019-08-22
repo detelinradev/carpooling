@@ -11,7 +11,7 @@ public interface TripService {
 
     Trip createTrip(Trip trip, User driver);
 
-    Trip updateTrip(Trip trip);
+    Trip updateTrip(Trip trip, User user);
 
     Trip addPassenger(String tripID, User user);
 

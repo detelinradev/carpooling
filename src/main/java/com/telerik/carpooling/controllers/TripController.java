@@ -81,9 +81,9 @@ public class TripController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit) {
+    public ResponseEntity<?> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit,final Authentication authentication) {
         return Optional
-                .ofNullable(tripService.updateTrip(dtoMapper.dtoToObject(tripDtoEdit)))
+                .ofNullable(tripService.updateTrip(dtoMapper.dtoToObject(tripDtoEdit),userService.getUser(authentication.getName())))
                 .map(tripResponseDto -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

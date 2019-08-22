@@ -32,9 +32,9 @@ public class TripServiceImpl implements TripService {
         if (driver.getCar() != null) {
             trip.setCar(driver.getCar());
             trip.setTripStatus(TripStatus.AVAILABLE);
-            trip.getUserStatus().put(driver,UserStatus.DRIVER);
+            trip.getUserStatus().put(driver, UserStatus.DRIVER);
             tripRepository.save(trip);
-            driver.getMyTrips().put(trip,UserStatus.DRIVER);
+            driver.getMyTrips().put(trip, UserStatus.DRIVER);
             userRepository.save(driver);
             return trip;
         }
@@ -42,9 +42,11 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public Trip updateTrip(Trip trip) {
+    public Trip updateTrip(Trip trip, User user) {
 
+        if(trip.getUserStatus().get(user).equals(UserStatus.DRIVER))
         return tripRepository.save(trip);
+        return null;
     }
 
     @Override
@@ -57,9 +59,9 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public List<Trip> getTrips(Integer pageNumber, Integer pageSize, String tripStatus, String driverUsername,
-                                          String origin, String destination, String earliestDepartureTime,
-                                          String latestDepartureTime, String availablePlaces, String smoking,
-                                          String pets, String luggage,String airConditioned)  {
+                               String origin, String destination, String earliestDepartureTime,
+                               String latestDepartureTime, String availablePlaces, String smoking,
+                               String pets, String luggage, String airConditioned) {
 
         if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
                 (pets == null || (pets.equalsIgnoreCase("yes") || pets.equalsIgnoreCase("no"))) &&
@@ -81,11 +83,10 @@ public class TripServiceImpl implements TripService {
                                     .findAny()
                                     .orElse(null),
                             userRepository.findFirstByUsername(driverUsername),
-                            origin, destination, parseDateTime(earliestDepartureTime),parseDateTime(latestDepartureTime),
+                            origin, destination, parseDateTime(earliestDepartureTime), parseDateTime(latestDepartureTime),
                             (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
-                            smoking, pets, luggage,airConditioned, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
-        }
-        else return null;
+                            smoking, pets, luggage, airConditioned, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+        } else return null;
     }
 
     @Override
@@ -95,11 +96,10 @@ public class TripServiceImpl implements TripService {
 
 
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
-        System.out.println(trip.isPresent());
-        if(trip.isPresent()) {
+        if (trip.isPresent()) {
             if (trip.get().getUserStatus().containsKey(user))
-                if(trip.get().getUserStatus().get(user).equals(UserStatus.DRIVER))
-                trip.get().setIsDeleted(true);
+                if (trip.get().getUserStatus().get(user).equals(UserStatus.DRIVER))
+                    trip.get().setIsDeleted(true);
             return tripRepository.save(trip.get());
         }
         return null;
@@ -113,7 +113,7 @@ public class TripServiceImpl implements TripService {
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
 
         if (trip.isPresent() && trip.get().getUserStatus().containsKey(user)) {
-            if(trip.get().getUserStatus().get(user).equals(UserStatus.DRIVER)) {
+            if (trip.get().getUserStatus().get(user).equals(UserStatus.DRIVER)) {
                 if (tripStatus.equals(TripStatus.BOOKED)
                         && trip.get().getTripStatus().equals(TripStatus.AVAILABLE))
                     return markTripAsBooked(intTripID);
@@ -188,14 +188,14 @@ public class TripServiceImpl implements TripService {
 
         if (trip.isPresent()) {
 
-            if (trip.get().getUserStatus().get(user).equals(UserStatus.PENDING)) {
-            } else if (trip.get().getUserStatus().get(user).equals(UserStatus.ACCEPTED)) {
+            if (trip.get().getUserStatus().get(user).equals(UserStatus.ACCEPTED)) {
                 trip.get().setAvailablePlaces(trip.get().getAvailablePlaces() + 1);
 
                 if (trip.get().getTripStatus().equals(TripStatus.BOOKED)) {
                     trip.get().setTripStatus(TripStatus.AVAILABLE);
                 }
             }
+
             trip.get().getUserStatus().put(user, UserStatus.CANCELED);
             tripRepository.save(trip.get());
             user.getMyTrips().remove(trip.get());
@@ -214,7 +214,6 @@ public class TripServiceImpl implements TripService {
                 if (trip.get().getTripStatus().equals(TripStatus.BOOKED)) {
                     trip.get().setTripStatus(TripStatus.AVAILABLE);
                 }
-            } else if (trip.get().getUserStatus().get(passenger.get()).equals(UserStatus.PENDING)) {
             }
             trip.get().getUserStatus().put(passenger.get(), UserStatus.REJECTED);
             return tripRepository.save(trip.get());
@@ -313,9 +312,9 @@ public class TripServiceImpl implements TripService {
         LocalDateTime departureTimeFormat;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        if(departureTime != null) {
+        if (departureTime != null) {
             try {
-                departureTimeFormat = LocalDateTime.parse(departureTime,dateTimeFormatter);
+                departureTimeFormat = LocalDateTime.parse(departureTime, dateTimeFormatter);
                 return departureTimeFormat;
             } catch (Exception e) {
                 log.error("Exception during parsing", e);
