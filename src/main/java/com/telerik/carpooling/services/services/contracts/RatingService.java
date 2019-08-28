@@ -6,5 +6,5 @@ import com.telerik.carpooling.models.User;
 public interface RatingService {
 
 
-    Rating rateUser(String tripID, User user,String passengerID, Integer rating);
+    Rating rateUser(String tripID, User user,String passengerID, int rating);
 }

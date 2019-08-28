@@ -59,6 +59,11 @@ public class Trip extends MappedAudibleBase {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver", nullable = false)
+    private User driver;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car", nullable = false)
     private Car car;
 

@@ -25,7 +25,7 @@ export {
     showFullUser,
     userFinishUpdate,
     userCreated,
-    dismountAdmin
+    dismountAdmin,
 } from './user';
 
 export {

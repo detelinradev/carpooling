@@ -2,6 +2,7 @@ package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.models.base.MappedAudibleBase;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.RatingRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +41,8 @@ public class UserServiceImpl implements UserService {
         newUser.setRole("USER");
         newUser.setIsDeleted(false);
         newUser.setPhone(user.getPhone());
+        newUser.setRatingAsDriver(0.0);
+        newUser.setRatingAsPassenger(0.0);
         return userRepository.save(newUser);
     }
 
@@ -50,10 +54,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(String username) {
          User user = userRepository.findFirstByUsername(username);
-        if (ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).isPresent())
-            user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).get());
-        if (ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).isPresent())
-            user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).get());
+            user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()));
+            user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()));
 
         return user;
     }
@@ -64,10 +66,8 @@ public class UserServiceImpl implements UserService {
 
         List<User> users = userRepository.findUsers(username,firstName,lastName,email,phone,(pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
         for(User user : users){
-            if (ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).isPresent())
-                user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).get());
-            if (ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).isPresent())
-                user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).get());
+                user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()));
+                user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()));
         }
         return users;
     }
@@ -93,11 +93,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getTopRatedPassengers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone) {
-        List<User> users = userRepository.findUsers(username,firstName,lastName,email,phone,(pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
-        for(User user : users){
-            if (ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).isPresent())
-                user.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId()).get());
+    public List<User> getTopRatedPassengers(Integer pageNumber, Integer pageSize, String username,
+                                            String firstName, String lastName, String email, String phone) {
+        List<User> users = userRepository.findUsers(username,firstName,lastName,email,phone,(pageNumber != null
+                ? PageRequest.of(pageNumber, pageSize) : null));
+        for(User user : users) {
+            Double rating = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
+            if(rating != null)
+                user.setRatingAsPassenger(rating);
         }
         users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
 
@@ -107,12 +110,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getTopRatedDrivers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone) {
-
-        List<User> users = userRepository.findUsers(username,firstName,lastName,email,phone,(pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+    public List<User> getTopRatedDrivers(Integer pageNumber, Integer pageSize, String username, String firstName,
+                                         String lastName, String email, String phone) {
+        List<User> users = userRepository.findUsers(username,firstName,lastName,email,phone,(pageNumber != null
+                ? PageRequest.of(pageNumber, pageSize) : null));
         for(User user : users){
-            if (ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).isPresent())
-                user.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(user.getModelId()).get());
+            Double rating = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
+            if(rating != null)
+                user.setRatingAsDriver(rating);
         }
         users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
 

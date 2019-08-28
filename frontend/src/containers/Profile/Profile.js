@@ -222,7 +222,7 @@ class Profile extends Component {
                                 <h3><FaMedal/> Rating as driver<span
                                     className="header"><h3>{
                                     <StarRatings
-                                        rating={this.state.user.ratingAsDriver}
+                                        rating={this.state.user.ratingAsDriver===null?0.0:this.state.user.ratingAsDriver}
                                         starRatedColor="yellow"
                                         changeRating={this.changeRating}
                                         numberOfStars={5}
@@ -235,7 +235,7 @@ class Profile extends Component {
                                 <h3><span><FaMedal/></span> Rating as passenger<span
                                     className="header"><h1>{
                                     <StarRatings
-                                        rating={this.state.user.ratingAsPassenger}
+                                        rating={this.state.user.ratingAsPassenger===null?0.0:this.state.user.ratingAsPassenger}
                                         starRatedColor="yellow"
                                         changeRating={this.changeRating}
                                         numberOfStars={5}

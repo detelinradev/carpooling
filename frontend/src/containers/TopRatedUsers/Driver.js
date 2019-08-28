@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import Avatar from '../../assets/images/image-default.png';
 import './Driver.css';
+import {connect} from "react-redux";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import axios from "../../axios-baseUrl";
 
 class Driver extends Component {
     state = {
@@ -8,8 +11,14 @@ class Driver extends Component {
     };
 
     async componentDidMount() {
+
+        const headers = {
+            "Content-Type":"application/json",
+            'Authorization':this.props.token
+        };
+
         const getDriverAvatarResponse = await
-            fetch("http://localhost:8080/users/avatar/" + this.props.driver.modelId)
+            fetch("http://localhost:8080/users/avatar/" + this.props.driver.username,{headers})
                 .then(response => response.blob());
 
         if (getDriverAvatarResponse.size > 100) {
@@ -34,4 +43,10 @@ class Driver extends Component {
 
 }
 
-export default Driver;
+const mapStateToProps = state => {
+    return {
+        token: state.auth.token,
+    }
+};
+
+export default connect(mapStateToProps)(withErrorHandler(Driver, axios));

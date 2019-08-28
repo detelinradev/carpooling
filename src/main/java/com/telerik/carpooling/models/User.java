@@ -41,9 +41,9 @@ public class User extends MappedAudibleBase {
     private String phone;
 
 
-    private Double ratingAsDriver = 0.0;
+    private Double ratingAsDriver;
 
-    private Double ratingAsPassenger = 0.0;
+    private Double ratingAsPassenger;
 
     @Size(min = 8, max = 128, message = "Password must be between 8 and 128 symbols")
     @Column(nullable = false)
@@ -66,7 +66,6 @@ public class User extends MappedAudibleBase {
     private Car car;
 
     @JsonIgnore
-    @JsonIgnoreProperties("users")
     @ElementCollection
     @MapKeyColumn(name = "id")
     private Map<Trip, UserStatus> myTrips = new HashMap<>();

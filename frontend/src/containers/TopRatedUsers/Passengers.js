@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Avatar from '../../assets/images/image-default.png';
 import './Passengers.css';
+import {connect} from "react-redux";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import axios from "../../axios-baseUrl";
 
 class Passengers extends Component {
     state = {
@@ -8,8 +11,14 @@ class Passengers extends Component {
     };
 
     async componentDidMount() {
+
+        const headers = {
+            "Content-Type":"application/json",
+            'Authorization':this.props.token
+        };
+
         const getPassengerAvatarResponse = await
-            fetch("http://localhost:8080/users/avatar/" + this.props.passenger.modelId)
+            fetch("http://localhost:8080/users/avatar/" + this.props.passenger.username,{headers})
                 .then(response => response.blob());
 
         if(getPassengerAvatarResponse.size>100){
@@ -34,4 +43,10 @@ class Passengers extends Component {
 
 }
 
-export default Passengers;
+const mapStateToProps = state => {
+    return {
+        token: state.auth.token,
+    }
+};
+
+export default connect(mapStateToProps)(withErrorHandler(Passengers, axios));

@@ -38,7 +38,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         if (trip.isPresent() && receiver.isPresent()) {
             if (trip.get().getUserStatus().containsKey(receiver.get()) && trip.get().getUserStatus().containsKey(user)) {
-                boolean isDriver = trip.get().getUserStatus().get(receiver.get()).equals(UserStatus.DRIVER);
+                boolean isDriver = trip.get().getDriver().equals(receiver.get());
                 Feedback feedback = new Feedback(user,receiver.get(),feedbackString,isDriver);
                 return feedbackRepository.save(feedback);
             }

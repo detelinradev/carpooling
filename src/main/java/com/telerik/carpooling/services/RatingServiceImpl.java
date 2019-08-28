@@ -24,7 +24,7 @@ public class RatingServiceImpl implements RatingService {
     private final UserRepository userRepository;
 
     @Override
-    public Rating rateUser(String tripID, User user, String ratedUserID, Integer rating) {
+    public Rating rateUser(String tripID, User user, String ratedUserID, int rating) {
 
         long intTripID = parseStringToInt(tripID);
         long intRatedUserID = parseStringToInt(ratedUserID);
@@ -35,7 +35,7 @@ public class RatingServiceImpl implements RatingService {
         if (trip.isPresent() && ratedUser.isPresent()&&rating>0 && rating <6 ) {
             if (trip.get().getUserStatus().containsKey(ratedUser.get())
                     &&trip.get().getUserStatus().containsKey(user)) {
-                boolean isDriver = trip.get().getUserStatus().get(ratedUser.get()).equals(UserStatus.DRIVER);
+                boolean isDriver = trip.get().getDriver().equals(ratedUser.get());
                 Rating ratingObject = new Rating(user, ratedUser.get(), rating,isDriver);
                 return ratingRepository.save(ratingObject);
             }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum UserStatus {
     PENDING("A"), ACCEPTED("B"), REJECTED("C"),
-    CANCELED("D"), ABSENT("E"),DRIVER("F");
+    CANCELED("D"), ABSENT("E");
 
     private String code;
 

@@ -50,7 +50,6 @@ export const dismountSearch = () => {
     };
 };
 
-
 export const updateTripSuccess = (  ) => {
     return {
         type: actionTypes.UPDATE_TRIP_SUCCESS,

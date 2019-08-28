@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 
 @Service
- public class AuthenticationServiceImpl {
+ public class AuthenticationService {
      private static final long EXPIRATIONTIME = 864_000_00; // 1 day in milliseconds
      private static final String SIGNINGKEY = "SecretKey";
      private static final String PREFIX = "Bearer";

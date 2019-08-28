@@ -21,6 +21,8 @@ import java.util.Set;
 public class TripDtoResponse {
     private Long modelId;
 
+    private UserDtoResponse driver;
+
     @Size(max = 200)
     private String message;
 

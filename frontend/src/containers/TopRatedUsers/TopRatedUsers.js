@@ -3,15 +3,21 @@ import axios from '../../axios-baseUrl';
 import Driver from "./Driver";
 import './TopRatedUsers.css';
 import Passengers from "./Passengers";
+import {connect} from "react-redux";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
-class topRatedUsers extends Component {
+class TopRatedUsers extends Component {
     state = {
         drivers: [],
         passengers: []
     };
 
     componentDidMount() {
-        axios.get('http://localhost:8080/users/top-rated-drivers?')
+        const headers = {
+            "Content-Type":"application/json",
+            'Authorization':this.props.token
+        };
+        axios.get('http://localhost:8080/users/top-rated-drivers?',{headers})
             .then(response => {
                 if (response) {
                     this.setState({
@@ -19,12 +25,10 @@ class topRatedUsers extends Component {
                     })
                 }
 
-            })
-            .catch(err => {
-                console.log(3);
             });
+        console.log(this.state.drivers)
 
-        axios.get('http://localhost:8080/users/top-rated-passengers?')
+        axios.get('http://localhost:8080/users/top-rated-passengers?',{headers})
             .then(response => {
                 if (response) {
                     this.setState({
@@ -32,12 +36,10 @@ class topRatedUsers extends Component {
                     })
                 }
 
-            })
-            .catch(err => {
-                console.log(3);
-            })
-
+            });
     }
+
+
 
     render() {
 
@@ -80,4 +82,10 @@ class topRatedUsers extends Component {
     }
 }
 
-export default topRatedUsers;
+const mapStateToProps = state => {
+    return {
+        token: state.auth.token,
+    }
+};
+
+export default connect(mapStateToProps)(withErrorHandler(TopRatedUsers, axios));

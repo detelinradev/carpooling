@@ -1,22 +1,22 @@
 
-
 html,
 body {
-  background-image: url("http://wallpaperping.com/wp-content/uploads/2018/09/6885911-nissan-wallpaper.jpg");
+    background-image: url('assets/images/6885911-nissan-wallpaper.jpg');
     background-attachment: fixed;
     background-size: cover;
     background-repeat: no-repeat;
     height: 100%;
     font-family: "Numans", sans-serif;
 }
-footer{
+
+footer {
 
 }
 
 .footer {
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  height: 50px;
-  text-align: center;
-  color: whitesmoke;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    height: 50px;
+    text-align: center;
+    color: whitesmoke;
 }

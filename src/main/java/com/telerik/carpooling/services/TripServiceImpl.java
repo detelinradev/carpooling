@@ -4,6 +4,7 @@ import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.repositories.RatingRepository;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.TripService;
@@ -25,16 +26,17 @@ public class TripServiceImpl implements TripService {
 
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
+    private final RatingRepository ratingRepository;
 
     @Override
     public Trip createTrip(Trip trip, User driver) {
 
         if (driver.getCar() != null) {
+            trip.setDriver(driver);
             trip.setCar(driver.getCar());
             trip.setTripStatus(TripStatus.AVAILABLE);
-            trip.getUserStatus().put(driver, UserStatus.DRIVER);
+            driver.getMyTrips().put(trip,UserStatus.ACCEPTED);
             tripRepository.save(trip);
-            driver.getMyTrips().put(trip, UserStatus.DRIVER);
             userRepository.save(driver);
             return trip;
         }
@@ -44,8 +46,8 @@ public class TripServiceImpl implements TripService {
     @Override
     public Trip updateTrip(Trip trip, User user) {
 
-        if(trip.getUserStatus().get(user).equals(UserStatus.DRIVER))
-        return tripRepository.save(trip);
+        if (trip.getDriver().equals(user))
+            return tripRepository.save(trip);
         return null;
     }
 
@@ -75,15 +77,17 @@ public class TripServiceImpl implements TripService {
                                 .map(TripStatus::getCode)
                                 .orElse("")))) &&
                 ((pageNumber != null && pageSize != null) || (pageNumber == null && pageSize == null))) {
-            return
-                    tripRepository.findTripsByPassedParameters(
-                            Arrays.stream(TripStatus.values())
-                                    .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
-                                    .findAny()
-                                    .orElse(null),
-                            origin, destination, parseDateTime(earliestDepartureTime), parseDateTime(latestDepartureTime),
-                            (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
-                            smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+            List<Trip> trips = tripRepository.findTripsByPassedParameters(
+                    Arrays.stream(TripStatus.values())
+                            .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
+                            .findAny()
+                            .orElse(null),
+                    origin, destination, parseDateTime(earliestDepartureTime), parseDateTime(latestDepartureTime),
+                    (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
+                    smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+            trips.forEach(t -> t.getUserStatus().keySet()
+                    .forEach(k -> k.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(k.getModelId()))));
+            return trips;
         } else return null;
     }
 
@@ -96,7 +100,7 @@ public class TripServiceImpl implements TripService {
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
         if (trip.isPresent()) {
             if (trip.get().getUserStatus().containsKey(user))
-                if (trip.get().getUserStatus().get(user).equals(UserStatus.DRIVER))
+                if (trip.get().getDriver().equals(user))
                     trip.get().setIsDeleted(true);
             return tripRepository.save(trip.get());
         }
@@ -111,7 +115,7 @@ public class TripServiceImpl implements TripService {
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
 
         if (trip.isPresent() && trip.get().getUserStatus().containsKey(user)) {
-            if (trip.get().getUserStatus().get(user).equals(UserStatus.DRIVER)) {
+            if (trip.get().getDriver().equals(user)) {
                 if (tripStatus.equals(TripStatus.BOOKED)
                         && trip.get().getTripStatus().equals(TripStatus.AVAILABLE))
                     return markTripAsBooked(intTripID);
@@ -163,7 +167,7 @@ public class TripServiceImpl implements TripService {
                 }
             }
             if (trip.get().getUserStatus().containsKey(user) && trip.get().getUserStatus().containsKey(passenger.get())) {
-                if (trip.get().getUserStatus().get(user).equals(UserStatus.DRIVER)) {
+                if (trip.get().getDriver().equals(user)) {
                     if (statusPassenger.equals(UserStatus.ACCEPTED) &&
                             trip.get().getTripStatus().equals(TripStatus.AVAILABLE)) {
                         return acceptPassenger(intPassengerID, intTripID);

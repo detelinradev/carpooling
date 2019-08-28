@@ -84,10 +84,11 @@ public class UserController {
                                                             String email,
                                                 @RequestParam(value = "phone", required = false)
                                                             String phone) {
+        System.out.println(111);
         return Optional
                 .ofNullable(dtoMapper.userToDtoList(userService.getTopRatedDrivers(pageNumber, pageSize, username, firstName, lastName, email,
                         phone)))
-                .map(k -> ResponseEntity.ok().build())
+                .map(k -> ResponseEntity.ok().body(k))
                 .orElseGet(() -> ResponseEntity.notFound().build());
 
     }
@@ -111,7 +112,7 @@ public class UserController {
         return Optional
                 .ofNullable(dtoMapper.userToDtoList(userService.getTopRatedPassengers(pageNumber, pageSize, username, firstName, lastName, email,
                         phone)))
-                .map(k -> ResponseEntity.ok().build())
+                .map(k -> ResponseEntity.ok().body(k))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -251,7 +252,7 @@ public class UserController {
     public ResponseEntity<?> rateUser(@PathVariable final String tripId,
                                       @PathVariable final String userID,
                                       final Authentication authentication,
-                                      @RequestBody Integer rating) {
+                                      @RequestBody int rating) {
 
         return Optional
                 .ofNullable(ratingService.rateUser(tripId, userService.getUser(

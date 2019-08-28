@@ -1,6 +1,7 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-baseUrl';
 
+
 export const updateUserSuccess = () => {
     return {
         type: actionTypes.UPDATE_USER_SUCCESS,

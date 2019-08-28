@@ -1,12 +1,19 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
+import Avatar from "../../assets/images/image-default.png";
 
 const initialState = {
     users: [],
     user:null,
     loading: false,
-    userUpdated:false
+    userUpdated:false,
+    // driverImage:Avatar,
+    // passengerImage:null,
+    // commentImage:null,
+    // carImage:null,
+    // modelId:null
 };
+
 
 const showFullUser = ( state, action ) => {
     return updateObject( state, {
