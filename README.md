@@ -44,7 +44,7 @@ It is a final project for Telerik Academy Alpha track 'february 2019, made by me
 ![2019-08-30 (3)](https://user-images.githubusercontent.com/39421427/64017473-4781c100-cb32-11e9-93c3-df338de5ffa2.png)
 
 
-Here is Sign-up modul for new users. We need to enter all the required data to make an account in the application.
+Here is Sign-up modul for new users. We need to enter all required data to make an account in the application.
  - username has to be unique for the application
  - password with small and capital letters, digits and special symbols, at last 8 symbols long
  - first and last name should contain only letters
@@ -54,12 +54,32 @@ Here is Sign-up modul for new users. We need to enter all the required data to m
 ![2019-08-30 (4)](https://user-images.githubusercontent.com/39421427/64017474-4781c100-cb32-11e9-937d-33c9a57f44ff.png)
 
 
-
+ This is the Home window for authenticated user. Here he could see a leaderboard with the TOP 10 drivers and TOP 10 passengers based on the rating they receive after each trip as well as all the possible links in the application, listed on the right side of the navbar on the top of the window
+ 
 ![2019-08-30 (5)](https://user-images.githubusercontent.com/39421427/64017475-4781c100-cb32-11e9-8b1e-a3d72c232ad6.png)
+
+
+That is the profile page, where he could see all the information about himself as well as edited it. He has an options to edit his phone, email and password and add an avatar. If he wants to create a trip, it is mandatory to create a car as well.
+
 ![2019-08-30 (6)](https://user-images.githubusercontent.com/39421427/64017476-4781c100-cb32-11e9-9bb8-2416136d47b5.png)
+
+
+Here the user did upload a picture and recevies a message for successfull operation
+
 ![2019-08-30 (7)](https://user-images.githubusercontent.com/39421427/64017477-481a5780-cb32-11e9-9f4d-f7f6d8798ff9.png)
+
+
+Now she hits the edit button and modal with possible actions appear
+
 ![2019-08-30 (8)](https://user-images.githubusercontent.com/39421427/64017478-481a5780-cb32-11e9-8233-11e9d251348c.png)
+
+
+Here data is successfully changed and there is a message for it. Changes are asynchronous and the whole page is not refreshed
+
 ![2019-08-30 (9)](https://user-images.githubusercontent.com/39421427/64017480-481a5780-cb32-11e9-9d30-ce5ce5ec6b27.png)
+
+
+
 ![2019-08-30 (10)](https://user-images.githubusercontent.com/39421427/64017481-481a5780-cb32-11e9-8576-10afd7b29be9.png)
 ![2019-08-30 (11)](https://user-images.githubusercontent.com/39421427/64017482-48b2ee00-cb32-11e9-90f9-6a379bb994de.png)
 ![2019-08-30 (12)](https://user-images.githubusercontent.com/39421427/64017483-48b2ee00-cb32-11e9-8d1e-15a2e4832b0b.png)
