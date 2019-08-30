@@ -21,7 +21,7 @@ It is a final project for Telerik Academy Alpha track 'february 2019, made by me
   
  ### **Back-end is written on Java 8, it is Spring Boot Gradle based application**
   - Thus it has layered structure, in 3 main layers, Rest Controllers, Services and JPA Repositories, and we are using Dependency         Injection to handle dependencies between modules
-  - We used JWT Security, with identification token bearing the role of the user
+  - We are using JWT Security, with identification token bearing the role of the user
   - We chose Global exception handler and optional return types over try catch blocks 
   - The repositories are JPA, what delivers all the database connection functionality in just interfaces, with help of JPQL querries
   - We used Lombok for cutting out the boilerplate code
@@ -34,10 +34,27 @@ It is a final project for Telerik Academy Alpha track 'february 2019, made by me
 
 **We provide a gallery of screen shots for the possible customer interactions with the application**
 
-
+ This is how the application looks for unregistered user. Here we have just Home component and Login component available
+ 
 ![2019-08-30 (2)](https://user-images.githubusercontent.com/39421427/64017472-46e92a80-cb32-11e9-81fc-d868cd52bcf7.png)
+
+
+ That is Sign-in module. We need to enter username and password to authenticate successfully
+ 
 ![2019-08-30 (3)](https://user-images.githubusercontent.com/39421427/64017473-4781c100-cb32-11e9-93c3-df338de5ffa2.png)
+
+
+Here is Sign-up modul for new users. We need to enter all the required data to make an account in the application.
+ - username has to be unique for the application
+ - password with small and capital letters, digits and special symbols, at last 8 symbols long
+ - first and last name should contain only letters
+ - email should follow xxxxx@yyyyy.zzzzz pattern
+ - phone number should be 10 symbols long, consists only of numbers
+ 
 ![2019-08-30 (4)](https://user-images.githubusercontent.com/39421427/64017474-4781c100-cb32-11e9-937d-33c9a57f44ff.png)
+
+
+
 ![2019-08-30 (5)](https://user-images.githubusercontent.com/39421427/64017475-4781c100-cb32-11e9-8b1e-a3d72c232ad6.png)
 ![2019-08-30 (6)](https://user-images.githubusercontent.com/39421427/64017476-4781c100-cb32-11e9-9bb8-2416136d47b5.png)
 ![2019-08-30 (7)](https://user-images.githubusercontent.com/39421427/64017477-481a5780-cb32-11e9-9f4d-f7f6d8798ff9.png)
