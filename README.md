@@ -1,4 +1,4 @@
-### Carpooling app
+##### Carpooling app
 It is a final project for Telerik Academy Alpha track 'february 2019, made by me in collaboration with [Anton Madzharov](https://github.com/antonmadzharov)
 
 
@@ -15,8 +15,9 @@ It is a final project for Telerik Academy Alpha track 'february 2019, made by me
   - With help of Redux, we greatly improved managing of the state
   - Our components are asynchronus, what means a component being load only if it is called
   - Routing is implemented, and therefore we are using links when moving between components instead of reloading it
-  - We added global error handler, yet there is local handlers too, for more precise response messages
-  - The origin and the destination for the trip in the app are being send to network based API ,what delivers the duration and the         distance of the trip
+  - We added global error handler for responses from server, yet there is local handlers too, for more precise response messages
+  - The origin and the destination for the trip in the app are being send to network based API, what delivers the duration and the         distance of the trip
+  - Validation for the user input is achieved with as much predefined options as possible, as drop-downs, calendars ect., and use of       validation rules like numeric type and regex check for input fields
   
  #**Back-end is written on Java 8, it is Spring Boot Gradle based application**
   - Thus it has layered structure, in 3 main layers, Rest Controllers, Services and JPA Repositories, and we are using Dependency         Injection to handle dependencies between modules
@@ -28,6 +29,9 @@ It is a final project for Telerik Academy Alpha track 'february 2019, made by me
   - We made validation of the user input with help of Java Validation API and use of javax.validation for bean validation
 
 **Documentation of the project is [here](https://documenter.getpostman.com/view/7601087/SVYwLwZa)**
+
+**We provide a gallery of screen shots for the possible customer interactions with the application**
+
 
 ![2019-08-30 (2)](https://user-images.githubusercontent.com/39421427/64017472-46e92a80-cb32-11e9-81fc-d868cd52bcf7.png)
 ![2019-08-30 (3)](https://user-images.githubusercontent.com/39421427/64017473-4781c100-cb32-11e9-93c3-df338de5ffa2.png)
