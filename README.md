@@ -1,24 +1,24 @@
-## Carpooling app
+### Carpooling app
 It is a final project for Telerik Academy Alpha track 'february 2019, made by me in collaboration with [Anton Madzharov](https://github.com/antonmadzharov)
 
 
-Web-based application giving opportunities for the user to share car journeys.
+#**Web-based application giving opportunities for user to share car journeys**
  - It has implemented functionality for creating shared journey and joining already created journey
  - Project allows two roles which a user can have: admin and user
  - User is able to create, edit or join trip and admin could edit or delete user and delete trip
  - Technologies - ReactJs, REST, Spring Boot, JPA, MariaDB
 
-Simple structure of the project :
+#**Simple structure of the project :**
 ![seYw4vJZ6JGNOUEI3OZCRTw (1)](https://user-images.githubusercontent.com/39421427/64018341-dc85b980-cb34-11e9-8fd6-3a355521f27e.png)
 
- We have used for front-end ReactJs
+#**We have used for front-end ReactJs**
   - With help of Redux, we greatly improved managing of the state
   - Our components are asynchronus, what means a component being load only if it is called
   - Routing is implemented, and therefore we are using links when moving between components instead of reloading it
   - We added global error handler, yet there is local handlers too, for more precise response messages
   - The origin and the destination for the trip in the app are being send to network based API ,what delivers the duration and the         distance of the trip
   
- Back-end is written on Java 8, it is Spring Boot Gradle based application
+ #**Back-end is written on Java 8, it is Spring Boot Gradle based application**
   - Thus it has layered structure, in 3 main layers, Rest Controllers, Services and JPA Repositories, and we are using Dependency         Injection to handle dependencies between modules
   - We used JWT Security, with identification token bearing the role of the user
   - We chose Global exception handler and optional return types over try catch blocks 
@@ -27,7 +27,7 @@ Simple structure of the project :
   - We chose MapStruct as more fast and powerfull dto mapper tool than other similar tools 
   - We made validation of the user input with help of Java Validation API and use of javax.validation for bean validation
 
-Documentation of the project is [here](https://documenter.getpostman.com/view/7601087/SVYwLwZa)
+**Documentation of the project is [here](https://documenter.getpostman.com/view/7601087/SVYwLwZa)**
 
 ![2019-08-30 (2)](https://user-images.githubusercontent.com/39421427/64017472-46e92a80-cb32-11e9-81fc-d868cd52bcf7.png)
 ![2019-08-30 (3)](https://user-images.githubusercontent.com/39421427/64017473-4781c100-cb32-11e9-93c3-df338de5ffa2.png)
