@@ -1,5 +1,7 @@
 ## Carpooling app
 It is a final project for Telerik Academy Alpha track 'february 2019, made by me in collaboration with [Anton Madjarov](https://github.com/antonmadzharov)
+
+
 Web-based application giving opportunities for the user to share car journeys.
  - It has implemented functionality for creating shared journey and joining already created journey
  - Project allows two roles which a user can have: admin and user
