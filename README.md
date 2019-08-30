@@ -1,4 +1,4 @@
-##### Carpooling app
+###### Carpooling app
 It is a final project for Telerik Academy Alpha track 'february 2019, made by me in collaboration with [Anton Madzharov](https://github.com/antonmadzharov)
 
 
