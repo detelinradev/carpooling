@@ -32,6 +32,9 @@ public interface UserService {
     List<User> getTopRatedPassengers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone);
 
     List<User> getTopRatedDrivers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone);
+
+    User updateCurrentUserPhone(String phone, User user);
+
 }
 
 

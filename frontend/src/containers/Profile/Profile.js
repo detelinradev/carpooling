@@ -21,11 +21,10 @@ class Profile extends Component {
         isToggleOn: false,
         edit: false,
         editPass: false,
-        newEmail: "",
-        newPassword: "",
+        newEmail: '',
+        newPassword: '',
+        newPhone: '',
         src: Avatar,
-        error: '',
-        msg: '',
         file: '',
         message: null,
         showModal: false
@@ -54,6 +53,8 @@ class Profile extends Component {
             this.setState({
                 user: getMeResponse.data,
                 newEmail: getMeResponse.data.email,
+                newPhone:getMeResponse.data.phone
+
             })
         }
         this.getCar()
@@ -115,18 +116,33 @@ class Profile extends Component {
     }
 
     async editParamsHandler() {
-        await
-            axios.patch('/users/me/update-email?email=' + this.state.newEmail, null, {
-                headers: {"Authorization": this.props.token}
-            }).then(res => {
-                if (!res.response)
-                    this.setState({message: 'Email successfully changed'});
-            }).catch(err => {
-                this.setState({message: 'Request was not completed'});
-            });
+        if (this.state.newEmail !== '') {
+            await
+                axios.patch('/users/me/email?email=' + this.state.newEmail, null, {
+                    headers: {"Authorization": this.props.token}
+                }).then(res => {
+                    if (!res.response)
+                        this.setState({message: 'Data successfully changed'});
+                }).catch(err => {
+                    this.setState({message: 'Request was not completed'});
+                });
+        }
+        if (this.state.newPhone !== '') {
+            await
+                axios.patch('/users/me/phone?phone=' + this.state.newPhone, null, {
+                    headers: {"Authorization": this.props.token}
+                }).then(res => {
+                    if (!res.response)
+                        this.setState({message: 'Data successfully changed'});
+                }).catch(err => {
+                    this.setState({message: 'Request was not completed'});
+                });
+        }
 
         this.setState({
-            edit: !this.state.edit
+            edit: !this.state.edit,
+            newEmail: '',
+            newPhone: ''
         });
         this.componentDidMount();
 
@@ -135,7 +151,7 @@ class Profile extends Component {
     async editPassParamsHandler() {
 
         await
-            axios.patch('/users/me/update-password?password=' + this.state.newPassword, null, {
+            axios.patch('/users/me/password?password=' + this.state.newPassword, null, {
                 headers: {"Authorization": this.props.token}
             }).then(res => {
                 if (!res.response)
@@ -179,8 +195,8 @@ class Profile extends Component {
             headers: {"Authorization": this.props.token},
             body: data
         }).then(response => {
-            if(!response.response)
-            this.setState({message: 'Successfully uploaded file'});
+            if (!response.response)
+                this.setState({message: 'Successfully uploaded file'});
             this.componentDidMount();
         }).catch(err => {
             this.setState({message: 'Request was not completed'});
@@ -191,6 +207,11 @@ class Profile extends Component {
     changedEmail = (event) => {
 
         this.setState({newEmail: event.target.value});
+    };
+
+    changedPhone = (event) => {
+
+        this.setState({newPhone: event.target.value});
     };
 
     changedPassword = (event) => {
@@ -259,6 +280,9 @@ class Profile extends Component {
                         <label>Email</label>
                         <input className="input" type="text" onChange={event => this.changedEmail(event)}
                                value={this.state.newEmail}/>
+                        <label>Phone</label>
+                        <input className="input" type="text" onChange={event => this.changedPhone(event)}
+                               value={this.state.newPhone}/>
                         <Button className="input save" onClick={() => this.editParamsHandler()}><h2>SAVE</h2></Button>
                     </div>
                 </Modal>

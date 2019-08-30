@@ -154,7 +154,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PatchMapping(value = "/me/update-password")
+    @PatchMapping(value = "/me/password")
     public ResponseEntity<?> updateUserOwnPassword(@RequestParam final String password, final Authentication authentication) {
 
         return Optional
@@ -165,10 +165,19 @@ public class UserController {
 
     }
 
-    @PatchMapping(value = "/me/update-email")
+    @PatchMapping(value = "/me/email")
     public ResponseEntity<?> updateUserOwnEmail(@RequestParam final String email, final Authentication authentication) {
         return Optional
                 .ofNullable(userService.updateCurrentUserEmail(email, userService.getUser(
+                        authentication.getName())))
+                .map(user -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PatchMapping(value = "/me/phone")
+    public ResponseEntity<?> updateUserOwnPhone(@RequestParam final String phone, final Authentication authentication) {
+        return Optional
+                .ofNullable(userService.updateCurrentUserPhone(phone, userService.getUser(
                         authentication.getName())))
                 .map(user -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());

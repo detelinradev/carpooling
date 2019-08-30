@@ -133,6 +133,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updateCurrentUserPhone(String phone, User user) {
+
+        if (isPhoneValid(phone)) {
+            user.setPhone(phone);
+            return userRepository.save(user);
+        } else return null;
+    }
+
+    @Override
     public User updateCurrentUserPassword(final String password, final User user) {
         if (isPasswordValid(password)) {
             user.setPassword(bCryptEncoder.encode(password));
@@ -148,14 +157,8 @@ public class UserServiceImpl implements UserService {
         } else return null;
     }
 
-    private long parseStringToLong(String tripID) {
-        long longTripID = 0;
-        try {
-            longTripID = Long.parseLong(tripID);
-        } catch (NumberFormatException e) {
-            log.error("Exception during parsing", e);
-        }
-        return longTripID;
+    private boolean isPhoneValid(String phone) {
+        return phone.length() == 10 && phone.matches("[0-9]+");
     }
 
     private boolean isEmailValid(String email) {

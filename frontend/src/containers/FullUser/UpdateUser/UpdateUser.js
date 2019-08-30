@@ -8,62 +8,22 @@ import * as actions from '../../../store/actions';
 import {updateObject, checkValidity} from '../../../shared/utility';
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
-import Modal from "../../../components/UI/Modal/Modal";
 
 class UpdateUser extends Component {
     state = {
         controls: {
-            username: {
-                elementType: 'input',
-                elementConfig: {
-                    type: 'username',
-                    placeholder: 'Username'
-                },
-                value: this.props.data.username,
-                validation: {
-                    required: true,
-                },
-                valid: true,
-                touched: false
-            },
-            firstName: {
-                elementType: 'input',
-                elementConfig: {
-                    type: 'firstName',
-                    placeholder: 'First name'
-                },
-                value: this.props.data.firstName,
-                validation: {
-                    required: true,
-                },
-                valid: true,
-                touched: false
-            },
-            lastName: {
-                elementType: 'input',
-                elementConfig: {
-                    type: 'lastName',
-                    placeholder: 'Last name'
-                },
-                value: this.props.data.lastName,
-                validation: {
-                    required: true,
-                },
-                valid: true,
-                touched: false
-            },
             role: {
-                elementType: 'input',
+                elementType: 'select',
                 elementConfig: {
-                    type: 'role',
-                    placeholder: 'User role'
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: 'ADMIN', displayValue: 'ADMIN'},
+                        {value: 'USER', displayValue: 'USER'}
+                    ]
                 },
-                value: this.props.data.role,
-                validation: {
-                    required: true,
-                },
-                valid: true,
-                touched: false
+                value: '',
+                validation: {},
+                valid: true
             },
             email: {
                 elementType: 'input',
@@ -172,7 +132,6 @@ class UpdateUser extends Component {
 const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
-        // error: state.auth.error,
         token: state.auth.token,
     };
 };
