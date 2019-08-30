@@ -16,7 +16,16 @@ Simple structure of the project :
   - Our components are asynchronus, what means a component being load only if it is called
   - Routing is implemented, and therefore we are using links when moving between components instead of reloading it
   - We added global error handler, yet there is local handlers too, for more precise response messages
-  - The origin and the destination for the trip in the app are being send to network based API ,what delivers the duration and the distance of the trip
+  - The origin and the destination for the trip in the app are being send to network based API ,what delivers the duration and the         distance of the trip
+  
+ Back-end is written on Java 8, it is Spring Boot Gradle based application
+  - Thus it has layered structure, in 3 main layers, Rest Controllers, Services and JPA Repositories, and we are using Dependency         Injection to handle dependencies between modules
+  - We used JWT Security, with identification token bearing the role of the user
+  - We chose Global exception handler and optional return types over try catch blocks 
+  - The repositories are JPA, what delivers all the database connection functionality in just interfaces, with help of JPQL querries
+  - We used Lombok for cutting out the boilerplate code
+  - We chose MapStruct as more fast and powerfull dto mapper tool than other similar tools 
+  - We made validation of the user input with help of Java Validation API and use of javax.validation for bean validation
 
 Documentation of the project is [here](https://documenter.getpostman.com/view/7601087/SVYwLwZa)
 
