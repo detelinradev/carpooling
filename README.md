@@ -8,8 +8,12 @@ Web-based application giving opportunities for the user to share car journeys.
 Simple structure of the project :
 ![seYw4vJZ6JGNOUEI3OZCRTw (1)](https://user-images.githubusercontent.com/39421427/64018341-dc85b980-cb34-11e9-8fd6-3a355521f27e.png)
 
- We have used for front-end ReactJs with help of Redux, what greatly improved managing of the state, our components are asynchronus, what means a component being load only if it is called, routing is implemented, and therefore we are using links when moving between components instead of reloading it, we added global error handler, yet there is local handlers too, for more precise response messages.
- The origin and the destination for the trip in the app are being send to network based API ,what delivers the duration and the distance of the trip.
+ We have used for front-end ReactJs
+  - With help of Redux, we greatly improved managing of the state
+  - Our components are asynchronus, what means a component being load only if it is called
+  - Routing is implemented, and therefore we are using links when moving between components instead of reloading it
+  - We added global error handler, yet there is local handlers too, for more precise response messages
+  - The origin and the destination for the trip in the app are being send to network based API ,what delivers the duration and the distance of the trip
 
 Documentation:
 https://documenter.getpostman.com/view/7601087/SVYwLwZa
