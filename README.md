@@ -15,8 +15,7 @@ Simple structure of the project :
   - We added global error handler, yet there is local handlers too, for more precise response messages
   - The origin and the destination for the trip in the app are being send to network based API ,what delivers the duration and the distance of the trip
 
-Documentation:
-https://documenter.getpostman.com/view/7601087/SVYwLwZa
+Documentation of the project is [here](https://documenter.getpostman.com/view/7601087/SVYwLwZa)
 
 ![2019-08-30 (2)](https://user-images.githubusercontent.com/39421427/64017472-46e92a80-cb32-11e9-81fc-d868cd52bcf7.png)
 ![2019-08-30 (3)](https://user-images.githubusercontent.com/39421427/64017473-4781c100-cb32-11e9-93c3-df338de5ffa2.png)
