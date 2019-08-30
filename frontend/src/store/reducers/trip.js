@@ -9,8 +9,7 @@ const initialState = {
     passengerStatus:null,
     isMyTrip:null,
     tripCreated:false,
-    tripUpdated:false,
-    tripStatus:null
+    tripUpdated:'no',
 };
 
 const createInit = ( state, action ) => {
@@ -67,7 +66,10 @@ const createTripFail = ( state, action ) => {
 };
 
 const updateTripFail = ( state, action ) => {
-    return updateObject( state, { loading: false } );
+    return updateObject( state, {
+        loading: false,
+        tripUpdated: 'error',
+    } );
 };
 
 const updateTripStart = ( state, action ) => {
@@ -77,7 +79,7 @@ const updateTripStart = ( state, action ) => {
 const updateTripSuccess = ( state, action ) => {
     return updateObject( state, {
         loading: false,
-        tripUpdated: true,
+        tripUpdated: 'yes',
     } );
 };
 

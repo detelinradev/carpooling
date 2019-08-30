@@ -2,7 +2,7 @@ package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.telerik.carpooling.enums.UserStatus;
+import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.*;
 import org.hibernate.envers.Audited;
@@ -68,6 +68,6 @@ public class User extends MappedAudibleBase {
     @JsonIgnore
     @ElementCollection
     @MapKeyColumn(name = "id")
-    private Map<Trip, UserStatus> myTrips = new HashMap<>();
+    private Map<Trip, PassengerStatus> myTrips = new HashMap<>();
 
 }

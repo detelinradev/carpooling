@@ -58,23 +58,24 @@ class NewTrip extends Component {
                 touched: false
             },
             availablePlaces: {
-                elementType: 'input',
+                elementType: 'select',
                 elementConfig: {
-                    type: 'number',
-                    placeholder: 'Available places'
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: '1', displayValue: '1'},
+                        {value: '2', displayValue: '2'},
+                        {value: '3', displayValue: '3'},
+                        {value: '4', displayValue: '4'},
+                    ]
                 },
                 value: '',
-                validation: {
-                    required: true,
-                    isNumeric: true
-                },
-                valid: false,
-                touched: false
+                validation: {},
+                valid: true,
             },
             costPerPassenger: {
                 elementType: 'input',
                 elementConfig: {
-                    type: 'text',
+                    type: 'number',
                     placeholder: 'Cost per passenger'
                 },
                 value: '',
@@ -99,49 +100,43 @@ class NewTrip extends Component {
                 touched: false
             },
             smokingAllowed: {
-                elementType: 'input',
+                elementType: 'select',
                 elementConfig: {
-                    type: 'text',
-                    placeholder: 'Smoking Allowed'
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: 'yes', displayValue: 'yes'},
+                        {value: 'no', displayValue: 'no'}
+                    ]
                 },
                 value: '',
-                validation: {
-                    required: true,
-                    minLength: 2,
-                    maxLength: 3,
-                },
-                valid: false,
-                touched: false
+                validation: {},
+                valid: true
             },
             petsAllowed: {
-                elementType: 'input',
+                elementType: 'select',
                 elementConfig: {
-                    type: 'text',
-                    placeholder: 'Pets Allowed'
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: 'yes', displayValue: 'yes'},
+                        {value: 'no', displayValue: 'no'}
+                    ]
                 },
                 value: '',
-                validation: {
-                    required: true,
-                    minLength: 2,
-                    maxLength: 3,
-                },
-                valid: false,
-                touched: false
+                validation: {},
+                valid: true
             },
             luggageAllowed: {
-                elementType: 'input',
+                elementType: 'select',
                 elementConfig: {
-                    type: 'text',
-                    placeholder: 'Luggage Allowed'
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: 'yes', displayValue: 'yes'},
+                        {value: 'no', displayValue: 'no'}
+                    ]
                 },
                 value: '',
-                validation: {
-                    required: true,
-                    minLength: 2,
-                    maxLength: 3,
-                },
-                valid: false,
-                touched: false
+                validation: {},
+                valid: true
             }
         },
         formIsValid: false,
@@ -161,7 +156,6 @@ class NewTrip extends Component {
     async getCoordinates() {
         await axios.get("http://dev.virtualearth.net/REST/v1/Locations/"+this.state.createForm.origin.value+"?key=AicLZ6MUrcgX7d1YzI03aJetdI5O9YyESuynCP_jJyhoFFRcxIrUBaTa8UsdqqG4")
             .then(response => {
-                console.log(this.state.createForm.origin.value);
 
                 this.setState({
                     startLocation: response.data.resourceSets[0].resources[0].point.coordinates
@@ -240,18 +234,19 @@ class NewTrip extends Component {
                     touched: false
                 },
                 availablePlaces: {
-                    elementType: 'input',
+                    elementType: 'select',
                     elementConfig: {
-                        type: 'number',
-                        placeholder: 'Available places'
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: '1', displayValue: '1'},
+                            {value: '2', displayValue: '2'},
+                            {value: '3', displayValue: '3'},
+                            {value: '4', displayValue: '4'},
+                        ]
                     },
                     value: '',
-                    validation: {
-                        required: true,
-                        isNumeric: true
-                    },
-                    valid: false,
-                    touched: false
+                    validation: {},
+                    valid: true,
                 },
                 costPerPassenger: {
                     elementType: 'input',
@@ -281,49 +276,43 @@ class NewTrip extends Component {
                     touched: false
                 },
                 smokingAllowed: {
-                    elementType: 'input',
+                    elementType: 'select',
                     elementConfig: {
-                        type: 'text',
-                        placeholder: 'Smoking Allowed'
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: 'yes', displayValue: 'yes'},
+                            {value: 'no', displayValue: 'no'}
+                        ]
                     },
                     value: '',
-                    validation: {
-                        required: true,
-                        minLength: 2,
-                        maxLength: 3,
-                    },
-                    valid: false,
-                    touched: false
+                    validation: {},
+                    valid: true
                 },
                 petsAllowed: {
-                    elementType: 'input',
+                    elementType: 'select',
                     elementConfig: {
-                        type: 'text',
-                        placeholder: 'Pets Allowed'
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: 'yes', displayValue: 'yes'},
+                            {value: 'no', displayValue: 'no'}
+                        ]
                     },
                     value: '',
-                    validation: {
-                        required: true,
-                        minLength: 2,
-                        maxLength: 3,
-                    },
-                    valid: false,
-                    touched: false
+                    validation: {},
+                    valid: true
                 },
                 luggageAllowed: {
-                    elementType: 'input',
+                    elementType: 'select',
                     elementConfig: {
-                        type: 'text',
-                        placeholder: 'Luggage Allowed'
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: 'yes', displayValue: 'yes'},
+                            {value: 'no', displayValue: 'no'}
+                        ]
                     },
                     value: '',
-                    validation: {
-                        required: true,
-                        minLength: 2,
-                        maxLength: 3,
-                    },
-                    valid: false,
-                    touched: false
+                    validation: {},
+                    valid: true
                 }
             },
             formIsValid: false,

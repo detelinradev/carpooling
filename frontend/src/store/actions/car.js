@@ -22,7 +22,7 @@ export const createCarStart = () => {
 
 export const carFinishCreate = ( ) => {
     return {
-        type: actionTypes.CREATE_FINISH_CAR
+        type: actionTypes.CREATE_CAR_FINISH
     };
 };
 
@@ -40,17 +40,12 @@ export const createCar = (CarData, token ) => {
         axios.post ( '/car' ,CarData,{headers}
         )
             .then( response => {
+                if(!response.response)
                 dispatch( createCarSuccess( ) );
 
             } )
             .catch( error => {
                 dispatch( createCarFail( error ) );
             } );
-    };
-};
-
-export const createInit = () => {
-    return {
-        type: actionTypes.CREATE_INIT
     };
 };

@@ -13,7 +13,8 @@ class Car extends Component {
 
     async componentDidMount() {
         const getCarAvatarResponse = await
-        fetch('http://localhost:8080/users/avatar/car/' + this.props.trip.driver.modelId)
+        fetch('http://localhost:8080/users/avatar/car/' + this.props.trip.driver.username,
+            {headers: {"Authorization": this.props.token}})
             .then(response => response.blob());
 
         if(getCarAvatarResponse.size>100){

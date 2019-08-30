@@ -20,15 +20,14 @@ class FullUser extends Component {
         srcCar: CarAvatar,
         showModal: false,
         car: '',
-        error: null,
-        success: null,
+        message: null,
     };
 
 
     async componentDidMount() {
 
         const getAvatarResponse = await
-            fetch('http://localhost:8080/users/avatar/' + this.props.user.modelId,
+            fetch('http://localhost:8080/users/avatar/' + this.props.user.username,
                 {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
         if (getAvatarResponse.size > 100) {
@@ -38,7 +37,7 @@ class FullUser extends Component {
         }
 
         const getCarAvatarResponse = await
-            fetch('http://localhost:8080/users/avatar/car/' + this.props.user.modelId,
+            fetch('http://localhost:8080/users/avatar/car/' + this.props.user.username,
                 {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
 
@@ -61,19 +60,28 @@ class FullUser extends Component {
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.userUpdate) {
-            this.setState({success: 'User information successfully updated'});
+        if (this.props.userUpdate === 'yes') {
+            this.setState({message: 'User information successfully updated'});
             this.props.onFetchUser(this.props.token,this.props.user.username);
-            this.props.onUserFinishUpdate(false);
+            this.props.onUserFinishUpdate('no');
             this.toggleModal()
+        }
 
+        if(this.props.userUpdate === 'error') {
+            this.props.onUserFinishUpdate('no');
+            this.toggleModal();
         }
     }
 
     async deleteUser() {
-        axios.patch('/users/' + this.props.user.modelId + '/delete', null, {
+        axios.patch('/users/' + this.props.user.username + '/delete', null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => this.props.history.push('/admin'));
+        }).then(res => {
+            if (!res.response)
+                this.setState({message: 'User successfully deleted'});
+        }).catch(err => {
+            this.setState({message: 'Request was not completed'});
+        });
 
     }
 
@@ -84,10 +92,13 @@ class FullUser extends Component {
     }
 
     errorConfirmedHandler = () => {
+        let temp = this.state.message;
         this.setState({
-            error: null,
-            success: null
+            message: null
         });
+        if(temp === 'User successfully deleted'){
+            this.props.history.push('/admin')
+        }
     };
 
     render() {
@@ -122,10 +133,9 @@ class FullUser extends Component {
 
         let responseMessage = (
             <Modal
-                show={this.state.success}
+                show={this.state.message}
                 modalClosed={this.errorConfirmedHandler}>
-                {this.state.error ? this.state.error : null}
-                {this.state.success ? this.state.success : null}
+                {this.state.message ? this.state.message : null}
             </Modal>
         );
 

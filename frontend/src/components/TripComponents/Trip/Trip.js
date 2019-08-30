@@ -35,10 +35,11 @@ class Trip extends Component {
         const getMeResponse = await
             axios.get('/users/' + this.props.data.driver.username, {headers});
 
-        this.setState({
-            rating: getMeResponse.data.ratingAsDriver
-
-        })
+         if(getMeResponse) {
+             this.setState({
+                 rating: getMeResponse.data.ratingAsDriver
+             })
+         }
     }
 
     render() {
@@ -56,7 +57,7 @@ class Trip extends Component {
                         <span><FaMedal/></span> Rating <div
                         className="header">{
                         <StarRatings
-                            rating={this.props.data.ratingAsDriver}
+                            rating={this.state.rating}
                             starRatedColor="yellow"
                             changeRating={this.changeRating}
                             numberOfStars={5}

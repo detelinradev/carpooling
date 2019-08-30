@@ -1,17 +1,11 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
-import Avatar from "../../assets/images/image-default.png";
 
 const initialState = {
     users: [],
     user:null,
     loading: false,
-    userUpdated:false,
-    // driverImage:Avatar,
-    // passengerImage:null,
-    // commentImage:null,
-    // carImage:null,
-    // modelId:null
+    userUpdated:'no',
 };
 
 
@@ -29,7 +23,10 @@ const userFinishUpdate = (state,action) =>{
 
 
 const updateUserFail = ( state, action ) => {
-    return updateObject( state, { loading: false } );
+    return updateObject( state, {
+        loading: false ,
+        userUpdated:'error',
+    } );
 };
 
 const updateUserStart = ( state, action ) => {
@@ -45,7 +42,7 @@ const dismountAdmin = ( state, action ) => {
 const updateUserSuccess = ( state, action ) => {
     return updateObject( state, {
         loading: false,
-        userUpdated: true,
+        userUpdated: 'yes',
     } );
 };
 

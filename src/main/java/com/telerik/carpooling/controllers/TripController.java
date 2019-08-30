@@ -1,13 +1,11 @@
 package com.telerik.carpooling.controllers;
 
-import com.telerik.carpooling.enums.UserStatus;
+import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.dtos.TripDtoEdit;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
-import com.telerik.carpooling.repositories.TripRepository;
-import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -98,7 +96,7 @@ public class TripController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<TripDtoResponse> getTrips(@PathVariable String id) {
+    public ResponseEntity<TripDtoResponse> getTrip(@PathVariable String id) {
 
         return Optional
                 .ofNullable(dtoMapper.objectToDto(tripService.getTrip(id)))
@@ -130,10 +128,10 @@ public class TripController {
     public ResponseEntity<?> changePassengerStatus(@PathVariable final String tripId,
                                                    @PathVariable final String passengerId,
                                                    final Authentication authentication,
-                                                   @RequestParam(value = "status") UserStatus userStatus) {
+                                                   @RequestParam(value = "status") PassengerStatus passengerStatus) {
         return Optional
                 .ofNullable(tripService.changePassengerStatus(tripId, userService.getUser(
-                        authentication.getName()), passengerId, userStatus))
+                        authentication.getName()), passengerId, passengerStatus))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

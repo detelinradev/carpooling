@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -27,7 +28,7 @@ public class Feedback extends MappedAudibleBase {
     @JoinColumn(name = "receiver",nullable = false)
     private User receiver;
 
-    @Range(min=1,max = 5)
+    @Size(max= 250)
     private String feedback;
 
     private boolean isDriver;

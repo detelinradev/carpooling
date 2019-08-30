@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum UserStatus {
+public enum PassengerStatus {
     PENDING("A"), ACCEPTED("B"), REJECTED("C"),
-    CANCELED("D"), ABSENT("E");
+    CANCELED("D"), ABSENT("E"), DRIVER("F");
 
     private String code;
 

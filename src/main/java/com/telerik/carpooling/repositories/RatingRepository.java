@@ -17,5 +17,4 @@ public interface RatingRepository extends JpaRepository<Rating,Long> {
             "on u.modelId = r.ratedUser  where u.modelId=:userID and r.isDriver = false")
     Double findAverageRatingByUserAsPassenger(@Param("userID") long userID);
 
-    Optional<Rating> findById(long id);
 }

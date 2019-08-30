@@ -47,7 +47,6 @@ public class ImageServiceImpl implements ImageService {
                         file.getContentType(),
                         file.getBytes(), user.getCar());
                 user.getCar().setAvatarUri(fileDownloadUri.toString());
-                System.out.println(2);
                 return imageRepository.save(image);
             } catch (IOException ex) {
                 throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
@@ -57,7 +56,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     public Image getImage(final Long fileId) {
-        return imageRepository.findById(fileId)
+        return imageRepository.findByModelId(fileId)
                 .orElseThrow(() -> new MyFileNotFoundException("File not found with imageId " + fileId));
     }
 }

@@ -10,12 +10,10 @@ import * as actions from '../../store/actions/index';
 import {updateObject, checkValidity} from '../../shared/utility';
 import 'react-dates/initialize';
 import './NewCar.css';
-import Modal from "../../components/UI/Modal/Modal";
 
 
 class NewCar extends Component {
     state = {
-        showModal: false,
         createForm: {
             brand: {
                 elementType: 'input',
@@ -204,20 +202,6 @@ class NewCar extends Component {
         this.setState({createForm: updatedCreateForm, formIsValid: formIsValid});
     };
 
-
-
-    toggleModal(){
-        this.setState({
-            showModal: !this.state.showModal
-        })
-    }
-
-
-    editCloseHandler() {
-        this.setState({
-            showModal: !this.state.showModal
-        });
-    }
     render() {
         const formElementsArray = [];
         for (let key in this.state.createForm) {
@@ -240,7 +224,7 @@ class NewCar extends Component {
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
                 <div style={{textAlign: 'center'}}>
-                <Button btnType="Success" disabled={!this.state.formIsValid} onSubmit={() =>this.toggleModal()}>CREATE</Button>
+                <Button btnType="Success" disabled={!this.state.formIsValid} >CREATE</Button>
                 </div>
             </form>
         );
@@ -249,11 +233,8 @@ class NewCar extends Component {
         }
         return (
             <div>
-                <button className="Car" onClick={() => this.toggleModal()}><h1>+CREATE CAR</h1></button>
-                <Modal style={{width: 600}} show={this.state.showModal} modalClosed={() => this.editCloseHandler()}>
                 Enter your Car Data
                     {form}
-                </Modal>
             </div>
         );
     }
@@ -263,7 +244,6 @@ const mapStateToProps = state => {
     return {
         loading: state.trip.loading,
         token: state.auth.token,
-        carCreated:state.car.carCreated,
     }
 };
 

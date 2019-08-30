@@ -23,13 +23,15 @@ class FullTrip extends Component {
         newRate: null,
         newFeedback: null,
         showModal: false,
-        error: null,
-        success: null,
+        message: null,
     };
 
     async componentDidMount() {
         const getDriverAvatarResponse = await
-            fetch("http://localhost:8080/users/avatar/" + this.props.trip.driver.modelId)
+            fetch("http://localhost:8080/users/avatar/" + this.props.trip.driver.username, {
+                headers:
+                    {"Authorization": this.props.token}
+            })
                 .then(response => response.blob());
 
 
@@ -43,10 +45,14 @@ class FullTrip extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.tripUpdate) {
-            this.setState({success: 'Trip successfully updated'});
+        if (this.props.tripUpdate === 'yes') {
+            this.setState({message: 'Trip successfully updated'});
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
-            this.props.onTripFinishUpdate(false);
+            this.props.onTripFinishUpdate('no');
+            this.toggleModal();
+        }
+        if(this.props.tripUpdate === 'error') {
+            this.props.onTripFinishUpdate('no');
             this.toggleModal();
         }
     }
@@ -57,11 +63,12 @@ class FullTrip extends Component {
                 headers:
                     {"Authorization": this.props.token}
             });
+        if (getMeResponse) {
+            this.setState({
+                rating: getMeResponse.data.ratingAsDriver
 
-        this.setState({
-            rating: getMeResponse.data.ratingAsDriver
-
-        })
+            })
+        }
     }
 
     async joinTrip() {
@@ -71,7 +78,10 @@ class FullTrip extends Component {
                 headers: {"Authorization": this.props.token}
             }).then(res => {
                 this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'PENDING');
-                this.setState({success: 'Trip successfully joined'});
+                if(!res.response)
+                this.setState({message: 'Trip successfully joined'});
+            }).catch(err => {
+                this.setState({message: 'Request was not completed'});
             });
         }
     }
@@ -80,7 +90,10 @@ class FullTrip extends Component {
         axios.patch('/trips/' + this.props.trip.modelId + '/delete', null, {
             headers: {"Authorization": this.props.token}
         }).then(res => {
-            this.props.history.push('/myTrips');
+            if(!res.response)
+            this.setState({message: 'Trip successfully deleted'});
+        }).catch(err => {
+            this.setState({message: 'Request was not completed'});
         });
 
     }
@@ -91,23 +104,32 @@ class FullTrip extends Component {
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
             this.props.onTripChangeStatus(tripStatus);
-            this.setState({success: 'Trip status changed to ' + tripStatus});
+            if(!res.response)
+            this.setState({message: 'Trip status changed to ' + tripStatus});
+        })
+            .catch(err => {
+            this.setState({message: 'Request was not completed'});
         });
     }
 
     async cancelTrip() {
         const currentUserName = this.props.username;
         let passengerId = null;
-        let passengers = this.props.trip.passengers.map(passenger =>
-            (passenger.username === currentUserName) ? passengerId = passenger.modelId : null
+        let passengers =Object.keys(this.props.trip.passengerStatus).map(passenger =>
+          passenger.includes('username='+ currentUserName) ?
+              passengerId = passenger.split(', ')[0]
+                  .substring(24) : null
         );
-        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerId + '?status=CANCELED', null, {
-            headers: {"Authorization": this.props.token}
+        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerId + '?status=CANCELED',
+            null, {headers: {"Authorization": this.props.token}
         }).then(res => {
                 this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'CANCELED');
-                this.setState({success: 'Trip successfully canceled'});
+            if(!res.response)
+                this.setState({message: 'Trip successfully canceled'});
             }
-        );
+        ).catch(err => {
+            this.setState({message: 'Request was not completed'});
+        });
     }
 
     inputChangedHandler = (event) => {
@@ -121,20 +143,25 @@ class FullTrip extends Component {
             headers: {"Authorization": this.props.token}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
-            this.setState({success: 'Comment successfully added'});
+            if(!res.response)
+            this.setState({message: 'Comment successfully added'});
+        }).catch(err => {
+            this.setState({message: 'Request was not completed'});
         });
         this.setState({newComment: ''});
     };
 
     rateDriverHandler = async (event) => {
         event.preventDefault();
-        let rate = this.state.newRate;
-        console.log(rate.toString())
-        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/driver/rate", this.state.newRate, {
+
+        await axios.post("http://localhost:8080/users/rate/" + this.props.trip.modelId + "/user/" + this.props.trip.driver.modelId, this.state.newRate, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.getDriverRate();
-            this.setState({success: 'Driver successfully rated'});
+          if(!res.response)
+            this.setState({message: 'Driver successfully rated'});
+        }).catch(err => {
+            this.setState({message: 'Request was not completed'});
         });
         this.setState({newRate: ''});
     };
@@ -155,7 +182,7 @@ class FullTrip extends Component {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
-            this.setState({success: 'Feedback successfully send'});
+            this.setState({message: 'Feedback successfully send'});
         });
         this.setState({newFeedback: ''});
     };
@@ -167,9 +194,17 @@ class FullTrip extends Component {
     }
 
     errorConfirmedHandler = () => {
+        let temp = this.state.message;
+
         this.setState({
-            error: null,
-            success: null
+            message: null
+        });
+        if(temp === 'Trip successfully deleted' || temp === 'Trip successfully canceled')
+            this.props.history.push('/myTrips');
+    };
+    showMessage = (message) => {
+        this.setState({
+            message: message
         });
     };
 
@@ -186,14 +221,17 @@ class FullTrip extends Component {
                 />
             ));
         }
-
         let passengers;
-        if (this.props.trip.passengers) {
-            passengers = this.props.trip.passengers.map(passenger => (
+        if (this.props.trip.passengerStatus) {
+            passengers = Object.keys(this.props.trip.passengerStatus).map(passenger => (
                 <Passenger
                     key={passenger.id}
                     isMyTrip={this.props.isMyTrip}
-                    data={passenger}
+                    userName={passenger.split(', ')[1].substring(9)}
+                    modelId={passenger.split(', ')[0].substring(24)}
+                    firstName={passenger.split(', ')[2].substring(10)}
+                    lastName={passenger.split(', ')[3].substring(9)}
+                    showMessage={this.showMessage}
                 />
             ));
         }
@@ -306,44 +344,47 @@ class FullTrip extends Component {
                     </div>
                 );
 
-                buttonUpdateTrip = (
-                    <div style={{marginRight: 20, verticalAlign: "middle"}}>
-                        <Button onClick={() => this.toggleModal()}><h3
-                            className="header">UPDATE TRIP</h3>
-                        </Button>
-                    </div>
-                );
-                updateTrip = (
+                if(this.props.trip.tripStatus !== 'DONE'&& this.props.trip.tripStatus !== 'CANCELED') {
+                    if(this.props.trip.tripStatus !== 'ONGOING') {
+                        buttonUpdateTrip = (
+                            <div style={{marginRight: 20, verticalAlign: "middle"}}>
+                                <Button onClick={() => this.toggleModal()}><h3
+                                    className="header">UPDATE TRIP</h3>
+                                </Button>
+                            </div>
+                        );
+                        updateTrip = (
 
-                    <Modal show={this.state.showModal} modalClosed={() => this.toggleModal()}>
-                        <UpdateTrip
-                            showModal={this.state.showModal}
-                            data={this.props.trip}
-                        />
-                    </Modal>
+                            <Modal show={this.state.showModal} modalClosed={() => this.toggleModal()}>
+                                <UpdateTrip
+                                    showModal={this.state.showModal}
+                                    data={this.props.trip}
+                                />
+                            </Modal>
 
-                );
+                        );
+                    }
 
-                formChangeTripStatus = (
-                    <div>
-                        <div className="dropdown">
-                            <button className="dropbtn">Change trip status</button>
-                            <div className="dropdown-content">
-                                <a onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</a>
-                                <a onClick={() => this.changeTripStatus('DONE')}>DONE</a>
-                                <a onClick={() => this.changeTripStatus('CANCELED')}>CANCELED</a>
+                    formChangeTripStatus = (
+                        <div>
+                            <div className="dropdown">
+                                <button className="dropbtn">Change trip status</button>
+                                <div className="dropdown-content">
+                                    <a onClick={() => this.changeTripStatus('ONGOING')}>ONGOING</a>
+                                    <a onClick={() => this.changeTripStatus('DONE')}>DONE</a>
+                                    <a onClick={() => this.changeTripStatus('CANCELED')}>CANCELED</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )
+                    )
+                }
             }
         }
         let responseMessage = (
             <Modal
-                show={this.state.success}
+                show={this.state.message}
                 modalClosed={this.errorConfirmedHandler}>
-                {this.state.error ? this.state.error : null}
-                {this.state.success ? this.state.success : null}
+                {this.state.message ? this.state.message : null}
             </Modal>
         );
 

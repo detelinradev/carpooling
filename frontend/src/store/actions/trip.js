@@ -102,6 +102,7 @@ export const updateTrip = (TripData, token ) => {
         axios.put ( '/trips' ,TripData,{headers}
         )
             .then( response => {
+                if(!response.response)
                 dispatch( updateTripSuccess() );
             } )
             .catch( error => {
@@ -116,14 +117,13 @@ export const createInit = () => {
     };
 };
 
-export const showFullTrip = ( trip,tripRole,passengerStatus,isMyTrip,tripStatus) => {
+export const showFullTrip = ( trip,tripRole,passengerStatus,isMyTrip) => {
     return {
         type: actionTypes.SHOW_FULL_TRIP,
         trip:trip,
         tripRole:tripRole,
         passengerStatus:passengerStatus,
         isMyTrip:isMyTrip,
-        tripStatus:tripStatus
     };
 };
 

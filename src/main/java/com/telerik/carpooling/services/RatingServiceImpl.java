@@ -1,6 +1,5 @@
 package com.telerik.carpooling.services;
 
-import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.models.Rating;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
@@ -26,15 +25,16 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public Rating rateUser(String tripID, User user, String ratedUserID, int rating) {
 
-        long intTripID = parseStringToInt(tripID);
-        long intRatedUserID = parseStringToInt(ratedUserID);
+        long longTripID = parseStringToLong(tripID);
+        long longRatedUserID = parseStringToLong(ratedUserID);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
-        Optional<User> ratedUser = userRepository.findById(intRatedUserID);
+        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
+        Optional<User> ratedUser = userRepository.findById(longRatedUserID);
 
         if (trip.isPresent() && ratedUser.isPresent()&&rating>0 && rating <6 ) {
-            if (trip.get().getUserStatus().containsKey(ratedUser.get())
-                    &&trip.get().getUserStatus().containsKey(user)) {
+            if (trip.get().getPassengerStatus().containsKey(ratedUser.get())
+                    || trip.get().getPassengerStatus().containsKey(user)
+                    && (trip.get().getDriver().equals(user) || trip.get().getDriver().equals(ratedUser.get()))) {
                 boolean isDriver = trip.get().getDriver().equals(ratedUser.get());
                 Rating ratingObject = new Rating(user, ratedUser.get(), rating,isDriver);
                 return ratingRepository.save(ratingObject);
@@ -43,14 +43,14 @@ public class RatingServiceImpl implements RatingService {
         return null;
     }
 
-    private long parseStringToInt(String tripID) {
-        long intTripID = 0;
+    private long parseStringToLong(String tripID) {
+        long longTripID = 0;
         try {
-            intTripID = Long.parseLong(tripID);
+            longTripID = Long.parseLong(tripID);
         } catch (NumberFormatException e) {
             log.error("Exception during parsing", e);
         }
-        return intTripID;
+        return longTripID;
     }
 }
 

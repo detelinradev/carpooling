@@ -180,7 +180,7 @@ class UpdateTrip extends Component {
 
     }
 
-    createHandler = async (event) => {
+    updateHandler = async (event) => {
         event.preventDefault();
         const formData = {};
         for (let formElementIdentifier in this.state.createForm) {
@@ -192,145 +192,6 @@ class UpdateTrip extends Component {
         formData["departureTime"] = DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
 
         this.props.onUpdateTrip(formData, this.props.token);
-        this.setState({
-            startDate: new Date(),
-            changedDate: new Date(),
-            createForm: {
-                origin: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'Origin'
-                    },
-                    value: '',
-                    validation: {
-                        required: true
-                    },
-                    valid: false,
-                    touched: false
-                },
-                destination: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'Destination'
-                    },
-                    value: '',
-                    validation: {
-                        required: true
-                    },
-                    valid: false,
-                    touched: false
-                },
-                departureTime: {
-                    elementType: 'date',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'Departure time'
-                    },
-                    value: '',
-                    validation: {
-                        required: false,
-                    },
-                    valid: true,
-                    touched: false
-                },
-                availablePlaces: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'number',
-                        placeholder: 'Available places'
-                    },
-                    value: '',
-                    validation: {
-                        required: true,
-                        isNumeric: true
-                    },
-                    valid: false,
-                    touched: false
-                },
-                costPerPassenger: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'Cost per passenger'
-                    },
-                    value: '',
-                    validation: {
-                        required: true,
-                        isNumeric: true
-                    },
-                    valid: false,
-                    touched: false
-                },
-                message: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'Message'
-                    },
-                    value: '',
-                    validation: {
-                        required: true
-                    },
-                    valid: false,
-                    touched: false
-                },
-                smokingAllowed: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'Smoking Allowed'
-                    },
-                    value: '',
-                    validation: {
-                        required: true,
-                        minLength: 2,
-                        maxLength: 3,
-                    },
-                    valid: false,
-                    touched: false
-                },
-                petsAllowed: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'Pets Allowed'
-                    },
-                    value: '',
-                    validation: {
-                        required: true,
-                        minLength: 2,
-                        maxLength: 3,
-                    },
-                    valid: false,
-                    touched: false
-                },
-                luggageAllowed: {
-                    elementType: 'input',
-                    elementConfig: {
-                        type: 'text',
-                        placeholder: 'Luggage Allowed'
-                    },
-                    value: '',
-                    validation: {
-                        required: true,
-                        minLength: 2,
-                        maxLength: 3,
-                    },
-                    valid: false,
-                    touched: false
-                }
-            },
-            formIsValid: false,
-            startLocation: 0,
-            endLocation: 0,
-            travelDistance: 0,
-            tripDuration: 0,
-            modelId: 0
-
-        })
-
     };
 
     inputChangedHandler = (event, inputIdentifier) => {
@@ -378,7 +239,7 @@ class UpdateTrip extends Component {
 
 
         let form = (
-            <form onSubmit={this.createHandler}>
+            <form onSubmit={this.updateHandler}>
                 {formElementsArray.map(formElement => (
                     <Input
                         key={formElement.id}
@@ -417,7 +278,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onUpdateTrip: (create, token) => dispatch(actions.updateTrip(create, token)),
+        onUpdateTrip: (update, token) => dispatch(actions.updateTrip(update, token)),
     };
 };
 

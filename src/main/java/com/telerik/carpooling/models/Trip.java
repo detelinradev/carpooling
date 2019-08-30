@@ -2,11 +2,13 @@ package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.telerik.carpooling.enums.UserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Range;
@@ -19,6 +21,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@EqualsAndHashCode(callSuper = true,exclude = {"comments"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,7 +40,7 @@ public class Trip extends MappedAudibleBase {
     private LocalDateTime departureTime;
 
     @Column(nullable = false)
-    @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8!")
+    @Range(min = 0,max = 8, message = "Please enter total number of seats between 0 and 8!")
     private Integer availablePlaces;
 
     private Integer tripDuration;
@@ -67,8 +70,13 @@ public class Trip extends MappedAudibleBase {
     @JoinColumn(name = "car", nullable = false)
     private Car car;
 
+    @OneToMany(mappedBy = "trip")
+    @JsonIgnore
+    @JsonIgnoreProperties("trip")
+    private Set<Comment> comments = new HashSet<>();
+
     @JsonIgnore
     @ElementCollection
     @MapKeyColumn(name = "id")
-    private Map<User, UserStatus> userStatus = new HashMap<>();
+    private Map<User, PassengerStatus> passengerStatus = new HashMap<>();
 }

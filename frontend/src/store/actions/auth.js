@@ -107,8 +107,8 @@ export const auth = (username, password, isSignup, firstName, lastName, email, p
                 localStorage.setItem('expirationDate', expirationDate);
                 localStorage.setItem('userId', currentUserName);
                 localStorage.setItem('userRole', response.headers.userrole);
-
-                dispatch(authSuccess(response.headers.authorization, currentUserName, response.headers.userrole));
+                if (!isSignup)
+                    dispatch(authSuccess(response.headers.authorization, currentUserName, response.headers.userrole));
                 dispatch(checkAuthTimeout(expiresIn));
             })
             .then(response => {
@@ -138,9 +138,9 @@ export const authCheckState = () => {
             if (expirationDate <= new Date()) {
                 dispatch(logout());
             } else {
-                const userRole =localStorage.getItem('userRole');
+                const userRole = localStorage.getItem('userRole');
                 const userId = localStorage.getItem('userId');
-                dispatch(authSuccess(token, userId,userRole));
+                dispatch(authSuccess(token, userId, userRole));
                 dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
             }
         }

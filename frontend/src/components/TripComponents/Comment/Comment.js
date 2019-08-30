@@ -13,7 +13,10 @@ class Comment extends Component {
     async componentDidMount() {
 
         const getDriverAvatarResponse = await
-            fetch("http://localhost:8080/users/avatar/" + this.props.author.modelId)
+            fetch("http://localhost:8080/users/avatar/" + this.props.author.username,{
+            headers:
+            {"Authorization": this.props.token}
+        })
                 .then(response => response.blob());
 
         if (getDriverAvatarResponse.size > 100) {
@@ -35,5 +38,10 @@ class Comment extends Component {
     }
 
 }
+const mapStateToProps = state => {
+    return {
+        token: state.auth.token,
+    }
+};
 
-export default connect()(withErrorHandler(Comment, axios));
+export default connect(mapStateToProps)(withErrorHandler(Comment, axios));

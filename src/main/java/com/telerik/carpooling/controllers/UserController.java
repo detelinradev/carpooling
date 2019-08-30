@@ -84,7 +84,6 @@ public class UserController {
                                                             String email,
                                                 @RequestParam(value = "phone", required = false)
                                                             String phone) {
-        System.out.println(111);
         return Optional
                 .ofNullable(dtoMapper.userToDtoList(userService.getTopRatedDrivers(pageNumber, pageSize, username, firstName, lastName, email,
                         phone)))
@@ -146,17 +145,17 @@ public class UserController {
 
     }
 
-    @PatchMapping(value = "/{userId}/delete")
+    @PatchMapping(value = "/{username}/delete")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<?> deleteUser(@PathVariable final String userId) {
+    public ResponseEntity<?> deleteUser(@PathVariable final String username) {
         return Optional
-                .ofNullable(userService.deleteUser(userId))
+                .ofNullable(userService.deleteUser(username))
                 .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PatchMapping(value = "/me/update-password")
-    public ResponseEntity<?> updateUserOwnInfo(@RequestParam final String password, final Authentication authentication) {
+    public ResponseEntity<?> updateUserOwnPassword(@RequestParam final String password, final Authentication authentication) {
 
         return Optional
                 .ofNullable(userService.updateCurrentUserPassword(password, userService.getUser(
@@ -248,7 +247,7 @@ public class UserController {
                     .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping(value = "/{tripId}/users/{userID}/rate")
+    @PostMapping(value = "/rate/{tripId}/user/{userID}")
     public ResponseEntity<?> rateUser(@PathVariable final String tripId,
                                       @PathVariable final String userID,
                                       final Authentication authentication,
@@ -257,11 +256,11 @@ public class UserController {
         return Optional
                 .ofNullable(ratingService.rateUser(tripId, userService.getUser(
                         authentication.getName()), userID, rating))
-                .map(tripDtoResponse -> ResponseEntity.ok().build())
+                .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PostMapping(value = "/{tripId}/users/{userID}/feedback")
+    @PostMapping(value = "/feedback/{tripId}/user/{userID}")
     public ResponseEntity<?> leaveFeedback(@PathVariable final String tripId,
                                            @PathVariable final String userID,
                                            final Authentication authentication,
@@ -270,7 +269,7 @@ public class UserController {
         return Optional
                 .ofNullable(feedbackService.leaveFeedback(tripId, userService.getUser(
                         authentication.getName()), userID, feedback))
-                .map(tripDtoResponse -> ResponseEntity.ok().build())
+                .map(k -> ResponseEntity.ok().build())
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 

@@ -14,10 +14,10 @@ class TopRatedUsers extends Component {
 
     componentDidMount() {
         const headers = {
-            "Content-Type":"application/json",
-            'Authorization':this.props.token
+            "Content-Type": "application/json",
+            'Authorization': this.props.token
         };
-        axios.get('http://localhost:8080/users/top-rated-drivers?',{headers})
+        axios.get('http://localhost:8080/users/top-rated-drivers?', {headers})
             .then(response => {
                 if (response) {
                     this.setState({
@@ -26,9 +26,8 @@ class TopRatedUsers extends Component {
                 }
 
             });
-        console.log(this.state.drivers)
 
-        axios.get('http://localhost:8080/users/top-rated-passengers?',{headers})
+        axios.get('http://localhost:8080/users/top-rated-passengers?', {headers})
             .then(response => {
                 if (response) {
                     this.setState({
@@ -38,7 +37,6 @@ class TopRatedUsers extends Component {
 
             });
     }
-
 
 
     render() {
@@ -63,20 +61,20 @@ class TopRatedUsers extends Component {
         ));
 
         return (
-                <div style={{marginBottom: 50}} className="users">
-                    <div>
-                        <h1> TOP RATED DRIVERS</h1>
-                    </div>
-                    <div>
-                        {drivers}
-                    </div>
-                    <div>
-                        <h1> TOP RATED PASSENGERS</h1>
-                    </div>
-                    <div>
-                    {passengers}
-                    </div>
+            <div style={{marginBottom: 50}} className="users">
+                <div>
+                    <h1> TOP RATED DRIVERS</h1>
                 </div>
+                <div>
+                    {drivers}
+                </div>
+                <div>
+                    <h1> TOP RATED PASSENGERS</h1>
+                </div>
+                <div>
+                    {passengers}
+                </div>
+            </div>
         )
 
     }

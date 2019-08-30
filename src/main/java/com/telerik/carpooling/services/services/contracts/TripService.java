@@ -1,6 +1,6 @@
 package com.telerik.carpooling.services.services.contracts;
 
-import com.telerik.carpooling.enums.UserStatus;
+import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
@@ -16,7 +16,7 @@ public interface TripService {
     Trip addPassenger(String tripID, User user);
 
     Trip changePassengerStatus(String TripID,
-                               User user, String passengerID, UserStatus userStatus);
+                               User user, String passengerID, PassengerStatus passengerStatus);
 
     Trip changeTripStatus(String tripID,
                           User user, TripStatus tripStatus);

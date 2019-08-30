@@ -5,18 +5,19 @@ import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import axios from '../../axios-baseUrl';
 import Car from "./Car";
 import Button from "@material-ui/core/Button";
-import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Modal from "../../components/UI/Modal/Modal";
 import Avatar from '../../assets/images/image-default.png';
 import {TiUser, TiGroup} from "react-icons/ti";
 import {FaEnvelopeOpen, FaPhone, FaMedal, FaUserEdit} from "react-icons/fa";
 import StarRatings from 'react-star-ratings';
 import * as actions from "../../store/actions";
+import NewCar from "./NewCar";
 
 
 class Profile extends Component {
     state = {
         user: {},
+        car: {},
         isToggleOn: false,
         edit: false,
         editPass: false,
@@ -25,7 +26,9 @@ class Profile extends Component {
         src: Avatar,
         error: '',
         msg: '',
-        file: ''
+        file: '',
+        message: null,
+        showModal: false
     };
 
 
@@ -41,31 +44,54 @@ class Profile extends Component {
             })
         }
 
-
         const getMeResponse = await
             axios.get('/users/me', {
                 headers:
                     {"Authorization": this.props.token}
             });
 
-        this.setState({
-            user: getMeResponse.data,
-            newEmail: getMeResponse.data.email,
+        if (getMeResponse) {
+            this.setState({
+                user: getMeResponse.data,
+                newEmail: getMeResponse.data.email,
+            })
+        }
+        this.getCar()
 
-        })
+
     };
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.carCreated) {
-            this.props.history.push('/myProfile');
+    async componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.carCreated === 'yes') {
+            this.setState({message: 'Car successfully created'});
+            this.getCar();
+            this.props.onCarFinishCreate();
+            this.toggleModal();
+        }
+        if (this.props.carCreated === 'error') {
+            this.props.onCarFinishCreate();
+            this.toggleModal();
+        }
+    }
+
+    async getCar() {
+        const getCarResponse = await axios.get('/carMe', {
+            headers:
+                {"Authorization": this.props.token}
+        });
+
+        if (getCarResponse) {
+            this.setState({
+                car: getCarResponse.data
+            })
         }
     }
 
 
-        editHandler() {
-            this.setState({
-                edit: !this.state.edit
-            });
+    editHandler() {
+        this.setState({
+            edit: !this.state.edit
+        });
 
     }
 
@@ -92,6 +118,11 @@ class Profile extends Component {
         await
             axios.patch('/users/me/update-email?email=' + this.state.newEmail, null, {
                 headers: {"Authorization": this.props.token}
+            }).then(res => {
+                if (!res.response)
+                    this.setState({message: 'Email successfully changed'});
+            }).catch(err => {
+                this.setState({message: 'Request was not completed'});
             });
 
         this.setState({
@@ -106,6 +137,11 @@ class Profile extends Component {
         await
             axios.patch('/users/me/update-password?password=' + this.state.newPassword, null, {
                 headers: {"Authorization": this.props.token}
+            }).then(res => {
+                if (!res.response)
+                    this.setState({message: 'Password successfully changed'});
+            }).catch(err => {
+                this.setState({message: 'Request was not completed'});
             });
 
         this.setState({
@@ -125,17 +161,20 @@ class Profile extends Component {
     uploadFile = (event) => {
         event.preventDefault();
         this.setState({error: '', msg: ''});
+
         if (!this.state.file) {
             this.setState({error: 'Please upload a file.'})
             return;
         }
-        if (this.state.file.size >= 2000000) {
-            this.setState({error: 'File size exceeds limit of 2MB.'})
+
+        if (this.state.file.size >= 1000000) {
+            this.setState({error: 'File size exceeds limit of 1MB.'})
             return;
         }
+
         let data = new FormData();
         data.append('upfile', this.state.file);
-        console.log(data.getAll("upfile"));
+
         fetch('http://localhost:8080/users/avatar', {
             method: 'POST',
             headers: {"Authorization": this.props.token},
@@ -149,23 +188,63 @@ class Profile extends Component {
     };
 
 
-
     changedEmail = (event) => {
 
         this.setState({newEmail: event.target.value});
     };
 
     changedPassword = (event) => {
-            this.setState({newPassword: event.target.value});
+        this.setState({newPassword: event.target.value});
 
     };
+
+    errorConfirmedHandler = () => {
+        this.setState({
+            message: null
+        });
+    };
+
+    toggleModal() {
+        this.setState({
+            showModal: !this.state.showModal
+        })
+    }
 
 
     render() {
 
+        let responseMessage = (
+            <Modal
+                show={this.state.message}
+                modalClosed={this.errorConfirmedHandler}>
+                {this.state.message ? this.state.message : null}
+            </Modal>
+        );
+        let buttonCreateCar = null;
+        let car = null;
+        if (!this.state.car) {
+            buttonCreateCar = (
+
+                <div className="Car">
+                    <Button onClick={() => this.toggleModal()}><h1>+CREATE CAR</h1></Button>
+                </div>
+
+            );
+        }
+
+        if (this.state.car) {
+            car = (
+                <div>
+                    <Car
+                        car={this.state.car}
+                    />
+                </div>
+            )
+        }
+
 
         return (
-            <Auxiliary>
+            <div>
                 <h1 className="head">
                     USER INFORMATION
                 </h1>
@@ -186,11 +265,16 @@ class Profile extends Component {
                     <Button className="input save" onClick={() => this.editPassParamsHandler()}><h2>SAVE</h2></Button>
                 </Modal>
 
+                <Modal show={this.state.showModal} modalClosed={() => this.toggleModal()}>
+                    <NewCar
+                        showModal={this.state.showModal}
+                    />
+                </Modal>
 
                 <div>
                     <div className="Profile">
                         <ul style={{marginRight: 50, maxWidth: 350}}>
-                            <img src={this.state.src} alt="Not found!"/>
+                            <img src={this.state.src} alt="Not found!" style={{width: 350}}/>
                             <div>
                                 <input onChange={this.onFileChange} type="file"/>
                                 <br/>
@@ -222,7 +306,7 @@ class Profile extends Component {
                                 <h3><FaMedal/> Rating as driver<span
                                     className="header"><h3>{
                                     <StarRatings
-                                        rating={this.state.user.ratingAsDriver===null?0.0:this.state.user.ratingAsDriver}
+                                        rating={this.state.user.ratingAsDriver === null ? 0.0 : this.state.user.ratingAsDriver}
                                         starRatedColor="yellow"
                                         changeRating={this.changeRating}
                                         numberOfStars={5}
@@ -235,7 +319,7 @@ class Profile extends Component {
                                 <h3><span><FaMedal/></span> Rating as passenger<span
                                     className="header"><h1>{
                                     <StarRatings
-                                        rating={this.state.user.ratingAsPassenger===null?0.0:this.state.user.ratingAsPassenger}
+                                        rating={this.state.user.ratingAsPassenger === null ? 0.0 : this.state.user.ratingAsPassenger}
                                         starRatedColor="yellow"
                                         changeRating={this.changeRating}
                                         numberOfStars={5}
@@ -246,11 +330,11 @@ class Profile extends Component {
                             </li>
                         </ul>
                     </div>
-                    <Car/>
-
+                    {car}
+                    {buttonCreateCar}
+                    {responseMessage}
                 </div>
-
-            </Auxiliary>
+            </div>
         );
     }
 }
@@ -259,15 +343,16 @@ const mapStateToProps = state => {
     return {
         loading: state.trip.loading,
         token: state.auth.token,
-        tripUpdate:state.trip.tripUpdated,
+        carCreated: state.car.carCreated,
 
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCreateCar: (create, token) => dispatch(actions.createCar(create, token))
+        onCreateCar: (create, token) => dispatch(actions.createCar(create, token)),
+        onCarFinishCreate: () => dispatch(actions.carFinishCreate())
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps())(withErrorHandler(Profile, axios));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profile, axios));

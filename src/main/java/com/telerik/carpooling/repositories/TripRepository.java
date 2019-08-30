@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Long> {
 
-    @Query("SELECT t from Trip t where t.modelId=:id and t.isDeleted is null")
+    @Query("SELECT t from Trip t where t.modelId=:id and t.isDeleted = false")
     Optional<Trip> findByModelIdAndIsDeleted(@Param(value = "id") Long id);
 
     @Query("select t from Trip t " +
@@ -33,7 +33,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
             "(:smoking is null or :smoking ='' or t.smokingAllowed = :smoking) and" +
             "(:pets is null or :pets ='' or t.petsAllowed = :pets) and" +
             "(:pets is null or :pets ='' or t.petsAllowed = :pets) and" +
-            "(t.isDeleted is null) and" +
+            "(t.isDeleted = false) and" +
             "(:luggage is null or :luggage ='' or t.luggageAllowed = :luggage)"
 //            "(:airConditioned is null or :airConditioned ='' or c.airConditioned = :airConditioned)"
             )

@@ -8,7 +8,7 @@ import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
 import './App.css';
 import Home from './containers/Home/Home';
-import TopRatedDrivers from "./containers/TopRatedUsers/TopRatedUsers";
+import TopRatedUsers from "./containers/TopRatedUsers/TopRatedUsers";
 
 
 const asyncAuth = asyncComponent(() => {
@@ -84,7 +84,7 @@ class App extends Component {
                     </Switch>
                 );
             topRated = (
-                <TopRatedDrivers/>
+                <TopRatedUsers/>
             )
         }
 

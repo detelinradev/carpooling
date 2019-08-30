@@ -51,6 +51,7 @@ export const updateUser = (UserData, token ) => {
         axios.put ( '/users' ,UserData,{headers}
         )
             .then( response => {
+                if(!response.response)
                 dispatch( updateUserSuccess() );
             } )
             .catch( error => {

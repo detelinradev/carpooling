@@ -1,10 +1,8 @@
 package com.telerik.carpooling.services;
 
-import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.models.Feedback;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.CommentDtoResponse;
 import com.telerik.carpooling.models.dtos.FeedbackDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.FeedbackRepository;
@@ -35,11 +33,13 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
         Optional<User> receiver = userRepository.findById(longReceiverID);
-
         if (trip.isPresent() && receiver.isPresent()) {
-            if (trip.get().getUserStatus().containsKey(receiver.get()) && trip.get().getUserStatus().containsKey(user)) {
+            if (trip.get().getPassengerStatus().containsKey(receiver.get())
+                    || trip.get().getPassengerStatus().containsKey(user)
+                    && (trip.get().getDriver().equals(user) || trip.get().getDriver().equals(receiver.get()))) {
                 boolean isDriver = trip.get().getDriver().equals(receiver.get());
                 Feedback feedback = new Feedback(user,receiver.get(),feedbackString,isDriver);
+                System.out.println(feedback.getFeedback());
                 return feedbackRepository.save(feedback);
             }
         }

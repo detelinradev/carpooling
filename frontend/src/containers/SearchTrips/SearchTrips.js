@@ -44,18 +44,19 @@ class SearchTrips extends Component {
                 touched: false
             },
             availablePlaces: {
-                elementType: 'input',
+                elementType: 'select',
                 elementConfig: {
-                    type: 'number',
-                    placeholder: 'Available places'
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: '1', displayValue: '1'},
+                        {value: '2', displayValue: '2'},
+                        {value: '3', displayValue: '3'},
+                        {value: '4', displayValue: '4'},
+                    ]
                 },
                 value: '',
-                validation: {
-                    required: true,
-                    isNumeric: true
-                },
-                valid: false,
-                touched: false
+                validation: {},
+                valid: true,
             },
             earliestDepartureTime: {
                 elementType: 'date',
@@ -136,13 +137,12 @@ class SearchTrips extends Component {
         changedDate: new Date()
 
     };
+
     componentWillUnmount() {
         this.props.onDismountSearch()
     }
 
     inputDateChangedHandler = (date, name) => {
-        console.log(date)
-        console.log(name)
         this.setState({
             startDate: date
         });
@@ -165,10 +165,10 @@ class SearchTrips extends Component {
 
     createHandler = (event) => {
         event.preventDefault();
-        if( this.state.createForm.earliestDepartureTime.value !== '') {
+        if (this.state.createForm.earliestDepartureTime.value !== '') {
             this.state.createForm.earliestDepartureTime.value = DateTimeFormat(this.state.createForm.earliestDepartureTime.value, "yyyy-mm-dd HH:MM");
         }
-        if( this.state.createForm.latestDepartureTime.value !== '') {
+        if (this.state.createForm.latestDepartureTime.value !== '') {
             this.state.createForm.latestDepartureTime.value = DateTimeFormat(this.state.createForm.latestDepartureTime.value, "yyyy-mm-dd HH:MM");
         }
 
@@ -210,18 +210,19 @@ class SearchTrips extends Component {
                     touched: false
                 },
                 availablePlaces: {
-                    elementType: 'input',
+                    elementType: 'select',
                     elementConfig: {
-                        type: 'number',
-                        placeholder: 'Available places'
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: '1', displayValue: '1'},
+                            {value: '2', displayValue: '2'},
+                            {value: '3', displayValue: '3'},
+                            {value: '4', displayValue: '4'},
+                        ]
                     },
                     value: '',
-                    validation: {
-                        required: true,
-                        isNumeric: true
-                    },
-                    valid: false,
-                    touched: false
+                    validation: {},
+                    valid: true,
                 },
                 earliestDepartureTime: {
                     elementType: 'date',
@@ -324,26 +325,14 @@ class SearchTrips extends Component {
 
     showFullTrip = (trip) => {
         const currentUserName = this.props.username;
-        const isDriver = trip.driver.username === currentUserName;
-        let isPassenger;
-        let passengerStatus =null;
-        if(!isDriver) {
+        let passengerStatus = null;
 
-            let passengers = trip.passengers.map(passenger =>
-                (passenger.username === currentUserName)
-            );
-            isPassenger = passengers.includes(true);
-            if(isPassenger){
-                let some =Object.entries(trip.passengerStatus).map(key=>
-                    (key[0].includes('username='+currentUserName))? passengerStatus = key[1]:null
-                );
-            }
-        }
+        let status = Object.entries(trip.passengerStatus).map(key =>
+            (key[0].includes('username=' + currentUserName)) ? passengerStatus = key[1] : null
+        );
 
-        let tripRole = null;
-        if(isPassenger) tripRole = 'passenger';
-        if(isDriver) tripRole = 'driver';
-        this.props.onShowFullTrip(trip, tripRole,passengerStatus);
+        let tripRole = trip.driver.username === currentUserName ? 'driver' : 'passenger';
+        this.props.onShowFullTrip(trip, tripRole, passengerStatus);
         this.props.history.push('/fullTrip');
     };
 

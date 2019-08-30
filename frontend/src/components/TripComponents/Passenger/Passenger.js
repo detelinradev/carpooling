@@ -6,7 +6,6 @@ import {connect} from "react-redux";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../../axios-baseUrl";
 import Avatar from '../../../assets/images/image-default.png'
-import Modal from "../../UI/Modal/Modal";
 
 
 class Passenger extends Component {
@@ -15,14 +14,15 @@ class Passenger extends Component {
         newFeedback: '',
         newRate: '',
         rating: 0,
-        error: null,
-        success: null,
     };
 
     async componentDidMount() {
 
         const getDriverAvatarResponse = await
-            fetch("http://localhost:8080/users/avatar/" + this.props.data.modelId)
+            fetch("http://localhost:8080/users/avatar/" + this.props.userName, {
+                headers:
+                    {"Authorization": this.props.token}
+            })
                 .then(response => response.blob());
 
         if (getDriverAvatarResponse.size > 100) {
@@ -31,15 +31,17 @@ class Passenger extends Component {
             })
         }
         const getMeResponse = await
-            axios.get('/users/' + this.props.data.username, {
+            axios.get('/users/' + this.props.userName, {
                 headers:
                     {"Authorization": this.props.token}
             });
 
-        this.setState({
-            rating: getMeResponse.data.ratingAsPassenger
+        if (getMeResponse) {
+            this.setState({
+                rating: getMeResponse.data.ratingAsPassenger
 
-        })
+            })
+        }
     }
 
     feedbackInputChangedHandler = (event) => {
@@ -49,22 +51,28 @@ class Passenger extends Component {
 
     giveFeedbackHandler = async (event) => {
         event.preventDefault();
-        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/feedback", this.state.newFeedback, {
+        await axios.post("http://localhost:8080/users/feedback/" + this.props.trip.modelId + "/user/" + this.props.modelId, this.state.newFeedback, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
-            this.setState({success: 'Feedback successfully added'});
+            if (!res.response)
+                this.props.showMessage('Feedback successfully added');
+        }).catch(err => {
+            this.props.showMessage('Request was not completed');
         });
         this.setState({newFeedback: ''});
     };
 
     ratePassengerHandler = async (event) => {
         event.preventDefault();
-        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/passengers/" + this.props.data.modelId + "/rate", this.state.newRate, {
+        await axios.post("http://localhost:8080/users/rate/" + this.props.trip.modelId + "/user/" + this.props.modelId, this.state.newRate, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
-            this.setState({success: 'Passenger successfully rated'});
+            if (!res.response)
+                this.props.showMessage('Passenger successfully rated');
+        }).catch(err => {
+            this.props.showMessage('Request was not completed');
         });
         this.setState({newRate: ''});
     };
@@ -75,31 +83,27 @@ class Passenger extends Component {
     };
 
     async changePassengerStatus(passengerStatus) {
-        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + this.props.data.modelId + '?status=' + passengerStatus, null, {
+        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + this.props.modelId + '?status=' + passengerStatus, null, {
             headers: {"Authorization": this.props.token}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
-            this.setState({success: 'Passenger status successfully changed to ' + passengerStatus});
+            if (!res.response)
+                this.props.showMessage('Passenger status successfully changed to ' + passengerStatus);
+        }).catch(err => {
+            this.props.showMessage('Request was not completed');
         });
 
     }
 
-    errorConfirmedHandler = () => {
-        this.setState({
-            error: null,
-            success: null
-        });
-    };
-
     render() {
         let currentPassengerStatus = null;
         let currentPassengers = Object.entries(this.props.trip.passengerStatus).map(key =>
-            (key[0].includes('username=' + this.props.data.username)) ? currentPassengerStatus = key[1] : null);
-        console.log(currentPassengerStatus)
+            (key[0].includes('username=' + this.props.userName)) ? currentPassengerStatus = key[1] : null);
+
         if (
-            (currentPassengerStatus === 'PENDING' && this.props.data.username === this.props.username)
+            (currentPassengerStatus === 'PENDING' && this.props.userName === this.props.username)
             || (currentPassengerStatus === 'PENDING' && this.props.username === this.props.trip.driver.username)
-            || (currentPassengerStatus === 'REJECTED' && this.props.data.username === this.props.username)
+            || (currentPassengerStatus === 'REJECTED' && this.props.userName === this.props.username)
             || (currentPassengerStatus !== 'PENDING' && currentPassengerStatus !== 'REJECTED')
         ) {
 
@@ -109,10 +113,10 @@ class Passenger extends Component {
             if (this.props.isMyTrip) {
                 let currentPassengerStatus = null;
                 let some = Object.entries(this.props.trip.passengerStatus).map(key =>
-                    (key[0].includes('username=' + this.props.data.username)) ? currentPassengerStatus = key[1] : null);
+                    (key[0].includes('username=' + this.props.userName)) ? currentPassengerStatus = key[1] : null);
 
                 if (this.props.tripRole === 'driver'
-                    && this.props.tripStatus === "DONE"
+                    && this.props.trip.tripStatus === "DONE"
                     && currentPassengerStatus !== "PENDING"
                 ) {
                     formFeedback = (
@@ -157,21 +161,11 @@ class Passenger extends Component {
                 }
             }
 
-            let responseMessage = (
-                <Modal
-                    show={this.state.success}
-                    modalClosed={this.errorConfirmedHandler}>
-                    {this.state.error ? this.state.error : null}
-                    {this.state.success ? this.state.success : null}
-                </Modal>
-            );
-
-
             return (
                 <div style={{float: "left"}} className=" Post">
 
                     <div className="Trip additional-details  cardcont  meta-data-container">
-                        <p className="meta-data">{this.props.data.firstName} {this.props.data.lastName}</p>
+                        <p className="meta-data">{this.props.firstName} {this.props.lastName}</p>
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
                                  src={this.state.src} alt={''}/></p>
@@ -196,10 +190,7 @@ class Passenger extends Component {
                         <a>
                             {formFeedback}
                         </a>
-                        <p className="meta-data">{this.props.data.passengerStatus}</p>
                     </div>
-                    {responseMessage}
-
                 </div>)
         } else {
             return null
@@ -216,12 +207,11 @@ const mapStateToProps = state => {
         passengerStatus: state.trip.passengerStatus,
         isMyTrip: state.trip.isMyTrip,
         username: state.auth.userId,
-        tripStatus: state.trip.tripStatus
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchTrip: (token, tripId, requestSent) => dispatch(actions.fetchTrip(token, tripId, requestSent)),
+        onFetchTrip: (token, tripId) => dispatch(actions.fetchTrip(token, tripId)),
     };
 };
 

@@ -15,7 +15,10 @@ class User extends Component {
 
     async componentDidMount() {
         const getUserAvatarResponse = await
-            fetch("http://localhost:8080/users/avatar/" + this.props.data.modelId)
+            fetch("http://localhost:8080/users/avatar/" + this.props.data.username,{
+                headers:
+                    {"Authorization": this.props.token}
+            })
                 .then(response => response.blob());
 
         if (getUserAvatarResponse.size > 100) {
