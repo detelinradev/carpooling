@@ -93,6 +93,8 @@ public class UserServiceImpl implements UserService {
     public User deleteUser(String username) {
 
         User user = userRepository.findFirstByUsernameAndIsDeletedIsFalse(username);
+        userRepository.findFirstByUsernameAndIsDeletedIsFalse(username).getMyTrips().keySet()
+                .forEach(trip -> trip.setIsDeleted(true));
         user.setIsDeleted(true);
         return userRepository.save(user);
     }

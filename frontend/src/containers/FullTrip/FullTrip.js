@@ -199,7 +199,10 @@ class FullTrip extends Component {
         this.setState({
             message: null
         });
-        if(temp === 'Trip successfully deleted' || temp === 'Trip successfully canceled')
+        if(temp === 'Trip successfully deleted' && this.props.userRole === 'ADMIN')
+            this.props.history.push('/searchTrips');
+
+        else if(temp === 'Trip successfully deleted' || temp === 'Trip successfully canceled')
             this.props.history.push('/myTrips');
     };
     showMessage = (message) => {
@@ -280,6 +283,17 @@ class FullTrip extends Component {
         let formComment = null;
         let formRating = null;
         let formDeleteTrip = null;
+
+        if ((this.props.tripRole === 'driver' && this.props.isMyTrip) || this.props.userRole === 'ADMIN') {
+            formDeleteTrip = (
+                <div style={{marginRight: 20, verticalAlign: "middle"}}>
+                    <Button onClick={() => this.deleteTrip()}><h3
+                        className="header">DELETE TRIP</h3>
+                    </Button>
+                </div>
+            );
+        }
+
         if (this.props.isMyTrip) {
 
             formComment = (
@@ -335,14 +349,6 @@ class FullTrip extends Component {
             }
 
             if (this.props.tripRole === 'driver') {
-
-                formDeleteTrip = (
-                    <div style={{marginRight: 20, verticalAlign: "middle"}}>
-                        <Button onClick={() => this.deleteTrip()}><h3
-                            className="header">DELETE TRIP</h3>
-                        </Button>
-                    </div>
-                );
 
                 if(this.props.trip.tripStatus !== 'DONE'&& this.props.trip.tripStatus !== 'CANCELED') {
                     if(this.props.trip.tripStatus !== 'ONGOING') {
@@ -498,7 +504,8 @@ const mapStateToProps = state => {
         tripRole: state.trip.tripRole,
         passengerStatus: state.trip.passengerStatus,
         isMyTrip: state.trip.isMyTrip,
-        tripUpdate: state.trip.tripUpdated
+        tripUpdate: state.trip.tripUpdated,
+        userRole:state.auth.userRole
 
     }
 };

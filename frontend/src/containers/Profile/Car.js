@@ -39,15 +39,14 @@ class Car extends Component {
 
     uploadFile = (event) => {
         event.preventDefault();
-        this.setState({error: '', msg: ''});
 
         if (!this.state.file) {
-            this.setState({error: 'Please upload a file.'})
+            this.props.showMessage('Please upload a file');
             return;
         }
 
         if (this.state.file.size >= 1000000) {
-            this.setState({error: 'File size exceeds limit of 1MB.'})
+            this.props.showMessage('File size exceeds limit of 1MB');
             return;
         }
 
@@ -59,10 +58,11 @@ class Car extends Component {
             headers: {"Authorization": this.props.token},
             body: data
         }).then(response => {
-            this.setState({error: '', msg: 'Successfully uploaded file'});
+            if(!response.response)
+            this.props.showMessage('Successfully uploaded file');
             this.componentDidMount();
         }).catch(err => {
-            this.setState({error: err});
+            this.props.showMessage('Request was not completed');
         });
     };
 

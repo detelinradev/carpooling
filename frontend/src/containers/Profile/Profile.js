@@ -160,15 +160,14 @@ class Profile extends Component {
 
     uploadFile = (event) => {
         event.preventDefault();
-        this.setState({error: '', msg: ''});
 
         if (!this.state.file) {
-            this.setState({error: 'Please upload a file.'})
+            this.setState({message: 'Please upload a file.'})
             return;
         }
 
         if (this.state.file.size >= 1000000) {
-            this.setState({error: 'File size exceeds limit of 1MB.'})
+            this.setState({message: 'File size exceeds limit of 1MB.'})
             return;
         }
 
@@ -180,10 +179,11 @@ class Profile extends Component {
             headers: {"Authorization": this.props.token},
             body: data
         }).then(response => {
-            this.setState({error: '', msg: 'Successfully uploaded file'});
+            if(!response.response)
+            this.setState({message: 'Successfully uploaded file'});
             this.componentDidMount();
         }).catch(err => {
-            this.setState({error: err});
+            this.setState({message: 'Request was not completed'});
         });
     };
 
@@ -210,6 +210,11 @@ class Profile extends Component {
         })
     }
 
+    showMessage = (message) => {
+        this.setState({
+            message: message
+        });
+    };
 
     render() {
 
@@ -237,6 +242,7 @@ class Profile extends Component {
                 <div>
                     <Car
                         car={this.state.car}
+                        showMessage={this.showMessage}
                     />
                 </div>
             )

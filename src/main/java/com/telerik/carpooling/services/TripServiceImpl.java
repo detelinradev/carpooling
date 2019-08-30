@@ -100,9 +100,10 @@ public class TripServiceImpl implements TripService {
 
         Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
         if (trip.isPresent()) {
-            if (trip.get().getDriver().equals(user))
+            if (trip.get().getDriver().equals(user) || user.getRole().equals("ADMIN")) {
                 trip.get().setIsDeleted(true);
-            return tripRepository.save(trip.get());
+                return tripRepository.save(trip.get());
+            }
         }
         return null;
     }

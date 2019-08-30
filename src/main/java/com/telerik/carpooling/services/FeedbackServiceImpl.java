@@ -39,7 +39,6 @@ public class FeedbackServiceImpl implements FeedbackService {
                     && (trip.get().getDriver().equals(user) || trip.get().getDriver().equals(receiver.get()))) {
                 boolean isDriver = trip.get().getDriver().equals(receiver.get());
                 Feedback feedback = new Feedback(user,receiver.get(),feedbackString,isDriver);
-                System.out.println(feedback.getFeedback());
                 return feedbackRepository.save(feedback);
             }
         }
