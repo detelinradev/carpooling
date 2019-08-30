@@ -1,4 +1,4 @@
-# carpooling app
+## Carpooling app
 Web-based application giving opportunities for the user to share car journeys.
  - It has implemented functionality for creating shared journey and joining already created journey
  - Project allows two roles which a user can have: admin and user
