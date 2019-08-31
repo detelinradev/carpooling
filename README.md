@@ -34,17 +34,17 @@ It is a final project for Telerik Academy Alpha track 'february 2019, made by me
 
 **We provide a gallery of screen shots for the possible customer interactions with the application**
 
- This is how the application looks for unregistered user. Here we have just Home component and Login component available
+ This is how the application looks for unregistered user. Here we have just `Home` component and `Login` component available
  
 ![2019-08-30 (2)](https://user-images.githubusercontent.com/39421427/64017472-46e92a80-cb32-11e9-81fc-d868cd52bcf7.png)
 
 
- That is Sign-in module. We need to enter username and password to authenticate successfully
+ That is `Sign-in` module. We need to enter username and password to authenticate successfully
  
 ![2019-08-30 (3)](https://user-images.githubusercontent.com/39421427/64017473-4781c100-cb32-11e9-93c3-df338de5ffa2.png)
 
 
-Here is Sign-up modul for new users. We need to enter all required data to make an account in the application.
+Here is `Sign-up` modul for new users. We need to enter all required data to make an account in the application.
  - username has to be unique for the application
  - password with small and capital letters, digits and special symbols, at last 8 symbols long
  - first and last name should contain only letters
@@ -54,12 +54,12 @@ Here is Sign-up modul for new users. We need to enter all required data to make 
 ![2019-08-30 (4)](https://user-images.githubusercontent.com/39421427/64017474-4781c100-cb32-11e9-937d-33c9a57f44ff.png)
 
 
- This is the Home window for authenticated user. Here he could see a leaderboard with the TOP 10 drivers and TOP 10 passengers based on the rating they receive after each trip as well as all the possible links in the application, listed on the right side of the navbar on the top of the window
+ This is the `Home` window for authenticated user. Here he could see a leaderboard with the TOP 10 drivers and TOP 10 passengers based on the rating they receive after each trip. The leaderboard is visible in the whole application under other components. As well one can see all possible links in the application, listed on the right side of the navbar on the top of the window
  
 ![2019-08-30 (5)](https://user-images.githubusercontent.com/39421427/64017475-4781c100-cb32-11e9-8b1e-a3d72c232ad6.png)
 
 
-That is the profile page, where user could see all the information about himself as well as edited it. He has an options to edit his phone, email and password and add an avatar. If he wants to create a trip, it is mandatory to create a car as well.
+That is the `Profile` page, where user could see all the information about himself as well as edited it. He has an options to edit his phone, email and password and add an avatar. If he wants to create a trip, it is mandatory to create a car as well.
 
 ![2019-08-30 (6)](https://user-images.githubusercontent.com/39421427/64017476-4781c100-cb32-11e9-9bb8-2416136d47b5.png)
 
@@ -114,12 +114,12 @@ Most of the rest options are drop-down lists what makes it easier and more secur
 ![2019-08-30 (16)](https://user-images.githubusercontent.com/39421427/64017422-405ab300-cb32-11e9-98b2-0f5645e414b3.png)
 
 
-After pressing create button user is redirected to 'My Trips' component, where she could see the trip that she just created. The role of the user in the trip appears on the top border in the center as 'driver' or 'passenger'
+After pressing create button user is redirected to `My Trips` component, where she could see the trip that she just created. The role of the user in the trip appears on the top border in the center as `driver` or `passenger`
 
 ![2019-08-30 (18)](https://user-images.githubusercontent.com/39421427/64017423-405ab300-cb32-11e9-83ed-876dd032b665.png)
 
 
-You could see full info for the trip by pressing the 'Details' button. Now you have options to edit trip and add a comment that is visible only for the participants in the trip
+You could see full info for the trip by pressing the `Details` button. Now you have options to edit trip and add a comment with additional information for users willing to join your trip. The option for adding a comment is only available for driver and passengers that made a request to join the trip, or that have been already approved
 
 ![2019-08-30 (19)](https://user-images.githubusercontent.com/39421427/64017424-405ab300-cb32-11e9-86df-99a5c8be75bd.png)
 
@@ -129,7 +129,7 @@ Here comment is created and become visible in the comments area with your name a
 ![2019-08-30 (20)](https://user-images.githubusercontent.com/39421427/64017425-40f34980-cb32-11e9-974c-68dfa7bd2097.png)
 
 
-You could change all the details for the trip. When button 'Update trip' is pressed, a form with trip details pop-up. By simply pressing 'update' button ypu can edit the trip.
+You could change all the details for the trip. When button `Update trip` is pressed, a form with trip details pop up. By simply pressing `update` button ypu can edit the trip.
 
 ![2019-08-30 (21)](https://user-images.githubusercontent.com/39421427/64017426-40f34980-cb32-11e9-8d94-71b88b28bb40.png)
 
@@ -139,14 +139,14 @@ Here the trips is updated with the information provided
 ![2019-08-30 (22)](https://user-images.githubusercontent.com/39421427/64017427-40f34980-cb32-11e9-8b0b-a7b1ddcd4d25.png)
 
 
-If you chose value that not follow the rules, for example available seats = 30, you will receive message that operation is not successfull
+If you chose value that not follow the rules, for example `available seats = 30`, you will receive message that operation is not successfull
 
 ![2019-08-30 (23)](https://user-images.githubusercontent.com/39421427/64017428-40f34980-cb32-11e9-9410-a3cb74ac1a82.png)
 
 
 Now once the trip is created we need to sign in with different user and join the trip.
-That is how 'Search trips' form looks like. All fields are optional, if you don't chose any, it will load all trips available.
-Almost all the fields are predefined, so we could realy on the user's input validity
+That is how `Search trips` form looks like. All fields are optional, if you don't chose any, it will load all trips available.
+Almost all the fields are predefined, so we could rely on the user's input validity
 
 ![2019-08-30 (24)](https://user-images.githubusercontent.com/39421427/64017429-418be000-cb32-11e9-8434-10956276e313.png)
 
@@ -156,53 +156,157 @@ Now our trip is available and visible for the users to join
 ![2019-08-30 (25)](https://user-images.githubusercontent.com/39421427/64017430-418be000-cb32-11e9-82a0-cf8227d3bf53.png)
 
 
-By pressing 'Details' button we redirect to component that shows all the info for the trip as well as button 'Join trip'
+By pressing `Details` button we redirect to component that shows all the info for the trip as well as button `Join trip`
 
 ![2019-08-30 (26)](https://user-images.githubusercontent.com/39421427/64017432-418be000-cb32-11e9-82fa-2045cee308dd.png)
 
 
-When the user wants to join the trip, and he presses the 'Join trip' button, the button changes to 'Request sent' and new component shows up with user name and picture, his rating as passenger and status of the request, what initialy is 'pending'
+When the user wants to join the trip, and he presses the `Join trip` button, the button changes to `Request sent` and new component shows up with user name and picture, his rating as passenger and status of the request, what initialy is `pending`
 
 ![2019-08-30 (27)](https://user-images.githubusercontent.com/39421427/64017433-42247680-cb32-11e9-95f3-e8e70f842fad.png)
 
 
-Now one can find it in his 'My trips' conteiner where his role on the top of the border will be 'passenger'
+Now one can find it in his `My trips` page where his role on the top of the border will be `passenger`
 
 ![2019-08-30 (28)](https://user-images.githubusercontent.com/39421427/64017434-42247680-cb32-11e9-80e2-3bf66818957a.png)
 
 
+By clicking `details` button user will see the detailed view of the trip with all the information and button `leave trip` what allows him to cancel his participation in the trip. Now he can add comments as well.
 
 ![2019-08-30 (29)](https://user-images.githubusercontent.com/39421427/64063937-fe01a680-cc03-11e9-83c2-2cf5d1312739.png)
+
+
+Here we swap the users again, and login with the driver ot the trip. In her `My trip` page she can see the trip
+
 ![2019-08-30 (31)](https://user-images.githubusercontent.com/39421427/64017436-42247680-cb32-11e9-848b-a85b0a88371d.png)
+
+
+When she opens the full view she sees the pending passenger request and has an option to accept it, reject it or marked it as absent, what is possible only if the request has been accepted and the trip is not `ONGOING` or `DONE`.
+
 ![2019-08-30 (32)](https://user-images.githubusercontent.com/39421427/64017437-42bd0d00-cb32-11e9-8178-1dc247476f0f.png)
+
+
+Here just for the sake of brevity we will update the available seat to 1, so we can fill all the seats with just that example
+
 ![2019-08-30 (35)](https://user-images.githubusercontent.com/39421427/64017438-42bd0d00-cb32-11e9-85ca-b2e233cff50c.png)
+
+
+Now we could choose between options for passenger status, if we choose `ACCEPTED` that will automatically change the trip seats and the server will check if they are 0 and will change trip status to `BOOKED`, if we mark `REJECTED` that will remove the passenger from the trip and will ne no longer visible in your trip or in the main search trips page, but will be still visible in the passenger's my trip page with status `Driver denied`
+
 ![2019-08-30 (36)](https://user-images.githubusercontent.com/39421427/64017439-42bd0d00-cb32-11e9-872b-be557da6aee8.png)
+
+
+Here the passenger is accepted and because we changed available trip seats to 1, the trip status become `BOOKED` automatically. If we decide to reject the passenger thereafter the seat will be recalculated to +1 and trip status changed appropriately
+
 ![2019-08-30 (37)](https://user-images.githubusercontent.com/39421427/64017440-42bd0d00-cb32-11e9-9f07-ddb6f7df50d0.png)
+
+
+Now the driver could change trip status to `ONGOING` , `DONE` or `CANCELED`
+
 ![2019-08-30 (38)](https://user-images.githubusercontent.com/39421427/64017441-4355a380-cb32-11e9-88c9-46b0e432496c.png)
+
+
+It should be changed first to `ONGOING`. Now we can see `Update trip` button disappear as it is not expected to change something when trip is already started
+
 ![2019-08-30 (39)](https://user-images.githubusercontent.com/39421427/64017442-4355a380-cb32-11e9-84ad-6cdd0f8efc88.png)
+
+
+Only then `DONE` is available.  `Change trip status` button is not there anymore, as nothing more can happen with trip when it is done.  And now, fields with option to rate passenger and give feedback to passenger appears
+
 ![2019-08-30 (40)](https://user-images.githubusercontent.com/39421427/64017443-4355a380-cb32-11e9-8c41-7aca708bc57d.png)
+
+
+Rate value should be between 1 and 5
+
 ![2019-08-30 (41)](https://user-images.githubusercontent.com/39421427/64017444-4355a380-cb32-11e9-9e4d-985a0b047193.png)
+
+
+Feedback is just String and is restricted to 250 symbols
+
 ![2019-08-30 (42)](https://user-images.githubusercontent.com/39421427/64017445-43ee3a00-cb32-11e9-95a5-ad3f76849588.png)
+
+
+Here we login with passenger's account and in the same trip we could see the fields to rate driver and give feedback to driver as well as in the driver's account
+
 ![2019-08-30 (43)](https://user-images.githubusercontent.com/39421427/64017446-43ee3a00-cb32-11e9-975d-a43fa1717851.png)
-![2019-08-30 (44)](https://user-images.githubusercontent.com/39421427/64017448-43ee3a00-cb32-11e9-9c13-5bfadb1f5e10.png)
-![2019-08-30 (45)](https://user-images.githubusercontent.com/39421427/64017449-43ee3a00-cb32-11e9-832c-5c5e6bbc1e85.png)
+
+
+If we don't want to see this trip anymore we are able to cancel it. The option is available in whole cycle of trip statuses and passneger statuses, as this is the option to delete the trip from list with your trips as well as the option to cancel it before the trip starts
 ![2019-08-30 (46)](https://user-images.githubusercontent.com/39421427/64017451-4486d080-cb32-11e9-979e-1f679405b74c.png)
+
+
+Once you cancel it, you will be redirected to your `My trips` page where it will no longer appears
+
 ![2019-08-30 (47)](https://user-images.githubusercontent.com/39421427/64017452-4486d080-cb32-11e9-99c0-ecdce96edab7.png)
+
+
+Now back in the driver's account. Where the button `Delete trip` is still available, so if for any reason we don't want to see this trip anymore we can use it, and delete it permanently. That is not true delete, we decide to implement  "silent" delete and just patch a field isDeleted in the database, what gives us option to recover the data, if it becomes of any interest. All search methods has an appropriate filter to not show deleted trips
+
 ![2019-08-30 (48)](https://user-images.githubusercontent.com/39421427/64017453-4486d080-cb32-11e9-9677-29c8db8a9b59.png)
-![2019-08-30 (49)](https://user-images.githubusercontent.com/39421427/64017454-4486d080-cb32-11e9-9a8b-6bcc0cfcb3be.png)
+
+
+Now this is done
+
 ![2019-08-30 (50)](https://user-images.githubusercontent.com/39421427/64017456-451f6700-cb32-11e9-8ea6-1ee308a29310.png)
+
+
+And we are redirected to the `My trip` page where is nothing, the trip will not appears in the main search page too
+
 ![2019-08-30 (51)](https://user-images.githubusercontent.com/39421427/64017457-451f6700-cb32-11e9-8fdd-8093a4482b86.png)
+
+
+It is the time for the admin part.
+We now login with an admin account, and we can see a new link appears in the navbar - `Admin`
+
 ![2019-08-30 (52)](https://user-images.githubusercontent.com/39421427/64017458-451f6700-cb32-11e9-8e77-c1949625bb4c.png)
+
+
+In the `Admin` page we can see search form like in `Search trips`, but for users. All fields are optional too, if we don't chose any, it will shows all users
+
 ![2019-08-30 (53)](https://user-images.githubusercontent.com/39421427/64017459-45b7fd80-cb32-11e9-93e0-14c10a1221d6.png)
+
+
+Now we find the user that we created in the begining
+
 ![2019-08-30 (54)](https://user-images.githubusercontent.com/39421427/64017460-45b7fd80-cb32-11e9-8edb-41ac3f769dd7.png)
+
+
+Here is the full user information. We have an options to edit or delete the user
+
 ![2019-08-30 (55)](https://user-images.githubusercontent.com/39421427/64017461-45b7fd80-cb32-11e9-95d5-314c4b562ad7.png)
+
+
+That is the form with the available fields for editing, username, first name and last name are not expected to be changed.
+
 ![2019-08-30 (57)](https://user-images.githubusercontent.com/39421427/64017462-45b7fd80-cb32-11e9-812b-2dde1eab39ba.png)
+
+
+Here we update the information, and the user is now with user role `ADMIN`
+
 ![2019-08-30 (58)](https://user-images.githubusercontent.com/39421427/64017464-46509400-cb32-11e9-8121-9fd678aec2d6.png)
+
+
+And the other available option is to delete the user. Here "silent" delete is implemented as well. One thing to point out: when the user is "deleted" all his trips are "deleted" as well
+
 ![2019-08-30 (59)](https://user-images.githubusercontent.com/39421427/64017465-46509400-cb32-11e9-8034-edb9a54a503f.png)
+
+
+Now we can not find user with first name "Mila"
+
 ![2019-08-30 (61)](https://user-images.githubusercontent.com/39421427/64017466-46509400-cb32-11e9-8fa8-262449492613.png)
+
+Being an admin also allows an user to delete a trip. Only for `ADMIN` role when in main search trips page, user open details for the trip, there is button `Delete trip` 
+
 ![2019-08-30 (63)](https://user-images.githubusercontent.com/39421427/64017467-46e92a80-cb32-11e9-9e84-b0c6772403b2.png)
+
+
+Here is the message for successfull operation
+
 ![2019-08-30 (64)](https://user-images.githubusercontent.com/39421427/64017470-46e92a80-cb32-11e9-9860-6d0bc11cc3dd.png)
 
+
+
+   ### **Hope you like the application, we did it all with a lot of passion and positive vibes** :smile:
 
 
 
