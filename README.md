@@ -306,7 +306,7 @@ Here is the message for successfull operation
 
 
 
-   ### **Hope you'll like the application, we did it all with a lot of passion and positive vibes** :simple_smile: :+1:
+   ### **Hope you would like the application, we did it all with a lot of passion and positive vibes** :smiley: :+1:
 
 
 
