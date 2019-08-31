@@ -47,7 +47,7 @@ class FullTrip extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.tripUpdate === 'yes') {
             this.setState({message: 'Trip successfully updated'});
-            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
             this.props.onTripFinishUpdate('no');
             this.toggleModal();
         }
@@ -102,7 +102,7 @@ class FullTrip extends Component {
         axios.patch('/trips/' + this.props.trip.modelId + '?status=' + tripStatus, null, {
             headers: {"Authorization": this.props.token}
         }).then(res => {
-            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
             this.props.onTripChangeStatus(tripStatus);
             if(!res.response)
             this.setState({message: 'Trip status changed to ' + tripStatus});
@@ -142,7 +142,7 @@ class FullTrip extends Component {
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/comments?comment=" + this.state.newComment, null, {
             headers: {"Authorization": this.props.token}
         }).then(res => {
-            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
             if(!res.response)
             this.setState({message: 'Comment successfully added'});
         }).catch(err => {
@@ -181,7 +181,7 @@ class FullTrip extends Component {
         await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/driver/feedback", this.state.newFeedback, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
-            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
             this.setState({message: 'Feedback successfully send'});
         });
         this.setState({newFeedback: ''});

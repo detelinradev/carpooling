@@ -48,6 +48,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(final User user) {
+        user.setRatingAsPassenger(0.0);
+        user.setRatingAsDriver(0.0);
         return userRepository.save(user);
     }
 

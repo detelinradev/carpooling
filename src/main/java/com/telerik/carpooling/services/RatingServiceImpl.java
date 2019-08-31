@@ -37,6 +37,7 @@ public class RatingServiceImpl implements RatingService {
                     && (trip.get().getDriver().equals(user) || trip.get().getDriver().equals(ratedUser.get()))) {
                 boolean isDriver = trip.get().getDriver().equals(ratedUser.get());
                 Rating ratingObject = new Rating(user, ratedUser.get(), rating,isDriver);
+                ratingObject.setIsDeleted(false);
                 return ratingRepository.save(ratingObject);
             }
         }

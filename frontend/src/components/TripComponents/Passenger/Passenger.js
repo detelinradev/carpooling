@@ -54,7 +54,7 @@ class Passenger extends Component {
         await axios.post("http://localhost:8080/users/feedback/" + this.props.trip.modelId + "/user/" + this.props.modelId, this.state.newFeedback, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
-            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
             if (!res.response)
                 this.props.showMessage('Feedback successfully added');
         }).catch(err => {
@@ -68,7 +68,7 @@ class Passenger extends Component {
         await axios.post("http://localhost:8080/users/rate/" + this.props.trip.modelId + "/user/" + this.props.modelId, this.state.newRate, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
-            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
             if (!res.response)
                 this.props.showMessage('Passenger successfully rated');
         }).catch(err => {
@@ -86,7 +86,7 @@ class Passenger extends Component {
         axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + this.props.modelId + '?status=' + passengerStatus, null, {
             headers: {"Authorization": this.props.token}
         }).then(res => {
-            this.props.onFetchTrip(this.props.token, this.props.trip.modelId);
+            this.props.onFetchTrip(this.props.token, this.props.trip.modelId,passengerStatus);
             if (!res.response)
                 this.props.showMessage('Passenger status successfully changed to ' + passengerStatus);
         }).catch(err => {

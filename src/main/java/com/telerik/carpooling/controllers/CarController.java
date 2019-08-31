@@ -56,7 +56,7 @@ public class CarController {
     }
 
     @GetMapping(value = "/carMe")
-    public ResponseEntity<CarDtoResponse> getCarMeMe(final Authentication authentication){
+    public ResponseEntity<CarDtoResponse> getCarMe(final Authentication authentication){
         return Optional
                 .ofNullable(carService.getCarMe(userService.getUser(
                         authentication.getName())))
