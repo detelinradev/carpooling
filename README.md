@@ -1,70 +1,70 @@
 # Carpooling app
-It is a final project for Telerik Academy Alpha track 'february 2019, made by me in collaboration with [Anton Madzharov](https://github.com/antonmadzharov)
+It is a final project for Telerik Academy Alpha track 'February 2019, made by me in collaboration with [Anton Madzharov](https://github.com/antonmadzharov)
 
 
-### **Web-based application giving opportunities for user to share car journeys**
- - It has implemented functionality for creating shared journey and joining already created journey
- - Project allows two roles which a user can have: admin and user
- - User is able to create, edit or join trip and admin could edit or delete user and delete trip
+### **Web-based application giving opportunities for the user to share car journeys**
+ - It has implemented functionality for creating a shared journey and joining already created journey
+ - The project allows two roles which a user can have: admin and user
+ - User can create, edit or join the trip and admin could edit or delete the user and delete trip
  - Technologies - ReactJs, REST, Spring Boot, JPA, MariaDB
 
 ### **Simple structure of the project :**
 ![seYw4vJZ6JGNOUEI3OZCRTw (1)](https://user-images.githubusercontent.com/39421427/64018341-dc85b980-cb34-11e9-8fd6-3a355521f27e.png)
 
 ### **We have used for front-end ReactJs**
-  - With help of Redux, we greatly improved managing of the state
-  - Our components are asynchronus, what means a component being load only if it is called
+  - With the help of Redux, we greatly improved the managing of the state
+  - Our components are asynchronous, which means a component being load only if it is called
   - Routing is implemented, and therefore we are using links when moving between components instead of reloading it
-  - We added global error handler for responses from server, yet there is local handlers too, for more precise response messages
-  - The origin and the destination for the trip in the app are being send to network based API, what delivers the duration and the         distance of the trip
-  - Validation for the user input is achieved with as much predefined options as possible, as drop-downs, calendars ect., and use of       validation rules like numeric type and regex check for input fields
+  - We added global error handler for responses from the server, yet there are local handlers too, for more precise response messages
+  - The origin and the destination for the trip in the app are being sent to network-based API, which delivers the duration and the         distance of the trip
+  - Validation for the user input is achieved with as many predefined options as possible, as drop-downs, calendars ect., and use of       validation rules like numeric type and regex check for input fields
   
- ### **Back-end is written on Java 8, it is Spring Boot Gradle based application**
-  - Thus it has layered structure, in 3 main layers, Rest Controllers, Services and JPA Repositories, and we are using Dependency         Injection to handle dependencies between modules
+ ### **Back-end is written in Java 8, it is Spring Boot Gradle based application**
+  - Thus it has a layered structure, in 3 main layers, Rest Controllers, Services and JPA Repositories, and we are using Dependency         Injection to handle dependencies between modules
   - We are using JWT Security, with identification token bearing the role of the user
-  - We chose Global exception handler and optional return types over try catch blocks 
-  - The repositories are JPA, what delivers all the database connection functionality in just interfaces, with help of JPQL querries
+  - We chose Global exception handler and optional return types over try-catch blocks 
+  - The repositories are JPA, what delivers all the database connection functionality in just interfaces, with help of JPQL queries
   - We used Lombok for cutting out the boilerplate code
-  - We chose MapStruct as more fast and powerfull dto mapper tool than other similar tools 
-  - We made validation of the user input with help of Java Validation API and use of javax.validation for bean validation
+  - We chose MapStruct as more fast and powerful dto mapper tool than other similar tools 
+  - We made validation of the user input with the help of Java Validation API and use of javax.validation for bean validation
 
 **Documentation of the project can be found [here](https://documenter.getpostman.com/view/7601087/SVYwLwZa)**
 
 ## **Application gallery**
 
-**We provide a gallery of screen shots for the possible customer interactions with the application**
+**We provide a gallery of screenshots for the possible customer interactions with the application**
 
- This is how the application looks for unregistered user. Here we have just `Home` component and `Login` component available
+ This is how the application looks for the unregistered user. Here we have just `Home` component and `Login` component available
  
 ![2019-08-30 (2)](https://user-images.githubusercontent.com/39421427/64017472-46e92a80-cb32-11e9-81fc-d868cd52bcf7.png)
 
 
- That is `Sign-in` module. We need to enter username and password to authenticate successfully
+ That is the `Sign-in` module. We need to enter username and password to authenticate successfully
  
 ![2019-08-30 (3)](https://user-images.githubusercontent.com/39421427/64017473-4781c100-cb32-11e9-93c3-df338de5ffa2.png)
 
 
-Here is `Sign-up` modul for new users. We need to enter all required data to make an account in the application.
- - username has to be unique for the application
- - password with small and capital letters, digits and special symbols, at last 8 symbols long
- - first and last name should contain only letters
- - email should follow xxxxx@yyyyy.zzzzz pattern
+Here is the `Sign-up` module for new users. We need to fill all required fields to make an account in the application.
+ - username has to be unique for the application, min length 2 symbols, max length 20 symbols
+ - password with small and capital letters, digits and special symbols, at last, 8 symbols long
+ - first and last name should contain only letters, min length 1 symbol, max length 20 symbols
+ - the email should follow xxxxx@yyyyy.zzzzz pattern
  - phone number should be 10 symbols long, consists only of numbers
  
 ![2019-08-30 (4)](https://user-images.githubusercontent.com/39421427/64017474-4781c100-cb32-11e9-937d-33c9a57f44ff.png)
 
 
- This is the `Home` window for authenticated user. Here he could see a leaderboard with the TOP 10 drivers and TOP 10 passengers based on the rating they receive after each trip. The leaderboard is visible in the whole application under other components. As well one can see all possible links in the application, listed on the right side of the navbar on the top of the window
+ This is the `Home` window for the authenticated user. Here he could see a leaderboard with the TOP 10 drivers and TOP 10 passengers based on the rating they receive after each trip. The leaderboard is visible in the whole application under the other components. As well one can see all possible links in the application, listed on the right side of the navbar on the top of the window
  
 ![2019-08-30 (5)](https://user-images.githubusercontent.com/39421427/64017475-4781c100-cb32-11e9-8b1e-a3d72c232ad6.png)
 
 
-That is the `Profile` page, where user could see all the information about himself as well as edited it. He has an options to edit his phone, email and password and add an avatar. If he wants to create a trip, it is mandatory to create a car as well.
+That is the `Profile` page, where the user could see all information about himself as well as edited it. He has options to edit his phone, email and password and add an avatar. If he wants to create a trip, it is mandatory to create a car as well.
 
 ![2019-08-30 (6)](https://user-images.githubusercontent.com/39421427/64017476-4781c100-cb32-11e9-9bb8-2416136d47b5.png)
 
 
-Here the user did upload a picture and recevies a message for successfull operation
+Here the user did upload a picture and receives a message for the successful operation
 
 ![2019-08-30 (7)](https://user-images.githubusercontent.com/39421427/64017477-481a5780-cb32-11e9-9f4d-f7f6d8798ff9.png)
 
@@ -79,27 +79,27 @@ Here data is successfully changed and there is a message for it. Changes are asy
 ![2019-08-30 (9)](https://user-images.githubusercontent.com/39421427/64017480-481a5780-cb32-11e9-9d30-ce5ce5ec6b27.png)
 
 
-That is the form for creating a car. You have to enter brand, model and color of your car and year of registration between 1950 and current year. Air conditioned should be 'yes' or 'no'
+That is the form for creating a car. You have to enter the brand, model and colour of your car and year of registration between 1950 and the current year. Air-conditioned should be 'yes' or 'no'
 
 ![2019-08-30 (10)](https://user-images.githubusercontent.com/39421427/64017481-481a5780-cb32-11e9-8576-10afd7b29be9.png)
 
 
-When car is successfully created another component appears under main one with information about your car
+When a car has successfully created, another component appears under the main one with information about your car
 
 ![2019-08-30 (11)](https://user-images.githubusercontent.com/39421427/64017482-48b2ee00-cb32-11e9-90f9-6a379bb994de.png)
 
 
-If user presses the upload button by mistake without any fail selected, there is a warn message for it 
+If the user presses the upload button for uploading an avatar by mistake without any fail selected, there is a warning message for it 
 
 ![2019-08-30 (12)](https://user-images.githubusercontent.com/39421427/64017483-48b2ee00-cb32-11e9-8d1e-15a2e4832b0b.png)
 
 
-Here picture is successfully uploaded
+Here the picture is successfully uploaded
 
 ![2019-08-30 (13)](https://user-images.githubusercontent.com/39421427/64017418-3fc21c80-cb32-11e9-8c64-102c7e8da130.png)
 
 
-Now user have a car he can create a trip, origin and destination should be entered, information is sent to Bing API for acquiring distance and time for finishing the trip
+Now that the user has a car, he can create a trip. Origin and destination should be entered, information is sent to Bing API for acquiring distance and time for finishing the trip
 
 ![2019-08-30 (14)](https://user-images.githubusercontent.com/39421427/64017419-3fc21c80-cb32-11e9-8a59-2be53783df54.png)
 
@@ -109,12 +109,12 @@ There is a calendar for the departure time to make sure user input is in the for
 ![2019-08-30 (15)](https://user-images.githubusercontent.com/39421427/64017421-405ab300-cb32-11e9-8236-388681aa82b9.png)
 
 
-Most of the rest options are drop-down lists what makes it easier and more secure to fill the form. Button 'create' becomes active when all fields have values and they passed the validation provided
+Most of the rest options are drop-down lists which makes it easier and more secure to fill the form. Button 'create' becomes active when all fields have values and they passed the validation provided
 
 ![2019-08-30 (16)](https://user-images.githubusercontent.com/39421427/64017422-405ab300-cb32-11e9-98b2-0f5645e414b3.png)
 
 
-After pressing create button user is redirected to `My Trips` component, where she could see the trip that she just created. The role of the user in the trip appears on the top border in the center as `driver` or `passenger`
+After pressing create button user is redirected to `My Trips` component, where she could see the trip that she just created. The role of the user in the trip appears on the top border in the centre as `driver` or `passenger`
 
 ![2019-08-30 (18)](https://user-images.githubusercontent.com/39421427/64017423-405ab300-cb32-11e9-83ed-876dd032b665.png)
 
@@ -129,23 +129,23 @@ Here comment is created and become visible in the comments area with your name a
 ![2019-08-30 (20)](https://user-images.githubusercontent.com/39421427/64017425-40f34980-cb32-11e9-974c-68dfa7bd2097.png)
 
 
-You could change all the details for the trip. When button `Update trip` is pressed, a form with trip details pop up. By simply pressing `update` button ypu can edit the trip.
+You could change all the details for the trip. When button `Update trip` is pressed, a form with trip details pops up. By simply pressing `update` button you can edit the trip.
 
 ![2019-08-30 (21)](https://user-images.githubusercontent.com/39421427/64017426-40f34980-cb32-11e9-8d94-71b88b28bb40.png)
 
 
-Here the trips is updated with the information provided
+Here the trip is updated with the information provided
 
 ![2019-08-30 (22)](https://user-images.githubusercontent.com/39421427/64017427-40f34980-cb32-11e9-8b0b-a7b1ddcd4d25.png)
 
 
-If you chose value that not follow the rules, for example `available seats = 30`, you will receive message that operation is not successfull
+If you chose a value that not follow the rules, for example, `available seats = 30`, you will receive a message that operation is not successful
 
 ![2019-08-30 (23)](https://user-images.githubusercontent.com/39421427/64017428-40f34980-cb32-11e9-9410-a3cb74ac1a82.png)
 
 
-Now once the trip is created we need to sign in with different user and join the trip.
-That is how `Search trips` form looks like. All fields are optional, if you don't chose any, it will load all trips available.
+Now once the trip is created we need to sign in with a different user and join the trip.
+That is how the `Search trips` form looks like. All fields are optional, if you don't choose any, it will load all the trips available.
 Almost all the fields are predefined, so we could rely on the user's input validity
 
 ![2019-08-30 (24)](https://user-images.githubusercontent.com/39421427/64017429-418be000-cb32-11e9-8434-10956276e313.png)
@@ -156,12 +156,12 @@ Now our trip is available and visible for the users to join
 ![2019-08-30 (25)](https://user-images.githubusercontent.com/39421427/64017430-418be000-cb32-11e9-82a0-cf8227d3bf53.png)
 
 
-By pressing `Details` button we redirect to component that shows all the info for the trip as well as button `Join trip`
+By pressing the `Details` button we redirect to a component that shows all the info for the trip as well as button `Join trip`
 
 ![2019-08-30 (26)](https://user-images.githubusercontent.com/39421427/64017432-418be000-cb32-11e9-82fa-2045cee308dd.png)
 
 
-When the user wants to join the trip, and he presses the `Join trip` button, the button changes to `Request sent` and new component shows up with user name and picture, his rating as passenger and status of the request, what initialy is `pending`
+When the user wants to join the trip, and he presses the `Join trip` button, the button changes to `Request sent` and new component shows up with user name and picture, his rating as passenger and status of the request, what initially is `pending`
 
 ![2019-08-30 (27)](https://user-images.githubusercontent.com/39421427/64017433-42247680-cb32-11e9-95f3-e8e70f842fad.png)
 
@@ -176,7 +176,7 @@ By clicking `details` button user will see the detailed view of the trip with al
 ![2019-08-30 (29)](https://user-images.githubusercontent.com/39421427/64063937-fe01a680-cc03-11e9-83c2-2cf5d1312739.png)
 
 
-Here we swap the users again, and login with the driver ot the trip. In her `My trip` page she can see the trip
+Here we swap the users again and log in with the driver of the trip. In her `My trip` page she can see the trip
 
 ![2019-08-30 (31)](https://user-images.githubusercontent.com/39421427/64017436-42247680-cb32-11e9-848b-a85b0a88371d.png)
 
@@ -186,32 +186,32 @@ When she opens the full view she sees the pending passenger request and has an o
 ![2019-08-30 (32)](https://user-images.githubusercontent.com/39421427/64017437-42bd0d00-cb32-11e9-8178-1dc247476f0f.png)
 
 
-Here just for the sake of brevity we will update the available seat to 1, so we can fill all the seats with just that example
+Here just for the sake of brevity, we will update the available seat to 1, so we can fill all the seats with just that example
 
 ![2019-08-30 (35)](https://user-images.githubusercontent.com/39421427/64017438-42bd0d00-cb32-11e9-85ca-b2e233cff50c.png)
 
 
-Now we could choose between options for passenger status, if we choose `ACCEPTED` that will automatically change the trip seats and the server will check if they are 0 and will change trip status to `BOOKED`, if we mark `REJECTED` that will remove the passenger from the trip and will ne no longer visible in your trip or in the main search trips page, but will be still visible in the passenger's my trip page with status `Driver denied`
+Now we could choose between options for passenger status, if we choose `ACCEPTED` that will automatically change the trip seats and the server will check if they are 0 and will change trip status to `BOOKED`, if we mark `REJECTED` that will remove the passenger from the trip and will be no longer visible in your trip or in the main search trips page, but will be still visible in the passenger's my trip page with status `Driver denied`
 
 ![2019-08-30 (36)](https://user-images.githubusercontent.com/39421427/64017439-42bd0d00-cb32-11e9-872b-be557da6aee8.png)
 
 
-Here the passenger is accepted and because we changed available trip seats to 1, the trip status become `BOOKED` automatically. If we decide to reject the passenger thereafter the seat will be recalculated to +1 and trip status changed appropriately
+Here the passenger is accepted and because we changed available trip seats to 1, the trip status becomes `BOOKED` automatically. If we decide to reject the passenger thereafter the seat will be recalculated to +1 and trip status changed appropriately
 
 ![2019-08-30 (37)](https://user-images.githubusercontent.com/39421427/64017440-42bd0d00-cb32-11e9-9f07-ddb6f7df50d0.png)
 
 
-Now the driver could change trip status to `ONGOING` , `DONE` or `CANCELED`
+Now the driver could change the trip status to `ONGOING`, `DONE` or `CANCELED`
 
 ![2019-08-30 (38)](https://user-images.githubusercontent.com/39421427/64017441-4355a380-cb32-11e9-88c9-46b0e432496c.png)
 
 
-It should be changed first to `ONGOING`. Now we can see `Update trip` button disappear as it is not expected to change something when trip is already started
+It should be changed first to `ONGOING`. Now we can see `Update trip` button disappear as it is not expected to change something when a trip is already started
 
 ![2019-08-30 (39)](https://user-images.githubusercontent.com/39421427/64017442-4355a380-cb32-11e9-84ad-6cdd0f8efc88.png)
 
 
-Only then `DONE` is available.  `Change trip status` button is not there anymore, as nothing more can happen with trip when it is done.  And now, fields with option to rate passenger and give feedback to passenger appears
+Only then `DONE` is available.  `Change trip status` button is not there anymore, as nothing more can happen with a trip when it is done.  And now, fields with option to rate passenger and give feedback to passenger appears
 
 ![2019-08-30 (40)](https://user-images.githubusercontent.com/39421427/64017443-4355a380-cb32-11e9-8c41-7aca708bc57d.png)
 
@@ -226,21 +226,21 @@ Feedback is just String and is restricted to 250 symbols
 ![2019-08-30 (42)](https://user-images.githubusercontent.com/39421427/64017445-43ee3a00-cb32-11e9-95a5-ad3f76849588.png)
 
 
-Here we login with passenger's account and in the same trip we could see the fields to rate driver and give feedback to driver as well as in the driver's account
+Here we log in with the passenger's account and on the same trip we could see the fields to rate the driver and give feedback to the driver as well as in the driver's account
 
 ![2019-08-30 (43)](https://user-images.githubusercontent.com/39421427/64017446-43ee3a00-cb32-11e9-975d-a43fa1717851.png)
 
 
-If we don't want to see this trip anymore we are able to cancel it. The option is available in whole cycle of trip statuses and passneger statuses, as this is the option to delete the trip from list with your trips as well as the option to cancel it before the trip starts
+If we don't want to see this trip anymore we can cancel it. The option is available in the whole cycle of trip statuses and passenger statuses, as this is the option to delete the trip from the list with your trips as well as the option to cancel it before the trip starts
 ![2019-08-30 (46)](https://user-images.githubusercontent.com/39421427/64017451-4486d080-cb32-11e9-979e-1f679405b74c.png)
 
 
-Once you cancel it, you will be redirected to your `My trips` page where it will no longer appears
+Once you cancel it, you will be redirected to your `My trips` page where it will no longer appear
 
 ![2019-08-30 (47)](https://user-images.githubusercontent.com/39421427/64017452-4486d080-cb32-11e9-99c0-ecdce96edab7.png)
 
 
-Now back in the driver's account. Where the button `Delete trip` is still available, so if for any reason we don't want to see this trip anymore we can use it, and delete it permanently. That is not true delete, we decide to implement  "silent" delete and just patch a field isDeleted in the database, what gives us option to recover the data, if it becomes of any interest. All search methods has an appropriate filter to not show deleted trips
+Now back in the driver's account. Where the button `Delete trip` is still available, so if for any reason we don't want to see this trip anymore we can use it, and delete it permanently. That is not true delete, we decide to implement  "silent" delete and just patch a field isDeleted in the database, what gives us option to recover the data, if it becomes of any interest. All search methods have an appropriate filter to not show deleted trips
 
 ![2019-08-30 (48)](https://user-images.githubusercontent.com/39421427/64017453-4486d080-cb32-11e9-9677-29c8db8a9b59.png)
 
@@ -250,7 +250,7 @@ Now this is done
 ![2019-08-30 (50)](https://user-images.githubusercontent.com/39421427/64017456-451f6700-cb32-11e9-8ea6-1ee308a29310.png)
 
 
-And we are redirected to the `My trip` page where is nothing, the trip will not appears in the main search page too
+And we are redirected to the `My trip` page where is nothing, the trip will not appear in the main search page too
 
 ![2019-08-30 (51)](https://user-images.githubusercontent.com/39421427/64017457-451f6700-cb32-11e9-8fdd-8093a4482b86.png)
 
@@ -261,17 +261,17 @@ We now login with an admin account, and we can see a new link appears in the nav
 ![2019-08-30 (52)](https://user-images.githubusercontent.com/39421427/64017458-451f6700-cb32-11e9-8e77-c1949625bb4c.png)
 
 
-In the `Admin` page we can see search form like in `Search trips`, but for users. All fields are optional too, if we don't chose any, it will shows all users
+In the `Admin` page we can see search form like in `Search trips`, but for users. All fields are optional too, if we don't choose any, it will show all users
 
 ![2019-08-30 (53)](https://user-images.githubusercontent.com/39421427/64017459-45b7fd80-cb32-11e9-93e0-14c10a1221d6.png)
 
 
-Now we find the user that we created in the begining
+Now we find the user that we created in the beginning
 
 ![2019-08-30 (54)](https://user-images.githubusercontent.com/39421427/64017460-45b7fd80-cb32-11e9-8edb-41ac3f769dd7.png)
 
 
-Here is the full user information. We have an options to edit or delete the user
+Here is the full user information. We have options to edit or delete the user
 
 ![2019-08-30 (55)](https://user-images.githubusercontent.com/39421427/64017461-45b7fd80-cb32-11e9-95d5-314c4b562ad7.png)
 
@@ -291,23 +291,22 @@ And the other available option is to delete the user. Here "silent" delete is im
 ![2019-08-30 (59)](https://user-images.githubusercontent.com/39421427/64017465-46509400-cb32-11e9-8034-edb9a54a503f.png)
 
 
-Now we can not find user with first name "Mila"
+Now we can not find a user with the first name "Mila"
 
 ![2019-08-30 (61)](https://user-images.githubusercontent.com/39421427/64017466-46509400-cb32-11e9-8fa8-262449492613.png)
 
-Being an admin also allows an user to delete a trip. Only for `ADMIN` role when in main search trips page, user open details for the trip, there is button `Delete trip` 
+Being an admin also allows a user to delete a trip. Only for `ADMIN` role when in main search trips page, user open details for the trip, there is a button `Delete trip` 
 
 ![2019-08-30 (63)](https://user-images.githubusercontent.com/39421427/64017467-46e92a80-cb32-11e9-9e84-b0c6772403b2.png)
 
 
-Here is the message for successfull operation
+Here is the message for the successful operation
 
 ![2019-08-30 (64)](https://user-images.githubusercontent.com/39421427/64017470-46e92a80-cb32-11e9-9860-6d0bc11cc3dd.png)
 
 
 
    ### **Hope you would like the application, we did it all with a lot of passion and positive vibes** :smiley: :+1:
-
 
 
 
