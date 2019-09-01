@@ -196,7 +196,7 @@ Now we could choose between options for passenger status, if we choose `ACCEPTED
 ![2019-08-30 (36)](https://user-images.githubusercontent.com/39421427/64017439-42bd0d00-cb32-11e9-872b-be557da6aee8.png)
 
 
-Here the passenger is accepted and because we changed available trip seats to 1, the trip status becomes `BOOKED` automatically. If we decide to reject the passenger thereafter the seat will be recalculated to +1 and trip status changed appropriately
+Here the passenger is accepted and because we changed available trip seats to 1, the trip status becomes `BOOKED` automatically. All passengers that left with passenger status `PENDING` will be automatically marked as `REJECTED`. If we decide to reject the passenger thereafter the seat will be recalculated to +1 and trip status changed appropriately
 
 ![2019-08-30 (37)](https://user-images.githubusercontent.com/39421427/64017440-42bd0d00-cb32-11e9-9f07-ddb6f7df50d0.png)
 
@@ -211,7 +211,7 @@ It should be changed first to `ONGOING`. Now we can see `Update trip` button dis
 ![2019-08-30 (39)](https://user-images.githubusercontent.com/39421427/64017442-4355a380-cb32-11e9-84ad-6cdd0f8efc88.png)
 
 
-Only then `DONE` is available.  `Change trip status` button is not there anymore, as nothing more can happen with a trip when it is done. All passengers that left with passenger status `PENDING` will be automatically marked as `REJECTED`. And now, fields with option to rate passenger and give feedback to passenger appears.
+Only then `DONE` is available.  `Change trip status` button is not there anymore, as nothing more can happen with a trip when it is done. And now, fields with option to rate passenger and give feedback to passenger appears.
 
 ![2019-08-30 (40)](https://user-images.githubusercontent.com/39421427/64017443-4355a380-cb32-11e9-8c41-7aca708bc57d.png)
 
