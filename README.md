@@ -211,7 +211,7 @@ It should be changed first to `ONGOING`. Now we can see `Update trip` button dis
 ![2019-08-30 (39)](https://user-images.githubusercontent.com/39421427/64017442-4355a380-cb32-11e9-84ad-6cdd0f8efc88.png)
 
 
-Only then `DONE` is available.  `Change trip status` button is not there anymore, as nothing more can happen with a trip when it is done.  And now, fields with option to rate passenger and give feedback to passenger appears
+Only then `DONE` is available.  `Change trip status` button is not there anymore, as nothing more can happen with a trip when it is done. All passengers that left with passenger status `PENDING` will be automatically marked as `REJECTED`. And now, fields with option to rate passenger and give feedback to passenger appears.
 
 ![2019-08-30 (40)](https://user-images.githubusercontent.com/39421427/64017443-4355a380-cb32-11e9-8c41-7aca708bc57d.png)
 
