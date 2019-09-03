@@ -3,7 +3,6 @@ package com.telerik.carpooling.models.dtos.dtos.mapper;
 import com.telerik.carpooling.models.*;
 import com.telerik.carpooling.models.dtos.*;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -23,13 +22,13 @@ public interface DtoMapper {
 
     Car dtoToObject(CarDtoRequest carDtoRequest);
 
-    Car dtoToObject(CarDtoResponse carDtoResponse);
+    Car dtoToObject(CarDtoEdit carDtoEdit);
 
     UserDtoResponse objectToDto(User user);
 
     User dtoToObject(UserDtoRequest userDtoRequest);
 
-    User dtoToObject(UserDtoResponse userDtoResponse);
+    User dtoToObject(UserDtoEdit userDtoEdit);
 
     CommentDtoResponse objectToDto(Comment comment);
 
@@ -43,7 +42,10 @@ public interface DtoMapper {
 
     Feedback dtoToObject(FeedbackDtoResponse feedbackDtoResponse);
 
-    Set<UserDtoResponse> usersToUserDtoResponses(Set<User> passengers);
+
+    TripUserStatusDtoResponse objectToDtoTrip(TripUserStatus tripUserStatus);
+
+    Set<TripUserStatusDtoResponse> passengersToPassengersDtoResponsesTrip (Set<TripUserStatus> tripUserStatuses);
 
     Set<CommentDtoResponse> commentsToCommentsDtoResponses(Set<Comment>comments);
 

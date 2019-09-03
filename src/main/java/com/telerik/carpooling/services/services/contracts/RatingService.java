@@ -1,10 +1,9 @@
 package com.telerik.carpooling.services.services.contracts;
 
-import com.telerik.carpooling.models.Rating;
-import com.telerik.carpooling.models.User;
+import javassist.NotFoundException;
 
 public interface RatingService {
 
 
-    Rating rateUser(String tripID, User user,String passengerID, int rating);
+    void rateUser(Long tripID, String loggedUserUsername, String passengerUsername, Integer rating) throws NotFoundException;
 }

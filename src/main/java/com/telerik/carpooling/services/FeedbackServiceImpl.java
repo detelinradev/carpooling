@@ -1,19 +1,24 @@
 package com.telerik.carpooling.services;
 
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.models.Feedback;
 import com.telerik.carpooling.models.Trip;
+import com.telerik.carpooling.models.TripUserStatus;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.FeedbackDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.FeedbackRepository;
 import com.telerik.carpooling.repositories.TripRepository;
+import com.telerik.carpooling.repositories.TripUserStatusRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.FeedbackService;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -24,43 +29,45 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final UserRepository userRepository;
     private final TripRepository tripRepository;
     private final FeedbackRepository feedbackRepository;
+    private final TripUserStatusRepository tripUserStatusRepository;
     private final DtoMapper dtoMapper;
 
-    public Feedback leaveFeedback(String tripID, User user, String receiverString, String feedbackString) {
+    @Override
+    public void leaveFeedback(Long tripID, String loggedUserUsername, String receiverUsername,
+                              String feedbackString) throws NotFoundException {
 
-        long longTripID = parseStringToLong(tripID);
-        long longReceiverID = parseStringToLong(receiverString);
+        Trip trip = getTripById(tripID);
+        User user = findUserByUsername(loggedUserUsername);
+        User receiver = findUserByUsername(receiverUsername);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        boolean isDriver = tripUserStatusList.stream().filter(j->j.getUser().equals(receiver))
+                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER));
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
-        Optional<User> receiver = userRepository.findById(longReceiverID);
-        if (trip.isPresent() && receiver.isPresent()) {
-            if (trip.get().getPassengerStatus().containsKey(receiver.get())
-                    || trip.get().getPassengerStatus().containsKey(user)
-                    && (trip.get().getDriver().equals(user) || trip.get().getDriver().equals(receiver.get()))) {
-                boolean isDriver = trip.get().getDriver().equals(receiver.get());
-                Feedback feedback = new Feedback(user,receiver.get(),feedbackString,isDriver);
-                return feedbackRepository.save(feedback);
-            }
-        }
-        return null;
+        if (tripUserStatusList.stream().anyMatch(k->k.getUser().equals(receiver))
+                && tripUserStatusList.stream().anyMatch(k->k.getUser().equals(user))
+                && (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
+                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER))
+                || isDriver)) {
+            Feedback feedback = new Feedback(user, receiver, feedbackString, isDriver);
+            feedbackRepository.save(feedback);
+        }else throw new IllegalArgumentException("You are not authorized to give feedback to this user");
     }
 
     @Override
-    public Set<FeedbackDtoResponse> getFeedback(String userID) {
+    public Set<FeedbackDtoResponse> getFeedback(String username) {
 
-        long longUserID = parseStringToLong(userID);
-        Optional<User> user = userRepository.findById(longUserID);
+        User user = findUserByUsername(username);
 
-        return user.map(value -> dtoMapper.feedbackToFeedbackDtoResponses(feedbackRepository.getAllByUser(value))).orElse(null);
+        return dtoMapper.feedbackToFeedbackDtoResponses(feedbackRepository.getAllByUser(user));
     }
 
-    private long parseStringToLong(String tripID) {
-        long longTripID = 0;
-        try {
-            longTripID = Long.parseLong(tripID);
-        } catch (NumberFormatException e) {
-            log.error("Exception during parsing", e);
-        }
-        return longTripID;
+    private Trip getTripById(Long tripID) throws NotFoundException {
+        return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
+                .orElseThrow(() -> new NotFoundException("Trip does not exist"));
+    }
+
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 }

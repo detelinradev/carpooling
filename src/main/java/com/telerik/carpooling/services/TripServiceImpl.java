@@ -1,23 +1,30 @@
 package com.telerik.carpooling.services;
 
-import com.telerik.carpooling.enums.PassengerStatus;
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.enums.TripStatus;
+import com.telerik.carpooling.models.TripUserStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.repositories.RatingRepository;
+import com.telerik.carpooling.models.dtos.TripDtoEdit;
+import com.telerik.carpooling.models.dtos.TripDtoRequest;
+import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
+import com.telerik.carpooling.repositories.TripUserStatusRepository;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.TripService;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -26,286 +33,289 @@ public class TripServiceImpl implements TripService {
 
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
-    private final RatingRepository ratingRepository;
+    private final TripUserStatusRepository tripUserStatusRepository;
+    private final DtoMapper dtoMapper;
 
     @Override
-    public Trip createTrip(Trip trip, User driver) {
+    public TripDtoResponse createTrip(TripDtoRequest tripDtoRequest,String loggedUserUsername)
+            throws NotFoundException {
 
-        if (driver.getCar() != null) {
-            trip.setDriver(driver);
-            trip.setCar(driver.getCar());
-            trip.setTripStatus(TripStatus.AVAILABLE);
-            trip.setIsDeleted(false);
-            driver.getMyTrips().put(trip, PassengerStatus.DRIVER);
+        User driver = findUserByUsername(loggedUserUsername);
+        Trip trip = dtoMapper.dtoToObject(tripDtoRequest);
+
+        if (driver.getCar() == null)
+            throw new NotFoundException("Request not submitted, please create car first");
+
+        trip.setTripStatus(TripStatus.AVAILABLE);
+        trip.setIsDeleted(false);
+        tripRepository.save(trip);
+        TripUserStatus tripUserStatus = new TripUserStatus(driver, trip, UserStatus.DRIVER);
+        tripUserStatus.setIsDeleted(false);
+        tripUserStatusRepository.save(tripUserStatus);
+        return dtoMapper.objectToDto(trip);
+    }
+
+    @Override
+    public TripDtoResponse updateTrip(TripDtoEdit tripDtoEdit, String loggedUserUsername) {
+
+        User user = findUserByUsername(loggedUserUsername);
+        Trip trip = dtoMapper.dtoToObject(tripDtoEdit);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+
+        if (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
+                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER)))
+            return dtoMapper.objectToDto(tripRepository.save(trip));
+        else throw new IllegalArgumentException("The user is not the creator of the trip");
+    }
+
+    @Override
+    public TripDtoResponse getTrip(Long tripID) throws NotFoundException {
+
+        Trip trip = getTripById(tripID);
+        return dtoMapper.objectToDto(trip);
+    }
+
+    @Override
+    public List<TripDtoResponse> getTrips(Integer pageNumber, Integer pageSize, TripStatus tripStatus,
+                                          String origin, String destination, String earliestDepartureTime,
+                                          String latestDepartureTime, Integer availablePlaces, Boolean smoking,
+                                          Boolean pets, Boolean luggage, Boolean airConditioned) {
+
+
+        if (availablePlaces == null || (availablePlaces > 0 && availablePlaces < 5)) {
+            if ((pageNumber != null && pageSize != null) || (pageNumber == null && pageSize == null)) {
+
+                List<Trip> trips = tripRepository.findTripsByPassedParameters(
+                        tripStatus, origin, destination, parseDateTime(earliestDepartureTime),
+                        parseDateTime(latestDepartureTime), availablePlaces,
+                        smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+
+                if (trips.size() > 0) {
+                    return dtoMapper.tripToDtoList(trips);
+                } else return Collections.emptyList();
+            } else
+                throw new IllegalArgumentException("Page number and page size should be both present");
+        } else throw new IllegalArgumentException("Available seats should be between 1 and 4");
+    }
+
+    @Override
+    public void deleteTrip(Long tripId, String loggedUserUsername) throws NotFoundException {
+
+        User user = findUserByUsername(loggedUserUsername);
+        Trip trip = getTripById(tripId);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+
+        if (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
+                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER)) || user.getRole().equals("ADMIN")) {
+            trip.setIsDeleted(true);
             tripRepository.save(trip);
-            userRepository.save(driver);
-            return trip;
-        }
-        return null;
+        } else throw new IllegalArgumentException("You are not authorized to delete the trip");
     }
 
     @Override
-    public Trip updateTrip(Trip trip, User user) {
+    public void changeTripStatus(Long tripID, String loggedUserUsername, TripStatus tripStatus) throws NotFoundException {
 
-        if (trip.getDriver().equals(user))
-            return tripRepository.save(trip);
-        return null;
-    }
+        User user = findUserByUsername(loggedUserUsername);
+        Trip trip = getTripById(tripID);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
 
-    @Override
-    public Trip getTrip(String tripID) {
-
-        long longTripID = parseStringToLong(tripID);
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
-        return trip.map(tripRepository::save).orElse(null);
-    }
-
-    @Override
-    public List<Trip> getTrips(Integer pageNumber, Integer pageSize, String tripStatus,
-                               String origin, String destination, String earliestDepartureTime,
-                               String latestDepartureTime, String availablePlaces, String smoking,
-                               String pets, String luggage, String airConditioned) {
-
-        if ((smoking == null || (smoking.equalsIgnoreCase("yes") || smoking.equalsIgnoreCase("no"))) &&
-                (pets == null || (pets.equalsIgnoreCase("yes") || pets.equalsIgnoreCase("no"))) &&
-                (airConditioned == null || (airConditioned.equalsIgnoreCase("yes") || airConditioned.equalsIgnoreCase("no"))) &&
-                (luggage == null || (luggage.equalsIgnoreCase("yes") || luggage.equalsIgnoreCase("no"))) &&
-                (availablePlaces == null || (parseStringToLong(availablePlaces) > 0 && parseStringToLong(availablePlaces) < 9)) &&
-                (tripStatus == null || (tripStatus.equalsIgnoreCase(
-                        Arrays.stream(TripStatus.values())
-                                .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
-                                .findAny()
-                                .map(TripStatus::getCode)
-                                .orElse("")))) &&
-                ((pageNumber != null && pageSize != null) || (pageNumber == null && pageSize == null))) {
-            List<Trip> trips = tripRepository.findTripsByPassedParameters(
-                    Arrays.stream(TripStatus.values())
-                            .filter(k -> k.toString().equalsIgnoreCase(tripStatus))
-                            .findAny()
-                            .orElse(null),
-                    origin, destination, parseDateTime(earliestDepartureTime), parseDateTime(latestDepartureTime),
-                    (parseStringToLong(availablePlaces) != null ? parseStringToLong(availablePlaces).intValue() : null),
-                    smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
-            trips.forEach(t -> t.getPassengerStatus().keySet()
-                    .forEach(k -> k.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(k.getModelId()))));
-            return trips;
-        } else return null;
-    }
-
-    @Override
-    public Trip deleteTrip(String tripId, User user) {
-
-        long tripID = parseStringToLong(tripId);
-
-
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
-        if (trip.isPresent()) {
-            if (trip.get().getDriver().equals(user) || user.getRole().equals("ADMIN")) {
-                trip.get().setIsDeleted(true);
-                return tripRepository.save(trip.get());
+        if (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
+                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER))) {
+            switch (tripStatus) {
+                case DONE:
+                    if (trip.getTripStatus().equals(TripStatus.ONGOING)) markTripAsDone(trip);
+                    else throw new IllegalArgumentException("Trip is not ongoing");
+                    break;
+                case BOOKED:
+                    if (trip.getTripStatus().equals(TripStatus.AVAILABLE)) markTripAsBooked(trip);
+                    else throw new IllegalArgumentException("Trip is not available");
+                    break;
+                case ONGOING:
+                    if (trip.getTripStatus().equals(TripStatus.AVAILABLE)
+                            || trip.getTripStatus().equals(TripStatus.BOOKED)) markTripAsOngoing(trip);
+                    else throw new IllegalArgumentException("Trip is not available or booked");
+                    break;
+                case CANCELED:
+                    if (!trip.getTripStatus().equals(TripStatus.DONE)) markTripAsCanceled(trip);
+                    else throw new IllegalArgumentException("Trip status can not be changed from done to canceled");
+                    break;
+                default:
+                    throw new IllegalArgumentException("Trip status not found");
             }
-        }
-        return null;
+        } else throw new IllegalArgumentException("You are not authorized to change trip status");
     }
 
-    @Override
-    public Trip changeTripStatus(String tripID, User user, TripStatus tripStatus) {
+    public void changeUserStatus(Long tripID, String passengerUsername, String loggedUserUsername,
+                                 UserStatus userStatus) throws NotFoundException {
 
-        long longTripID = parseStringToLong(tripID);
+        Trip trip = getTripById(tripID);
+        User driver = findUserByUsername(loggedUserUsername);
+        User passenger = findUserByUsername(passengerUsername);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndUserAndIsDeletedFalse(trip, passenger);
+        List<TripUserStatus> userStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
-        if (trip.isPresent() && trip.get().getDriver().equals(user)) {
-            if (tripStatus.equals(TripStatus.BOOKED)
-                    && trip.get().getTripStatus().equals(TripStatus.AVAILABLE))
-                return markTripAsBooked(longTripID);
-            else if (tripStatus.equals(TripStatus.ONGOING)
-                    && (trip.get().getTripStatus().equals(TripStatus.AVAILABLE)
-                    || trip.get().getTripStatus().equals(TripStatus.BOOKED)))
-                return markTripAsOngoing(longTripID);
-            else if (tripStatus.equals(TripStatus.DONE)
-                    && trip.get().getTripStatus().equals(TripStatus.ONGOING))
-                return markTripAsDone(longTripID);
-            else if (tripStatus.equals(TripStatus.CANCELED)
-                    && !trip.get().getTripStatus().equals(TripStatus.DONE))
-                return markTripAsCanceled(longTripID);
-        }
-        return null;
-    }
+        if (driver.equals(passenger)) {
 
-    @Override
-    public Trip addPassenger(String tripID, User passenger) {
+            if (userStatus.equals(UserStatus.PENDING)) {
+                if (trip.getTripStatus().equals(TripStatus.AVAILABLE)) {
+                    if (userStatusList.stream().noneMatch(k -> k.getUser().equals(passenger))) {
 
-        long intTripID = parseStringToLong(tripID);
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
-        if (trip.isPresent()) {
-            if (trip.get().getTripStatus().equals(TripStatus.AVAILABLE)
-                    && !trip.get().getPassengerStatus().containsKey(passenger)) {
-                trip.get().getPassengerStatus().put(passenger, PassengerStatus.PENDING);
-                passenger.getMyTrips().put(trip.get(), PassengerStatus.PENDING);
-                tripRepository.save(trip.get());
-                userRepository.save(passenger);
-                return trip.get();
-            }
-        }
+                        addPassenger(trip, passenger);
 
-        return null;
-    }
+                    } else throw new IllegalArgumentException("Passenger can not be added to the trip twice");
+                } else
+                    throw new IllegalArgumentException("Passenger can not be added to the trip when trip status is not available");
 
-    public Trip changePassengerStatus(String tripID, User user, String passengerID, PassengerStatus statusPassenger) {
+            } else if (userStatus.equals(UserStatus.CANCELED)) {
+                if (userStatusList.stream().anyMatch(k -> k.getUser().equals(passenger))
+                        && userStatusList.stream()
+                        .filter(k -> k.getUser().equals(passenger))
+                        .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER))) {
 
-        long intTripID = parseStringToLong(tripID);
-        long intPassengerID = parseStringToLong(passengerID);
+                    cancelPassenger(passenger, trip);
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(intTripID);
-        Optional<User> passenger = userRepository.findById(intPassengerID);
+                } else throw new
+                        IllegalArgumentException("You are not authorized to cancel passenger participation in the trip");
+            } else throw new IllegalArgumentException("Passenger status not found");
 
-        if (trip.isPresent() && passenger.isPresent()) {
-            if (trip.get().getPassengerStatus().containsKey(user)) {
-                if (statusPassenger.equals(PassengerStatus.CANCELED)) {
-                    return cancelPassenger(user, intTripID);
+        } else {
+            if (userStatusList.stream().filter(j->j.getUser().equals(driver))
+                    .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER))
+                    && userStatusList.stream().anyMatch(k -> k.getUser().equals(passenger))) {
+                switch (userStatus) {
+                    case ABSENT:
+                        if (trip.getTripStatus().equals(TripStatus.AVAILABLE)
+                                || trip.getTripStatus().equals(TripStatus.BOOKED)) {
+                            if (tripUserStatusList.stream()
+                                    .anyMatch(k -> k.getUserStatus().equals(UserStatus.ACCEPTED))) {
+
+                                absentPassenger(passenger, trip);
+
+                            } else
+                                throw new IllegalArgumentException("Passenger should be with passenger status ACCEPTED " +
+                                        "to be marked as ABSENT");
+                        } else
+                            throw new IllegalArgumentException("Trip should be AVAILABLE or BOOKED to mark passenger" +
+                                    " as ABSENT");
+                        break;
+                    case ACCEPTED:
+                        if (trip.getTripStatus().equals(TripStatus.AVAILABLE)) {
+                            if (userStatusList.stream()
+                                    .filter(k -> k.getUser().equals(passenger))
+                                    .anyMatch(k -> k.getUserStatus().equals(UserStatus.PENDING))) {
+
+                                acceptPassenger(passenger, trip);
+
+                            } else
+                                throw new IllegalArgumentException("Passenger should be with passenger status PENDING " +
+                                        "to be marked as ACCEPTED");
+                        } else throw new IllegalArgumentException("Trip should be AVAILABLE to accept passenger");
+                        break;
+                    case REJECTED:
+                        rejectPassenger(passenger, trip);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Passenger status not found");
+
                 }
+            } else throw new IllegalArgumentException("Driver and/or passenger does not belong to this trip");
+        }
+
+    }
+
+    private void addPassenger(Trip trip, User passenger) {
+
+        TripUserStatus tripUserStatus = new TripUserStatus(passenger, trip, UserStatus.PENDING);
+        tripUserStatus.setIsDeleted(false);
+
+        tripUserStatusRepository.save(tripUserStatus);
+    }
+
+    private void cancelPassenger(User user, Trip trip) {
+
+        changeTripStatusAndAvailableSeatsUp(user, trip);
+
+        TripUserStatus tripUserStatus = new TripUserStatus(user, trip, UserStatus.CANCELED);
+        tripUserStatus.setIsDeleted(false);
+        tripUserStatusRepository.save(tripUserStatus);
+    }
+
+    private void rejectPassenger(User passenger, Trip trip) {
+
+        changeTripStatusAndAvailableSeatsUp(passenger, trip);
+        TripUserStatus tripUserStatus = new TripUserStatus(passenger, trip, UserStatus.REJECTED);
+        tripUserStatus.setIsDeleted(false);
+        tripUserStatusRepository.save(tripUserStatus);
+
+    }
+
+    private void absentPassenger(User passenger, Trip trip) {
+
+        changeTripStatusAndAvailableSeatsUp(passenger, trip);
+
+        TripUserStatus tripUserStatus = new TripUserStatus(passenger, trip, UserStatus.ABSENT);
+        tripUserStatus.setIsDeleted(false);
+        tripUserStatusRepository.save(tripUserStatus);
+    }
+
+    private void changeTripStatusAndAvailableSeatsUp(User user, Trip trip) {
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        if (tripUserStatusList.stream()
+                .filter(k -> k.getUser().equals(user))
+                .anyMatch(k -> k.getUserStatus().equals(UserStatus.ACCEPTED))) {
+            trip.setAvailablePlaces(trip.getAvailablePlaces() + 1);
+
+            if (trip.getTripStatus().equals(TripStatus.BOOKED)) {
+                trip.setTripStatus(TripStatus.AVAILABLE);
             }
-            if (trip.get().getDriver().equals(user)
-                    && trip.get().getPassengerStatus().containsKey(passenger.get())) {
-                if (statusPassenger.equals(PassengerStatus.ACCEPTED) &&
-                        trip.get().getTripStatus().equals(TripStatus.AVAILABLE)
-                        && trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.PENDING)) {
-                    return acceptPassenger(intPassengerID, intTripID);
-                } else if (statusPassenger.equals(PassengerStatus.REJECTED)) {
-                    return rejectPassenger(intPassengerID, intTripID);
-                } else if (statusPassenger.equals(PassengerStatus.ABSENT) &&
-                        (trip.get().getTripStatus().equals(TripStatus.AVAILABLE) ||
-                                trip.get().getTripStatus().equals(TripStatus.BOOKED)) &&
-                        user.getMyTrips().get(trip.get()).equals(PassengerStatus.ACCEPTED)) {
-                    return absentPassenger(intTripID, intPassengerID);
-                }
-            }
         }
-        return null;
     }
 
-    private Trip cancelPassenger(User user, Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
+    private void acceptPassenger(User passenger, Trip trip) {
 
-        if (trip.isPresent()) {
+        TripUserStatus tripUserStatus = new TripUserStatus(passenger, trip, UserStatus.ACCEPTED);
+        tripUserStatus.setIsDeleted(false);
 
-            if (trip.get().getPassengerStatus().get(user).equals(PassengerStatus.ACCEPTED)) {
-                trip.get().setAvailablePlaces(trip.get().getAvailablePlaces() + 1);
+        trip.setAvailablePlaces(trip.getAvailablePlaces() - 1);
 
-                if (trip.get().getTripStatus().equals(TripStatus.BOOKED)) {
-                    trip.get().setTripStatus(TripStatus.AVAILABLE);
-                }
-            }
-
-            trip.get().getPassengerStatus().put(user, PassengerStatus.CANCELED);
-            tripRepository.save(trip.get());
-            user.getMyTrips().remove(trip.get());
-            userRepository.save(user);
-            return trip.get();
+        if (trip.getAvailablePlaces() == 0) {
+            trip.setTripStatus(TripStatus.BOOKED);
         }
-        return null;
+
+        tripUserStatusRepository.save(tripUserStatus);
+        tripRepository.save(trip);
     }
 
-    private Trip rejectPassenger(Long passengerID, Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
-        Optional<User> passenger = userRepository.findById(passengerID);
-        if (trip.isPresent() && passenger.isPresent()) {
-            if (trip.get().getPassengerStatus().get(passenger.get()).equals(PassengerStatus.ACCEPTED)) {
-                trip.get().setAvailablePlaces(trip.get().getAvailablePlaces() + 1);
-                if (trip.get().getTripStatus().equals(TripStatus.BOOKED)) {
-                    trip.get().setTripStatus(TripStatus.AVAILABLE);
-                }
-            }
-            trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.REJECTED);
-            return tripRepository.save(trip.get());
-        }
-        return null;
+    private void markTripAsBooked(Trip trip) {
+
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        trip.setTripStatus(TripStatus.BOOKED);
+        tripUserStatusList.stream()
+                .filter(k -> k.getUserStatus().equals(UserStatus.PENDING))
+                .forEach(j -> j.setUserStatus(UserStatus.REJECTED));
+        tripUserStatusList.stream()
+                .filter(k -> k.getUserStatus().equals(UserStatus.REJECTED))
+                .forEach(tripUserStatusRepository::save);
+
+        tripRepository.save(trip);
     }
 
-    private Trip acceptPassenger(Long passengerID, Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
-        Optional<User> passenger = userRepository.findById(passengerID);
-        if (trip.isPresent() && passenger.isPresent()) {
-            trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.ACCEPTED);
-            trip.get().setAvailablePlaces(trip.get().getAvailablePlaces() - 1);
-            if (trip.get().getAvailablePlaces() == 0) {
-                trip.get().setTripStatus(TripStatus.BOOKED);
-            }
-            return tripRepository.save(trip.get());
-        }
-        return null;
+    private void markTripAsOngoing(Trip trip) {
+
+        trip.setTripStatus(TripStatus.ONGOING);
+        tripRepository.save(trip);
     }
 
-    private Trip absentPassenger(Long tripID, Long passengerID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
-        Optional<User> passenger = userRepository.findById(passengerID);
+    private void markTripAsDone(Trip trip) {
 
-        if (trip.isPresent() && passenger.isPresent()) {
-            trip.get().getPassengerStatus().put(passenger.get(), PassengerStatus.ABSENT);
-            trip.get().setAvailablePlaces(trip.get().getAvailablePlaces() + 1);
-            if (trip.get().getTripStatus().equals(TripStatus.BOOKED))
-                trip.get().setTripStatus(TripStatus.AVAILABLE);
-
-            return tripRepository.save(trip.get());
-        }
-        return null;
+        trip.setTripStatus(TripStatus.DONE);
+        tripRepository.save(trip);
     }
 
-    private Trip markTripAsBooked(Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
+    private void markTripAsCanceled(Trip trip) {
 
-        if (trip.isPresent()) {
-            trip.get().setTripStatus(TripStatus.BOOKED);
-            trip.get().getPassengerStatus().values()
-                    .stream()
-                    .filter(k -> k.equals(PassengerStatus.PENDING))
-                    .forEach(p -> p = PassengerStatus.REJECTED);
-            return tripRepository.save(trip.get());
-        }
-        return null;
-    }
-
-    private Trip markTripAsOngoing(Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
-
-        if (trip.isPresent()) {
-            trip.get().setTripStatus(TripStatus.ONGOING);
-            return tripRepository.save(trip.get());
-        }
-        return null;
-    }
-
-    private Trip markTripAsDone(Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
-
-        if (trip.isPresent()) {
-            trip.get().setTripStatus(TripStatus.DONE);
-            return tripRepository.save(trip.get());
-        }
-        return null;
-    }
-
-    private Trip markTripAsCanceled(Long tripID) {
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(tripID);
-
-        if(trip.isPresent()) {
-            trip.get().setTripStatus(TripStatus.CANCELED);
-            return tripRepository.save(trip.get());
-        }
-        return null;
-    }
-
-    private Long parseStringToLong(String stringID) {
-        if (stringID != null) {
-            long longID = 0;
-            try {
-                longID = Long.parseLong(stringID);
-            } catch (NumberFormatException e) {
-                log.error("Exception during parsing", e);
-            }
-            return longID;
-        }
-        return null;
+        trip.setTripStatus(TripStatus.CANCELED);
+        tripRepository.save(trip);
     }
 
     private LocalDateTime parseDateTime(String departureTime) {
@@ -316,11 +326,21 @@ public class TripServiceImpl implements TripService {
             try {
                 departureTimeFormat = LocalDateTime.parse(departureTime, dateTimeFormatter);
                 return departureTimeFormat;
-            } catch (Exception e) {
-                log.error("Exception during parsing", e);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Date time format used is not correct");
             }
         }
         return null;
+    }
+
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
+    }
+
+    private Trip getTripById(Long tripID) throws NotFoundException {
+        return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
+                .orElseThrow(() -> new NotFoundException("Trip does not exist"));
     }
 
 }

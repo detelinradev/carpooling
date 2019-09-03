@@ -74,7 +74,7 @@ class FullTrip extends Component {
     async joinTrip() {
         const currentUserName = this.props.username;
         if (this.props.trip.driver.username !== currentUserName) {
-            axios.post('/trips/' + this.props.trip.modelId + '/passengers', null, {
+            axios.post('/trips/' + this.props.trip.modelId + '/passengers?status=PENDING', null, {
                 headers: {"Authorization": this.props.token}
             }).then(res => {
                 this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'PENDING');
@@ -99,28 +99,22 @@ class FullTrip extends Component {
     }
 
     async changeTripStatus(tripStatus) {
-        axios.patch('/trips/' + this.props.trip.modelId + '?status=' + tripStatus, null, {
+      await  axios.patch('/trips/' + this.props.trip.modelId + '?status=' + tripStatus, null, {
             headers: {"Authorization": this.props.token}
-        }).then(res => {
+        }).then(response => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
             this.props.onTripChangeStatus(tripStatus);
-            if(!res.response)
+            if(!response.response)
             this.setState({message: 'Trip status changed to ' + tripStatus});
         })
-            .catch(err => {
-            this.setState({message: 'Request was not completed'});
+            .catch(error => {
+                this.setState({message: 'Request was not completed'});
         });
     }
 
     async cancelTrip() {
-        const currentUserName = this.props.username;
-        let passengerId = null;
-        let passengers =Object.keys(this.props.trip.passengerStatus).map(passenger =>
-          passenger.includes('username='+ currentUserName) ?
-              passengerId = passenger.split(', ')[0]
-                  .substring(24) : null
-        );
-        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + passengerId + '?status=CANCELED',
+
+        axios.post('/trips/' + this.props.trip.modelId + '/passengers/?status=CANCELED',
             null, {headers: {"Authorization": this.props.token}
         }).then(res => {
                 this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'CANCELED');
@@ -154,7 +148,7 @@ class FullTrip extends Component {
     rateDriverHandler = async (event) => {
         event.preventDefault();
 
-        await axios.post("http://localhost:8080/users/rate/" + this.props.trip.modelId + "/user/" + this.props.trip.driver.modelId, this.state.newRate, {
+        await axios.post("http://localhost:8080/users/rate/" + this.props.trip.modelId + "/user/" + this.props.trip.driver.username, this.state.newRate, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.getDriverRate();
@@ -178,7 +172,7 @@ class FullTrip extends Component {
 
     giveFeedbackHandler = async (event) => {
         event.preventDefault();
-        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/driver/feedback", this.state.newFeedback, {
+        await axios.post("http://localhost:8080/users/feedback/" + this.props.trip.modelId + "/user/" + this.props.trip.driver.username, this.state.newFeedback, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);

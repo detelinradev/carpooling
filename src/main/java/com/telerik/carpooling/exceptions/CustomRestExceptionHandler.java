@@ -1,5 +1,6 @@
 package com.telerik.carpooling.exceptions;
 
+import javassist.NotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -46,7 +48,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         ApiError apiError =
-                new ApiError(HttpStatus.METHOD_NOT_ALLOWED, ex.getLocalizedMessage(), errors);
+                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
         return handleExceptionInternal(
                 ex, apiError, headers, apiError.getStatus(), request);
     }
@@ -170,17 +172,33 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    @ExceptionHandler({ UsernameNotFoundException.class})
+    public ResponseEntity<Object> handleUsernameNotFoundException(final Exception ex, final WebRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage()
+                , "Username not found");
+        return new ResponseEntity<>(
+                apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
     @ExceptionHandler({InvalidDataAccessApiUsageException.class, DataAccessException.class})
     protected ResponseEntity<Object> handleConflict(final RuntimeException ex, final WebRequest request) {
         ApiError apiError = new ApiError(HttpStatus.CONFLICT, ex.getLocalizedMessage()
-                , "InvalidDataAccessApiUsageException.class, DataAccessException.class");
+                , "Invalid data access or usage ");
         return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class})
-    public ResponseEntity<Object> handleInternal(final RuntimeException ex, final WebRequest request) {
+    public ResponseEntity<Object> handleInternalRuntime(final RuntimeException ex, final WebRequest request) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage()
+                , "Missing or wrong argument");
+        return new ResponseEntity<>(
+                apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({NotFoundException.class})
+    public ResponseEntity<Object> handleInternalCached(final Throwable ex, final WebRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage()
                 , "Missing or wrong argument");
         return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());

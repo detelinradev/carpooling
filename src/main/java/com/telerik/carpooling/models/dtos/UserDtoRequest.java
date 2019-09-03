@@ -3,7 +3,6 @@ package com.telerik.carpooling.models.dtos;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -15,20 +14,25 @@ import javax.validation.constraints.Size;
 @Data
 public class UserDtoRequest {
 
+    @NotNull(message = "User should have username")
     @Size(min = 2, max = 20, message = "Please enter username between 2 and 20 symbols")
     private String username;
 
-    @Size(min = 1, max = 20, message = "Please enter first name between 1 and 20 symbols")
-    @Pattern(regexp = "^[A-Za-z]+$",message = "Please enter first name that contains only letters")
+    @NotNull(message = "User should have first name")
+    @Pattern(regexp = "^([A-Za-z]*).{1,20}$", message = "First name should contain only letters," +
+            " and should be between 1 and 20 characters")
     private String firstName;
 
-    @Size(min = 1, max = 20, message = "Please enter last name between 1 and 20 symbols")
-    @Pattern(regexp = "^[A-Za-z]+$",message = "Please enter last name that contains only letters")
+    @NotNull(message = "User should have last name")
+    @Pattern(regexp = "^([A-Za-z]*).{1,20}$", message = "Last name should contain only letters," +
+            " and should be between 1 and 20 characters")
     private String lastName;
 
-    @Email
+    @NotNull(message = "User should have email")
+    @Email(message = "Email should follow the pattern xxxx@yyyy.zzzz")
     private String email;
 
+    @NotNull(message = "User should have password")
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,128}$",
             message = "Please enter password that contains:\n" +
             "\n" +
@@ -39,7 +43,9 @@ public class UserDtoRequest {
             "Minimum eight in length and maximum 128")
     private String password;
 
-    @Size(min = 9,max = 10)
+    @NotNull(message = "User should have phone")
+    @Pattern(regexp="^08[789]\\d{7}$", message = "Phone should consist only of digits," +
+            "starts with 0, and should be 10 symbols long")
     private String phone;
 
 }

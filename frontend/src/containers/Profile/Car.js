@@ -19,7 +19,7 @@ class Car extends Component {
 
 
         const getCarAvatarResponse = await
-            fetch('http://localhost:8080/users/avatarMe/car',
+            fetch('http://localhost:8080/users/avatar/car/'+ this.props.username,
                 {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
 
@@ -100,6 +100,7 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         carCreated: state.car.carCreated,
+        username:state.auth.userId
 
     }
 };

@@ -1,11 +1,12 @@
 package com.telerik.carpooling.models;
 
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,28 +15,23 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Rating extends MappedAudibleBase {
+@Audited
+public class TripUserStatus extends MappedAudibleBase {
 
-    public static Rating NOT_FOUND =new Rating(User.NOT_FOUND,User.NOT_FOUND,null,null);
-
-    @NotNull(message = "Rating user should not be null")
+    @NotNull(message = "Passenger should be a user")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user")
     private User user;
 
-    @NotNull(message = "Rated user should not be null")
+    @NotNull(message = "Passenger should belong to a trip")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ratedUser")
-    private User ratedUser;
+    @JoinColumn(name = "trip")
+    private Trip trip;
 
-    @NotNull(message = "Rating should not be null")
-    @Range(min=1,max = 5)
-    private Integer rating;
-
-    private Boolean isDriver;
-
+    @NotNull(message = "Passenger should have passengers status")
+    private UserStatus userStatus;
 }

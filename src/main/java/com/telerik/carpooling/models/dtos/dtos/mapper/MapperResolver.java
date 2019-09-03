@@ -20,29 +20,32 @@ public class MapperResolver {
     private final FeedbackRepository feedbackRepository;
 
     @ObjectFactory
-    Car resolve(CarDtoResponse dto, @TargetType Class<Car> type) {
-        return dto != null && dto.getModelId() != 0 ? carRepository.findById(dto.getModelId()).orElse(new Car()) : new Car();
+    Car resolve(CarDtoEdit dto, @TargetType Class<Car> type) {
+        return dto != null && dto.getModelId() != 0 ? carRepository.findById(dto.getModelId())
+                .orElseThrow(()->new IllegalArgumentException("Car not found")) : Car.NOT_FOUND;
     }
 
     @ObjectFactory
     Comment resolve(CommentDtoResponse dto, @TargetType Class<Comment> type) {
-        return dto != null && dto.getModelId() != 0 ? commentRepository.findById(dto.getModelId()).orElse(new Comment()) : new Comment();
+        return dto != null && dto.getModelId() != 0 ? commentRepository.findById(dto.getModelId())
+                .orElseThrow(()->new IllegalArgumentException("Comment not found")) : Comment.NOT_FOUND;
     }
 
     @ObjectFactory
     Feedback resolve(FeedbackDtoResponse dto, @TargetType Class<Comment> type) {
-        return dto != null && dto.getModelId() != 0 ? feedbackRepository.findById(dto.getModelId()).orElse(new Feedback()) : new Feedback();
+        return dto != null && dto.getModelId() != 0 ? feedbackRepository.findById(dto.getModelId())
+                .orElseThrow(()->new IllegalArgumentException("Feedback not found")) : Feedback.NOT_FOUND;
     }
 
     @ObjectFactory
     Trip resolve(TripDtoEdit dto, @TargetType Class<Trip> type) throws IllegalArgumentException {
         return dto != null && dto.getModelId() != 0 ? tripRepository.findById(dto.getModelId())
-                .orElseThrow(()->new IllegalArgumentException("Invalid ID supplied")) : null;
+                .orElseThrow(()->new IllegalArgumentException("Trip not found")) : Trip.NOT_FOUND;
     }
 
     @ObjectFactory
-    User resolve(UserDtoResponse dto, @TargetType Class<User> type) throws IllegalArgumentException {
+    User resolve(UserDtoEdit dto, @TargetType Class<User> type) throws IllegalArgumentException {
         return dto != null && dto.getModelId() != 0 ? userRepository.findById(dto.getModelId())
-                .orElseThrow(()->new IllegalArgumentException("Invalid ID supplied")) : null;
+                .orElseThrow(()->new IllegalArgumentException("User not found")) : User.NOT_FOUND;
     }
 }

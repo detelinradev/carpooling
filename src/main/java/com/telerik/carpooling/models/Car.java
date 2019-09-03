@@ -1,6 +1,5 @@
 package com.telerik.carpooling.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
@@ -8,9 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @EqualsAndHashCode(callSuper = true,exclude = {"carImage", "owner"})
@@ -21,31 +20,34 @@ import javax.validation.constraints.Size;
 @Audited
 public class Car extends MappedAudibleBase {
 
-    @Size(min = 1, max = 20, message = "Please enter brand name between 1 and 20 symbols!")
+    public static Car NOT_FOUND = new Car("No value","No value","No value",null,
+            null,Image.NOT_FOUND,User.NOT_FOUND);
+
+    @NotNull(message = "Car should have brand")
+    @Size(min = 1, max = 20, message = "Car brand should be between 1 and 20 symbols")
     private String brand;
 
-    @Size(min = 1, max = 20, message = "Please enter model name between 1 and 20 symbols!")
+    @NotNull(message = "Car should have model")
+    @Size(min = 1, max = 20, message = "Car model should be between 1 and 20 symbols")
     private String model;
 
-    @Size(min = 3,max = 20)
+    @NotNull(message = "Car should have color")
+    @Size(min = 3,max = 20, message = "Car's color name should be between 1 and 20 symbols")
     private String color;
 
-    @Column(nullable = false)
-    @Range(min = 1950,max = 2019, message = "Please enter year of first registration between 1950 and 2019!")
+    @NotNull(message = "Car should have year of first registration")
     private Integer firstRegistration;
 
-    @Size(min = 2,max = 3)
-    private String airConditioned;
+    @NotNull(message = "Car should be marked as air-conditioned or not")
+    private Boolean airConditioned;
 
     @OneToOne(mappedBy = "car")
     @JsonIgnoreProperties("car")
     private Image carImage;
 
+    @NotNull(message = "Car should have owner")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user", unique = true)
     @JsonIgnoreProperties("car")
     private User owner;
-
-    @Size(max = 250)
-    private String avatarUri;
 }

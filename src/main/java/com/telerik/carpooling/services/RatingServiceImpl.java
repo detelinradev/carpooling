@@ -1,17 +1,22 @@
 package com.telerik.carpooling.services;
 
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.models.Rating;
 import com.telerik.carpooling.models.Trip;
+import com.telerik.carpooling.models.TripUserStatus;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.repositories.RatingRepository;
 import com.telerik.carpooling.repositories.TripRepository;
+import com.telerik.carpooling.repositories.TripUserStatusRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.RatingService;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -21,37 +26,40 @@ public class RatingServiceImpl implements RatingService {
     private final RatingRepository ratingRepository;
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
+    private final TripUserStatusRepository tripUserStatusRepository;
 
     @Override
-    public Rating rateUser(String tripID, User user, String ratedUserID, int rating) {
+    public void rateUser(Long tripID, String loggedUserUsername, String ratedUserUsername, Integer rating) throws NotFoundException {
 
-        long longTripID = parseStringToLong(tripID);
-        long longRatedUserID = parseStringToLong(ratedUserID);
+        Trip trip = getTripById(tripID);
+        User user = findUserByUsername(loggedUserUsername);
+        User ratedUser = findUserByUsername(ratedUserUsername);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        boolean isDriver = tripUserStatusList.stream().filter(j->j.getUser().equals(ratedUser))
+                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER));
 
-        Optional<Trip> trip = tripRepository.findByModelIdAndIsDeleted(longTripID);
-        Optional<User> ratedUser = userRepository.findById(longRatedUserID);
+        if ( rating > 0 && rating < 6) {
+            if (tripUserStatusList.stream().anyMatch(k->k.getUser().equals(ratedUser))
+                    && tripUserStatusList.stream().anyMatch(k->k.getUser().equals(user))
+                    && (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
+                    .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER))
+                    || isDriver)) {
 
-        if (trip.isPresent() && ratedUser.isPresent()&&rating>0 && rating <6 ) {
-            if (trip.get().getPassengerStatus().containsKey(ratedUser.get())
-                    || trip.get().getPassengerStatus().containsKey(user)
-                    && (trip.get().getDriver().equals(user) || trip.get().getDriver().equals(ratedUser.get()))) {
-                boolean isDriver = trip.get().getDriver().equals(ratedUser.get());
-                Rating ratingObject = new Rating(user, ratedUser.get(), rating,isDriver);
+                Rating ratingObject = new Rating(user, ratedUser, rating, isDriver);
                 ratingObject.setIsDeleted(false);
-                return ratingRepository.save(ratingObject);
-            }
-        }
-        return null;
+                ratingRepository.save(ratingObject);
+            }else throw new IllegalArgumentException("You are not authorized to rate this user");
+        }else throw new IllegalArgumentException("Rating value should be between 1 and 5");
     }
 
-    private long parseStringToLong(String tripID) {
-        long longTripID = 0;
-        try {
-            longTripID = Long.parseLong(tripID);
-        } catch (NumberFormatException e) {
-            log.error("Exception during parsing", e);
-        }
-        return longTripID;
+    private Trip getTripById(Long tripID) throws NotFoundException {
+        return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
+                .orElseThrow(() -> new NotFoundException("Trip does not exist"));
+    }
+
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 }
 

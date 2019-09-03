@@ -64,8 +64,6 @@ class UpdateUser extends Component {
             formData[formElementIdentifier] = this.state.controls[formElementIdentifier].value;
         }
         formData['modelId'] = this.props.data.modelId;
-        formData['ratingAsDriver'] = 0;
-        formData['ratingAsPassenger'] = 0;
 
         this.props.onUpdateUser(formData, this.props.token);
 

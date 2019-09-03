@@ -2,38 +2,30 @@ package com.telerik.carpooling.services.services.contracts;
 
 
 
-import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import com.telerik.carpooling.models.dtos.UserDtoEdit;
 import com.telerik.carpooling.models.dtos.UserDtoRequest;
 import com.telerik.carpooling.models.dtos.UserDtoResponse;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
-    User save(User user);
+    UserDtoResponse save(UserDtoRequest userDtoRequest);
 
-    User updateCurrentUserPassword(String password, User user);
+    UserDtoResponse updateUser(UserDtoEdit userDtoEdit, Authentication authentication);
 
-    User updateCurrentUserEmail(String email,User user);
+    UserDtoResponse getUser(String username,  Authentication authentication);
 
-    User updateUser(User user);
+    void deleteUser(String username);
 
-    User getUser(String username);
+    List<UserDtoResponse> getUsers(Integer pageNumber,Integer pageSize,String username,String firstName
+            ,String lastName,String email, String phone);
 
-    List<User> getUsers(Integer pageNumber,Integer pageSize,String username,String firstName,String lastName,String email,
-                       String phone);
+    List<TripDtoResponse> getUserOwnTrips(String loggedUserUsername);
 
-    List<TripDtoResponse> getUserOwnTrips(String username);
-
-    User deleteUser(String userId);
-
-    List<User> getTopRatedPassengers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone);
-
-    List<User> getTopRatedDrivers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email, String phone);
-
-    User updateCurrentUserPhone(String phone, User user);
+    List<UserDtoResponse> getTopRatedUsers(Boolean isPassenger);
 
 }
 

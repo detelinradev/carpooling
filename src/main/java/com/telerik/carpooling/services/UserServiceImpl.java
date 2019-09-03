@@ -1,23 +1,27 @@
 package com.telerik.carpooling.services;
 
+import com.telerik.carpooling.models.TripUserStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.base.MappedAudibleBase;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import com.telerik.carpooling.models.dtos.UserDtoEdit;
+import com.telerik.carpooling.models.dtos.UserDtoRequest;
+import com.telerik.carpooling.models.dtos.UserDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
+import com.telerik.carpooling.repositories.TripUserStatusRepository;
 import com.telerik.carpooling.repositories.RatingRepository;
-import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,12 +31,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RatingRepository ratingRepository;
+    private final TripUserStatusRepository tripUserStatusRepository;
     private final DtoMapper dtoMapper;
     private final BCryptPasswordEncoder bCryptEncoder;
 
     @Override
-    public User save(final User user) {
+    public UserDtoResponse save(UserDtoRequest userDtoRequest) {
         User newUser = new User();
+        User user = dtoMapper.dtoToObject(userDtoRequest);
         newUser.setUsername(user.getUsername());
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
@@ -43,34 +49,45 @@ public class UserServiceImpl implements UserService {
         newUser.setPhone(user.getPhone());
         newUser.setRatingAsDriver(0.0);
         newUser.setRatingAsPassenger(0.0);
-        return userRepository.save(newUser);
+        return dtoMapper.objectToDto(userRepository.save(newUser));
     }
 
     @Override
-    public User updateUser(final User user) {
-        user.setRatingAsPassenger(0.0);
-        user.setRatingAsDriver(0.0);
-        return userRepository.save(user);
+    public UserDtoResponse updateUser(UserDtoEdit userDtoEdit, Authentication authentication) {
+        User user = dtoMapper.dtoToObject(userDtoEdit);
+        String password = user.getPassword();
+        User loggedUser = findUserByUsername(authentication.getName());
+        if (isRole_AdminOrSameUser(authentication, user, loggedUser)) {
+            user.setRatingAsPassenger(0.0);
+            user.setRatingAsDriver(0.0);
+            user.setPassword(bCryptEncoder.encode(password));
+            return dtoMapper.objectToDto(userRepository.save(user));
+        } else throw new IllegalArgumentException("You are not authorized to edit the user");
+
     }
 
     @Override
-    public User getUser(String username) {
-        User user = userRepository.findFirstByUsernameAndIsDeletedIsFalse(username);
-        Double ratingAsPassenger = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
-        Double ratingAsDriver = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
-        if (ratingAsDriver != null)
-            user.setRatingAsDriver(ratingAsDriver);
-        if (ratingAsPassenger != null)
-            user.setRatingAsPassenger(ratingAsPassenger);
+    public UserDtoResponse getUser(String username, Authentication authentication) {
+        User user = findUserByUsername(username);
+        User loggedUser = findUserByUsername(authentication.getName());
+        if (isRole_AdminOrSameUser(authentication, user, loggedUser)) {
+            Double ratingAsPassenger = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
+            Double ratingAsDriver = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
+            if (ratingAsDriver != null)
+                user.setRatingAsDriver(ratingAsDriver);
+            if (ratingAsPassenger != null)
+                user.setRatingAsPassenger(ratingAsPassenger);
 
-        return user;
+            return dtoMapper.objectToDto(user);
+        } else throw new IllegalArgumentException("You are not authorized to get information for the user");
     }
 
     @Override
-    public List<User> getUsers(Integer pageNumber, Integer pageSize, String username, String firstName, String lastName, String email,
-                               String phone) {
+    public List<UserDtoResponse> getUsers(Integer pageNumber, Integer pageSize, String username, String firstName,
+                                          String lastName, String email, String phone) {
 
-        List<User> users = userRepository.findUsers(username, firstName, lastName, email, phone, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+        List<User> users = userRepository.findUsers(username, firstName, lastName, email, phone,
+                (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
         for (User user : users) {
             Double ratingAsPassenger = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
             Double ratingAsDriver = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
@@ -79,97 +96,63 @@ public class UserServiceImpl implements UserService {
             if (ratingAsPassenger != null)
                 user.setRatingAsPassenger(ratingAsPassenger);
         }
-        return users;
+        return dtoMapper.userToDtoList(users);
     }
 
     @Override
-    public List<TripDtoResponse> getUserOwnTrips(String username) {
-        List<Trip> tripsNotDeleted = userRepository.findFirstByUsernameAndIsDeletedIsFalse(username).getMyTrips().keySet()
-                .stream().filter(trip -> !trip.getIsDeleted())
-                .collect(Collectors.toList());
+    public List<TripDtoResponse> getUserOwnTrips(String loggedUserUsername) {
+        List<Trip> tripsNotDeleted = new ArrayList<>();
+        User user = findUserByUsername(loggedUserUsername);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByUserAndIsDeletedFalse(user);
+        tripUserStatusList.stream()
+                .filter(k -> !k.getTrip().getIsDeleted())
+                .distinct()
+                .forEach(j -> tripsNotDeleted.add(j.getTrip()));
 
         return dtoMapper.tripToDtoList(tripsNotDeleted);
     }
 
     @Override
-    public User deleteUser(String username) {
+    public void deleteUser(String username) {
 
-        User user = userRepository.findFirstByUsernameAndIsDeletedIsFalse(username);
-        userRepository.findFirstByUsernameAndIsDeletedIsFalse(username).getMyTrips().keySet()
-                .forEach(trip -> trip.setIsDeleted(true));
+        User user = findUserByUsername(username);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByUserAndIsDeletedFalse(user);
+        tripUserStatusList.forEach(passenger -> passenger.getTrip().setIsDeleted(true));
+        tripUserStatusList.forEach(tripUserStatusRepository::save);
         user.setIsDeleted(true);
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override
-    public List<User> getTopRatedPassengers(Integer pageNumber, Integer pageSize, String username,
-                                            String firstName, String lastName, String email, String phone) {
-        List<User> users = userRepository.findUsers(username, firstName, lastName, email, phone, (pageNumber != null
-                ? PageRequest.of(pageNumber, pageSize) : null));
+    public List<UserDtoResponse> getTopRatedUsers(Boolean isPassenger) {
+        List<User> users = userRepository.findUsers(null, null, null,
+                null, null, null);
         for (User user : users) {
-            Double rating = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
+            Double rating;
+            if (isPassenger)
+                rating = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
+            else
+                rating = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
             if (rating != null)
                 user.setRatingAsPassenger(rating);
         }
         users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
 
-        return users.stream()
+        return dtoMapper.userToDtoList(users.stream()
                 .limit(10)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
-    @Override
-    public List<User> getTopRatedDrivers(Integer pageNumber, Integer pageSize, String username, String firstName,
-                                         String lastName, String email, String phone) {
-        List<User> users = userRepository.findUsers(username, firstName, lastName, email, phone, (pageNumber != null
-                ? PageRequest.of(pageNumber, pageSize) : null));
-        for (User user : users) {
-            Double rating = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
-            if (rating != null)
-                user.setRatingAsDriver(rating);
-        }
-        users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
-        return users.stream()
-                .limit(10)
-                .collect(Collectors.toList());
+    private boolean isRole_AdminOrSameUser(Authentication authentication, User user, User loggedUser) {
+
+        return loggedUser.equals(user) || authentication.getAuthorities()
+                .stream()
+                .anyMatch(k -> k.getAuthority().equals("ROLE_ADMIN"));
     }
 
-    @Override
-    public User updateCurrentUserPhone(String phone, User user) {
+    private User findUserByUsername(String username) {
 
-        if (isPhoneValid(phone)) {
-            user.setPhone(phone);
-            return userRepository.save(user);
-        } else return null;
-    }
-
-    @Override
-    public User updateCurrentUserPassword(final String password, final User user) {
-        if (isPasswordValid(password)) {
-            user.setPassword(bCryptEncoder.encode(password));
-            return userRepository.save(user);
-        } else return null;
-    }
-
-    @Override
-    public User updateCurrentUserEmail(final String email, final User user) {
-        if (isEmailValid(email)) {
-            user.setEmail(email);
-            return userRepository.save(user);
-        } else return null;
-    }
-
-    private boolean isPhoneValid(String phone) {
-        return phone.length() == 10 && phone.matches("[0-9]+");
-    }
-
-    private boolean isEmailValid(String email) {
-        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
-        return email.matches(regex);
-    }
-
-    private boolean isPasswordValid(String password) {
-        String regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,128}$";
-        return password.matches(regex);
+        return userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 }

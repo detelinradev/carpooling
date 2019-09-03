@@ -5,23 +5,28 @@ import com.telerik.carpooling.exceptions.MyFileNotFoundException;
 import com.telerik.carpooling.models.Image;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.repositories.ImageRepository;
+import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URI;
 
 @RequiredArgsConstructor
 @Service
 public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
 
-    public Image storeUserImage(final MultipartFile file, final User user, final URI fileDownloadUri) {
+    public void storeUserImage(MultipartFile file, String loggedUserUsername) {
+
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        User user = findUserByUsername(loggedUserUsername);
+
         try {
             if (fileName.contains("..")) {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
@@ -29,14 +34,15 @@ public class ImageServiceImpl implements ImageService {
             Image image = new Image(file.getOriginalFilename(),
                     file.getContentType(),
                     file.getBytes(), user);
-            user.setAvatarUri(fileDownloadUri.toString());
-            return imageRepository.save(image);
+            imageRepository.save(image);
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
 
-    public Image storeCarImage(final MultipartFile file, final User user, final URI fileDownloadUri) {
+    public void storeCarImage( MultipartFile file,String loggedUserUsername) {
+
+        User user = findUserByUsername(loggedUserUsername);
         if(user.getCar() != null) {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             try {
@@ -46,17 +52,33 @@ public class ImageServiceImpl implements ImageService {
                 Image image = new Image(file.getOriginalFilename(),
                         file.getContentType(),
                         file.getBytes(), user.getCar());
-                user.getCar().setAvatarUri(fileDownloadUri.toString());
-                return imageRepository.save(image);
+                imageRepository.save(image);
             } catch (IOException ex) {
                 throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
             }
         }
-        return null;
     }
 
-    public Image getImage(final Long fileId) {
+    @Override
+    public Image getUserImage(String username) {
+        User user = findUserByUsername(username);
+        Long fileId = user.getUserImage().getModelId();
+
         return imageRepository.findByModelId(fileId)
                 .orElseThrow(() -> new MyFileNotFoundException("File not found with imageId " + fileId));
+    }
+
+    @Override
+    public Image getCarImage(String username) {
+        User user = findUserByUsername(username);
+        Long fileId = user.getCar().getCarImage().getModelId();
+
+        return imageRepository.findByModelId(fileId)
+                .orElseThrow(() -> new MyFileNotFoundException("File not found with imageId " + fileId));
+    }
+
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsernameAndIsDeletedFalse(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 }

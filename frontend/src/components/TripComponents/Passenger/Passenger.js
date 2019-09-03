@@ -51,7 +51,7 @@ class Passenger extends Component {
 
     giveFeedbackHandler = async (event) => {
         event.preventDefault();
-        await axios.post("http://localhost:8080/users/feedback/" + this.props.trip.modelId + "/user/" + this.props.modelId, this.state.newFeedback, {
+        await axios.post("http://localhost:8080/users/feedback/" + this.props.trip.modelId + "/user/" + this.props.userName, this.state.newFeedback, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
@@ -65,14 +65,14 @@ class Passenger extends Component {
 
     ratePassengerHandler = async (event) => {
         event.preventDefault();
-        await axios.post("http://localhost:8080/users/rate/" + this.props.trip.modelId + "/user/" + this.props.modelId, this.state.newRate, {
+        await axios.post("http://localhost:8080/users/rate/" + this.props.trip.modelId + "/user/" + this.props.userName, this.state.newRate, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
             if (!res.response)
                 this.props.showMessage('Passenger successfully rated');
         }).catch(err => {
-            this.props.showMessage('Request was not completed');
+            this.props.showMessage(err.message);
         });
         this.setState({newRate: ''});
     };
@@ -83,7 +83,7 @@ class Passenger extends Component {
     };
 
     async changePassengerStatus(passengerStatus) {
-        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + this.props.modelId + '?status=' + passengerStatus, null, {
+        axios.patch('/trips/' + this.props.trip.modelId + '/passengers/' + this.props.userName + '?status=' + passengerStatus, null, {
             headers: {"Authorization": this.props.token}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId,passengerStatus);

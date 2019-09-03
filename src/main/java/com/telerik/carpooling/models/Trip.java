@@ -1,9 +1,6 @@
 package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.AllArgsConstructor;
@@ -16,12 +13,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.*;
 
-@EqualsAndHashCode(callSuper = true,exclude = {"comments"})
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,54 +26,49 @@ import java.util.*;
 @Audited
 public class Trip extends MappedAudibleBase {
 
-    private String origin;
+    public static Trip NOT_FOUND = new Trip("No value",null,"No value",
+            "No value",null, null,null,
+            null,null,null,TripStatus.AVAILABLE);
 
-    private String destination;
+    @NotNull(message = "Trip should have message")
+    @Size(max = 250,message = "Message should be maximum 250 symbols")
+    private String message;
 
-    @NotNull
-    @Future
+    @Future(message = "Trip departure time should be in the future")
+    @NotNull(message = "Trip should have defined departure time")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime departureTime;
 
-    @Column(nullable = false)
-    @Range(min = 0,max = 8, message = "Please enter total number of seats between 0 and 8!")
+    @NotNull(message = "Trip should have origin")
+    @Size(max = 20,message = "Origin max size should be 20 symbols")
+    private String origin;
+
+    @NotNull(message = "Trip should have destination")
+    @Size(max = 20,message = "Destination max size should be 20 symbols")
+    private String destination;
+
+    @NotNull(message = "Trip should have number of available places")
+    @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8")
     private Integer availablePlaces;
 
+    @NotNull(message = "Trip should have trip duration")
+    @Max(value = Integer.MAX_VALUE,message = "Trip duration max value should be under 2 174 483 647")
     private Integer tripDuration;
 
+    @NotNull(message = "Trip should have cost per passenger")
+    @Max(value = Integer.MAX_VALUE,message = "Trip cost per passenger max value should be under 2 174 483 647")
     private Integer costPerPassenger;
 
-    private String message;
+    @NotNull(message = "Trip should have defined is smoking allowed")
+    private Boolean smokingAllowed;
 
+    @NotNull(message = "Trip should have defined is luggage allowed")
+    private Boolean luggageAllowed;
+
+    @NotNull(message = "Trip should have defined are pets allowed")
+    private Boolean petsAllowed;
+
+    @NotNull(message = "Trip should have a trip status")
     private TripStatus tripStatus;
-
-    @Size(min = 2,max = 3)
-    private String smokingAllowed;
-
-    @Size(min = 2,max = 3)
-    private String luggageAllowed;
-
-    @Size(min = 2,max = 3)
-    private String petsAllowed;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver", nullable = false)
-    private User driver;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "car", nullable = false)
-    private Car car;
-
-    @OneToMany(mappedBy = "trip")
-    @JsonIgnore
-    @JsonIgnoreProperties("trip")
-    private Set<Comment> comments = new HashSet<>();
-
-    @JsonIgnore
-    @ElementCollection
-    @MapKeyColumn(name = "id")
-    private Map<User, PassengerStatus> passengerStatus = new HashMap<>();
 }

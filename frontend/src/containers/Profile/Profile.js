@@ -34,7 +34,7 @@ class Profile extends Component {
     async componentDidMount() {
 
         const getAvatarResponse = await
-            fetch('http://localhost:8080/users/avatarMe',
+            fetch('http://localhost:8080/users/avatar/'+this.props.username,
                 {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
         if (getAvatarResponse.size > 100) {
@@ -374,6 +374,7 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         carCreated: state.car.carCreated,
+        username:state.auth.userId
 
     }
 };

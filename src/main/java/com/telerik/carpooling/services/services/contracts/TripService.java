@@ -1,32 +1,31 @@
 package com.telerik.carpooling.services.services.contracts;
 
-import com.telerik.carpooling.enums.PassengerStatus;
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.enums.TripStatus;
-import com.telerik.carpooling.models.Trip;
-import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.models.dtos.TripDtoEdit;
+import com.telerik.carpooling.models.dtos.TripDtoRequest;
+import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import javassist.NotFoundException;
 
 import java.util.List;
 
 public interface TripService {
 
-    Trip createTrip(Trip trip, User driver);
+    TripDtoResponse createTrip(TripDtoRequest tripDtoRequest, String loggedUserUsername) throws NotFoundException;
 
-    Trip updateTrip(Trip trip, User user);
+    TripDtoResponse updateTrip(TripDtoEdit tripDtoEdit, String loggedUserUsername);
 
-    Trip addPassenger(String tripID, User user);
+    void changeUserStatus(Long tripId, String passengerUsername,
+                          String loggedUserUsername, UserStatus userStatus) throws NotFoundException;
 
-    Trip changePassengerStatus(String TripID,
-                               User user, String passengerID, PassengerStatus passengerStatus);
+    void changeTripStatus(Long tripId, String loggedUserUsername, TripStatus tripStatus) throws NotFoundException;
 
-    Trip changeTripStatus(String tripID,
-                          User user, TripStatus tripStatus);
+    TripDtoResponse getTrip(Long tripID) throws NotFoundException;
 
-    Trip getTrip(String tripID);
-
-    List<Trip> getTrips(Integer pageEnd, Integer pageStart, String tripStatus, String origin,
+    List<TripDtoResponse> getTrips(Integer pageEnd, Integer pageStart, TripStatus tripStatus, String origin,
                                    String destination, String earliestDepartureTime, String latestDepartureTime,
-                                   String availablePlaces, String smoking, String pets, String luggage, String airConditioned);
+                                   Integer availablePlaces, Boolean smoking, Boolean pets, Boolean luggage, Boolean airConditioned);
 
-    Trip deleteTrip(String tripId, User user);
+    void deleteTrip(Long tripId, String loggedUserUsername) throws NotFoundException;
 }
 

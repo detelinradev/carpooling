@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @EqualsAndHashCode(callSuper = true,exclude = {"user", "car"})
 @Entity
@@ -18,15 +20,19 @@ import javax.persistence.*;
 @Audited
 public class Image extends MappedAudibleBase {
 
-    @Column(nullable = false)
+    public static Image NOT_FOUND = new Image("No value","No value",new byte[0],
+            User.NOT_FOUND, Car.NOT_FOUND);
+
+    @NotNull(message = "Image should have file name")
+    @Size(max = 250, message = "File name should not have more than 250 symbols")
     private String fileName;
 
-
-    @Column(nullable = false)
+    @NotNull(message = "Image should have content type")
+    @Size(max = 250, message = "Content type should not have more than 250 symbols")
     private String contentType;
 
     @Lob
-    @Column(nullable = false)
+    @NotNull(message = "Image should have data")
     private byte[] data;
 
     @OneToOne(cascade = CascadeType.ALL)

@@ -13,11 +13,13 @@ class TopRatedUsers extends Component {
     };
 
     componentDidMount() {
+        let isPassenger;
         const headers = {
             "Content-Type": "application/json",
             'Authorization': this.props.token
         };
-        axios.get('http://localhost:8080/users/top-rated-drivers?', {headers})
+        isPassenger = false;
+        axios.get('http://localhost:8080/users/top-rated-users?' + isPassenger, {headers})
             .then(response => {
                 if (response) {
                     this.setState({
@@ -27,7 +29,8 @@ class TopRatedUsers extends Component {
 
             });
 
-        axios.get('http://localhost:8080/users/top-rated-passengers?', {headers})
+        isPassenger = true;
+        axios.get('http://localhost:8080/users/top-rated-users?' + isPassenger, {headers})
             .then(response => {
                 if (response) {
                     this.setState({
