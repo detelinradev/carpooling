@@ -1,5 +1,6 @@
 package com.telerik.carpooling.exceptions;
 
+import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import javassist.NotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -188,7 +191,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class})
+    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class, MyFileNotFoundException.class})
     public ResponseEntity<Object> handleInternalRuntime(final RuntimeException ex, final WebRequest request) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage()
                 , "Missing or wrong argument");

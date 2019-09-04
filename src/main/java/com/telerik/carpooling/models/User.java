@@ -2,6 +2,7 @@ package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.*;
 import org.hibernate.envers.Audited;
@@ -19,8 +20,8 @@ import javax.validation.constraints.*;
 public class User extends MappedAudibleBase {
 
     public static User NOT_FOUND = new User("No value", "No value", "No value",
-            "No value", "No value", "No value", "No value", null,
-            null, Image.NOT_FOUND, Car.NOT_FOUND);
+            "No value", UserRole.USER, "No value", "No value", 0.0,
+            0.0, Image.NOT_FOUND, Car.NOT_FOUND);
 
     @NotNull(message = "User should have username")
     @Size(min = 2, max = 20, message = "Please enter username between 2 and 20 symbols")
@@ -44,7 +45,7 @@ public class User extends MappedAudibleBase {
     private String email;
 
     @NotNull(message = "User should have user role")
-    private String role;
+    private UserRole role;
 
     @JsonIgnore
     @NotNull(message = "User should have password")

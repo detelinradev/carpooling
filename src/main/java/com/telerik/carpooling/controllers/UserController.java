@@ -30,7 +30,6 @@ import java.util.Set;
 public class UserController {
 
     private final UserService userService;
-    private final ImageService imageService;
     private final RatingService ratingService;
     private final FeedbackService feedbackService;
 
@@ -38,22 +37,6 @@ public class UserController {
     public ResponseEntity<UserDtoResponse> save(@Valid @RequestBody final UserDtoRequest userDtoRequest) {
 
         return ResponseEntity.ok().body(userService.save(userDtoRequest));
-    }
-
-    @PostMapping("/avatar")
-    public ResponseEntity<Void> uploadUserImage(@RequestParam("upfile") final MultipartFile file,
-                                                final Authentication authentication) {
-
-        imageService.storeUserImage(file, authentication.getName());
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/avatar/car")
-    public ResponseEntity<Void> uploadCarImage(@RequestParam("upfile") final MultipartFile file,
-                                               final Authentication authentication) {
-
-        imageService.storeCarImage(file, authentication.getName());
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/rate/{tripId}/user/{username}")
@@ -109,18 +92,6 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUser(username, authentication));
     }
 
-    @GetMapping("/avatar/{username}")
-    public ResponseEntity downloadUserImage(@PathVariable final String username) {
-
-        return ResponseEntity.ok().body(createImageModelInResponseEntity(imageService.getUserImage(username)));
-    }
-
-    @GetMapping("/avatar/car/{username}")
-    public ResponseEntity downloadCarImage(@PathVariable final String username) {
-
-        return ResponseEntity.ok().body(createImageModelInResponseEntity(imageService.getCarImage(username)));
-    }
-
     @GetMapping(value = "/{username}/feedback")
     public ResponseEntity<Set<FeedbackDtoResponse>> getFeedback(@PathVariable final String username) {
 
@@ -133,19 +104,11 @@ public class UserController {
         return ResponseEntity.ok().body(userService.updateUser(userDtoEdit, authentication));
     }
 
-    @PatchMapping(value = "/{username}/delete")
+    @DeleteMapping(value = "/{username}/delete")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> deleteUser(@PathVariable final String username) {
 
         userService.deleteUser(username);
         return ResponseEntity.ok().build();
-    }
-
-    private ResponseEntity<byte[]> createImageModelInResponseEntity(Image dbFile) {
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(MediaType.valueOf(dbFile.getContentType()));
-        header.setContentLength(dbFile.getData().length);
-        header.set("Content-Disposition", "attachment; filename=" + dbFile.getFileName());
-        return new ResponseEntity<>(dbFile.getData(), header, HttpStatus.OK);
     }
 }

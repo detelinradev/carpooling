@@ -34,7 +34,7 @@ public interface DtoMapper {
 
     Comment dtoToObject(CommentDtoRequest commentDtoRequest);
 
-    Comment dtoToObject(CommentDtoResponse commentDtoResponse);
+    Comment dtoToObject(CommentDtoEdit commentDtoEdit);
 
     FeedbackDtoResponse objectToDto(Feedback feedback);
 
@@ -42,10 +42,9 @@ public interface DtoMapper {
 
     Feedback dtoToObject(FeedbackDtoResponse feedbackDtoResponse);
 
-
     TripUserStatusDtoResponse objectToDtoTrip(TripUserStatus tripUserStatus);
 
-    Set<TripUserStatusDtoResponse> passengersToPassengersDtoResponsesTrip (Set<TripUserStatus> tripUserStatuses);
+    List<TripUserStatusDtoResponse> tripUserStatusToDtoList (List<TripUserStatus> tripUserStatuses);
 
     Set<CommentDtoResponse> commentsToCommentsDtoResponses(Set<Comment>comments);
 

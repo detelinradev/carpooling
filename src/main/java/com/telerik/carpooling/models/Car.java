@@ -20,8 +20,8 @@ import javax.validation.constraints.Size;
 @Audited
 public class Car extends MappedAudibleBase {
 
-    public static Car NOT_FOUND = new Car("No value","No value","No value",null,
-            null,Image.NOT_FOUND,User.NOT_FOUND);
+    public static Car NOT_FOUND = new Car("No value","No value","No value",0,
+            true,Image.NOT_FOUND,User.NOT_FOUND);
 
     @NotNull(message = "Car should have brand")
     @Size(min = 1, max = 20, message = "Car brand should be between 1 and 20 symbols")

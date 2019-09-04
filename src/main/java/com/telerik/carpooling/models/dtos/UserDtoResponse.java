@@ -1,5 +1,6 @@
 package com.telerik.carpooling.models.dtos;
 
+import com.telerik.carpooling.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public class UserDtoResponse {
     private String firstName;
     private String lastName;
     private String email;
-    private String role;
+    private UserRole role;
     private String phone;
     private Double ratingAsDriver;
     private Double ratingAsPassenger;

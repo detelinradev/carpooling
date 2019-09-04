@@ -2,12 +2,16 @@ package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.exceptions.FileStorageException;
 import com.telerik.carpooling.exceptions.MyFileNotFoundException;
+import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.Image;
 import com.telerik.carpooling.models.User;
+import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.ImageRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.ImageService;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -21,6 +25,7 @@ public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
+    private final CarRepository carRepository;
 
     public void storeUserImage(MultipartFile file, String loggedUserUsername) {
 
@@ -34,6 +39,7 @@ public class ImageServiceImpl implements ImageService {
             Image image = new Image(file.getOriginalFilename(),
                     file.getContentType(),
                     file.getBytes(), user);
+            image.setIsDeleted(false);
             imageRepository.save(image);
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
@@ -52,6 +58,7 @@ public class ImageServiceImpl implements ImageService {
                 Image image = new Image(file.getOriginalFilename(),
                         file.getContentType(),
                         file.getBytes(), user.getCar());
+                image.setIsDeleted(false);
                 imageRepository.save(image);
             } catch (IOException ex) {
                 throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
@@ -62,23 +69,57 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Image getUserImage(String username) {
         User user = findUserByUsername(username);
-        Long fileId = user.getUserImage().getModelId();
 
-        return imageRepository.findByModelId(fileId)
-                .orElseThrow(() -> new MyFileNotFoundException("File not found with imageId " + fileId));
+        return imageRepository.findByUser(user)
+                .orElseThrow(() -> new MyFileNotFoundException("User image not found for user " + user.getUsername()));
     }
 
     @Override
-    public Image getCarImage(String username) {
+    public Image getCarImage(String username) throws NotFoundException {
         User user = findUserByUsername(username);
-        Long fileId = user.getCar().getCarImage().getModelId();
+        Car car = findCarByUser(user);
 
-        return imageRepository.findByModelId(fileId)
-                .orElseThrow(() -> new MyFileNotFoundException("File not found with imageId " + fileId));
+        return imageRepository.findByCar(car)
+                .orElseThrow(() -> new MyFileNotFoundException("Car image not found for car owned of " + user.getUsername()));
+    }
+
+    @Override
+    public void deleteUserImage(String username, Authentication authentication) {
+
+        User user = findUserByUsername(username);
+        User loggedUser = findUserByUsername(authentication.getName());
+        if (isRole_AdminOrSameUser(authentication, user, loggedUser)) {
+            Image image = getUserImage(username);
+            image.setIsDeleted(true);
+            imageRepository.save(image);
+        }else throw new IllegalArgumentException("You are not authorized to delete the image");
+    }
+
+    @Override
+    public void deleteCarImage(String username, Authentication authentication) throws NotFoundException {
+        User user = findUserByUsername(username);
+        User loggedUser = findUserByUsername(authentication.getName());
+        if (isRole_AdminOrSameUser(authentication, user, loggedUser)) {
+            Image image = getCarImage(username);
+            image.setIsDeleted(true);
+            imageRepository.save(image);
+        }else throw new IllegalArgumentException("You are not authorized to delete the image");
     }
 
     private User findUserByUsername(String username) {
         return userRepository.findByUsernameAndIsDeletedFalse(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
+    }
+
+    private Car findCarByUser(User user) throws NotFoundException {
+        return carRepository.findByOwnerAndIsDeletedFalse(user)
+                .orElseThrow(() -> new NotFoundException("User do not have a car"));
+    }
+
+    private boolean isRole_AdminOrSameUser(Authentication authentication, User user, User loggedUser) {
+
+        return loggedUser.equals(user) || authentication.getAuthorities()
+                .stream()
+                .anyMatch(k -> k.getAuthority().equals("ROLE_ADMIN"));
     }
 }

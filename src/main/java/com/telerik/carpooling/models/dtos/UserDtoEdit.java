@@ -1,5 +1,6 @@
 package com.telerik.carpooling.models.dtos;
 
+import com.telerik.carpooling.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class UserDtoEdit {
     private String email;
 
     @NotNull(message = "User should have user role")
-    private String role;
+    private UserRole role;
 
     @NotNull(message = "User should have password")
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,128}$",

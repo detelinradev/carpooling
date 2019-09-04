@@ -26,15 +26,9 @@ public class MapperResolver {
     }
 
     @ObjectFactory
-    Comment resolve(CommentDtoResponse dto, @TargetType Class<Comment> type) {
+    Comment resolve(CommentDtoEdit dto, @TargetType Class<Comment> type) {
         return dto != null && dto.getModelId() != 0 ? commentRepository.findById(dto.getModelId())
                 .orElseThrow(()->new IllegalArgumentException("Comment not found")) : Comment.NOT_FOUND;
-    }
-
-    @ObjectFactory
-    Feedback resolve(FeedbackDtoResponse dto, @TargetType Class<Comment> type) {
-        return dto != null && dto.getModelId() != 0 ? feedbackRepository.findById(dto.getModelId())
-                .orElseThrow(()->new IllegalArgumentException("Feedback not found")) : Feedback.NOT_FOUND;
     }
 
     @ObjectFactory

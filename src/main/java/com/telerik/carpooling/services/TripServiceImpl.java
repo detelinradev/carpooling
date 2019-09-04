@@ -8,6 +8,7 @@ import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.TripDtoEdit;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import com.telerik.carpooling.models.dtos.TripUserStatusDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.TripUserStatusRepository;
 import com.telerik.carpooling.repositories.TripRepository;
@@ -73,6 +74,13 @@ public class TripServiceImpl implements TripService {
 
         Trip trip = getTripById(tripID);
         return dtoMapper.objectToDto(trip);
+    }
+
+    @Override
+    public List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws NotFoundException {
+        Trip trip = getTripById(tripId);
+        List<TripUserStatus> tripUserStatus = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        return dtoMapper.tripUserStatusToDtoList(tripUserStatus);
     }
 
     @Override

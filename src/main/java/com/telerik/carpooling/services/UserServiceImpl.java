@@ -1,5 +1,6 @@
 package com.telerik.carpooling.services;
 
+import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.models.TripUserStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
         newUser.setLastName(user.getLastName());
         newUser.setPassword(bCryptEncoder.encode(user.getPassword()));
         newUser.setEmail(user.getEmail());
-        newUser.setRole("USER");
+        newUser.setRole(UserRole.USER);
         newUser.setIsDeleted(false);
         newUser.setPhone(user.getPhone());
         newUser.setRatingAsDriver(0.0);
@@ -127,16 +128,23 @@ public class UserServiceImpl implements UserService {
     public List<UserDtoResponse> getTopRatedUsers(Boolean isPassenger) {
         List<User> users = userRepository.findUsers(null, null, null,
                 null, null, null);
-        for (User user : users) {
-            Double rating;
-            if (isPassenger)
+        if (isPassenger) {
+            for (User user : users) {
+                Double rating;
                 rating = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
-            else
+                if (rating != null)
+                    user.setRatingAsPassenger(rating);
+            }
+            users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
+        } else {
+            for (User user : users) {
+                Double rating;
                 rating = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
-            if (rating != null)
-                user.setRatingAsPassenger(rating);
+                if (rating != null)
+                    user.setRatingAsDriver(rating);
+            }
+            users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
         }
-        users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
 
         return dtoMapper.userToDtoList(users.stream()
                 .limit(10)

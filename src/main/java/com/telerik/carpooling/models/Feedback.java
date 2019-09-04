@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
 @Entity
 public class Feedback extends MappedAudibleBase {
 
-    public static Feedback NOT_FOUND = new Feedback(User.NOT_FOUND,User.NOT_FOUND,"No value",null);
+    public static Feedback NOT_FOUND = new Feedback(User.NOT_FOUND,User.NOT_FOUND,"No value",true);
 
     @NotNull(message = "Feedback should have author")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -27,8 +27,8 @@ import java.time.LocalDateTime;
 public class Trip extends MappedAudibleBase {
 
     public static Trip NOT_FOUND = new Trip("No value",null,"No value",
-            "No value",null, null,null,
-            null,null,null,TripStatus.AVAILABLE);
+            "No value",0, 0,0,
+            true,true,true,TripStatus.AVAILABLE);
 
     @NotNull(message = "Trip should have message")
     @Size(max = 250,message = "Message should be maximum 250 symbols")

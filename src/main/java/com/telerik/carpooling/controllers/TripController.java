@@ -5,6 +5,7 @@ import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.dtos.TripDtoEdit;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import com.telerik.carpooling.models.dtos.TripUserStatusDtoResponse;
 import com.telerik.carpooling.services.services.contracts.*;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,12 @@ public class TripController {
         return ResponseEntity.ok().body(tripService.getTrip(tripId));
     }
 
+    @GetMapping(value = "/TripUserStatus/{tripId}")
+    public ResponseEntity<List<TripUserStatusDtoResponse>> getTripUserStatus(@PathVariable final Long tripId) throws NotFoundException {
+
+        return ResponseEntity.ok().body(tripService.getTripUserStatus(tripId));
+    }
+
     @PutMapping
     public ResponseEntity<TripDtoResponse> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit,final Authentication authentication) {
 
@@ -92,7 +99,7 @@ public class TripController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "/{tripId}/delete")
+    @DeleteMapping(value = "/{tripId}/delete")
     public ResponseEntity<Void> deleteTrip(@PathVariable final Long tripId,
                                         final Authentication authentication) throws NotFoundException {
 

@@ -1,5 +1,6 @@
 package com.telerik.carpooling.controllers;
 
+import com.telerik.carpooling.models.dtos.CommentDtoEdit;
 import com.telerik.carpooling.models.dtos.CommentDtoResponse;
 import com.telerik.carpooling.services.services.contracts.CommentService;
 import javassist.NotFoundException;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Set;
 
 @CrossOrigin(maxAge = 3600)
@@ -34,5 +36,20 @@ public class CommentController {
             throws NotFoundException {
 
         return ResponseEntity.ok().body(commentService.getComments(tripId));
+    }
+
+    @PutMapping
+    public ResponseEntity<CommentDtoResponse> editComment(@Valid @RequestBody final CommentDtoEdit commentDtoEdit,
+                                                       final Authentication authentication) {
+
+        return ResponseEntity.ok().body(commentService.updateComment(commentDtoEdit, authentication));
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable final Long id, final Authentication authentication)
+            throws NotFoundException {
+
+        commentService.deleteComment(id,authentication);
+        return ResponseEntity.ok().build();
     }
 }

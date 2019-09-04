@@ -5,6 +5,7 @@ import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.models.dtos.TripDtoEdit;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
+import com.telerik.carpooling.models.dtos.TripUserStatusDtoResponse;
 import javassist.NotFoundException;
 
 import java.util.List;
@@ -27,5 +28,7 @@ public interface TripService {
                                    Integer availablePlaces, Boolean smoking, Boolean pets, Boolean luggage, Boolean airConditioned);
 
     void deleteTrip(Long tripId, String loggedUserUsername) throws NotFoundException;
+
+    List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws NotFoundException;
 }
 

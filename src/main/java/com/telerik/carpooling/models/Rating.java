@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Rating extends MappedAudibleBase {
 
-    public static Rating NOT_FOUND =new Rating(User.NOT_FOUND,User.NOT_FOUND,null,null);
+    public static Rating NOT_FOUND =new Rating(User.NOT_FOUND,User.NOT_FOUND,0,true);
 
     @NotNull(message = "Rating user should not be null")
     @ManyToOne(fetch = FetchType.LAZY)
