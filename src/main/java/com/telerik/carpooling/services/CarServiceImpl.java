@@ -1,5 +1,6 @@
 package com.telerik.carpooling.services;
 
+import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.CarDtoEdit;
@@ -15,6 +16,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -48,19 +51,20 @@ public class CarServiceImpl implements CarService {
 
         Car car = dtoMapper.dtoToObject(carDtoEdit);
         User owner = findUserByUsername(loggedUserUsername);
-        if(car.equals(owner.getCar())) {
+        Optional<Car> userCar = carRepository.findByOwnerAndIsDeletedFalse(owner);
+        if(userCar.isPresent() && car.equals(userCar.get())) {
             return dtoMapper.objectToDto(carRepository.save(car));
         }else throw new IllegalArgumentException("You are not authorized to edit the car");
     }
 
     @Override
-    public void deleteCar(Long id, Authentication authentication) throws NotFoundException {
+    public void deleteCar(Long id, String username) throws NotFoundException {
         Car car = carRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Car with this id not found"));
         User carOwner = car.getOwner();
-        User loggedUser = findUserByUsername(authentication.getName());
+        User loggedUser = findUserByUsername(username);
 
-        if (isRole_AdminOrSameUser(authentication, carOwner, loggedUser)) {
+        if (isRole_AdminOrSameUser( carOwner, loggedUser)) {
             car.setIsDeleted(true);
             carRepository.save(car);
         } else throw new IllegalArgumentException("You are not authorized to delete the car");
@@ -71,11 +75,9 @@ public class CarServiceImpl implements CarService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 
-    private boolean isRole_AdminOrSameUser(Authentication authentication, User user, User loggedUser) {
+    private boolean isRole_AdminOrSameUser( User user, User loggedUser) {
 
-        return loggedUser.equals(user) || authentication.getAuthorities()
-                .stream()
-                .anyMatch(k -> k.getAuthority().equals("ROLE_ADMIN"));
+        return loggedUser.equals(user) || loggedUser.getRole().equals(UserRole.ADMIN);
     }
 
 }

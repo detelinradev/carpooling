@@ -28,7 +28,7 @@ public class Trip extends MappedAudibleBase {
 
     public static Trip NOT_FOUND = new Trip("No value",null,"No value",
             "No value",0, 0,0,
-            true,true,true,TripStatus.AVAILABLE);
+            true,true,true,true,TripStatus.AVAILABLE);
 
     @NotNull(message = "Trip should have message")
     @Size(max = 250,message = "Message should be maximum 250 symbols")
@@ -60,14 +60,17 @@ public class Trip extends MappedAudibleBase {
     @Max(value = Integer.MAX_VALUE,message = "Trip cost per passenger max value should be under 2 174 483 647")
     private Integer costPerPassenger;
 
-    @NotNull(message = "Trip should have defined is smoking allowed")
+    @NotNull(message = "Trip should have defined if smoking is allowed")
     private Boolean smokingAllowed;
 
-    @NotNull(message = "Trip should have defined is luggage allowed")
+    @NotNull(message = "Trip should have defined if luggage is allowed")
     private Boolean luggageAllowed;
 
     @NotNull(message = "Trip should have defined are pets allowed")
     private Boolean petsAllowed;
+
+    @NotNull(message = "In trip, car should be marked as air-conditioned or not")
+    private Boolean airConditioned;
 
     @NotNull(message = "Trip should have a trip status")
     private TripStatus tripStatus;

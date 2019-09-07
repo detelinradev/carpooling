@@ -21,5 +21,5 @@ public class UserDtoResponse {
     private String phone;
     private Double ratingAsDriver;
     private Double ratingAsPassenger;
-    private CarDtoResponse car;
+//    private CarDtoResponse car;
 }

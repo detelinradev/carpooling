@@ -23,4 +23,5 @@ public class TripDtoResponse {
     private Boolean smokingAllowed;
     private Boolean luggageAllowed;
     private Boolean petsAllowed;
+    private Boolean airConditioned;
 }

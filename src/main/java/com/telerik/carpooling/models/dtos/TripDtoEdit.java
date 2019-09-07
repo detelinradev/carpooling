@@ -57,4 +57,7 @@ public class TripDtoEdit {
 
     @NotNull(message = "Trip should have defined are pets allowed")
     private Boolean petsAllowed;
+
+    @NotNull(message = "In trip, car should be marked as air-conditioned or not")
+    private Boolean airConditioned;
 }

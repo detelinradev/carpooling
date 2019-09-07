@@ -14,7 +14,7 @@ public interface CarService {
 
     CarDtoResponse updateCar(CarDtoEdit car, String loggedUserUsername);
 
-    void deleteCar(Long id, Authentication authentication) throws NotFoundException;
+    void deleteCar(Long id, String username) throws NotFoundException;
 
     CarDtoResponse getCar(String username) throws NotFoundException;
 }

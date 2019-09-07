@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -49,7 +50,8 @@ public class ImageServiceImpl implements ImageService {
     public void storeCarImage( MultipartFile file,String loggedUserUsername) {
 
         User user = findUserByUsername(loggedUserUsername);
-        if(user.getCar() != null) {
+        Optional<Car> car = carRepository.findByOwnerAndIsDeletedFalse(user);
+        if(car.isPresent()) {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             try {
                 if (fileName.contains("..")) {
@@ -57,7 +59,7 @@ public class ImageServiceImpl implements ImageService {
                 }
                 Image image = new Image(file.getOriginalFilename(),
                         file.getContentType(),
-                        file.getBytes(), user.getCar());
+                        file.getBytes(), car.get());
                 image.setIsDeleted(false);
                 imageRepository.save(image);
             } catch (IOException ex) {
@@ -70,7 +72,7 @@ public class ImageServiceImpl implements ImageService {
     public Image getUserImage(String username) {
         User user = findUserByUsername(username);
 
-        return imageRepository.findByUser(user)
+        return imageRepository.findByUserAndIsDeletedFalse(user)
                 .orElseThrow(() -> new MyFileNotFoundException("User image not found for user " + user.getUsername()));
     }
 
@@ -79,7 +81,7 @@ public class ImageServiceImpl implements ImageService {
         User user = findUserByUsername(username);
         Car car = findCarByUser(user);
 
-        return imageRepository.findByCar(car)
+        return imageRepository.findByCarAndIsDeletedFalse(car)
                 .orElseThrow(() -> new MyFileNotFoundException("Car image not found for car owned of " + user.getUsername()));
     }
 

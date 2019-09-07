@@ -16,12 +16,9 @@ import java.util.Optional;
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Long> {
 
-//    @Query("SELECT t from Trip t where t.modelId=:id and t.isDeleted = false")
     Optional<Trip> findByModelIdAndIsDeletedFalse(Long modelId);
 
     @Query("select t from Trip t " +
-//            "join User u on t.driver = u.id " +
-//            "join Car c on c.owner = u.id " +
             "where " +
             "(:tripStatus is null or t.tripStatus = :tripStatus) and" +
             "(:origin is null or :origin ='' or t.origin = :origin) and" +
@@ -32,8 +29,8 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
             "(:smoking is null or t.smokingAllowed = :smoking) and" +
             "(:pets is null or t.petsAllowed = :pets) and" +
             "(t.isDeleted = false) and" +
-            "(:luggage is null or t.luggageAllowed = :luggage)"
-//            "(:airConditioned is null or :airConditioned ='' or c.airConditioned = :airConditioned)"
+            "(:luggage is null or t.luggageAllowed = :luggage) and" +
+            "(:airConditioned is null or :airConditioned ='' or t.airConditioned = :airConditioned)"
             )
     List<Trip> findTripsByPassedParameters(@Param(value = "tripStatus") TripStatus status,
                                            @Param(value = "origin") String origin,
@@ -44,7 +41,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
                                            @Param(value = "smoking") Boolean smoking,
                                            @Param(value = "pets") Boolean pets,
                                            @Param(value = "luggage") Boolean luggage,
-//                                           @Param(value = "airConditioned") Boolean airConditioned,
+                                           @Param(value = "airConditioned") Boolean airConditioned,
                                            Pageable page
     );
 }

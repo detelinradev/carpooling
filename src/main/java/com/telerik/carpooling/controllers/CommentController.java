@@ -42,14 +42,14 @@ public class CommentController {
     public ResponseEntity<CommentDtoResponse> editComment(@Valid @RequestBody final CommentDtoEdit commentDtoEdit,
                                                        final Authentication authentication) {
 
-        return ResponseEntity.ok().body(commentService.updateComment(commentDtoEdit, authentication));
+        return ResponseEntity.ok().body(commentService.updateComment(commentDtoEdit, authentication.getName()));
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable final Long id, final Authentication authentication)
             throws NotFoundException {
 
-        commentService.deleteComment(id,authentication);
+        commentService.deleteComment(id,authentication.getName());
         return ResponseEntity.ok().build();
     }
 }

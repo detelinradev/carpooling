@@ -1,7 +1,9 @@
 package com.telerik.carpooling.services;
 
+import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.enums.TripStatus;
+import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.TripUserStatus;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
@@ -10,6 +12,7 @@ import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.TripUserStatusDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
+import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.TripUserStatusRepository;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
@@ -26,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -34,6 +38,7 @@ public class TripServiceImpl implements TripService {
 
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
+    private final CarRepository carRepository;
     private final TripUserStatusRepository tripUserStatusRepository;
     private final DtoMapper dtoMapper;
 
@@ -43,8 +48,9 @@ public class TripServiceImpl implements TripService {
 
         User driver = findUserByUsername(loggedUserUsername);
         Trip trip = dtoMapper.dtoToObject(tripDtoRequest);
+        Optional<Car> car = carRepository.findByOwnerAndIsDeletedFalse(driver);
 
-        if (driver.getCar() == null)
+        if (!car.isPresent())
             throw new NotFoundException("Request not submitted, please create car first");
 
         trip.setTripStatus(TripStatus.AVAILABLE);
@@ -96,7 +102,7 @@ public class TripServiceImpl implements TripService {
                 List<Trip> trips = tripRepository.findTripsByPassedParameters(
                         tripStatus, origin, destination, parseDateTime(earliestDepartureTime),
                         parseDateTime(latestDepartureTime), availablePlaces,
-                        smoking, pets, luggage, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+                        smoking, pets, luggage,airConditioned, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
 
                 if (trips.size() > 0) {
                     return dtoMapper.tripToDtoList(trips);
@@ -114,7 +120,7 @@ public class TripServiceImpl implements TripService {
         List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
 
         if (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
-                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER)) || user.getRole().equals("ADMIN")) {
+                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER)) || user.getRole().equals(UserRole.ADMIN)) {
             trip.setIsDeleted(true);
             tripRepository.save(trip);
         } else throw new IllegalArgumentException("You are not authorized to delete the trip");

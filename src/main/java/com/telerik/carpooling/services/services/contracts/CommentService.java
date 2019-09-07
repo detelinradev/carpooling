@@ -13,7 +13,7 @@ public interface CommentService {
 
     Set<CommentDtoResponse> getComments(Long tripId) throws NotFoundException;
 
-    void deleteComment(Long id, Authentication authentication) throws NotFoundException;
+    void deleteComment(Long id, String username) throws NotFoundException;
 
-    CommentDtoResponse updateComment(CommentDtoEdit commentDtoEdit, Authentication authentication);
+    CommentDtoResponse updateComment(CommentDtoEdit commentDtoEdit, String username);
 }

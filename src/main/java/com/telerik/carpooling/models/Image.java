@@ -12,7 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@EqualsAndHashCode(callSuper = true,exclude = {"user", "car"})
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @AllArgsConstructor
@@ -37,12 +37,12 @@ public class Image extends MappedAudibleBase {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user", unique = true)
-    @JsonIgnoreProperties("userImage")
+//    @JsonIgnoreProperties("userImage")
     private User user;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "car",unique = true)
-    @JsonIgnoreProperties("carImage")
+//    @JsonIgnoreProperties("carImage")
     private Car car;
 
     public Image(String fileName, String contentType, byte[] data,User user) {

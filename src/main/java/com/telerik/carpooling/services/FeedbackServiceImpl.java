@@ -58,7 +58,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         User user = findUserByUsername(username);
 
-        return dtoMapper.feedbackToFeedbackDtoResponses(feedbackRepository.getAllByUser(user));
+        return dtoMapper.feedbackToFeedbackDtoResponses(feedbackRepository.getAllByUserAndIsDeletedFalse(user));
     }
 
     private Trip getTripById(Long tripID) throws NotFoundException {

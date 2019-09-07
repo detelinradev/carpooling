@@ -11,7 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 
-@EqualsAndHashCode(callSuper = true, exclude = {"userImage", "car"})
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -21,7 +21,7 @@ public class User extends MappedAudibleBase {
 
     public static User NOT_FOUND = new User("No value", "No value", "No value",
             "No value", UserRole.USER, "No value", "No value", 0.0,
-            0.0, Image.NOT_FOUND, Car.NOT_FOUND);
+            0.0);
 
     @NotNull(message = "User should have username")
     @Size(min = 2, max = 20, message = "Please enter username between 2 and 20 symbols")
@@ -74,13 +74,13 @@ public class User extends MappedAudibleBase {
     @DecimalMin(value = "0.00",message = "Rating as passenger should be between 0 and 5")
     private Double ratingAsPassenger;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
-    @JsonIgnoreProperties("user")
-    private Image userImage;
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "owner")
-    @JsonIgnoreProperties("owner")
-    private Car car;
+//    @JsonIgnore
+//    @OneToOne(mappedBy = "user")
+//    @JsonIgnoreProperties("user")
+//    private Image userImage;
+//
+//    @JsonIgnore
+//    @OneToOne(mappedBy = "owner")
+//    @JsonIgnoreProperties("owner")
+//    private Car car;
 }

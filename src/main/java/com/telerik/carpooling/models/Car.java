@@ -12,7 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@EqualsAndHashCode(callSuper = true,exclude = {"carImage", "owner"})
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +21,7 @@ import javax.validation.constraints.Size;
 public class Car extends MappedAudibleBase {
 
     public static Car NOT_FOUND = new Car("No value","No value","No value",0,
-            true,Image.NOT_FOUND,User.NOT_FOUND);
+            User.NOT_FOUND);
 
     @NotNull(message = "Car should have brand")
     @Size(min = 1, max = 20, message = "Car brand should be between 1 and 20 symbols")
@@ -38,16 +38,8 @@ public class Car extends MappedAudibleBase {
     @NotNull(message = "Car should have year of first registration")
     private Integer firstRegistration;
 
-    @NotNull(message = "Car should be marked as air-conditioned or not")
-    private Boolean airConditioned;
-
-    @OneToOne(mappedBy = "car")
-    @JsonIgnoreProperties("car")
-    private Image carImage;
-
     @NotNull(message = "Car should have owner")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user", unique = true)
-    @JsonIgnoreProperties("car")
     private User owner;
 }

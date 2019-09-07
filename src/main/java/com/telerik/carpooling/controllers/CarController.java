@@ -45,7 +45,7 @@ public class CarController {
     public ResponseEntity<Void> deleteCar(@PathVariable final Long id, final Authentication authentication)
             throws NotFoundException {
 
-        carService.deleteCar(id,authentication);
+        carService.deleteCar(id,authentication.getName());
         return ResponseEntity.ok().build();
     }
 

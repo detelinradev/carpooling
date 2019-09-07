@@ -30,7 +30,4 @@ public class CarDtoRequest {
     @NotNull(message = "Car should have year of first registration")
     private Integer firstRegistration;
 
-    @NotNull(message = "Car should be marked as air-conditioned or not")
-    private Boolean airConditioned;
-
 }

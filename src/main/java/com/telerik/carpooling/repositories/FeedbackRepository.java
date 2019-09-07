@@ -8,5 +8,5 @@ import java.util.Set;
 
 public interface FeedbackRepository extends JpaRepository<Feedback,Long> {
 
-    Set<Feedback> getAllByUser(User value);
+    Set<Feedback> getAllByUserAndIsDeletedFalse(User value);
 }

@@ -1,5 +1,6 @@
 package com.telerik.carpooling.services;
 
+import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.models.Comment;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
@@ -54,25 +55,25 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long id, Authentication authentication) throws NotFoundException {
+    public void deleteComment(Long id, String username) throws NotFoundException {
 
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Comment with this id not found"));
         User commentAuthor = comment.getAuthor();
-        User loggedUser = findUserByUsername(authentication.getName());
+        User loggedUser = findUserByUsername(username);
 
-        if (isRole_AdminOrSameUser(authentication, commentAuthor, loggedUser)) {
+        if (isRole_AdminOrSameUser(commentAuthor, loggedUser)) {
             comment.setIsDeleted(true);
             commentRepository.save(comment);
         } else throw new IllegalArgumentException("You are not authorized to delete the comment");
     }
 
     @Override
-    public CommentDtoResponse updateComment(CommentDtoEdit commentDtoEdit, Authentication authentication) {
+    public CommentDtoResponse updateComment(CommentDtoEdit commentDtoEdit, String username) {
         Comment comment = dtoMapper.dtoToObject(commentDtoEdit);
         User commentAuthor = comment.getAuthor();
-        User loggedUser = findUserByUsername(authentication.getName());
-        if (isRole_AdminOrSameUser(authentication, commentAuthor, loggedUser)) {
+        User loggedUser = findUserByUsername(username);
+        if (isRole_AdminOrSameUser(commentAuthor, loggedUser)) {
 
             return dtoMapper.objectToDto(commentRepository.save(comment));
         } else throw new IllegalArgumentException("You are not authorized to edit the comment");
@@ -89,10 +90,8 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new NotFoundException("Trip does not exist"));
     }
 
-    private boolean isRole_AdminOrSameUser(Authentication authentication, User user, User loggedUser) {
+    private boolean isRole_AdminOrSameUser(User user, User loggedUser) {
 
-        return loggedUser.equals(user) || authentication.getAuthorities()
-                .stream()
-                .anyMatch(k -> k.getAuthority().equals("ROLE_ADMIN"));
+        return loggedUser.equals(user) || user.getRole().equals(UserRole.ADMIN);
     }
 }
