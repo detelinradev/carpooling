@@ -43,7 +43,7 @@ public class TripServiceImpl implements TripService {
     private final DtoMapper dtoMapper;
 
     @Override
-    public TripDtoResponse createTrip(TripDtoRequest tripDtoRequest,String loggedUserUsername)
+    public TripDtoResponse createTrip(TripDtoRequest tripDtoRequest, String loggedUserUsername)
             throws NotFoundException {
 
         User driver = findUserByUsername(loggedUserUsername);
@@ -56,9 +56,11 @@ public class TripServiceImpl implements TripService {
         trip.setTripStatus(TripStatus.AVAILABLE);
         trip.setIsDeleted(false);
         tripRepository.save(trip);
+
         TripUserStatus tripUserStatus = new TripUserStatus(driver, trip, UserStatus.DRIVER);
         tripUserStatus.setIsDeleted(false);
         tripUserStatusRepository.save(tripUserStatus);
+
         return dtoMapper.objectToDto(trip);
     }
 
@@ -69,23 +71,27 @@ public class TripServiceImpl implements TripService {
         Trip trip = dtoMapper.dtoToObject(tripDtoEdit);
         List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
 
-        if (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
-                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER)))
-            return dtoMapper.objectToDto(tripRepository.save(trip));
-        else throw new IllegalArgumentException("The user is not the creator of the trip");
+        if (tripUserStatusList.stream().filter(j -> j.getUser().equals(user))
+                .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER)))
+            throw new IllegalArgumentException("The user is not the creator of the trip");
+
+        return dtoMapper.objectToDto(tripRepository.save(trip));
     }
 
     @Override
     public TripDtoResponse getTrip(Long tripID) throws NotFoundException {
 
         Trip trip = getTripById(tripID);
+
         return dtoMapper.objectToDto(trip);
     }
 
     @Override
     public List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws NotFoundException {
+
         Trip trip = getTripById(tripId);
         List<TripUserStatus> tripUserStatus = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+
         return dtoMapper.tripUserStatusToDtoList(tripUserStatus);
     }
 
@@ -96,20 +102,19 @@ public class TripServiceImpl implements TripService {
                                           Boolean pets, Boolean luggage, Boolean airConditioned) {
 
 
-        if (availablePlaces == null || (availablePlaces > 0 && availablePlaces < 5)) {
-            if ((pageNumber != null && pageSize != null) || (pageNumber == null && pageSize == null)) {
+        if (availablePlaces != null && (availablePlaces < 1 || availablePlaces > 4))
+            throw new IllegalArgumentException("Available seats should be between 1 and 4");
+        if ((pageNumber != null && pageSize == null) || (pageNumber == null && pageSize != null))
+            throw new IllegalArgumentException("Page number and page size should be both present");
 
-                List<Trip> trips = tripRepository.findTripsByPassedParameters(
-                        tripStatus, origin, destination, parseDateTime(earliestDepartureTime),
-                        parseDateTime(latestDepartureTime), availablePlaces,
-                        smoking, pets, luggage,airConditioned, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+        List<Trip> trips = tripRepository.findTripsByPassedParameters(
+                tripStatus, origin, destination, parseDateTime(earliestDepartureTime),
+                parseDateTime(latestDepartureTime), availablePlaces,
+                smoking, pets, luggage, airConditioned, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
 
-                if (trips.size() > 0) {
-                    return dtoMapper.tripToDtoList(trips);
-                } else return Collections.emptyList();
-            } else
-                throw new IllegalArgumentException("Page number and page size should be both present");
-        } else throw new IllegalArgumentException("Available seats should be between 1 and 4");
+        if (trips.size() == 0) return Collections.emptyList();
+
+        return dtoMapper.tripToDtoList(trips);
     }
 
     @Override
@@ -119,11 +124,13 @@ public class TripServiceImpl implements TripService {
         Trip trip = getTripById(tripId);
         List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
 
-        if (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
-                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER)) || user.getRole().equals(UserRole.ADMIN)) {
-            trip.setIsDeleted(true);
-            tripRepository.save(trip);
-        } else throw new IllegalArgumentException("You are not authorized to delete the trip");
+        if (tripUserStatusList.stream().filter(j -> j.getUser().equals(user))
+                .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER)) || user.getRole().equals(UserRole.ADMIN))
+            throw new IllegalArgumentException("You are not authorized to delete the trip");
+
+        trip.setIsDeleted(true);
+
+        tripRepository.save(trip);
     }
 
     @Override
@@ -133,30 +140,35 @@ public class TripServiceImpl implements TripService {
         Trip trip = getTripById(tripID);
         List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
 
-        if (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
-                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER))) {
-            switch (tripStatus) {
-                case DONE:
-                    if (trip.getTripStatus().equals(TripStatus.ONGOING)) markTripAsDone(trip);
-                    else throw new IllegalArgumentException("Trip is not ongoing");
-                    break;
-                case BOOKED:
-                    if (trip.getTripStatus().equals(TripStatus.AVAILABLE)) markTripAsBooked(trip);
-                    else throw new IllegalArgumentException("Trip is not available");
-                    break;
-                case ONGOING:
-                    if (trip.getTripStatus().equals(TripStatus.AVAILABLE)
-                            || trip.getTripStatus().equals(TripStatus.BOOKED)) markTripAsOngoing(trip);
-                    else throw new IllegalArgumentException("Trip is not available or booked");
-                    break;
-                case CANCELED:
-                    if (!trip.getTripStatus().equals(TripStatus.DONE)) markTripAsCanceled(trip);
-                    else throw new IllegalArgumentException("Trip status can not be changed from done to canceled");
-                    break;
-                default:
-                    throw new IllegalArgumentException("Trip status not found");
-            }
-        } else throw new IllegalArgumentException("You are not authorized to change trip status");
+        if (tripUserStatusList.stream().filter(j -> j.getUser().equals(user))
+                .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER)))
+            throw new IllegalArgumentException("You are not authorized to change trip status");
+
+        switch (tripStatus) {
+            case DONE:
+                if (!trip.getTripStatus().equals(TripStatus.ONGOING))
+                    throw new IllegalArgumentException("Trip is not ongoing");
+                markTripAsDone(trip);
+                break;
+            case BOOKED:
+                if (!trip.getTripStatus().equals(TripStatus.AVAILABLE))
+                    throw new IllegalArgumentException("Trip is not available");
+                markTripAsBooked(trip);
+                break;
+            case ONGOING:
+                if (!trip.getTripStatus().equals(TripStatus.AVAILABLE)
+                        || !trip.getTripStatus().equals(TripStatus.BOOKED))
+                    throw new IllegalArgumentException("Trip is not available or booked");
+                markTripAsOngoing(trip);
+                break;
+            case CANCELED:
+                if (trip.getTripStatus().equals(TripStatus.DONE))
+                    throw new IllegalArgumentException("Trip status can not be changed from done to canceled");
+                markTripAsCanceled(trip);
+                break;
+            default:
+                throw new IllegalArgumentException("Trip status not found");
+        }
     }
 
     public void changeUserStatus(Long tripID, String passengerUsername, String loggedUserUsername,
@@ -171,68 +183,65 @@ public class TripServiceImpl implements TripService {
         if (driver.equals(passenger)) {
 
             if (userStatus.equals(UserStatus.PENDING)) {
-                if (trip.getTripStatus().equals(TripStatus.AVAILABLE)) {
-                    if (userStatusList.stream().noneMatch(k -> k.getUser().equals(passenger))) {
 
-                        addPassenger(trip, passenger);
-
-                    } else throw new IllegalArgumentException("Passenger can not be added to the trip twice");
-                } else
+                if (!trip.getTripStatus().equals(TripStatus.AVAILABLE))
                     throw new IllegalArgumentException("Passenger can not be added to the trip when trip status is not available");
+                if (userStatusList.stream().anyMatch(k -> k.getUser().equals(passenger)))
+                    throw new IllegalArgumentException("Passenger can not be added to the trip twice");
+
+                addPassenger(trip, passenger);
 
             } else if (userStatus.equals(UserStatus.CANCELED)) {
-                if (userStatusList.stream().anyMatch(k -> k.getUser().equals(passenger))
-                        && userStatusList.stream()
+
+                if (userStatusList.stream().noneMatch(k -> k.getUser().equals(passenger))
+                        || userStatusList.stream()
                         .filter(k -> k.getUser().equals(passenger))
-                        .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER))) {
+                        .anyMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER)))
+                    throw new
+                            IllegalArgumentException("You are not authorized to cancel passenger participation in the trip");
 
-                    cancelPassenger(passenger, trip);
+                cancelPassenger(passenger, trip);
 
-                } else throw new
-                        IllegalArgumentException("You are not authorized to cancel passenger participation in the trip");
             } else throw new IllegalArgumentException("Passenger status not found");
 
         } else {
-            if (userStatusList.stream().filter(j->j.getUser().equals(driver))
-                    .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER))
-                    && userStatusList.stream().anyMatch(k -> k.getUser().equals(passenger))) {
-                switch (userStatus) {
-                    case ABSENT:
-                        if (trip.getTripStatus().equals(TripStatus.AVAILABLE)
-                                || trip.getTripStatus().equals(TripStatus.BOOKED)) {
-                            if (tripUserStatusList.stream()
-                                    .anyMatch(k -> k.getUserStatus().equals(UserStatus.ACCEPTED))) {
+            if (userStatusList.stream().filter(j -> j.getUser().equals(driver))
+                    .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER))
+                    || userStatusList.stream().noneMatch(k -> k.getUser().equals(passenger)))
+                throw new IllegalArgumentException("Driver and/or passenger does not belong to this trip");
+            switch (userStatus) {
+                case ABSENT:
+                    if (!trip.getTripStatus().equals(TripStatus.AVAILABLE)
+                            || !trip.getTripStatus().equals(TripStatus.BOOKED))
+                        throw new IllegalArgumentException("Trip should be AVAILABLE or BOOKED to mark passenger" +
+                                " as ABSENT");
+                    if (tripUserStatusList.stream()
+                            .noneMatch(k -> k.getUserStatus().equals(UserStatus.ACCEPTED)))
+                        throw new IllegalArgumentException("Passenger should be with passenger status ACCEPTED " +
+                                "to be marked as ABSENT");
 
-                                absentPassenger(passenger, trip);
+                    absentPassenger(passenger, trip);
 
-                            } else
-                                throw new IllegalArgumentException("Passenger should be with passenger status ACCEPTED " +
-                                        "to be marked as ABSENT");
-                        } else
-                            throw new IllegalArgumentException("Trip should be AVAILABLE or BOOKED to mark passenger" +
-                                    " as ABSENT");
-                        break;
-                    case ACCEPTED:
-                        if (trip.getTripStatus().equals(TripStatus.AVAILABLE)) {
-                            if (userStatusList.stream()
-                                    .filter(k -> k.getUser().equals(passenger))
-                                    .anyMatch(k -> k.getUserStatus().equals(UserStatus.PENDING))) {
+                    break;
+                case ACCEPTED:
+                    if (!trip.getTripStatus().equals(TripStatus.AVAILABLE))
+                        throw new IllegalArgumentException("Trip should be AVAILABLE to accept passenger");
+                    if (userStatusList.stream()
+                            .filter(k -> k.getUser().equals(passenger))
+                            .noneMatch(k -> k.getUserStatus().equals(UserStatus.PENDING)))
+                        throw new IllegalArgumentException("Passenger should be with passenger status PENDING " +
+                                "to be marked as ACCEPTED");
 
-                                acceptPassenger(passenger, trip);
+                    acceptPassenger(passenger, trip);
 
-                            } else
-                                throw new IllegalArgumentException("Passenger should be with passenger status PENDING " +
-                                        "to be marked as ACCEPTED");
-                        } else throw new IllegalArgumentException("Trip should be AVAILABLE to accept passenger");
-                        break;
-                    case REJECTED:
-                        rejectPassenger(passenger, trip);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Passenger status not found");
+                    break;
+                case REJECTED:
+                    rejectPassenger(passenger, trip);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Passenger status not found");
 
-                }
-            } else throw new IllegalArgumentException("Driver and/or passenger does not belong to this trip");
+            }
         }
 
     }
