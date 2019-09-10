@@ -1,7 +1,6 @@
 package com.telerik.carpooling.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.models.base.MappedAudibleBase;
 import lombok.*;
@@ -73,14 +72,4 @@ public class User extends MappedAudibleBase {
     @DecimalMax(value = "5.00",message = "Rating as passenger should be between 0 and 5")
     @DecimalMin(value = "0.00",message = "Rating as passenger should be between 0 and 5")
     private Double ratingAsPassenger;
-
-//    @JsonIgnore
-//    @OneToOne(mappedBy = "user")
-//    @JsonIgnoreProperties("user")
-//    private Image userImage;
-//
-//    @JsonIgnore
-//    @OneToOne(mappedBy = "owner")
-//    @JsonIgnoreProperties("owner")
-//    private Car car;
 }

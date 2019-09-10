@@ -14,9 +14,9 @@ public interface UserService {
 
     UserDtoResponse save(UserDtoRequest userDtoRequest);
 
-    UserDtoResponse updateUser(UserDtoEdit userDtoEdit, Authentication authentication);
+    UserDtoResponse updateUser(UserDtoEdit userDtoEdit, String loggedUserUsername);
 
-    UserDtoResponse getUser(String username,  Authentication authentication);
+    UserDtoResponse getUser(String username,  String loggedUserUsername);
 
     void deleteUser(String username);
 

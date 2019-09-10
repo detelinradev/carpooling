@@ -1,22 +1,16 @@
 package com.telerik.carpooling.controllers;
 
-import com.telerik.carpooling.models.Image;
 import com.telerik.carpooling.models.dtos.*;
 import com.telerik.carpooling.services.services.contracts.FeedbackService;
-import com.telerik.carpooling.services.services.contracts.ImageService;
 import com.telerik.carpooling.services.services.contracts.RatingService;
 import com.telerik.carpooling.services.services.contracts.UserService;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -89,7 +83,7 @@ public class UserController {
     @GetMapping(value = "/{username}")
     public ResponseEntity<UserDtoResponse> getUser(@PathVariable final String username, final Authentication authentication) {
 
-        return ResponseEntity.ok().body(userService.getUser(username, authentication));
+        return ResponseEntity.ok().body(userService.getUser(username, authentication.getName()));
     }
 
     @GetMapping(value = "/{username}/feedback")
@@ -101,7 +95,7 @@ public class UserController {
     @PutMapping
     public ResponseEntity<UserDtoResponse> editUser(@Valid @RequestBody final UserDtoEdit userDtoEdit, final Authentication authentication) {
 
-        return ResponseEntity.ok().body(userService.updateUser(userDtoEdit, authentication));
+        return ResponseEntity.ok().body(userService.updateUser(userDtoEdit, authentication.getName()));
     }
 
     @DeleteMapping(value = "/{username}/delete")

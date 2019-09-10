@@ -1,24 +1,23 @@
 package com.telerik.carpooling.ServiceTests;
 
-import com.telerik.carpooling.models.*;
-import com.telerik.carpooling.models.dtos.CarDtoRequest;
-import com.telerik.carpooling.models.dtos.CarDtoResponse;
-import com.telerik.carpooling.models.dtos.UserDtoRequest;
-import com.telerik.carpooling.models.dtos.UserDtoResponse;
+import com.telerik.carpooling.enums.UserRole;
+import com.telerik.carpooling.models.Car;
+import com.telerik.carpooling.models.Image;
+import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.ImageRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.ImageServiceImpl;
 import com.telerik.carpooling.services.services.contracts.UserService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.net.URI;
 import java.util.Optional;
@@ -54,14 +53,13 @@ public class ImageServiceTests {
         byte[] content = new byte[20];
         new Random().nextBytes(content);
         this.user = new User("firstName", "lastName", "username1",
-                "email@gmail.com", "0888999888", 3.2, 3.3,
-                "Password!1", "USER", null, "URI", null,
-                null, null, image, car);
+                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
+                4.0);
 
         this.image = new Image("fileName", "picture", content, user, null);
         this.image.setModelId(1L);
 
-        this.car = new Car("model", "brand", "color", 2018, "yes", image, user,null );
+        this.car = new Car("model", "brand", "color", 2018, user);
     }
 
     @Test (expected = NullPointerException.class)
@@ -69,18 +67,18 @@ public class ImageServiceTests {
         //Arrange
 //        final Long authorId = 1L;
 //        final Long userId = authorId;
-        User author = new User();
-        author.setUsername("username1");
+       // User author = new User();
+       // author.setUsername("username1");
         byte[] content = null;
         final String name = "picture.jpg";
         final String type = "image/jpeg";
         URI uri = URI.create("username1");
         MockMultipartFile file = null;
 
-        when(userService.getUser("username1")).thenReturn(author);
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user));
 
         //Act & Assert
-        imageService.storeUserImage(file, author, uri);
+        imageService.storeUserImage(file, "username1");
 
     }
 
@@ -100,14 +98,13 @@ public class ImageServiceTests {
         byte[] content = null;
         final String name = "picture.jpg";
         final String type = "image/jpeg";
-        URI uri = URI.create(author.getAvatarUri());
         MockMultipartFile file = new MockMultipartFile(name, name, type, content);
 
-        when(userService.getUser("username")).thenReturn(author);
-        when(imageService.storeUserImage(file, author, uri)).thenReturn(null);
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user));
+//        when(imageService.storeUserImage(file, "username1")).thenReturn(null);
 
         //Act & Assert
-        imageService.storeUserImage(file, author, uri);
+        imageService.storeUserImage(file, "username1");
 
     }
 

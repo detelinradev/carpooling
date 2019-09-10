@@ -16,7 +16,6 @@ import com.telerik.carpooling.services.services.contracts.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,27 +37,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDtoResponse save(UserDtoRequest userDtoRequest) {
-        User newUser = new User();
         User user = dtoMapper.dtoToObject(userDtoRequest);
-        newUser.setUsername(user.getUsername());
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        newUser.setPassword(bCryptEncoder.encode(user.getPassword()));
-        newUser.setEmail(user.getEmail());
-        newUser.setRole(UserRole.USER);
-        newUser.setIsDeleted(false);
-        newUser.setPhone(user.getPhone());
-        newUser.setRatingAsDriver(0.0);
-        newUser.setRatingAsPassenger(0.0);
-        return dtoMapper.objectToDto(userRepository.save(newUser));
+        user.setPassword(bCryptEncoder.encode(userDtoRequest.getPassword()));
+        user.setRole(UserRole.USER);
+        user.setIsDeleted(false);
+        user.setRatingAsDriver(0.0);
+        user.setRatingAsPassenger(0.0);
+        return dtoMapper.objectToDto(userRepository.save(user));
     }
 
     @Override
-    public UserDtoResponse updateUser(UserDtoEdit userDtoEdit, Authentication authentication) {
+    public UserDtoResponse updateUser(UserDtoEdit userDtoEdit,String loggedUserUsername) {
         User user = dtoMapper.dtoToObject(userDtoEdit);
         String password = user.getPassword();
-        User loggedUser = findUserByUsername(authentication.getName());
-        if (isRole_AdminOrSameUser(authentication, user, loggedUser)) {
+        User loggedUser = findUserByUsername(loggedUserUsername);
+        if (isRole_AdminOrSameUser( user, loggedUser)) {
             user.setRatingAsPassenger(0.0);
             user.setRatingAsDriver(0.0);
             user.setPassword(bCryptEncoder.encode(password));
@@ -68,10 +61,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDtoResponse getUser(String username, Authentication authentication) {
+    public UserDtoResponse getUser(String username, String loggedUserUsername) {
         User user = findUserByUsername(username);
-        User loggedUser = findUserByUsername(authentication.getName());
-        if (isRole_AdminOrSameUser(authentication, user, loggedUser)) {
+        User loggedUser = findUserByUsername(loggedUserUsername);
+        if (isRole_AdminOrSameUser( user, loggedUser)) {
             Double ratingAsPassenger = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
             Double ratingAsDriver = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
             if (ratingAsDriver != null)
@@ -151,11 +144,9 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList()));
     }
 
-    private boolean isRole_AdminOrSameUser(Authentication authentication, User user, User loggedUser) {
+    private boolean isRole_AdminOrSameUser( User user, User loggedUser) {
 
-        return loggedUser.equals(user) || authentication.getAuthorities()
-                .stream()
-                .anyMatch(k -> k.getAuthority().equals("ROLE_ADMIN"));
+        return loggedUser.equals(user) || loggedUser.getRole().equals(UserRole.ADMIN);
     }
 
     private User findUserByUsername(String username) {

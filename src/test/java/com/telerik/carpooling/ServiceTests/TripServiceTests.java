@@ -1,24 +1,21 @@
 package com.telerik.carpooling.ServiceTests;
 
 
-import com.telerik.carpooling.enums.PassengerStatus;
 import com.telerik.carpooling.enums.TripStatus;
+import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.models.*;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
-import com.telerik.carpooling.models.dtos.UserDtoRequest;
+import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
-import com.telerik.carpooling.payload.UploadFileResponse;
 import com.telerik.carpooling.repositories.*;
 import com.telerik.carpooling.services.TripServiceImpl;
-import com.telerik.carpooling.services.services.contracts.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.PageRequest;
+import javassist.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,54 +23,38 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class TripServiceTests {
+
     @Mock
     TripRepository tripRepository;
-//    @Mock
-//    TripService tripService;
 
     @Mock
     UserRepository userRepository;
-    @Mock
-    UserService userService;
 
     @Mock
     CarRepository carRepository;
-    @Mock
-    CarService carService;
 
     @Mock
-    CommentRepository commentRepository;
-    @Mock
-    CommentService commentService;
+    TripUserStatusRepository tripUserStatusRepository;
 
     @Mock
-    ImageRepository imageRepository;
-    @Mock
-    ImageService imageService;
-    @Mock
-    UploadFileResponse uploadFileResponse;
-
-    @Mock
-    RatingService ratingService;
-    @Mock
-    RatingRepository ratingRepository;
+    DtoMapper dtoMapper;
 
 
     private Trip trip;
     private Trip trip2;
+    private TripDtoResponse tripDtoResponse;
+    private TripDtoResponse tripDtoResponse2;
+    private TripDtoRequest tripDtoRequest;
     private User user;
     private Car car;
     private Image image;
     private Image carImage;
-    private Comment comment;
-    private Rating ratingAsDriver;
-    private Rating ratingAsPassenger;
     private List<Trip> trips;
+    private List<TripDtoResponse> tripDtoResponses;
 
 
     @Spy
@@ -82,126 +63,67 @@ public class TripServiceTests {
 
     @Before
     public void SetUp() {
-        MockitoAnnotations.initMocks(this);
+//        MockitoAnnotations.initMocks(this);
         byte[] content = new byte[20];
         new Random().nextBytes(content);
-        this.user = new User("firstName", "lastName", "username1",
-                "email@gmail.com", "0888999888", 3.2, 3.3,
-                "Password!1", "USER", null, "URI", new ArrayList<>(),
-                null, null, image, car);
+        user = new User("username1", "lastName", "username1",
+                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
+                4.0);
+        user.setModelId(1L);
 
-        this.image = new Image("fileName", "picture", content, user);
-        this.image.setModelId(1L);
+        image = new Image("fileName", "picture", content, user);
+        image.setModelId(1L);
 
-        this.car = new Car("model", "brand", "color", 2018, "yes", carImage, user, null);
-        this.carImage = new Image("fileName", "picture", content, car);
+        car = new Car("model", "brand", "color", 2018, user);
+        carImage = new Image("fileName", "picture", content, car);
+        image.setModelId(2L);
 
-        this.image.setModelId(2L);
-        this.trip = new Trip("Sofia",
-                "Burgas",
-                LocalDateTime.of(2019, 10, 5, 10, 22),
-                3,
-                3,
-                3,
-                "message",
-                TripStatus.AVAILABLE,
-                "no",
-                "no",
-                "no",
-                new ArrayList<>(),
-                null,
-                user,
-                car,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+        trip = new Trip("message", LocalDateTime.MAX,
+                "origin", "destination", 3, 5,4,
+                true, true,true,true,TripStatus.AVAILABLE);
+        trip2 = new Trip("message", LocalDateTime.MAX,
+                "origin", "destination", 3, 5,4,
+                true, true,true,true,TripStatus.AVAILABLE);
+        tripDtoResponse = new TripDtoResponse(1L, "message", LocalDateTime.MAX,
+                "origin","destination", 3, TripStatus.AVAILABLE, 4,
+                4, true, true, true,true);
+        tripDtoResponse2 = new TripDtoResponse(2L, "message", LocalDateTime.MAX,
+                "origin","destination", 3, TripStatus.AVAILABLE, 4,
+                4, true, true, true,true);
+        tripDtoRequest = new TripDtoRequest("message", LocalDateTime.MAX,
+                "origin","destination", 3,5,
+                4, true, true, true,true);
         trips = new ArrayList<>();
-        trip2 = new Trip("Sofia", "Burgas", LocalDateTime.now(),
-                3, 3, 3, "message", null, "no", "no", "no", userRepository.findAll(),
-                null, null, null, null, null, null, null, null, null, null);
-        trip.setModelId(1L);
         trips.add(trip);
         trips.add(trip2);
-
-
+        tripDtoResponses = new ArrayList<>();
+        tripDtoResponses.add(tripDtoResponse);
+        tripDtoResponses.add(tripDtoResponse2);
     }
 
     @Test
-    public void find_Should_ReturnAll() {
-        //Act
+    public void create_trip_Should_CreateNewTrip() throws NotFoundException {
+        when(carRepository.findByOwnerAndIsDeletedFalse(user)).thenReturn(Optional.of(car));
+        when(tripRepository.save(trip)).thenReturn(trip);
+        when(dtoMapper.dtoToObject(tripDtoRequest)).thenReturn(trip);
+        when(dtoMapper.objectToDto(trip)).thenReturn(tripDtoResponse);
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.of(user));
 
-        when(userRepository.findFirstByUsername("username1")).thenReturn(user);
-        when(tripService.getTrips(null, null, null, null, null, null, null, null, null, null, null, null)).thenReturn(trips);
-        tripService.getTrips(null, null, null, null, null, null, null, null, null, null, null, null);
-        //Assert
-        Assert.assertEquals(trips, tripService.getTrips(null, null, null, null, null, null, null, null, null, null, null, null));
+        Assert.assertEquals(tripDtoResponse,tripService.createTrip(tripDtoRequest,"username1"));
     }
 
-    @Test
-    public void create_trip_Should_CreateNewTrip() {
+    @Test (expected = NotFoundException.class)
+    public void create_trip_Should_ThrowException_IfNoCarIsPresent() throws NotFoundException {
 
-        //Act
-        user.setCar(car);
-        car.setOwner(user);
-        when(userService.getUser("username1")).thenReturn(user);
-        when(carRepository.findById(1L)).thenReturn(Optional.of(car));
-        //Assert
-        Assert.assertEquals(trip, tripService.createTrip(trip, user));
-    }
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.of(user));
+        when(carRepository.findByOwnerAndIsDeletedFalse(user)).thenReturn(Optional.empty());
+        tripService.createTrip(tripDtoRequest, "username1");
 
-//    @Test (expected = NullPointerException.class)
-//    public void create_trip_Should_ThrowException_IfNoCarIsPresent() {
-//
-//user.setCar(null);
-//
-//        Mockito.when(userService.getUser("username1")).thenReturn(user);
-//        Mockito.when(carService.getCar(user)).thenReturn(null);
-//        tripService.createTrip(trip, user);
-////        verify(tripService, Mockito.times(0)).createTrip(trip, user);
-//
-//    }
-
-    @Test(expected = NullPointerException.class)
-    public void changeTripStatus_Should_ThrowException_When_NotPresent() {
-        when(tripService.changeTripStatus("1", user, TripStatus.BOOKED)).thenReturn(null);
-        tripService.changeTripStatus("1", user, TripStatus.BOOKED);
     }
 
     @Test(expected = NullPointerException.class)
-    public void AddPassenger_Should_ThrowException_When_NotPresent() {
-        when(tripService.addPassenger("1", user)).thenReturn(null);
-
-
-        Assert.assertEquals(trip, tripService.addPassenger("1", user));
+    public void changeTripStatus_Should_ThrowException_When_NotPresent() throws NotFoundException {
+//        when(tripService.changeTripStatus(1L, "username1", TripStatus.BOOKED)).thenReturn(null);
+        tripService.changeTripStatus(1L, "username1", TripStatus.BOOKED);
     }
-//
-//    @Test
-//    public void AddPassenger_Should_When_NotPresent() {
-//        long longid = Long.parseLong("1");
-//        when(tripRepository.findById(longid)).thenReturn(Optional.of(trip));
-//        when(tripRepository.save(trip)).thenReturn(trip);
-//        when(userRepository.save(user)).thenReturn(user);
-////        when(tripService.parseStringToLong("1")).thenReturn(1L);
-//
-//        Assert.assertEquals(trip, tripService.addPassenger("1", user));
-//    }
-
-//    @Test
-//    public void _Should_When_NotPresent() {
-//        User passenger = new User();
-//        passenger.setModelId(1L);
-//        tripService.addPassenger("1", passenger);
-////        when(tripRepository.findById(1L)).thenReturn(Optional.of(trip));
-////        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-//        when(tripService.changePassengerStatus("1", user, "2", PassengerStatus.CANCELED)).thenReturn(trip);
-//        Assert.assertEquals(trip, tripService.changePassengerStatus("1", user, "2", PassengerStatus.CANCELED));
-//    }
-
-
-
-
 }
