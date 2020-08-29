@@ -3,19 +3,27 @@ package com.telerik.carpooling.ServiceTests;
 
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.enums.UserRole;
-import com.telerik.carpooling.models.*;
+import com.telerik.carpooling.exceptions.MyNotFoundException;
+import com.telerik.carpooling.models.Car;
+import com.telerik.carpooling.models.Image;
+import com.telerik.carpooling.models.Trip;
+import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.TripDtoRequest;
 import com.telerik.carpooling.models.dtos.TripDtoResponse;
 import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
-import com.telerik.carpooling.repositories.*;
+import com.telerik.carpooling.repositories.CarRepository;
+import com.telerik.carpooling.repositories.TripRepository;
+import com.telerik.carpooling.repositories.TripUserStatusRepository;
+import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.TripServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import javassist.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class TripServiceTests {
@@ -102,7 +110,7 @@ public class TripServiceTests {
     }
 
     @Test
-    public void create_trip_Should_CreateNewTrip() throws NotFoundException {
+    public void create_trip_Should_CreateNewTrip() throws MyNotFoundException {
         when(carRepository.findByOwnerAndIsDeletedFalse(user)).thenReturn(Optional.of(car));
         when(tripRepository.save(trip)).thenReturn(trip);
         when(dtoMapper.dtoToObject(tripDtoRequest)).thenReturn(trip);
@@ -112,18 +120,12 @@ public class TripServiceTests {
         Assert.assertEquals(tripDtoResponse,tripService.createTrip(tripDtoRequest,"username1"));
     }
 
-    @Test (expected = NotFoundException.class)
-    public void create_trip_Should_ThrowException_IfNoCarIsPresent() throws NotFoundException {
+    @Test (expected = MyNotFoundException.class)
+    public void create_trip_Should_ThrowException_IfNoCarIsPresent() throws MyNotFoundException {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.of(user));
         when(carRepository.findByOwnerAndIsDeletedFalse(user)).thenReturn(Optional.empty());
         tripService.createTrip(tripDtoRequest, "username1");
 
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void changeTripStatus_Should_ThrowException_When_NotPresent() throws NotFoundException {
-//        when(tripService.changeTripStatus(1L, "username1", TripStatus.BOOKED)).thenReturn(null);
-        tripService.changeTripStatus(1L, "username1", TripStatus.BOOKED);
     }
 }

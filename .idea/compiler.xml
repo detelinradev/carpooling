@@ -5,10 +5,15 @@
       <profile default="true" name="Default" enabled="true">
         <outputRelativeToContentRoot value="true" />
       </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.8/448003bc1b234aac04b58e27d7755c12c3ec4236/lombok-1.18.8.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.3.0.Final/cca16314fdcab5cae0c7de8cac1e947b1a8ba79b/mapstruct-processor-1.3.0.Final.jar" />
+        </processorPath>
+        <module name="demo.main" />
+      </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="demo.main" target="1.8" />
-      <module name="demo.test" target="1.8" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8" />
   </component>
 </project>

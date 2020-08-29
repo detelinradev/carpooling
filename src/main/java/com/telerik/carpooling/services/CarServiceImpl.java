@@ -1,6 +1,7 @@
 package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.enums.UserRole;
+import com.telerik.carpooling.exceptions.MyNotFoundException;
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.CarDtoEdit;
@@ -10,10 +11,9 @@ import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
 import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.CarService;
-import javassist.NotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -40,10 +40,10 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public CarDtoResponse getCar(String username) throws NotFoundException {
+    public CarDtoResponse getCar(String username) throws MyNotFoundException {
         User user = findUserByUsername(username);
         return dtoMapper.objectToDto(carRepository.findByOwnerAndIsDeletedFalse(user)
-                .orElseThrow(()->new NotFoundException(user.getUsername() + " does not have a car")));
+                .orElseThrow(()->new MyNotFoundException(user.getUsername() + " does not have a car")));
     }
 
     @Override
@@ -58,9 +58,9 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void deleteCar(Long id, String username) throws NotFoundException {
+    public void deleteCar(Long id, String username) throws MyNotFoundException {
         Car car = carRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Car with this id not found"));
+                .orElseThrow(() -> new MyNotFoundException("Car with this id not found"));
         User carOwner = car.getOwner();
         User loggedUser = findUserByUsername(username);
 

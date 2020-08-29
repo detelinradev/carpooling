@@ -1,11 +1,9 @@
 package com.telerik.carpooling.services.services.contracts;
 
-import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.models.dtos.CarDtoEdit;
 import com.telerik.carpooling.models.dtos.CarDtoRequest;
 import com.telerik.carpooling.models.dtos.CarDtoResponse;
 import javassist.NotFoundException;
-import org.springframework.security.core.Authentication;
 
 public interface CarService {
 

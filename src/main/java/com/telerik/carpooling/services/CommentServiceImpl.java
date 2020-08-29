@@ -1,6 +1,7 @@
 package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.enums.UserRole;
+import com.telerik.carpooling.exceptions.MyNotFoundException;
 import com.telerik.carpooling.models.Comment;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.User;
@@ -11,10 +12,9 @@ import com.telerik.carpooling.repositories.CommentRepository;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.CommentService;
-import javassist.NotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDtoResponse createComment(Long tripID,
-                                            String loggedUserUsername, String message) throws NotFoundException {
+                                            String loggedUserUsername, String message) throws MyNotFoundException {
 
         User user = findUserByUsername(loggedUserUsername);
         Comment comment = new Comment();
@@ -47,7 +47,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Set<CommentDtoResponse> getComments(Long tripId) throws NotFoundException {
+    public Set<CommentDtoResponse> getComments(Long tripId) throws MyNotFoundException {
 
         Trip trip = getTripById(tripId);
 
@@ -55,10 +55,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long id, String username) throws NotFoundException {
+    public void deleteComment(Long id, String username) throws MyNotFoundException {
 
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Comment with this id not found"));
+                .orElseThrow(() -> new MyNotFoundException("Comment with this id not found"));
         User commentAuthor = comment.getAuthor();
         User loggedUser = findUserByUsername(username);
 
@@ -85,9 +85,9 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 
-    private Trip getTripById(Long tripID) throws NotFoundException {
+    private Trip getTripById(Long tripID) throws MyNotFoundException {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
-                .orElseThrow(() -> new NotFoundException("Trip does not exist"));
+                .orElseThrow(() -> new MyNotFoundException("Trip does not exist"));
     }
 
     private boolean isRole_AdminOrSameUser(User user, User loggedUser) {

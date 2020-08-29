@@ -1,11 +1,11 @@
 package com.telerik.carpooling.ServiceTests;
 
+import com.telerik.carpooling.exceptions.MyNotFoundException;
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.User;
 import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.CarServiceImpl;
-import javassist.NotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class CarServiceTests {
     }
 
     @Test
-    public void get_Should_ReturnCar() throws NotFoundException {
+    public void get_Should_ReturnCar() throws MyNotFoundException {
         //Act
         when(carRepository.findById(1L)).thenReturn(Optional.of(car));
 

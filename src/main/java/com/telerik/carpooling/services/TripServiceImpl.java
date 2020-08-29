@@ -3,6 +3,7 @@ package com.telerik.carpooling.services;
 import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.enums.TripStatus;
+import com.telerik.carpooling.exceptions.MyNotFoundException;
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.TripUserStatus;
 import com.telerik.carpooling.models.Trip;
@@ -17,7 +18,7 @@ import com.telerik.carpooling.repositories.TripUserStatusRepository;
 import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.TripService;
-import javassist.NotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
@@ -44,14 +45,14 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripDtoResponse createTrip(TripDtoRequest tripDtoRequest, String loggedUserUsername)
-            throws NotFoundException {
+            throws MyNotFoundException {
 
         User driver = findUserByUsername(loggedUserUsername);
         Trip trip = dtoMapper.dtoToObject(tripDtoRequest);
         Optional<Car> car = carRepository.findByOwnerAndIsDeletedFalse(driver);
 
         if (!car.isPresent())
-            throw new NotFoundException("Request not submitted, please create car first");
+            throw new MyNotFoundException("Request not submitted, please create car first");
 
         trip.setTripStatus(TripStatus.AVAILABLE);
         trip.setIsDeleted(false);
@@ -73,13 +74,13 @@ public class TripServiceImpl implements TripService {
 
         if (tripUserStatusList.stream().filter(j -> j.getUser().equals(user))
                 .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER)))
-            throw new IllegalArgumentException("The user is not the creator of the trip");
+            throw new IllegalArgumentException("The user is not the owner of the trip");
 
         return dtoMapper.objectToDto(tripRepository.save(trip));
     }
 
     @Override
-    public TripDtoResponse getTrip(Long tripID) throws NotFoundException {
+    public TripDtoResponse getTrip(Long tripID) throws MyNotFoundException {
 
         Trip trip = getTripById(tripID);
 
@@ -87,7 +88,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws NotFoundException {
+    public List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws MyNotFoundException {
 
         Trip trip = getTripById(tripId);
         List<TripUserStatus> tripUserStatus = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
@@ -118,7 +119,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void deleteTrip(Long tripId, String loggedUserUsername) throws NotFoundException {
+    public void deleteTrip(Long tripId, String loggedUserUsername) throws MyNotFoundException {
 
         User user = findUserByUsername(loggedUserUsername);
         Trip trip = getTripById(tripId);
@@ -134,7 +135,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void changeTripStatus(Long tripID, String loggedUserUsername, TripStatus tripStatus) throws NotFoundException {
+    public void changeTripStatus(Long tripID, String loggedUserUsername, TripStatus tripStatus) throws MyNotFoundException {
 
         User user = findUserByUsername(loggedUserUsername);
         Trip trip = getTripById(tripID);
@@ -172,7 +173,7 @@ public class TripServiceImpl implements TripService {
     }
 
     public void changeUserStatus(Long tripID, String passengerUsername, String loggedUserUsername,
-                                 UserStatus userStatus) throws NotFoundException {
+                                 UserStatus userStatus) throws MyNotFoundException {
 
         Trip trip = getTripById(tripID);
         User driver = findUserByUsername(loggedUserUsername);
@@ -361,9 +362,9 @@ public class TripServiceImpl implements TripService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 
-    private Trip getTripById(Long tripID) throws NotFoundException {
+    private Trip getTripById(Long tripID) throws MyNotFoundException {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
-                .orElseThrow(() -> new NotFoundException("Trip does not exist"));
+                .orElseThrow(() -> new MyNotFoundException("Trip does not exist"));
     }
 
 }

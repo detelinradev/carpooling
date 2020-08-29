@@ -1,6 +1,7 @@
 package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.enums.UserStatus;
+import com.telerik.carpooling.exceptions.MyNotFoundException;
 import com.telerik.carpooling.models.Rating;
 import com.telerik.carpooling.models.Trip;
 import com.telerik.carpooling.models.TripUserStatus;
@@ -10,7 +11,6 @@ import com.telerik.carpooling.repositories.TripRepository;
 import com.telerik.carpooling.repositories.TripUserStatusRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.RatingService;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,7 +29,7 @@ public class RatingServiceImpl implements RatingService {
     private final TripUserStatusRepository tripUserStatusRepository;
 
     @Override
-    public void rateUser(Long tripID, String loggedUserUsername, String ratedUserUsername, Integer rating) throws NotFoundException {
+    public void rateUser(Long tripID, String loggedUserUsername, String ratedUserUsername, Integer rating) throws MyNotFoundException {
 
         Trip trip = getTripById(tripID);
         User user = findUserByUsername(loggedUserUsername);
@@ -52,9 +52,9 @@ public class RatingServiceImpl implements RatingService {
         }else throw new IllegalArgumentException("Rating value should be between 1 and 5");
     }
 
-    private Trip getTripById(Long tripID) throws NotFoundException {
+    private Trip getTripById(Long tripID) throws MyNotFoundException {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
-                .orElseThrow(() -> new NotFoundException("Trip does not exist"));
+                .orElseThrow(() -> new MyNotFoundException("Trip does not exist"));
     }
 
     private User findUserByUsername(String username) {

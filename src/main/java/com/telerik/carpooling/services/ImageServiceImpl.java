@@ -1,7 +1,7 @@
 package com.telerik.carpooling.services;
 
 import com.telerik.carpooling.exceptions.FileStorageException;
-import com.telerik.carpooling.exceptions.MyFileNotFoundException;
+import com.telerik.carpooling.exceptions.MyNotFoundException;
 import com.telerik.carpooling.models.Car;
 import com.telerik.carpooling.models.Image;
 import com.telerik.carpooling.models.User;
@@ -9,7 +9,6 @@ import com.telerik.carpooling.repositories.CarRepository;
 import com.telerik.carpooling.repositories.ImageRepository;
 import com.telerik.carpooling.repositories.UserRepository;
 import com.telerik.carpooling.services.services.contracts.ImageService;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -73,16 +72,16 @@ public class ImageServiceImpl implements ImageService {
         User user = findUserByUsername(username);
 
         return imageRepository.findByUserAndIsDeletedFalse(user)
-                .orElseThrow(() -> new MyFileNotFoundException("User image not found for user " + user.getUsername()));
+                .orElseThrow(() -> new MyNotFoundException("User image not found for user " + user.getUsername()));
     }
 
     @Override
-    public Image getCarImage(String username) throws NotFoundException {
+    public Image getCarImage(String username) throws MyNotFoundException {
         User user = findUserByUsername(username);
         Car car = findCarByUser(user);
 
         return imageRepository.findByCarAndIsDeletedFalse(car)
-                .orElseThrow(() -> new MyFileNotFoundException("Car image not found for car owned of " + user.getUsername()));
+                .orElseThrow(() -> new MyNotFoundException("Car image not found for car owned of " + user.getUsername()));
     }
 
     @Override
@@ -98,7 +97,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void deleteCarImage(String username, Authentication authentication) throws NotFoundException {
+    public void deleteCarImage(String username, Authentication authentication) throws MyNotFoundException {
         User user = findUserByUsername(username);
         User loggedUser = findUserByUsername(authentication.getName());
         if (isRole_AdminOrSameUser(authentication, user, loggedUser)) {
@@ -113,9 +112,9 @@ public class ImageServiceImpl implements ImageService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 
-    private Car findCarByUser(User user) throws NotFoundException {
+    private Car findCarByUser(User user) throws MyNotFoundException {
         return carRepository.findByOwnerAndIsDeletedFalse(user)
-                .orElseThrow(() -> new NotFoundException("User do not have a car"));
+                .orElseThrow(() -> new MyNotFoundException("User do not have a car"));
     }
 
     private boolean isRole_AdminOrSameUser(Authentication authentication, User user, User loggedUser) {
