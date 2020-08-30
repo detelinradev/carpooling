@@ -18,10 +18,10 @@ class Driver extends Component {
         };
 
         const getDriverAvatarResponse = await
-            fetch("http://localhost:8080/users/avatar/" + this.props.driver.username,{headers})
+            fetch("http://localhost:8080/images/" + this.props.driver.username,{headers})
                 .then(response => response.blob());
 
-        if (getDriverAvatarResponse.size > 100) {
+        if (getDriverAvatarResponse.size > 500) {
             this.setState({
                 src: URL.createObjectURL(getDriverAvatarResponse)
             })

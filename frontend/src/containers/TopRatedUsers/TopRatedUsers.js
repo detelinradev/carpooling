@@ -19,7 +19,7 @@ class TopRatedUsers extends Component {
             'Authorization': this.props.token
         };
         isPassenger = false;
-        axios.get('http://localhost:8080/users/top-rated-users?' + isPassenger, {headers})
+        axios.get('http://localhost:8080/users/top-rated-users?isPassenger=' + isPassenger, {headers})
             .then(response => {
                 if (response) {
                     this.setState({
@@ -30,7 +30,7 @@ class TopRatedUsers extends Component {
             });
 
         isPassenger = true;
-        axios.get('http://localhost:8080/users/top-rated-users?' + isPassenger, {headers})
+        axios.get('http://localhost:8080/users/top-rated-users?isPassenger=' + isPassenger, {headers})
             .then(response => {
                 if (response) {
                     this.setState({

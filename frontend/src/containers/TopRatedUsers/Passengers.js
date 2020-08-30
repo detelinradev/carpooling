@@ -18,10 +18,10 @@ class Passengers extends Component {
         };
 
         const getPassengerAvatarResponse = await
-            fetch("http://localhost:8080/users/avatar/" + this.props.passenger.username,{headers})
+            fetch("http://localhost:8080/images/" + this.props.passenger.username,{headers})
                 .then(response => response.blob());
 
-        if(getPassengerAvatarResponse.size>100){
+        if(getPassengerAvatarResponse.size>500){
             this.setState({
                 src: URL.createObjectURL(getPassengerAvatarResponse)
             })

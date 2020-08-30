@@ -17,7 +17,7 @@ import NewCar from "./NewCar";
 class Profile extends Component {
     state = {
         user: {},
-        car: {},
+        car: null,
         isToggleOn: false,
         edit: false,
         editPass: false,
@@ -34,17 +34,17 @@ class Profile extends Component {
     async componentDidMount() {
 
         const getAvatarResponse = await
-            fetch('http://localhost:8080/users/avatar/'+this.props.username,
+            fetch('http://localhost:8080/images/'+this.props.username,
                 {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
-        if (getAvatarResponse.size > 100) {
+        if (getAvatarResponse.size > 500) {
             this.setState({
                 src: URL.createObjectURL(getAvatarResponse)
             })
         }
 
         const getMeResponse = await
-            axios.get('/users/me', {
+            axios.get('/users/'+this.props.username, {
                 headers:
                     {"Authorization": this.props.token}
             });
@@ -76,7 +76,7 @@ class Profile extends Component {
     }
 
     async getCar() {
-        const getCarResponse = await axios.get('/carMe', {
+        const getCarResponse = await axios.get('/car/'+this.props.username, {
             headers:
                 {"Authorization": this.props.token}
         });
@@ -144,7 +144,7 @@ class Profile extends Component {
             newEmail: '',
             newPhone: ''
         });
-        this.componentDidMount();
+        await this.componentDidMount();
 
     }
 
@@ -163,7 +163,7 @@ class Profile extends Component {
         this.setState({
             editPass: !this.state.editPass
         });
-        this.componentDidMount();
+        await this.componentDidMount();
 
     }
 
@@ -187,13 +187,13 @@ class Profile extends Component {
             return;
         }
 
-        let data = new FormData();
-        data.append('upfile', this.state.file);
+        // let data = new FormData();
+        // data.append('upfile', this.state.file);
 
-        fetch('http://localhost:8080/users/avatar', {
+        fetch('http://localhost:8080/images', {
             method: 'POST',
             headers: {"Authorization": this.props.token},
-            body: data
+            body: this.state.file
         }).then(response => {
             if (!response.response)
                 this.setState({message: 'Successfully uploaded file'});

@@ -23,7 +23,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping()
-    public ResponseEntity<Void> uploadUserImage(@RequestParam("upfile") final MultipartFile file,
+    public ResponseEntity<Void> uploadUserImage(@RequestBody final MultipartFile file,
                                                 final Authentication authentication) {
 
         imageService.storeUserImage(file, authentication.getName());
@@ -39,15 +39,15 @@ public class ImageController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity downloadUserImage(@PathVariable final String username) {
+    public ResponseEntity<byte[]> downloadUserImage(@PathVariable final String username) {
 
-        return ResponseEntity.ok().body(createImageModelInResponseEntity(imageService.getUserImage(username)));
+        return createImageModelInResponseEntity(imageService.getUserImage(username));
     }
 
     @GetMapping("/car/{username}")
-    public ResponseEntity downloadCarImage(@PathVariable final String username) throws NotFoundException {
+    public ResponseEntity<byte[]> downloadCarImage(@PathVariable final String username) throws NotFoundException {
 
-        return ResponseEntity.ok().body(createImageModelInResponseEntity(imageService.getCarImage(username)));
+        return createImageModelInResponseEntity(imageService.getCarImage(username));
     }
 
     @DeleteMapping(value = "/{username}")
@@ -68,7 +68,7 @@ public class ImageController {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.valueOf(dbFile.getContentType()));
         header.setContentLength(dbFile.getData().length);
-        header.set("Content-Disposition", "attachment; filename=" + dbFile.getFileName());
+        header.set("Content-Disposition", "form-data; filename=" + dbFile.getFileName());
         return new ResponseEntity<>(dbFile.getData(), header, HttpStatus.OK);
     }
 }

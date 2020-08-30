@@ -70,7 +70,6 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Image getUserImage(String username) {
         User user = findUserByUsername(username);
-
         return imageRepository.findByUserAndIsDeletedFalse(user)
                 .orElseThrow(() -> new MyNotFoundException("User image not found for user " + user.getUsername()));
     }

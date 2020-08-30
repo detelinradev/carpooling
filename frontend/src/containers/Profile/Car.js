@@ -19,11 +19,11 @@ class Car extends Component {
 
 
         const getCarAvatarResponse = await
-            fetch('http://localhost:8080/users/avatar/car/'+ this.props.username,
+            fetch('http://localhost:8080/images/car/'+ this.props.username,
                 {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
 
-        if (getCarAvatarResponse.size > 100) {
+        if (getCarAvatarResponse.size > 500) {
             this.setState({
                 src: URL.createObjectURL(getCarAvatarResponse)
             })
@@ -53,7 +53,7 @@ class Car extends Component {
         let data = new FormData();
         data.append('upfile', this.state.file);
 
-        fetch('http://localhost:8080/users/avatar/car', {
+        fetch('http://localhost:8080/images/car', {
             method: 'POST',
             headers: {"Authorization": this.props.token},
             body: data

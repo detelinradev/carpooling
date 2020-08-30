@@ -17,11 +17,12 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @Log4j2
+@RequestMapping("car")
 public class CarController {
 
     private final CarService carService;
 
-    @PostMapping(value = "/car")
+    @PostMapping
     public ResponseEntity<CarDtoResponse> createCar(@Valid @RequestBody final CarDtoRequest car,
                                                     Authentication authentication) {
 
@@ -35,7 +36,7 @@ public class CarController {
         return ResponseEntity.ok().body(carService.getCar(username));
     }
 
-    @PutMapping(value = "/car")
+    @PutMapping
     public ResponseEntity<CarDtoResponse> updateCar(@Valid @RequestBody final CarDtoEdit car,
                                                     Authentication authentication) {
 
