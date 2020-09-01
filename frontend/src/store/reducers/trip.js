@@ -10,6 +10,7 @@ const initialState = {
     isMyTrip:null,
     tripCreated:false,
     tripUpdated:'no',
+    tripFull:null,
 };
 
 const createInit = ( state, action ) => {
@@ -19,10 +20,7 @@ const createInit = ( state, action ) => {
 const showFullTrip = ( state, action ) => {
     return updateObject( state, {
         trip: action.trip,
-        tripRole: action.tripRole,
-        passengerStatus: action.passengerStatus,
         isMyTrip: action.isMyTrip,
-        tripStatus:action.tripStatus
     } );
 };
 
@@ -100,8 +98,7 @@ const fetchTripsSuccess = ( state, action ) => {
 
 const fetchTripSuccess = ( state, action ) => {
     return updateObject( state, {
-        trip: action.trip,
-        passengerStatus:action.passengerStatus,
+        tripFull: action.tripFull,
         loading: false
     } );
 };

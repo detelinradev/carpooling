@@ -74,12 +74,6 @@ public class UserController {
 
     }
 
-    @GetMapping(value = "myTrips")
-    public ResponseEntity<List<TripDtoResponse>> getMyTrips(final Authentication authentication) {
-
-        return ResponseEntity.ok().body(userService.getUserOwnTrips(authentication.getName()));
-    }
-
     @GetMapping(value = "/{username}")
     public ResponseEntity<UserDtoResponse> getUser(@PathVariable final String username, final Authentication authentication) {
 

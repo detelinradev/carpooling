@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class TripUserStatusDtoResponse {
 
     private Long modelId;
+    private TripDtoResponse trip;
     private UserDtoResponse user;
     private UserStatus userStatus;
 }

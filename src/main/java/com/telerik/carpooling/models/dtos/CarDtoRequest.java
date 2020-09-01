@@ -3,12 +3,9 @@ package com.telerik.carpooling.models.dtos;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,5 +26,8 @@ public class CarDtoRequest {
 
     @NotNull(message = "Car should have year of first registration")
     private Integer firstRegistration;
+
+    @NotNull(message = "In trip, car should be marked as air-conditioned or not")
+    private Boolean airConditioned;
 
 }

@@ -21,13 +21,9 @@ class MyTrips extends Component {
         const currentUserName = this.props.username;
         let passengerStatus = null;
 
-        let status = Object.entries(trip.passengerStatus).map(key =>
-            (key[0].includes('username=' + currentUserName)) ? passengerStatus = key[1] : null
-        );
-
         let isMyTrip = true;
-        let tripRole = trip.driver.username === currentUserName?'driver':'passenger';
-        this.props.onShowFullTrip(trip, tripRole, passengerStatus, isMyTrip);
+        // let tripRole = trip.driver.username === currentUserName?'driver':'passenger';
+        this.props.onShowFullTrip(trip);
         this.props.history.push('/fullTrip');
     };
 
@@ -36,11 +32,15 @@ class MyTrips extends Component {
         if (!this.props.loading) {
 
 
+
             trips = this.props.trips.map(trip => (
+
                 <Trip
-                    key={trip.id}
+                    key={trip.trip.id}
                     data={trip}
-                    userRole={trip.driver.username === this.props.username?'driver':'passenger'}
+                    trip={trip.trip}
+                    driver={trip.user}
+                    userRole={trip.user.username === this.props.username?'driver':'passenger'}
                     showFullTrip={this.showFullTrip}
                 />
             ))
@@ -73,7 +73,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFetchTrips: (token, formData) => dispatch(actions.fetchTrips(token, formData)),
-        onShowFullTrip: (trip, tripRole, passengerStatus, isMyTrip) => dispatch(actions.showFullTrip(trip, tripRole, passengerStatus, isMyTrip)),
+        onShowFullTrip: (trip) => dispatch(actions.showFullTrip(trip)),
         onDismountMyTrips: () => dispatch(actions.dismountSearch()),
     };
 };

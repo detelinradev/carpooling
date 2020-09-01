@@ -104,8 +104,8 @@ class NewTrip extends Component {
                 elementConfig: {
                     options: [
                         {value: '', displayValue: 'choose option'},
-                        {value: 'yes', displayValue: 'yes'},
-                        {value: 'no', displayValue: 'no'}
+                        {value: 'true', displayValue: 'yes'},
+                        {value: 'false', displayValue: 'no'}
                     ]
                 },
                 value: '',
@@ -117,8 +117,8 @@ class NewTrip extends Component {
                 elementConfig: {
                     options: [
                         {value: '', displayValue: 'choose option'},
-                        {value: 'yes', displayValue: 'yes'},
-                        {value: 'no', displayValue: 'no'}
+                        {value: 'true', displayValue: 'yes'},
+                        {value: 'false', displayValue: 'no'}
                     ]
                 },
                 value: '',
@@ -130,8 +130,21 @@ class NewTrip extends Component {
                 elementConfig: {
                     options: [
                         {value: '', displayValue: 'choose option'},
-                        {value: 'yes', displayValue: 'yes'},
-                        {value: 'no', displayValue: 'no'}
+                        {value: 'true', displayValue: 'yes'},
+                        {value: 'false', displayValue: 'no'}
+                    ]
+                },
+                value: '',
+                validation: {},
+                valid: true
+            },
+            airConditioned: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        {value: '', displayValue: 'choose option'},
+                        {value: 'true', displayValue: 'yes'},
+                        {value: 'false', displayValue: 'no'}
                     ]
                 },
                 value: '',
@@ -189,6 +202,7 @@ class NewTrip extends Component {
         formData["tripDuration"] = this.state.tripDuration;
        formData["departureTime"]= DateTimeFormat(this.state.createForm.departureTime.value, "yyyy-mm-dd HH:MM");
 
+       console.log(formData)
         this.props.onCreateTrip(formData, this.props.token);
         this.setState({
             startDate: new Date(),
@@ -280,8 +294,8 @@ class NewTrip extends Component {
                     elementConfig: {
                         options: [
                             {value: '', displayValue: 'choose option'},
-                            {value: 'yes', displayValue: 'yes'},
-                            {value: 'no', displayValue: 'no'}
+                            {value: 'true', displayValue: 'yes'},
+                            {value: 'false', displayValue: 'no'}
                         ]
                     },
                     value: '',
@@ -293,8 +307,8 @@ class NewTrip extends Component {
                     elementConfig: {
                         options: [
                             {value: '', displayValue: 'choose option'},
-                            {value: 'yes', displayValue: 'yes'},
-                            {value: 'no', displayValue: 'no'}
+                            {value: 'true', displayValue: 'yes'},
+                            {value: 'false', displayValue: 'no'}
                         ]
                     },
                     value: '',
@@ -306,8 +320,21 @@ class NewTrip extends Component {
                     elementConfig: {
                         options: [
                             {value: '', displayValue: 'choose option'},
-                            {value: 'yes', displayValue: 'yes'},
-                            {value: 'no', displayValue: 'no'}
+                            {value: 'true', displayValue: 'yes'},
+                            {value: 'false', displayValue: 'no'}
+                        ]
+                    },
+                    value: '',
+                    validation: {},
+                    valid: true
+                },
+                airConditioned: {
+                    elementType: 'select',
+                    elementConfig: {
+                        options: [
+                            {value: '', displayValue: 'choose option'},
+                            {value: 'true', displayValue: 'yes'},
+                            {value: 'false', displayValue: 'no'}
                         ]
                     },
                     value: '',

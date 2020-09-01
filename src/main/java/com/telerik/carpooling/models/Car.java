@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 @Audited
 public class Car extends MappedAudibleBase {
 
-    public static Car NOT_FOUND = new Car("No value","No value","No value",0,
+    public static Car NOT_FOUND = new Car("No value","No value","No value",0,true,
             User.NOT_FOUND);
 
     @NotNull(message = "Car should have brand")
@@ -36,6 +36,9 @@ public class Car extends MappedAudibleBase {
 
     @NotNull(message = "Car should have year of first registration")
     private Integer firstRegistration;
+
+    @NotNull(message = "In trip, car should be marked as air-conditioned or not")
+    private Boolean airConditioned;
 
     @NotNull(message = "Car should have owner")
     @OneToOne(cascade = CascadeType.ALL)

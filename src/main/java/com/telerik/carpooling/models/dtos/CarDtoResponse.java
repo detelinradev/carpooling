@@ -15,4 +15,5 @@ public class CarDtoResponse {
     private String model;
     private String color;
     private Integer firstRegistration;
+    private Boolean airConditioned;
 }

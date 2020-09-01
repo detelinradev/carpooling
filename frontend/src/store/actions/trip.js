@@ -117,13 +117,10 @@ export const createInit = () => {
     };
 };
 
-export const showFullTrip = ( trip,tripRole,passengerStatus,isMyTrip) => {
+export const showFullTrip = (trip) => {
     return {
         type: actionTypes.SHOW_FULL_TRIP,
-        trip:trip,
-        tripRole:tripRole,
-        passengerStatus:passengerStatus,
-        isMyTrip:isMyTrip,
+        trip: trip
     };
 };
 
@@ -134,10 +131,10 @@ export const fetchTripsSuccess = ( trips ) => {
     };
 };
 
-export const fetchTripSuccess = ( trip,passengerStatus ) => {
+export const fetchTripSuccess = ( tripFull,passengerStatus ) => {
     return {
         type: actionTypes.FETCH_TRIP_SUCCESS,
-        trip: trip,
+        tripFull: tripFull,
         passengerStatus: passengerStatus
     };
 };
@@ -171,12 +168,13 @@ export const fetchTripStart = () => {
 export const fetchTrips = (token,queryParams) => {
     return dispatch => {
 
+
         dispatch(fetchTripsStart());
         const headers = {
             "Content-Type":"application/json",
             'Authorization':token
         };
-        axios.get( 'http://localhost:8080/trips' + queryParams, {headers})
+        axios.get ( "trips" + queryParams, {headers})
             .then( res => {
                 const fetchedTrips = [];
                 for ( let key in res.data ) {
@@ -186,6 +184,7 @@ export const fetchTrips = (token,queryParams) => {
                     } );
                 }
                 dispatch(fetchTripsSuccess(fetchedTrips));
+
             } )
             .catch( err => {
                 dispatch(fetchTripsFail(err));

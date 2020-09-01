@@ -323,16 +323,18 @@ class SearchTrips extends Component {
         this.setState({createForm: updatedCreateForm, formIsValid: formIsValid});
     };
 
-    showFullTrip = (trip) => {
-        const currentUserName = this.props.username;
-        let passengerStatus = null;
+    showFullTrip = (data) => {
+        // const currentUserName = this.props.username;
+        // let passengerStatus = null;
 
-        let status = Object.entries(trip.passengerStatus).map(key =>
-            (key[0].includes('username=' + currentUserName)) ? passengerStatus = key[1] : null
-        );
+        // let status = Object.entries(trip.passengerStatus).map(key =>
+        //     (key[0].includes('username=' + currentUserName)) ? passengerStatus = key[1] : null
+        // );
 
-        let tripRole = trip.driver.username === currentUserName ? 'driver' : 'passenger';
-        this.props.onShowFullTrip(trip, tripRole, passengerStatus);
+        // let tripRole = trip.user.username === currentUserName ? 'driver' : 'passenger';
+        // this.props.onShowFullTrip(trip, driver);
+        this.props.onShowFullTrip(data);
+
         this.props.history.push('/fullTrip');
     };
 
@@ -366,14 +368,13 @@ class SearchTrips extends Component {
         );
         let trips = <Spinner/>;
         if (!this.props.loading) {
+            console.log(this.props.trips)
             trips = this.props.trips.map(trip => (
                 <Trip
-                    key={trip.id}
+                    key={trip.trip.id}
                     data={trip}
-                    driver={trip.driver}
-                    passengers={trip.passengers}
-                    comments={trip.comments}
-                    car={trip.car}
+                    trip={trip.trip}
+                    driver={trip.user}
                     showFullTrip={this.showFullTrip}
                 />
             ))
@@ -401,8 +402,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
     return {
+        onShowFullTrip: (trip) => dispatch(actions.showFullTrip(trip)),
         onFetchTrips: (token, formData) => dispatch(actions.fetchTrips(token, formData)),
-        onShowFullTrip: (trip, tripRole, passengerStatus) => dispatch(actions.showFullTrip(trip, tripRole, passengerStatus)),
         onDismountSearch: () => dispatch(actions.dismountSearch()),
     };
 };

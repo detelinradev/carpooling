@@ -27,15 +27,18 @@ class FullTrip extends Component {
     };
 
     async componentDidMount() {
+
+        this.props.onFetchTrip(this.props.token, this.props.trip.trip.modelId,this.props.passengerStatus);
+
         const getDriverAvatarResponse = await
-            fetch("http://localhost:8080/users/avatar/" + this.props.trip.driver.username, {
+            fetch("http://localhost:8080/images/" + this.props.trip.user.username, {
                 headers:
                     {"Authorization": this.props.token}
             })
                 .then(response => response.blob());
 
 
-        if (getDriverAvatarResponse.size > 100) {
+        if (getDriverAvatarResponse.size > 500) {
             this.setState({
                 src: URL.createObjectURL(getDriverAvatarResponse)
             })
@@ -59,7 +62,7 @@ class FullTrip extends Component {
 
     async getDriverRate() {
         const getMeResponse = await
-            axios.get('/users/' + this.props.trip.driver.username, {
+            axios.get('users/' + this.props.trip.user.username, {
                 headers:
                     {"Authorization": this.props.token}
             });
@@ -73,8 +76,8 @@ class FullTrip extends Component {
 
     async joinTrip() {
         const currentUserName = this.props.username;
-        if (this.props.trip.driver.username !== currentUserName) {
-            axios.post('/trips/' + this.props.trip.modelId + '/passengers?status=PENDING', null, {
+        if (this.props.user.username !== currentUserName) {
+            axios.post('trips/' + this.props.trip.modelId + '/passengers?status=PENDING', null, {
                 headers: {"Authorization": this.props.token}
             }).then(res => {
                 this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'PENDING');
@@ -87,7 +90,7 @@ class FullTrip extends Component {
     }
 
     async deleteTrip() {
-        axios.patch('/trips/' + this.props.trip.modelId + '/delete', null, {
+        axios.patch('trips/' + this.props.trip.modelId + '/delete', null, {
             headers: {"Authorization": this.props.token}
         }).then(res => {
             if(!res.response)
@@ -99,7 +102,7 @@ class FullTrip extends Component {
     }
 
     async changeTripStatus(tripStatus) {
-      await  axios.patch('/trips/' + this.props.trip.modelId + '?status=' + tripStatus, null, {
+      await  axios.patch('trips/' + this.props.trip.modelId + '?status=' + tripStatus, null, {
             headers: {"Authorization": this.props.token}
         }).then(response => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
@@ -114,7 +117,7 @@ class FullTrip extends Component {
 
     async cancelTrip() {
 
-        axios.post('/trips/' + this.props.trip.modelId + '/passengers/?status=CANCELED',
+        axios.post('trips/' + this.props.trip.modelId + '/passengers/?status=CANCELED',
             null, {headers: {"Authorization": this.props.token}
         }).then(res => {
                 this.props.onFetchTrip(this.props.token, this.props.trip.modelId, 'CANCELED');
@@ -133,7 +136,7 @@ class FullTrip extends Component {
 
     async commentHandler(event) {
         event.preventDefault();
-        await axios.post("http://localhost:8080/trips/" + this.props.trip.modelId + "/comments?comment=" + this.state.newComment, null, {
+        await axios.post("trips/" + this.props.trip.modelId + "/comments?comment=" + this.state.newComment, null, {
             headers: {"Authorization": this.props.token}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
@@ -148,7 +151,7 @@ class FullTrip extends Component {
     rateDriverHandler = async (event) => {
         event.preventDefault();
 
-        await axios.post("http://localhost:8080/users/rate/" + this.props.trip.modelId + "/user/" + this.props.trip.driver.username, this.state.newRate, {
+        await axios.post("users/rate/" + this.props.trip.modelId + "/user/" + this.props.user.username, this.state.newRate, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.getDriverRate();
@@ -172,7 +175,7 @@ class FullTrip extends Component {
 
     giveFeedbackHandler = async (event) => {
         event.preventDefault();
-        await axios.post("http://localhost:8080/users/feedback/" + this.props.trip.modelId + "/user/" + this.props.trip.driver.username, this.state.newFeedback, {
+        await axios.post("users/feedback/" + this.props.trip.modelId + "/user/" + this.props.user.username, this.state.newFeedback, {
             headers: {"Authorization": this.props.token, "Content-Type": "application/json"}
         }).then(res => {
             this.props.onFetchTrip(this.props.token, this.props.trip.modelId,this.props.passengerStatus);
@@ -219,25 +222,29 @@ class FullTrip extends Component {
             ));
         }
         let passengers;
-        if (this.props.trip.passengerStatus) {
-            passengers = Object.keys(this.props.trip.passengerStatus).map(passenger => (
-                <Passenger
-                    key={passenger.id}
-                    isMyTrip={this.props.isMyTrip}
-                    userName={passenger.split(', ')[1].substring(9)}
-                    modelId={passenger.split(', ')[0].substring(24)}
-                    firstName={passenger.split(', ')[2].substring(10)}
-                    lastName={passenger.split(', ')[3].substring(9)}
-                    showMessage={this.showMessage}
-                />
-            ));
+        if (this.props.tripFull && this.props.tripFull.length > 1) {
+            passengers = Object.keys(this.props.tripFull).filter(passenger=>passenger.userStatus !== 'DRIVER').map(passenger=> (
+
+                    <Passenger
+                        key={passenger.id}
+                        isMyTrip={this.props.isMyTrip}
+                        userName={passenger.user.split(', ')[1].substring(9)}
+                        modelId={passenger.user.split(', ')[0].substring(24)}
+                        firstName={passenger.user.split(', ')[2].substring(10)}
+                        lastName={passenger.user.split(', ')[3].substring(9)}
+                        showMessage={this.showMessage}
+                    />
+                ));
         }
 
-        let car = (
-            <Car
-                data={this.props.trip.car}
-            />
-        );
+        let car;
+        if(this.props.trip.user) {
+            car = (
+                <Car
+                    driverName={this.props.trip.user.username}
+                />
+            );
+        }
         let joinTripStatus = null;
         if (this.props.tripRole !== 'driver') {
             joinTripStatus = 'Join trip';
@@ -394,12 +401,12 @@ class FullTrip extends Component {
             trip = (
                 <div style={{marginLeft: 100}}>
                     <div
-                        className="proba Trip additional-details hed">{this.props.trip.origin} -> {this.props.trip.destination}</div>
+                        className="proba Trip additional-details hed">{this.props.trip.trip.origin} -> {this.props.trip.trip.destination}</div>
                     <div className="Trip additional-details  cardcont  meta-data-container">
                         <p className="image">
                             <img id="postertest" className='poster' style={{width: 128}}
                                  src={this.state.src} alt={''}/>
-                            <p className="meta-data">{this.props.trip.driver.firstName} {this.props.trip.driver.lastName}</p>
+                            <p className="meta-data">{this.props.trip.user.firstName} {this.props.trip.user.lastName}</p>
                             <span><FaMedal/></span> Rating <span
                             className="header">{
                             <StarRatings
@@ -423,39 +430,39 @@ class FullTrip extends Component {
 
                         <div className="comps" style={{paddingTop: 30}}>
                             Departure Time<p style={{fontSize: 18}}
-                                             className="row-xs-6 info meta-data">{this.props.trip.departureTime}</p>
+                                             className="row-xs-6 info meta-data">{this.props.trip.trip.departureTime}</p>
 
                             <hr/>
-                            Smoking allowed<p className="row-xs-6 info meta-data">{this.props.trip.smokingAllowed}</p>
+                            Smoking allowed<p className="row-xs-6 info meta-data">{this.props.trip.trip.smokingAllowed}</p>
                         </div>
 
                         <div className="comps" style={{paddingTop: 25}}>
-                            Available Seats<p className="row-xs-6 info meta-data">{this.props.trip.availablePlaces}</p>
+                            Available Seats<p className="row-xs-6 info meta-data">{this.props.trip.trip.availablePlaces}</p>
                             <hr/>
                             Air-conditioned<p
-                            className="row-xs-6 info meta-data">{this.props.trip.car.airConditioned}</p>
+                            className="row-xs-6 info meta-data">{this.props.trip.trip.airConditioned}</p>
                         </div>
 
                         <div className="comps" style={{paddingTop: 40}}>
-                            Price<br/><p className="row-xs-6 info meta-data">{this.props.trip.costPerPassenger} leva</p>
+                            Price<br/><p className="row-xs-6 info meta-data">{this.props.trip.trip.costPerPassenger} leva</p>
                             <hr/>
-                            Luggage allowed<p className="row-xs-6 info meta-data">{this.props.trip.luggageAllowed}</p>
+                            Luggage allowed<p className="row-xs-6 info meta-data">{this.props.trip.trip.luggageAllowed}</p>
                         </div>
 
                         <div className="comps" style={{paddingTop: 40}}>
-                            Status<br/><p className="row-xs-6 info meta-data">{this.props.trip.tripStatus}</p>
+                            Status<br/><p className="row-xs-6 info meta-data">{this.props.trip.trip.tripStatus}</p>
                             <hr/>
-                            Pets allowed<p className="row-xs-6 info meta-data">{this.props.trip.petsAllowed}</p>
+                            Pets allowed<p className="row-xs-6 info meta-data">{this.props.trip.trip.petsAllowed}</p>
                         </div>
 
-                        <div className="comps" style={{paddingTop: 40}}>
-                            Car Brand<br/><p className="row-xs-6 info meta-data">{this.props.trip.car.brand}</p>
-                            <hr/>
-                            Car Model<p className="row-xs-6 info meta-data">{this.props.trip.car.model}</p>
-                        </div>
+                        {/*<div className="comps" style={{paddingTop: 40}}>*/}
+                        {/*    Car Brand<br/><p className="row-xs-6 info meta-data">{this.props.trip.car.brand}</p>*/}
+                        {/*    <hr/>*/}
+                        {/*    Car Model<p className="row-xs-6 info meta-data">{this.props.trip.car.model}</p>*/}
+                        {/*</div>*/}
 
                         <div className="comps" style={{paddingTop: 40}}>
-                            Message<p className="row-xs-6 info meta-data">{this.props.trip.message}</p>
+                            Message<p className="row-xs-6 info meta-data">{this.props.trip.trip.message}</p>
                         </div>
                     </div>
                     {car}
@@ -494,6 +501,7 @@ const mapStateToProps = state => {
         loading: state.trip.loading,
         token: state.auth.token,
         trip: state.trip.trip,
+        tripFull: state.tripFull,
         username: state.auth.userId,
         tripRole: state.trip.tripRole,
         passengerStatus: state.trip.passengerStatus,

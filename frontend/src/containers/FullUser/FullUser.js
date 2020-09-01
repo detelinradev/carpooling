@@ -27,27 +27,27 @@ class FullUser extends Component {
     async componentDidMount() {
 
         const getAvatarResponse = await
-            fetch('http://localhost:8080/users/avatar/' + this.props.user.username,
+            fetch('http://localhost:8080/images/' + this.props.user.username,
                 {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
-        if (getAvatarResponse.size > 100) {
+        if (getAvatarResponse.size > 500) {
             this.setState({
                 src: URL.createObjectURL(getAvatarResponse)
             })
         }
 
         const getCarAvatarResponse = await
-            fetch('http://localhost:8080/users/avatar/car/' + this.props.user.username,
+            fetch('http://localhost:8080/images/car/' + this.props.user.username,
                 {headers: {"Authorization": this.props.token}})
                 .then(response => response.blob());
 
-        if (getCarAvatarResponse.size > 100) {
+        if (getCarAvatarResponse.size > 500) {
             this.setState({
                 srcCar: URL.createObjectURL(getCarAvatarResponse)
             })
         }
 
-        const getCarResponse = await axios.get('/car/' + this.props.user.modelId, {
+        const getCarResponse = await axios.get('/car/' + this.props.user.username, {
             headers:
                 {"Authorization": this.props.token}
         });
