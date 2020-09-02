@@ -34,7 +34,7 @@ public class RatingServiceImpl implements RatingService {
         Trip trip = getTripById(tripID);
         User user = findUserByUsername(loggedUserUsername);
         User ratedUser = findUserByUsername(ratedUserUsername);
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip);
         boolean isDriver = tripUserStatusList.stream().filter(j->j.getUser().equals(ratedUser))
                 .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER));
 

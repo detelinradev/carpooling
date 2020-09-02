@@ -49,7 +49,7 @@ public class ImageServiceImpl implements ImageService {
     public void storeCarImage( MultipartFile file,String loggedUserUsername) {
 
         User user = findUserByUsername(loggedUserUsername);
-        Optional<Car> car = carRepository.findByOwnerAndIsDeletedFalse(user);
+        Optional<Car> car = carRepository.findByOwnerAndIsDeletedFalse(loggedUserUsername);
         if(car.isPresent()) {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             try {
@@ -77,7 +77,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Image getCarImage(String username) throws MyNotFoundException {
         User user = findUserByUsername(username);
-        Car car = findCarByUser(user);
+        Car car = findCarByUser(username);
 
         return imageRepository.findByCarAndIsDeletedFalse(car)
                 .orElseThrow(() -> new MyNotFoundException("Car image not found for car owned of " + user.getUsername()));
@@ -111,8 +111,8 @@ public class ImageServiceImpl implements ImageService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 
-    private Car findCarByUser(User user) throws MyNotFoundException {
-        return carRepository.findByOwnerAndIsDeletedFalse(user)
+    private Car findCarByUser(String username) throws MyNotFoundException {
+        return carRepository.findByOwnerAndIsDeletedFalse(username)
                 .orElseThrow(() -> new MyNotFoundException("User do not have a car"));
     }
 

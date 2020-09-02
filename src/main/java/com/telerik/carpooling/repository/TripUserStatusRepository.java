@@ -12,10 +12,24 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, Long> {
 
     List<TripUserStatus> findAllByTripAndUserAndIsDeletedFalse(Trip trip, User user);
+
+    @Query("from TripUserStatus tus where tus.trip.modelId = :modelId and tus.isDeleted = false"
+    )
+    List<TripUserStatus> findAllByTripModelIdAndIsDeletedFalse(@Param(value = "modelId") Long modelId);
+
+    @Query("select tus from TripUserStatus tus " +
+            "where tus.trip.modelId = :modelId " +
+            "and tus.user.username = :username " +
+            "and tus.userStatus = 'F' " +
+            "and tus.isDeleted = false"
+    )
+    Optional<TripUserStatus> findOneByTripModelIdAndUserUsernameAsDriver(@Param(value = "modelId") Long modelId,
+                                                                         @Param(value= "username") String username);
 
     List<TripUserStatus> findAllByUserAndIsDeletedFalse(User user);
 
@@ -24,7 +38,7 @@ public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, 
             "group by user " +
             "order by modified desc"
     )
-    List<TripUserStatus> findAllByTripAndIsDeletedFalse(@Param(value = "trip") Trip trip);
+    List<TripUserStatus> findAllTripsWithDriversByTripAndIsDeletedFalse(@Param(value = "trip") Trip trip);
 
     @Query( "from TripUserStatus " +
             "where userStatus = :userStatus " +

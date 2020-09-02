@@ -35,40 +35,46 @@ public class TripServiceImpl implements TripService {
     private final DtoMapper dtoMapper;
 
     /**
-     *
      * Creates trip from given DTO object, there is check for prerequisite that user have to create a car before
      * be able to create trip, if the criteria is met, trip is created, otherwise checked exception is thrown.
      * It is expected the input to be valid data, based on a validity check in the controller with annotation @Valid
      * and restrains upon the creation of the DTO object. However it that is not the case, validation criteria are as well
      * placed in the actual entity class as well, what would fire an exception if invalid data is provided.
      *
-     * @param tripDtoRequest DTO holding required data for creating Trip object
+     * @param tripDtoRequest     DTO that holds required data for creating Trip object
      * @param loggedUserUsername username of the currently logged user extracted from the security context thread
-     * @return instance of the created object TripDtoResponse
+     * @return instance of the created object as TripDtoResponse
      * @throws MyNotFoundException throws checked exception if the car has not been created upon the creating of the trip
      */
     @Override
-    public TripDtoResponse createTrip(final TripDtoRequest tripDtoRequest,final String loggedUserUsername)
+    public TripDtoResponse createTrip(final TripDtoRequest tripDtoRequest, final String loggedUserUsername)
             throws MyNotFoundException {
 
         carRepository.findByOwnerAndIsDeletedFalse(loggedUserUsername)
-                .orElseThrow(()-> new MyNotFoundException("Request not submitted, please create car first"));
+                .orElseThrow(() -> new MyNotFoundException("Request not submitted, please create car first"));
 
         return dtoMapper.objectToDto(tripRepository.save(dtoMapper.dtoToObject(tripDtoRequest)));
     }
 
+    /**
+     * Updates trip from given DTO object, there is check if the logged user is the owner of the trip, if the
+     * criteria is met, the trip is updated, otherwise IllegalArgumentException exception is thrown as that is not the
+     * expected behavior.
+     * It is expected the input to be valid data, based on a validity check in the controller with annotation @Valid
+     * and restrains upon the creation of the DTO object. However it that is not the case, validation criteria are as well
+     * placed in the actual entity class as well, what would fire an exception if invalid data is provided.
+     *
+     * @param tripDtoEdit DTO that holds required data for updating Trip object
+     * @param loggedUserUsername username of the currently logged user extracted from the security context thread
+     * @return instance of the updated object as TripDtoResponse
+     */
     @Override
-    public TripDtoResponse updateTrip(TripDtoEdit tripDtoEdit, String loggedUserUsername) {
+    public TripDtoResponse updateTrip(final TripDtoEdit tripDtoEdit, final String loggedUserUsername) {
 
-        User user = findUserByUsername(loggedUserUsername);
-        Trip trip = dtoMapper.dtoToObject(tripDtoEdit);
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        tripUserStatusRepository.findOneByTripModelIdAndUserUsernameAsDriver(tripDtoEdit.getModelId(), loggedUserUsername)
+                .orElseThrow(() -> new IllegalArgumentException("The user is not the owner of the trip"));
 
-        if (tripUserStatusList.stream().filter(j -> j.getUser().equals(user))
-                .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER)))
-            throw new IllegalArgumentException("The user is not the owner of the trip");
-
-        return dtoMapper.objectToDto(tripRepository.save(trip));
+        return dtoMapper.objectToDto(tripRepository.save(dtoMapper.dtoToObject(tripDtoEdit)));
     }
 
     @Override
@@ -76,7 +82,7 @@ public class TripServiceImpl implements TripService {
 
         User user = findUserByUsername(loggedUserUsername);
         Trip trip = getTripById(tripId);
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip);
 
         if (tripUserStatusList.stream().filter(j -> j.getUser().equals(user))
                 .noneMatch(k -> (k.getUserStatus().equals(UserStatus.DRIVER)) || user.getRole().equals(UserRole.ADMIN)))
@@ -92,7 +98,7 @@ public class TripServiceImpl implements TripService {
 
         User user = findUserByUsername(loggedUserUsername);
         Trip trip = getTripById(tripID);
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip);
 
         if (tripUserStatusList.stream().filter(j -> j.getUser().equals(user))
                 .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER)))
@@ -132,7 +138,7 @@ public class TripServiceImpl implements TripService {
         User driver = findUserByUsername(loggedUserUsername);
         User passenger = findUserByUsername(passengerUsername);
         List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndUserAndIsDeletedFalse(trip, passenger);
-        List<TripUserStatus> userStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        List<TripUserStatus> userStatusList = tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip);
 
         if (driver.equals(passenger)) {
 
@@ -236,7 +242,7 @@ public class TripServiceImpl implements TripService {
     }
 
     private void changeTripStatusAndAvailableSeatsUp(User user, Trip trip) {
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip);
         if (tripUserStatusList.stream()
                 .filter(k -> k.getUser().equals(user))
                 .anyMatch(k -> k.getUserStatus().equals(UserStatus.ACCEPTED))) {
@@ -265,7 +271,7 @@ public class TripServiceImpl implements TripService {
 
     private void markTripAsBooked(Trip trip) {
 
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip);
         trip.setTripStatus(TripStatus.BOOKED);
         tripUserStatusList.stream()
                 .filter(k -> k.getUserStatus().equals(UserStatus.PENDING))

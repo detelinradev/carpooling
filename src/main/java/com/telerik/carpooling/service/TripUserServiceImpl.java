@@ -54,7 +54,7 @@ public class TripUserServiceImpl implements TripUserStatusService {
     public List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws MyNotFoundException {
 
         Trip trip = getTripById(tripId);
-        List<TripUserStatus> tripUserStatus = tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip);
+        List<TripUserStatus> tripUserStatus = tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip);
 
         return dtoMapper.tripUserStatusToDtoList(tripUserStatus);
     }
@@ -69,7 +69,7 @@ public class TripUserServiceImpl implements TripUserStatusService {
     public List<TripUserStatusDtoResponse> getTripUserStatuses(Long tripID) throws MyNotFoundException {
 
         Trip trip = getTripById(tripID);
-        List<TripUserStatus> result = new ArrayList<>(tripUserStatusRepository.findAllByTripAndIsDeletedFalse(trip).stream()
+        List<TripUserStatus> result = new ArrayList<>(tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip).stream()
                 .collect(Collectors
                         .toMap(TripUserStatus::getUser, Function.identity(), (u1, u2) -> u1))
                 .values());
