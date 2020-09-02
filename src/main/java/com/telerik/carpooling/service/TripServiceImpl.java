@@ -34,22 +34,27 @@ public class TripServiceImpl implements TripService {
     private final TripUserStatusRepository tripUserStatusRepository;
     private final DtoMapper dtoMapper;
 
+    /**
+     *
+     * Creates trip from given DTO object, there is check for prerequisite that user have to create a car before
+     * be able to create trip, if the criteria is met, trip is created, otherwise checked exception is thrown.
+     * It is expected the input to be valid data, based on a validity check in the controller with annotation @Valid
+     * and restrains upon the creation of the DTO object. However it that is not the case, validation criteria are as well
+     * placed in the actual entity class as well, what would fire an exception if invalid data is provided.
+     *
+     * @param tripDtoRequest DTO holding required data for creating Trip object
+     * @param loggedUserUsername username of the currently logged user extracted from the security context thread
+     * @return instance of the created object TripDtoResponse
+     * @throws MyNotFoundException throws checked exception if the car has not been created upon the creating of the trip
+     */
     @Override
-    public TripDtoResponse createTrip(TripDtoRequest tripDtoRequest, String loggedUserUsername)
+    public TripDtoResponse createTrip(final TripDtoRequest tripDtoRequest,final String loggedUserUsername)
             throws MyNotFoundException {
 
-        User driver = findUserByUsername(loggedUserUsername);
-        Trip trip = dtoMapper.dtoToObject(tripDtoRequest);
-
-        carRepository.findByOwnerAndIsDeletedFalse(driver)
+        carRepository.findByOwnerAndIsDeletedFalse(loggedUserUsername)
                 .orElseThrow(()-> new MyNotFoundException("Request not submitted, please create car first"));
 
-        tripRepository.save(trip);
-
-        TripUserStatus tripUserStatus = new TripUserStatus(driver, trip, UserStatus.DRIVER);
-        tripUserStatusRepository.save(tripUserStatus);
-
-        return dtoMapper.objectToDto(trip);
+        return dtoMapper.objectToDto(tripRepository.save(dtoMapper.dtoToObject(tripDtoRequest)));
     }
 
     @Override

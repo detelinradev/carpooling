@@ -41,17 +41,18 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDtoResponse getCar(String username) throws MyNotFoundException {
-        User user = findUserByUsername(username);
-        return dtoMapper.objectToDto(carRepository.findByOwnerAndIsDeletedFalse(user)
-                .orElseThrow(()->new MyNotFoundException(user.getUsername() + " does not have a car")));
+
+        return dtoMapper.objectToDto(carRepository.findByOwnerAndIsDeletedFalse(username)
+                .orElseThrow(()->new MyNotFoundException(username + " does not have a car")));
     }
 
     @Override
     public CarDtoResponse updateCar(CarDtoEdit carDtoEdit, String loggedUserUsername) {
 
         Car car = dtoMapper.dtoToObject(carDtoEdit);
-        User owner = findUserByUsername(loggedUserUsername);
-        Optional<Car> userCar = carRepository.findByOwnerAndIsDeletedFalse(owner);
+
+        Optional<Car> userCar = carRepository.findByOwnerAndIsDeletedFalse(loggedUserUsername);
+
         if(userCar.isPresent() && car.equals(userCar.get())) {
             return dtoMapper.objectToDto(carRepository.save(car));
         }else throw new IllegalArgumentException("You are not authorized to edit the car");
