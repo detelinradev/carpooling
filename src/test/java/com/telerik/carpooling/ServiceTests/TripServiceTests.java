@@ -3,19 +3,19 @@ package com.telerik.carpooling.ServiceTests;
 
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.enums.UserRole;
-import com.telerik.carpooling.exceptions.MyNotFoundException;
-import com.telerik.carpooling.models.Car;
-import com.telerik.carpooling.models.Image;
-import com.telerik.carpooling.models.Trip;
-import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.TripDtoRequest;
-import com.telerik.carpooling.models.dtos.TripDtoResponse;
-import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
-import com.telerik.carpooling.repositories.CarRepository;
-import com.telerik.carpooling.repositories.TripRepository;
-import com.telerik.carpooling.repositories.TripUserStatusRepository;
-import com.telerik.carpooling.repositories.UserRepository;
-import com.telerik.carpooling.services.TripServiceImpl;
+import com.telerik.carpooling.exception.MyNotFoundException;
+import com.telerik.carpooling.model.Car;
+import com.telerik.carpooling.model.Image;
+import com.telerik.carpooling.model.Trip;
+import com.telerik.carpooling.model.User;
+import com.telerik.carpooling.model.dto.TripDtoRequest;
+import com.telerik.carpooling.model.dto.TripDtoResponse;
+import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
+import com.telerik.carpooling.repository.CarRepository;
+import com.telerik.carpooling.repository.TripRepository;
+import com.telerik.carpooling.repository.TripUserStatusRepository;
+import com.telerik.carpooling.repository.UserRepository;
+import com.telerik.carpooling.service.TripServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,7 +82,7 @@ public class TripServiceTests {
         image = new Image("fileName", "picture", content, user);
         image.setModelId(1L);
 
-        car = new Car("model", "brand", "color", 2018, user);
+        car = new Car("model", "brand", "color", 2018,true, user);
         carImage = new Image("fileName", "picture", content, car);
         image.setModelId(2L);
 

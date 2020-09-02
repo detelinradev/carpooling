@@ -2,12 +2,12 @@ package com.telerik.carpooling.ServiceTests;
 
 
 import com.telerik.carpooling.enums.UserRole;
-import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
+import com.telerik.carpooling.model.User;
+import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
 import com.telerik.carpooling.payload.UploadFileResponse;
-import com.telerik.carpooling.repositories.*;
-import com.telerik.carpooling.services.UserServiceImpl;
-import com.telerik.carpooling.services.services.contracts.*;
+import com.telerik.carpooling.repository.*;
+import com.telerik.carpooling.service.UserServiceImpl;
+import com.telerik.carpooling.service.service.contract.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

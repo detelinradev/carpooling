@@ -1,11 +1,11 @@
 package com.telerik.carpooling.ServiceTests;
 
-import com.telerik.carpooling.exceptions.MyNotFoundException;
-import com.telerik.carpooling.models.Car;
-import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.repositories.CarRepository;
-import com.telerik.carpooling.repositories.UserRepository;
-import com.telerik.carpooling.services.CarServiceImpl;
+import com.telerik.carpooling.exception.MyNotFoundException;
+import com.telerik.carpooling.model.Car;
+import com.telerik.carpooling.model.User;
+import com.telerik.carpooling.repository.CarRepository;
+import com.telerik.carpooling.repository.UserRepository;
+import com.telerik.carpooling.service.CarServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

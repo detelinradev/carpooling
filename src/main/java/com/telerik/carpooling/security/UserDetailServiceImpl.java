@@ -1,7 +1,7 @@
 package com.telerik.carpooling.security;
 
-import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.repositories.UserRepository;
+import com.telerik.carpooling.model.User;
+import com.telerik.carpooling.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

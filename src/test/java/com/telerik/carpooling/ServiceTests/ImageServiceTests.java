@@ -1,14 +1,14 @@
 package com.telerik.carpooling.ServiceTests;
 
 import com.telerik.carpooling.enums.UserRole;
-import com.telerik.carpooling.models.Car;
-import com.telerik.carpooling.models.Image;
-import com.telerik.carpooling.models.User;
-import com.telerik.carpooling.models.dtos.dtos.mapper.DtoMapper;
-import com.telerik.carpooling.repositories.ImageRepository;
-import com.telerik.carpooling.repositories.UserRepository;
-import com.telerik.carpooling.services.ImageServiceImpl;
-import com.telerik.carpooling.services.services.contracts.UserService;
+import com.telerik.carpooling.model.Car;
+import com.telerik.carpooling.model.Image;
+import com.telerik.carpooling.model.User;
+import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
+import com.telerik.carpooling.repository.ImageRepository;
+import com.telerik.carpooling.repository.UserRepository;
+import com.telerik.carpooling.service.ImageServiceImpl;
+import com.telerik.carpooling.service.service.contract.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +59,7 @@ public class ImageServiceTests {
         this.image = new Image("fileName", "picture", content, user, null);
         this.image.setModelId(1L);
 
-        this.car = new Car("model", "brand", "color", 2018, user);
+        this.car = new Car("model", "brand", "color", 2018,true, user);
     }
 
     @Test (expected = NullPointerException.class)
