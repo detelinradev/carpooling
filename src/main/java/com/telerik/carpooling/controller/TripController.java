@@ -27,10 +27,12 @@ public class TripController {
     private final TripUserStatusService tripUserStatusService;
 
     @PostMapping
-    public ResponseEntity<TripDtoResponse> createTrip(@RequestBody final TripDtoRequest tripDtoRequest,
+    public ResponseEntity<TripUserStatusDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest tripDtoRequest,
                                                       final Authentication authentication) throws MyNotFoundException {
 
-        return ResponseEntity.ok().body(tripService.createTrip(tripDtoRequest,authentication.getName()));
+        tripService.createTrip(tripDtoRequest,authentication.getName());
+
+        return ResponseEntity.ok().body(tripUserStatusService.createTripUserStatus(tripDtoRequest,authentication.getName()));
     }
 
     @GetMapping

@@ -2,6 +2,7 @@ package com.telerik.carpooling.service.service.contract;
 
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.exception.MyNotFoundException;
+import com.telerik.carpooling.model.dto.TripDtoRequest;
 import com.telerik.carpooling.model.dto.TripUserStatusDtoResponse;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface TripUserStatusService {
     List<TripUserStatusDtoResponse> getTripUserStatuses(Long tripID) throws MyNotFoundException;
 
     List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws MyNotFoundException;
+
+    TripUserStatusDtoResponse createTripUserStatus(TripDtoRequest tripDtoRequest, String loggedUserUsername);
 }
