@@ -17,7 +17,7 @@ public interface TripService {
     void changeUserStatus(Long tripId, String passengerUsername,
                           String loggedUserUsername, UserStatus userStatus) throws MyNotFoundException;
 
-    void changeTripStatus(Long tripId, String loggedUserUsername, TripStatus tripStatus) throws MyNotFoundException;
+    void changeTripStatus(Long tripId, String loggedUserUsername, TripStatus tripStatus);
 
     void deleteTrip(Long tripId, String loggedUserUsername);
 

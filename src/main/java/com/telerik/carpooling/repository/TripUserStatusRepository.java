@@ -18,31 +18,57 @@ public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, 
 
     List<TripUserStatus> findAllByTripAndUserAndIsDeletedFalse(Trip trip, User user);
 
-    @Query("from TripUserStatus tus where tus.trip.modelId = :modelId and tus.isDeleted = false"
+
+    /**
+     * Retrieves all <class>TripUserStatus</class> objects that contains <class>trip</class> with given
+     * <class>modelId</class>
+     *
+     * @param modelId  the <class>modelId</class> of the <class>trip</class> used as parameter
+     * @return List with all <class>TripUserStatus</class> objects that contains <class>Trip</class>
+     * with this <class>modelId</class>
+     */
+    @Query("from TripUserStatus tus " +
+            "where tus.trip.modelId = :modelId " +
+            "and tus.user.isDeleted = false " +
+            "and tus.trip.isDeleted = false "
     )
     List<TripUserStatus> findAllByTripModelIdAndIsDeletedFalse(@Param(value = "modelId") Long modelId);
 
+    /**
+     * Fetches <class>TripUserStatus</class> if there is any with specified <class>trip</class> <class>modelId</class>
+     * and <class>user</class> with <class>userRole</class> DRIVER, or return Optional.Empty.
+     *
+     * @param modelId the <class>modelId</class> of the <class>trip</class> used as parameter
+     * @param username <class>username</class> of the currently logged <class>user</class> extracted
+     *                         from the security context thread
+     * @return optional <class>TripUserStatus</class> object
+     */
     @Query("select tus from TripUserStatus tus " +
             "where tus.trip.modelId = :modelId " +
             "and tus.user.username = :username " +
             "and tus.userStatus = 'F' " +
-            "and tus.isDeleted = false"
+            "and tus.user.isDeleted = false " +
+            "and tus.trip.isDeleted = false "
     )
-    Optional<TripUserStatus> findOneByTripModelIdAndUserUsernameAsDriver(@Param(value = "modelId") Long modelId,
-                                                                         @Param(value= "username") String username);
+    Optional<TripUserStatus> findFirstByTripModelIdAndUserUsernameAsDriver(@Param(value = "modelId") Long modelId,
+                                                                           @Param(value= "username") String username);
 
     List<TripUserStatus> findAllByUserAndIsDeletedFalse(User user);
 
     @Query("from TripUserStatus " +
             "where trip = :trip " +
-            "group by user " +
-            "order by modified desc"
+            "and userStatus = 'F' " +
+            "and trip.isDeleted = false " +
+            "and user.isDeleted = false "
     )
     List<TripUserStatus> findAllTripsWithDriversByTripAndIsDeletedFalse(@Param(value = "trip") Trip trip);
 
     @Query( "from TripUserStatus " +
             "where userStatus = :userStatus " +
-            "and trip in (select tusUser.trip from TripUserStatus tusUser where tusUser.user = :user and isDeleted = false)"
+            "and trip in (select tusUser.trip " +
+                         "from TripUserStatus tusUser " +
+                         "where tusUser.user = :user " +
+                         "and tusUser.trip.isDeleted = false)"
             )
     List<TripUserStatus> findAllUserTripsWithItsDrivers (@Param(value="userStatus") UserStatus userStatus,
                                                          @Param(value ="user")User user);
@@ -58,7 +84,8 @@ public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, 
             "(:availablePlaces is null or t.trip.availablePlaces >= :availablePlaces) and" +
             "(:smoking is null or t.trip.smokingAllowed = :smoking) and" +
             "(:pets is null or t.trip.petsAllowed = :pets) and" +
-            "(t.isDeleted = false) and" +
+            "(t.trip.isDeleted = false) and" +
+            "(t.user.isDeleted = false) and" +
             "(t.userStatus = 'F') and" +
             "(:luggage is null or t.trip.luggageAllowed = :luggage) and" +
             "(:airConditioned is null or :airConditioned ='' or t.trip.airConditioned = :airConditioned)"
@@ -87,11 +114,12 @@ public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, 
      * @return optional <class>TripUserStatus</class> object
      */
     @Query("select tus from TripUserStatus tus " +
-            "where tus.trip.modelId = :modelId " +
+            "where tus.trip.modelId = :tripId " +
             "and tus.user.username = :username " +
             "and tus.userStatus = 'F' or tus.user.role = 'A' " +
-            "and tus.isDeleted = false"
+            "and tus.user.isDeleted = false " +
+            "and tus.trip.isDeleted = false "
     )
     Optional<TripUserStatus> findOneByTripModelIdAndUserAsDriverOrAdmin(@Param(value = "tripId") Long tripId,
-                                                                        @Param(value = "loggedUserUsername") String loggedUserUsername);
+                                                                        @Param(value = "username") String loggedUserUsername);
 }
