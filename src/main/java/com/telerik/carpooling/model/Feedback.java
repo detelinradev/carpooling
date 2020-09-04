@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OptimisticLockType;
+import org.hibernate.annotations.OptimisticLocking;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +20,8 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@OptimisticLocking(type = OptimisticLockType.DIRTY)
+@DynamicUpdate
 public class Feedback extends MappedAudibleBase {
 
     public static Feedback NOT_FOUND = new Feedback(User.NOT_FOUND,User.NOT_FOUND,"No value",true);

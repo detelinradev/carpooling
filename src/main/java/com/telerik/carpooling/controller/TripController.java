@@ -30,9 +30,11 @@ public class TripController {
     public ResponseEntity<TripUserStatusDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest tripDtoRequest,
                                                       final Authentication authentication) throws MyNotFoundException {
 
-        tripService.createTrip(tripDtoRequest,authentication.getName());
+        ;
 
-        return ResponseEntity.ok().body(tripUserStatusService.createTripUserStatus(tripDtoRequest,authentication.getName()));
+        return ResponseEntity.ok()
+                .body(tripUserStatusService.createTripUserStatus(
+                        tripService.createTrip(tripDtoRequest,authentication.getName()),authentication.getName()));
     }
 
     @GetMapping
@@ -109,7 +111,7 @@ public class TripController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping(value = "/{tripId}/delete")
+    @PatchMapping(value = "/{tripId}/delete")
     public ResponseEntity<Void> deleteTrip(@PathVariable final Long tripId,
                                         final Authentication authentication) throws MyNotFoundException {
 

@@ -6,7 +6,6 @@ import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.TripUserStatus;
 import com.telerik.carpooling.model.User;
-import com.telerik.carpooling.model.dto.TripDtoRequest;
 import com.telerik.carpooling.model.dto.TripUserStatusDtoResponse;
 import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
 import com.telerik.carpooling.repository.TripRepository;
@@ -39,10 +38,9 @@ public class TripUserServiceImpl implements TripUserStatusService {
     private final DtoMapper dtoMapper;
 
     @Override
-    public TripUserStatusDtoResponse createTripUserStatus(TripDtoRequest tripDtoRequest, String loggedUserUsername) {
+    public TripUserStatusDtoResponse createTripUserStatus(Trip trip, String loggedUserUsername) {
 
         User driver = findUserByUsername(loggedUserUsername);
-        Trip trip = dtoMapper.dtoToObject(tripDtoRequest);
 
         TripUserStatus tripUserStatus = new TripUserStatus(driver, trip, UserStatus.DRIVER);
         tripUserStatusRepository.save(tripUserStatus);
@@ -98,6 +96,9 @@ public class TripUserServiceImpl implements TripUserStatusService {
 
         return dtoMapper.tripUserStatusToDtoList(tripUserStatuses);
     }
+
+
+
     private User findUserByUsername(String username) {
         return userRepository.findByUsernameAndIsDeletedFalse(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));

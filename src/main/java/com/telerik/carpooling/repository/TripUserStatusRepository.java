@@ -75,4 +75,23 @@ public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, 
                                            @Param(value = "airConditioned") Boolean airConditioned,
                                            Pageable page
     );
+
+    /**
+     * Finds <class>TripUserStatus</class> by criteria <class>trip</class> <class>modelId</class>,
+     * <class>userStatus</class> - <class>driver</class> or <class>userRole</class> - <class>admin</class> and
+     * <class>isDeleted</class> is <class>false</class>.
+     *
+     * @param tripId the <class>modelId</class> of the <class>trip</class>
+     * @param loggedUserUsername <class>username</class> of the currently logged <class>user</class> extracted
+     *                           from the security context thread
+     * @return optional <class>TripUserStatus</class> object
+     */
+    @Query("select tus from TripUserStatus tus " +
+            "where tus.trip.modelId = :modelId " +
+            "and tus.user.username = :username " +
+            "and tus.userStatus = 'F' or tus.user.role = 'A' " +
+            "and tus.isDeleted = false"
+    )
+    Optional<TripUserStatus> findOneByTripModelIdAndUserAsDriverOrAdmin(@Param(value = "tripId") Long tripId,
+                                                                        @Param(value = "loggedUserUsername") String loggedUserUsername);
 }

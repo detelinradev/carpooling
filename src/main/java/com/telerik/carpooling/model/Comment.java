@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OptimisticLockType;
+import org.hibernate.annotations.OptimisticLocking;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
@@ -16,6 +19,8 @@ import javax.validation.constraints.Size;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@OptimisticLocking(type = OptimisticLockType.DIRTY)
+@DynamicUpdate
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

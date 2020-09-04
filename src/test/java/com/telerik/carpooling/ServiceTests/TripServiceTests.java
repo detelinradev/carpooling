@@ -111,7 +111,7 @@ public class TripServiceTests {
 
     @Test
     public void create_trip_Should_CreateNewTrip() throws MyNotFoundException {
-        when(carRepository.findByOwnerAndIsDeletedFalse(user)).thenReturn(Optional.of(car));
+        when(carRepository.findByOwnerAndIsDeletedFalse(user.getUsername())).thenReturn(Optional.of(car));
         when(tripRepository.save(trip)).thenReturn(trip);
         when(dtoMapper.dtoToObject(tripDtoRequest)).thenReturn(trip);
         when(dtoMapper.objectToDto(trip)).thenReturn(tripDtoResponse);
@@ -124,7 +124,7 @@ public class TripServiceTests {
     public void create_trip_Should_ThrowException_IfNoCarIsPresent() throws MyNotFoundException {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.of(user));
-        when(carRepository.findByOwnerAndIsDeletedFalse(user)).thenReturn(Optional.empty());
+        when(carRepository.findByOwnerAndIsDeletedFalse(user.getUsername())).thenReturn(Optional.empty());
         tripService.createTrip(tripDtoRequest, "username1");
 
     }

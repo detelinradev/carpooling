@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.model.base.MappedAudibleBase;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OptimisticLockType;
+import org.hibernate.annotations.OptimisticLocking;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -15,6 +18,8 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @Data
 @Entity
+@OptimisticLocking(type = OptimisticLockType.DIRTY)
+@DynamicUpdate
 @Audited
 public class User extends MappedAudibleBase {
 
