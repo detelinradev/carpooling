@@ -107,7 +107,7 @@ public class TripController {
                                                    final Authentication authentication,
                                                    @RequestParam(value = "status") UserStatus userStatus) throws MyNotFoundException {
 
-        tripService.changeUserStatus(tripId,passengerUsername,authentication.getName(), userStatus);
+        tripUserStatusService.changeUserStatus(tripId,passengerUsername,authentication.getName(), userStatus);
         return ResponseEntity.ok().build();
     }
 

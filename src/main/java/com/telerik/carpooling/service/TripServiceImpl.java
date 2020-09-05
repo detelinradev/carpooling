@@ -5,7 +5,6 @@ import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.TripUserStatus;
-import com.telerik.carpooling.model.User;
 import com.telerik.carpooling.model.base.MappedAudibleBase;
 import com.telerik.carpooling.model.dto.TripDtoEdit;
 import com.telerik.carpooling.model.dto.TripDtoRequest;
@@ -18,7 +17,6 @@ import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.service.contract.TripService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -132,7 +130,7 @@ public class TripServiceImpl implements TripService {
     /**
      * Changes <class>TripStatus</class> of this <class>trip</class> which <class>modelId</class> is passed as parameter.
      * <p>
-     * In case the logged user is not the owner of the trip exception is thrown with relevant message.
+     * In case the logged <class>user</class> is not the owner of the <class>trip</class> exception is thrown with relevant message.
      * <p>
      * Various stages should be logically connected and if case there is mismatch exception is thrown with matching
      * message.
@@ -178,138 +176,6 @@ public class TripServiceImpl implements TripService {
             default:
                 throw new IllegalArgumentException("Trip status not found");
         }
-    }
-
-    public void changeUserStatus(Long tripID, String passengerUsername, String loggedUserUsername,
-                                 UserStatus userStatus) throws MyNotFoundException {
-
-        Trip trip = getTripById(tripID);
-        User driver = findUserByUsername(loggedUserUsername);
-        User passenger = findUserByUsername(passengerUsername);
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByTripAndUserAndIsDeletedFalse(trip, passenger);
-        List<TripUserStatus> userStatusList = tripUserStatusRepository.findAllByTripModelIdAndIsDeletedFalse(tripID);
-
-        if (loggedUserUsername.equals(passengerUsername)) {
-
-            if (userStatus.equals(UserStatus.PENDING)) {
-
-                addPassenger(trip, passenger);
-
-            } else if (userStatus.equals(UserStatus.CANCELED)) {
-
-                cancelPassenger(passenger, trip, userStatusList);
-
-            } else throw new IllegalArgumentException("Passenger status not found");
-
-        } else {
-
-            if (userStatusList.stream().filter(j -> j.getUser().equals(driver))
-                    .noneMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER))
-                    || userStatusList.stream().noneMatch(k -> k.getUser().equals(passenger)))
-                throw new IllegalArgumentException("Driver and/or passenger does not belong to this trip");
-            switch (userStatus) {
-                case ABSENT:
-                    if (!trip.getTripStatus().equals(TripStatus.AVAILABLE)
-                            || !trip.getTripStatus().equals(TripStatus.BOOKED))
-                        throw new IllegalArgumentException("Trip should be AVAILABLE or BOOKED to mark passenger" +
-                                " as ABSENT");
-                    if (tripUserStatusList.stream()
-                            .noneMatch(k -> k.getUserStatus().equals(UserStatus.ACCEPTED)))
-                        throw new IllegalArgumentException("Passenger should be with passenger status ACCEPTED " +
-                                "to be marked as ABSENT");
-
-                    absentPassenger(passenger, trip, userStatusList);
-
-                    break;
-                case ACCEPTED:
-                    if (!trip.getTripStatus().equals(TripStatus.AVAILABLE))
-                        throw new IllegalArgumentException("Trip should be AVAILABLE to accept passenger");
-                    if (userStatusList.stream()
-                            .filter(k -> k.getUser().equals(passenger))
-                            .noneMatch(k -> k.getUserStatus().equals(UserStatus.PENDING)))
-                        throw new IllegalArgumentException("Passenger should be with passenger status PENDING " +
-                                "to be marked as ACCEPTED");
-
-                    acceptPassenger(passenger, trip);
-
-                    break;
-                case REJECTED:
-                    rejectPassenger(passenger, trip, userStatusList);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Passenger status not found");
-
-            }
-        }
-
-    }
-
-    private void addPassenger(Trip trip, User passenger) {
-
-        if (!trip.getTripStatus().equals(TripStatus.AVAILABLE))
-            throw new IllegalArgumentException("Passenger can not be added to the trip when trip status is not available");
-
-        TripUserStatus tripUserStatus = new TripUserStatus(passenger, trip, UserStatus.PENDING);
-
-        tripUserStatusRepository.save(tripUserStatus);
-    }
-
-    private void cancelPassenger(User user, Trip trip, List<TripUserStatus> userStatusList) {
-
-        if (userStatusList.stream().noneMatch(k -> k.getUser().equals(user)))
-            throw new IllegalArgumentException("Current user does not participate in this trip");
-
-        changeTripStatusAndAvailableSeatsUp(user, trip, userStatusList);
-
-        TripUserStatus tripUserStatus = new TripUserStatus(user, trip, UserStatus.CANCELED);
-
-        tripUserStatusRepository.save(tripUserStatus);
-    }
-
-    private void rejectPassenger(User passenger, Trip trip, List<TripUserStatus> userStatusList) {
-
-        changeTripStatusAndAvailableSeatsUp(passenger, trip, userStatusList);
-        TripUserStatus tripUserStatus = new TripUserStatus(passenger, trip, UserStatus.REJECTED);
-        tripUserStatus.setIsDeleted(false);
-        tripUserStatusRepository.save(tripUserStatus);
-
-    }
-
-    private void absentPassenger(User passenger, Trip trip, List<TripUserStatus> userStatusList) {
-
-        changeTripStatusAndAvailableSeatsUp(passenger, trip, userStatusList);
-
-        TripUserStatus tripUserStatus = new TripUserStatus(passenger, trip, UserStatus.ABSENT);
-        tripUserStatus.setIsDeleted(false);
-        tripUserStatusRepository.save(tripUserStatus);
-    }
-
-    private void changeTripStatusAndAvailableSeatsUp(User user, Trip trip, List<TripUserStatus> userStatusList) {
-
-        if (userStatusList.stream()
-                .filter(k -> k.getUser().equals(user))
-                .anyMatch(k -> k.getUserStatus().equals(UserStatus.ACCEPTED))) {
-            trip.setAvailablePlaces(trip.getAvailablePlaces() + 1);
-
-            if (trip.getTripStatus().equals(TripStatus.BOOKED)) {
-                trip.setTripStatus(TripStatus.AVAILABLE);
-            }
-        }
-    }
-
-    private void acceptPassenger(User passenger, Trip trip) {
-
-        TripUserStatus tripUserStatus = new TripUserStatus(passenger, trip, UserStatus.ACCEPTED);
-        tripUserStatus.setIsDeleted(false);
-
-        trip.setAvailablePlaces(trip.getAvailablePlaces() - 1);
-
-        if (trip.getAvailablePlaces() == 0) {
-            trip.setTripStatus(TripStatus.BOOKED);
-        }
-
-        tripUserStatusRepository.save(tripUserStatus);
-        tripRepository.save(trip);
     }
 
     private void markTripAsBooked(Trip trip) {
@@ -376,11 +242,6 @@ public class TripServiceImpl implements TripService {
 
         trip.setTripStatus(TripStatus.CANCELED);
         tripRepository.save(trip);
-    }
-
-    private User findUserByUsername(String username) {
-        return userRepository.findByUsernameAndIsDeletedFalse(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 
     private Trip getTripById(Long tripId) {
