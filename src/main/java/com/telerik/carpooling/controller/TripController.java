@@ -30,39 +30,25 @@ public class TripController {
     public ResponseEntity<TripUserStatusDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest tripDtoRequest,
                                                       final Authentication authentication) throws MyNotFoundException {
 
-        ;
-
         return ResponseEntity.ok()
                 .body(tripUserStatusService.createTripUserStatus(
                         tripService.createTrip(tripDtoRequest,authentication.getName()),authentication.getName()));
     }
 
     @GetMapping
-    public ResponseEntity<List<TripUserStatusDtoResponse>> getAllTripUserStatuses(@RequestParam(value = "_end", required = false)
-                                            final Integer pageNumber,
-                                                          @RequestParam(value = "_start", required = false)
-                                             final Integer pageSize,
-                                                          @RequestParam(value = "status", required = false)
-                                            final TripStatus tripStatus,
-                                                          @RequestParam(value = "origin", required = false)
-                                            final  String origin,
-                                                          @RequestParam(value = "destination", required = false)
-                                             final String destination,
-                                                          @RequestParam(value = "earliestDepartureTime", required = false)
-                                             final String earliestDepartureTime,
-                                                          @RequestParam(value = "latestDepartureTime", required = false)
-                                             final String latestDepartureTime,
-                                                          @RequestParam(value = "availablePlaces", required = false)
-                                            final Integer availablePlaces,
-                                                          @RequestParam(value = "smokingAllowed", required = false)
-                                             final Boolean smoking,
-                                                          @RequestParam(value = "petsAllowed", required = false)
-                                             final Boolean pets,
-                                                          @RequestParam(value = "luggageAllowed", required = false)
-                                             final Boolean luggage,
-                                                          @RequestParam(value = "airConditioned", required = false)
-                                             final Boolean airConditioned)
-
+    public ResponseEntity<List<TripUserStatusDtoResponse>> getAllTripUserStatuses(
+            @RequestParam(value = "_end", required = false) final Integer pageNumber,
+            @RequestParam(value = "_start", required = false) final Integer pageSize,
+            @RequestParam(value = "status", required = false) final TripStatus tripStatus,
+            @RequestParam(value = "origin", required = false) final  String origin,
+            @RequestParam(value = "destination", required = false) final String destination,
+            @RequestParam(value = "earliestDepartureTime", required = false) final String earliestDepartureTime,
+            @RequestParam(value = "latestDepartureTime", required = false) final String latestDepartureTime,
+            @RequestParam(value = "availablePlaces", required = false) final Integer availablePlaces,
+            @RequestParam(value = "smokingAllowed", required = false) final Boolean smoking,
+            @RequestParam(value = "petsAllowed", required = false) final Boolean pets,
+            @RequestParam(value = "luggageAllowed", required = false) final Boolean luggage,
+            @RequestParam(value = "airConditioned", required = false) final Boolean airConditioned)
     {
         return ResponseEntity.ok().body(tripUserStatusService.getAllTripUserStatuses(pageNumber, pageSize, tripStatus, origin, destination,
                 earliestDepartureTime, latestDepartureTime, availablePlaces, smoking, pets, luggage,airConditioned));
