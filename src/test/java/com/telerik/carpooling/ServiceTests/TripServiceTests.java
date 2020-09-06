@@ -3,18 +3,19 @@ package com.telerik.carpooling.ServiceTests;
 
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.enums.UserRole;
+import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Car;
-import com.telerik.carpooling.model.Image;
 import com.telerik.carpooling.model.Trip;
+import com.telerik.carpooling.model.TripUserStatus;
 import com.telerik.carpooling.model.User;
+import com.telerik.carpooling.model.dto.TripDtoEdit;
 import com.telerik.carpooling.model.dto.TripDtoRequest;
 import com.telerik.carpooling.model.dto.TripDtoResponse;
 import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
 import com.telerik.carpooling.repository.CarRepository;
 import com.telerik.carpooling.repository.TripRepository;
 import com.telerik.carpooling.repository.TripUserStatusRepository;
-import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.TripServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,12 +27,10 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
-import java.util.Random;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class TripServiceTests {
@@ -40,7 +39,7 @@ public class TripServiceTests {
     TripRepository tripRepository;
 
     @Mock
-    UserRepository userRepository;
+    TripStatus tripStatus;
 
     @Mock
     CarRepository carRepository;
@@ -53,16 +52,12 @@ public class TripServiceTests {
 
 
     private Trip trip;
-    private Trip trip2;
     private TripDtoResponse tripDtoResponse;
-    private TripDtoResponse tripDtoResponse2;
+    private TripDtoEdit tripDtoEdit;
     private TripDtoRequest tripDtoRequest;
+    private TripUserStatus tripUserStatus;
     private User user;
     private Car car;
-    private Image image;
-    private Image carImage;
-    private List<Trip> trips;
-    private List<TripDtoResponse> tripDtoResponses;
 
 
     @Spy
@@ -71,61 +66,157 @@ public class TripServiceTests {
 
     @Before
     public void SetUp() {
-//        MockitoAnnotations.initMocks(this);
-        byte[] content = new byte[20];
-        new Random().nextBytes(content);
+
         user = new User("username1", "lastName", "username1",
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
                 4.0);
         user.setModelId(1L);
-
-        image = new Image("fileName", "picture", content, user);
-        image.setModelId(1L);
-
         car = new Car("model", "brand", "color", 2018,true, user);
-        carImage = new Image("fileName", "picture", content, car);
-        image.setModelId(2L);
-
         trip = new Trip("message", LocalDateTime.MAX,
                 "origin", "destination", 3, 5,4,
                 true, true,true,true,TripStatus.AVAILABLE);
-        trip2 = new Trip("message", LocalDateTime.MAX,
-                "origin", "destination", 3, 5,4,
-                true, true,true,true,TripStatus.AVAILABLE);
+        trip.setModelId(1L);
         tripDtoResponse = new TripDtoResponse(1L, "message", LocalDateTime.MAX,
-                "origin","destination", 3, TripStatus.AVAILABLE, 4,
-                4, true, true, true,true);
-        tripDtoResponse2 = new TripDtoResponse(2L, "message", LocalDateTime.MAX,
                 "origin","destination", 3, TripStatus.AVAILABLE, 4,
                 4, true, true, true,true);
         tripDtoRequest = new TripDtoRequest("message", LocalDateTime.MAX,
                 "origin","destination", 3,5,
                 4, true, true, true,true);
-        trips = new ArrayList<>();
-        trips.add(trip);
-        trips.add(trip2);
-        tripDtoResponses = new ArrayList<>();
-        tripDtoResponses.add(tripDtoResponse);
-        tripDtoResponses.add(tripDtoResponse2);
+        tripDtoEdit = new TripDtoEdit(1L, "message", LocalDateTime.MAX,
+                "origin","destination", 3, 4,
+                4, true, true, true,true);
+        tripUserStatus = new TripUserStatus(user,trip, UserStatus.PENDING);
     }
 
     @Test
-    public void create_trip_Should_CreateNewTrip() throws MyNotFoundException {
+    public void create_trip_Should_CreateNewTrip_WhenCarIsPresent() throws MyNotFoundException {
+
         when(carRepository.findByOwnerAndIsDeletedFalse(user.getUsername())).thenReturn(Optional.of(car));
         when(tripRepository.save(trip)).thenReturn(trip);
         when(dtoMapper.dtoToObject(tripDtoRequest)).thenReturn(trip);
-        when(dtoMapper.objectToDto(trip)).thenReturn(tripDtoResponse);
-        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.of(user));
 
-        Assert.assertEquals(tripDtoResponse,tripService.createTrip(tripDtoRequest,"username1"));
+        Assert.assertEquals(trip,tripService.createTrip(tripDtoRequest,"username1"));
     }
 
     @Test (expected = MyNotFoundException.class)
     public void create_trip_Should_ThrowException_IfNoCarIsPresent() throws MyNotFoundException {
 
-        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.of(user));
         when(carRepository.findByOwnerAndIsDeletedFalse(user.getUsername())).thenReturn(Optional.empty());
-        tripService.createTrip(tripDtoRequest, "username1");
 
+        tripService.createTrip(tripDtoRequest, "username1");
+    }
+
+    @Test
+    public void update_trip_Should_updateTrip_WhenLoggedUserIsOwnerOfTrip() throws MyNotFoundException {
+
+        when(tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username1"))
+        .thenReturn(Optional.ofNullable(tripUserStatus));
+        when(dtoMapper.dtoToObject(tripDtoEdit)).thenReturn(trip);
+        when(dtoMapper.objectToDto(trip)).thenReturn(tripDtoResponse);
+        when(tripRepository.save(trip)).thenReturn(trip);
+
+        Assert.assertEquals(tripDtoResponse,tripService.updateTrip(tripDtoEdit,"username1"));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void update_trip_Should_ThrowException_IfLoggedUserIsNotOwnerOfTrip() {
+
+        when(tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username1"))
+                .thenReturn(Optional.empty());
+
+        tripService.updateTrip(tripDtoEdit, "username1");
+    }
+
+    @Test
+    public void delete_trip_Should_deleteTrip_WhenLoggedUserIsOwnerOfTripOrAdminAndTripModelIdIsValid() {
+
+        when(tripUserStatusRepository.findOneByTripModelIdAndUserAsDriverOrAdmin(1L,"username1"))
+                .thenReturn(Optional.ofNullable(tripUserStatus));
+        when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
+        when(tripRepository.save(trip)).thenReturn(trip);
+
+        tripService.deleteTrip(1L,"username1");
+
+        verify(tripUserStatusRepository,times(1))
+                .findOneByTripModelIdAndUserAsDriverOrAdmin(1L,"username1");
+        verify(tripRepository,times(1)).save(trip);
+        verify(tripRepository,times(1)).findByModelIdAndIsDeletedFalse(1L);
+
+        verifyNoMoreInteractions(tripRepository,tripUserStatusRepository);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void delete_trip_Should_ThrowException_IfLoggedUserIsNotOwnerOfTrip() {
+
+        when(tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username1"))
+                .thenReturn(Optional.empty());
+
+        tripService.deleteTrip(1L, "username1");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void delete_trip_Should_ThrowException_IfTripModelIdIsNotValid() {
+
+        when(tripRepository.findByModelIdAndIsDeletedFalse(1L))
+                .thenReturn(Optional.empty());
+
+        tripService.deleteTrip(1L, "username1");
+    }
+
+    @Test
+    public void change_TripStatus_Should_changeTripStatus_WhenLoggedUserIsOwnerOfTripAndTripModelIdIsValid() {
+
+        when(tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username1"))
+                .thenReturn(Optional.ofNullable(tripUserStatus));
+        when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
+        when(tripStatus.changeTripStatus(trip,tripService)).thenReturn(trip);
+        when(tripRepository.save(trip)).thenReturn(trip);
+
+        tripService.changeTripStatus(1L,"username1",tripStatus);
+
+        verify(tripUserStatusRepository,times(1))
+                .findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username1");
+        verify(tripRepository,times(1)).save(trip);
+        verify(tripRepository,times(1)).findByModelIdAndIsDeletedFalse(1L);
+        verify(tripStatus,times(1)).changeTripStatus(trip,tripService);
+
+        verifyNoMoreInteractions(tripRepository,tripUserStatusRepository,tripStatus);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void change_tripStatus_Should_ThrowException_IfTripModelIdIsNotValid() {
+
+        when(tripRepository.findByModelIdAndIsDeletedFalse(1L))
+                .thenReturn(Optional.empty());
+
+        tripService.changeTripStatus(1L, "username1", tripStatus);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void change_tripStatus_Should_ThrowException_IfLoggedUserIsNotOwnerOfTrip() {
+
+        when(tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username1"))
+                .thenReturn(Optional.empty());
+
+        tripService.changeTripStatus(1L, "username1", tripStatus);
+    }
+
+    @Test
+    public void change_Pending_UserStatusesToRejected_Should_Succeed_WhenLoggedUserIsOwnerOfTripAndTripModelIdIsValid() {
+
+        TripUserStatus tripUserStatusResponse = new TripUserStatus(user,trip,UserStatus.REJECTED);
+        when(tripUserStatusRepository.findAllByTripModelIdAndIsDeletedFalse(1L))
+                .thenReturn(Collections.singletonList(tripUserStatus));
+        when(tripUserStatusRepository.save(tripUserStatusResponse))
+                .thenReturn(tripUserStatusResponse);
+
+
+        tripService.changeAllLeftPendingUserStatusesToRejected(trip);
+
+        verify(tripUserStatusRepository,times(1))
+                .findAllByTripModelIdAndIsDeletedFalse(1L);
+        verify(tripUserStatusRepository,times(1)).save(tripUserStatusResponse);
+
+        verifyNoMoreInteractions(tripUserStatusRepository);
     }
 }

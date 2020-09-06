@@ -20,8 +20,9 @@ public interface TripUserStatusService {
 
     List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws MyNotFoundException;
 
-    TripUserStatusDtoResponse createTripUserStatus(Trip trip, String loggedUserUsername);
+    TripUserStatusDtoResponse createTripUserStatusAsDriver(Trip trip, String loggedUserUsername);
 
     void changeUserStatus(Long tripId, String passengerUsername,
                           String loggedUserUsername, UserStatus userStatus);
+
 }

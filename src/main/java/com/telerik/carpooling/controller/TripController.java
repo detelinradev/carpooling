@@ -31,7 +31,7 @@ public class TripController {
                                                       final Authentication authentication) throws MyNotFoundException {
 
         return ResponseEntity.ok()
-                .body(tripUserStatusService.createTripUserStatus(
+                .body(tripUserStatusService.createTripUserStatusAsDriver(
                         tripService.createTrip(tripDtoRequest,authentication.getName()),authentication.getName()));
     }
 

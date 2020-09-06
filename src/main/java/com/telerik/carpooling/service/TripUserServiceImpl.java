@@ -40,7 +40,7 @@ public class TripUserServiceImpl implements TripUserStatusService {
     private final DtoMapper dtoMapper;
 
     @Override
-    public TripUserStatusDtoResponse createTripUserStatus(Trip trip, String loggedUserUsername) {
+    public TripUserStatusDtoResponse createTripUserStatusAsDriver(Trip trip, String loggedUserUsername) {
 
         User driver = findUserByUsername(loggedUserUsername);
 
@@ -160,7 +160,6 @@ public class TripUserServiceImpl implements TripUserStatusService {
 
         }
     }
-
 
     private void addPassenger(User passenger, User loggedUser, Trip trip, List<TripUserStatus> userStatusList) {
 

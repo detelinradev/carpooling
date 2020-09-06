@@ -23,7 +23,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -71,54 +70,20 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void changeTripStatus(Long tripID, String loggedUserUsername, TripStatus tripStatus) {
+    public void changeTripStatus(final Long tripID,final String loggedUserUsername,final TripStatus newTripStatus) {
 
         tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(tripID, loggedUserUsername)
                 .orElseThrow(() -> new IllegalArgumentException("Current user is not authorized to change trip status"));
 
         Trip trip = getTripById(tripID);
-        Predicate<TripStatus> condition = Predicate.isEqual(trip.getTripStatus());
 
-        switch (tripStatus) {
+        trip = newTripStatus.changeTripStatus(trip, this);
 
-            case DONE:
-                changeTripStatus(trip, condition, TripStatus.ONGOING, tripStatus,
-                        "Trip should be ONGOING before be marked as DONE");
-                break;
-
-            case BOOKED:
-                changeTripStatus(trip, condition, TripStatus.AVAILABLE, tripStatus,
-                        "Trip should be AVAILABLE before be marked as BOOKED");
-                changeAllLeftPendingUserStatusesToRejected(trip);
-                break;
-
-            case ONGOING:
-                changeTripStatus(trip, condition, TripStatus.BOOKED, tripStatus,
-                        "Trip should be BOOKED before be marked as ONGOING");
-                break;
-
-            case CANCELED:
-                changeTripStatus(trip, condition.negate(), TripStatus.DONE, tripStatus,
-                        "Trip status can not be changed once is done");
-                break;
-
-            default:
-                throw new IllegalArgumentException("Trip status not found");
-        }
+        tripRepository.save(trip);
     }
 
-    private void changeTripStatus(Trip trip, Predicate<TripStatus> predicate, TripStatus conditionalTripStatus,
-                                  TripStatus newTripStatus, String exceptionText) {
-
-        if (predicate.test(conditionalTripStatus)) {
-
-            trip.setTripStatus(newTripStatus);
-            tripRepository.save(trip);
-
-        } else throw new IllegalArgumentException(exceptionText);
-    }
-
-    private void changeAllLeftPendingUserStatusesToRejected(Trip trip) {
+    @Override
+    public void changeAllLeftPendingUserStatusesToRejected(final Trip trip) {
 
         // fetch all tripUserStatuses for the given trip
         List<TripUserStatus> tripUserStatusList = tripUserStatusRepository
