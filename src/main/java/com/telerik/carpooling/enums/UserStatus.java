@@ -1,16 +1,15 @@
 package com.telerik.carpooling.enums;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum UserStatus {
     PENDING("A"), ACCEPTED("B"), REJECTED("C"),
     CANCELED("D"), ABSENT("E"), DRIVER("F");
 
-    private String code;
+    private final String code;
 
 }
