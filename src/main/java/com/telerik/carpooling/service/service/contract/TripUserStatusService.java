@@ -2,7 +2,6 @@ package com.telerik.carpooling.service.service.contract;
 
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.enums.UserStatus;
-import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.dto.TripUserStatusDtoResponse;
 
@@ -27,7 +26,7 @@ public interface TripUserStatusService {
                                                            String destination, String earliestDepartureTime, String latestDepartureTime,
                                                            Integer availablePlaces, Boolean smoking, Boolean pets, Boolean luggage, Boolean airConditioned);
 
-    List<TripUserStatusDtoResponse> getTripUserStatuses(Long tripID) throws MyNotFoundException;
+    List<TripUserStatusDtoResponse> getTripUserStatuses(Long tripID);
 
     /**
      *     Creates <class>tripUserStatus</class> from given <class>trip</class> and <class>user</class> with predefined
@@ -45,6 +44,10 @@ public interface TripUserStatusService {
      * <p>
      *     This method is specific and used only for creating initial status DRIVER for the owner of the <class>trip</class>.
      * This status is not expected to be changed furthermore.
+     * <p>
+     *     Transactional annotation is added to override class based behavior read only = true, with read only = false, as
+     * this method is modifying the entity so we expect Hibernate to observe changes in the current Persistence Context
+     * and include update at flush-time.
      *
      * @param trip instance of the required <class>trip</class> for creating <class>tripUserStatus</class> object
      * @param loggedUserUsername <class>username</class> of the currently logged <class>user</class> extracted from the

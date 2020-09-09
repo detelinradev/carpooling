@@ -28,7 +28,7 @@ public class TripController {
 
     @PostMapping
     public ResponseEntity<TripUserStatusDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest tripDtoRequest,
-                                                      final Authentication authentication) throws MyNotFoundException {
+                                                      final Authentication authentication) {
 
         return ResponseEntity.ok()
                 .body(tripUserStatusService.createTripUserStatusAsDriver(
@@ -55,7 +55,7 @@ public class TripController {
     }
 
     @GetMapping(value = "/{tripId}")
-    public ResponseEntity<List<TripUserStatusDtoResponse>> getTripUserStatuses(@PathVariable final Long tripId) throws MyNotFoundException {
+    public ResponseEntity<List<TripUserStatusDtoResponse>> getTripUserStatuses(@PathVariable final Long tripId) {
 
         return ResponseEntity.ok().body(tripUserStatusService.getTripUserStatuses(tripId));
     }
@@ -75,7 +75,7 @@ public class TripController {
     @PatchMapping(value = "/{tripId}")
     public ResponseEntity<Void> changeTripStatus(@PathVariable final Long tripId,
                                                    final Authentication authentication,
-                                                   @RequestParam(value = "status") TripStatus tripStatus) throws MyNotFoundException {
+                                                   @RequestParam(value = "status") TripStatus tripStatus){
 
         tripService.changeTripStatus(tripId,authentication.getName(),tripStatus);
         return ResponseEntity.ok().build();

@@ -2,7 +2,6 @@ package com.telerik.carpooling.service;
 
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.enums.UserStatus;
-import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.TripUserStatus;
 import com.telerik.carpooling.model.User;
@@ -39,6 +38,7 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
 
+    @Transactional
     @Override
     public TripUserStatusDtoResponse createTripUserStatusAsDriver(final Trip trip, final String loggedUserUsername) {
 
@@ -58,7 +58,7 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
     }
 
     @Override
-    public List<TripUserStatusDtoResponse> getTripUserStatuses(Long tripID) throws MyNotFoundException {
+    public List<TripUserStatusDtoResponse> getTripUserStatuses(Long tripID) {
 
         Trip trip = getTripById(tripID);
         List<TripUserStatus> result = new ArrayList<>(tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip).stream()
@@ -287,8 +287,8 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
         return null;
     }
 
-    private Trip getTripById(Long tripID) throws MyNotFoundException {
+    private Trip getTripById(Long tripID) {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
-                .orElseThrow(() -> new MyNotFoundException("Trip does not exist"));
+                .orElseThrow(() -> new IllegalArgumentException("Trip does not exist"));
     }
 }
