@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @Log4j2
-public class TripUserServiceImpl implements TripUserStatusService {
+public class TripUserStatusServiceImpl implements TripUserStatusService {
 
     private final TripUserStatusRepository tripUserStatusRepository;
     private final TripRepository tripRepository;
@@ -52,18 +52,9 @@ public class TripUserServiceImpl implements TripUserStatusService {
     }
 
     @Override
-    public List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws MyNotFoundException {
+    public List<TripUserStatusDtoResponse> getUserOwnTripsWithDrivers(String loggedUserUsername) {
 
-        Trip trip = getTripById(tripId);
-        List<TripUserStatus> tripUserStatus = tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip);
-
-        return dtoMapper.tripUserStatusToDtoList(tripUserStatus);
-    }
-
-    @Override
-    public List<TripUserStatusDtoResponse> userOwnTripsWithDrivers(String username) {
-        User user = findUserByUsername(username);
-        return dtoMapper.tripUserStatusToDtoList(tripUserStatusRepository.findAllUserTripsWithItsDrivers(UserStatus.DRIVER, user));
+        return dtoMapper.tripUserStatusToDtoList(tripUserStatusRepository.findAllUserOwnTripsWithDrivers(loggedUserUsername));
     }
 
     @Override

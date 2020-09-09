@@ -10,15 +10,24 @@ import java.util.List;
 
 public interface TripUserStatusService {
 
-    List<TripUserStatusDtoResponse> userOwnTripsWithDrivers(String username);
+    /**
+     *     Fetches from the database all <class>tripUserStatuses</class> in which contained <class>trip</class> currently logged
+     * user participates like driver or passenger and where <class>userStatus</class> is DRIVER.
+     * <p>
+     *     Parameter loggedUserUsername is trusted and is not checked as it is extracted from security context as a
+     * currently logged <class>user</class>.
+     *
+     * @param loggedUserUsername <class>username</class> of the currently logged <class>user</class> extracted from the
+     *                         security context thread
+     * @return <class>List</class> with instances of the fetched <class>TripUserStatuses</class> mapped as <class>TripDtoResponses</class>
+     */
+    List<TripUserStatusDtoResponse> getUserOwnTripsWithDrivers(String loggedUserUsername);
 
     List<TripUserStatusDtoResponse> getAllTripUserStatuses(Integer pageEnd, Integer pageStart, TripStatus tripStatus, String origin,
                                                            String destination, String earliestDepartureTime, String latestDepartureTime,
                                                            Integer availablePlaces, Boolean smoking, Boolean pets, Boolean luggage, Boolean airConditioned);
 
     List<TripUserStatusDtoResponse> getTripUserStatuses(Long tripID) throws MyNotFoundException;
-
-    List<TripUserStatusDtoResponse> getTripUserStatus(Long tripId) throws MyNotFoundException;
 
     /**
      *     Creates <class>tripUserStatus</class> from given <class>trip</class> and <class>user</class> with predefined

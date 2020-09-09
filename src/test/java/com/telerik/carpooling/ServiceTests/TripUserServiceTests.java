@@ -14,7 +14,7 @@ import com.telerik.carpooling.repository.CarRepository;
 import com.telerik.carpooling.repository.TripRepository;
 import com.telerik.carpooling.repository.TripUserStatusRepository;
 import com.telerik.carpooling.repository.UserRepository;
-import com.telerik.carpooling.service.TripUserServiceImpl;
+import com.telerik.carpooling.service.TripUserStatusServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +26,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -58,15 +61,18 @@ public class TripUserServiceTests {
     private TripDtoRequest tripDtoRequest;
     private TripUserStatus tripUserStatusPassenger;
     private TripUserStatus tripUserStatusDriver;
-    private TripUserStatusDtoResponse tripUserStatusDtoResponse;
+    private TripUserStatusDtoResponse tripUserStatusDtoResponseDriver;
+    private TripUserStatusDtoResponse tripUserStatusDtoResponsePassenger;
     private User user;
     private UserDtoResponse userDtoResponse;
     private Car car;
+    private List<TripUserStatus> tripUserStatusList;
+    private List<TripUserStatusDtoResponse> tripUserStatusDtoResponsesList;
 
 
     @Spy
     @InjectMocks
-    TripUserServiceImpl tripUserService;
+    TripUserStatusServiceImpl tripUserService;
 
     @Before
     public void SetUp() {
@@ -93,7 +99,17 @@ public class TripUserServiceTests {
                 4, true, true, true, true);
         tripUserStatusPassenger = new TripUserStatus(user, trip, UserStatus.PENDING);
         tripUserStatusDriver = new TripUserStatus(user, trip, UserStatus.DRIVER);
-        tripUserStatusDtoResponse = new TripUserStatusDtoResponse(1L,tripDtoResponse, userDtoResponse, UserStatus.DRIVER);
+        tripUserStatusDtoResponseDriver = new TripUserStatusDtoResponse(1L,tripDtoResponse, userDtoResponse,
+                UserStatus.DRIVER);
+        tripUserStatusDtoResponsePassenger = new TripUserStatusDtoResponse(2L,tripDtoResponse, userDtoResponse,
+                UserStatus.PENDING);
+        tripUserStatusList = new ArrayList<>();
+        tripUserStatusList.add(tripUserStatusDriver);
+        tripUserStatusList.add(tripUserStatusPassenger);
+        tripUserStatusDtoResponsesList = new ArrayList<>();
+        tripUserStatusDtoResponsesList.add(tripUserStatusDtoResponseDriver);
+        tripUserStatusDtoResponsesList.add(tripUserStatusDtoResponsePassenger);
+
 
     }
 
@@ -102,9 +118,9 @@ public class TripUserServiceTests {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user));
         when(tripUserStatusRepository.save(tripUserStatusDriver)).thenReturn(tripUserStatusDriver);
-        when(dtoMapper.objectToDtoTrip(tripUserStatusDriver)).thenReturn(tripUserStatusDtoResponse);
+        when(dtoMapper.objectToDtoTrip(tripUserStatusDriver)).thenReturn(tripUserStatusDtoResponseDriver);
 
-        Assert.assertEquals(tripUserStatusDtoResponse, tripUserService.createTripUserStatusAsDriver(trip, "username1"));
+        Assert.assertEquals(tripUserStatusDtoResponseDriver, tripUserService.createTripUserStatusAsDriver(trip, "username1"));
     }
 
     @Test (expected = UsernameNotFoundException.class)
@@ -113,5 +129,32 @@ public class TripUserServiceTests {
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.empty());
 
         tripUserService.createTripUserStatusAsDriver(trip, "username1");
+    }
+
+    @Test
+    public void get_userOwnTripsWithDrivers_Should_ReturnListWithResults_WhenUsernameIsProvided(){
+
+        when(tripUserStatusRepository.findAllUserOwnTripsWithDrivers("username1")).thenReturn(tripUserStatusList);
+        when(dtoMapper.tripUserStatusToDtoList(tripUserStatusList)).thenReturn(tripUserStatusDtoResponsesList);
+
+        Assert.assertEquals(tripUserStatusDtoResponsesList,tripUserService.getUserOwnTripsWithDrivers("username1"));
+    }
+
+    @Test
+    public void get_userOwnTripsWithDrivers_Should_ReturnEmptyList_WhenUsernameIsNotProvided(){
+
+        when(tripUserStatusRepository.findAllUserOwnTripsWithDrivers("")).thenReturn(Collections.emptyList());
+        when(dtoMapper.tripUserStatusToDtoList(Collections.emptyList())).thenReturn(Collections.emptyList());
+
+        Assert.assertEquals(Collections.emptyList(),tripUserService.getUserOwnTripsWithDrivers(""));
+    }
+
+    @Test
+    public void get_userOwnTripsWithDrivers_Should_ReturnEmptyList_WhenUsernameIsNull(){
+
+        when(tripUserStatusRepository.findAllUserOwnTripsWithDrivers(null)).thenReturn(Collections.emptyList());
+        when(dtoMapper.tripUserStatusToDtoList(Collections.emptyList())).thenReturn(Collections.emptyList());
+
+        Assert.assertEquals(Collections.emptyList(), tripUserService.getUserOwnTripsWithDrivers(null));
     }
 }

@@ -64,6 +64,11 @@ public class TripServiceImpl implements TripService {
 
         Trip trip = getTripById(tripId);
 
+        List<TripUserStatus> tus = tripUserStatusRepository.findAllByTripModelIdAndIsDeletedFalse(tripId);
+
+        tus.forEach(tripUserStatus -> tripUserStatus.setIsDeleted(true));
+        tus.forEach(tripUserStatusRepository::save);
+
         trip.setIsDeleted(true);
 
         tripRepository.save(trip);

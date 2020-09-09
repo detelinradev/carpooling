@@ -63,13 +63,7 @@ public class TripController {
     @GetMapping(value = "/myTrips")
     public ResponseEntity<List<TripUserStatusDtoResponse>> getMyTrips(final Authentication authentication) {
 
-        return ResponseEntity.ok().body(tripUserStatusService.userOwnTripsWithDrivers(authentication.getName()));
-    }
-
-    @GetMapping(value = "/TripUserStatus/{tripId}")
-    public ResponseEntity<List<TripUserStatusDtoResponse>> getTripUserStatus(@PathVariable final Long tripId) throws MyNotFoundException {
-
-        return ResponseEntity.ok().body(tripUserStatusService.getTripUserStatus(tripId));
+        return ResponseEntity.ok().body(tripUserStatusService.getUserOwnTripsWithDrivers(authentication.getName()));
     }
 
     @PutMapping
