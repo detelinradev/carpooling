@@ -56,7 +56,32 @@ public interface TripUserStatusService {
      */
     TripUserStatusDtoResponse createTripUserStatusAsDriver(Trip trip, String loggedUserUsername);
 
+    /**
+     * Changes <class>UserStatus</class> of this passenger which <class>username</class> is passed as parameter.
+     * <p>
+     * In case the logged <class>user</class> does not belong to <class>trip</class> exception is thrown with relevant
+     * message, except for PENDING <class>userStatus</class>. In case logged <class>user</class> is trying to change
+     * passenger status and is not a driver exception is thrown with relevant message.
+     * <p>
+     * Various stages should be logically connected and if case there is mismatch exception is thrown with matching
+     * message.
+     * Accepted paths are PENDING-ACCEPTED-ABSENT or PENDING-ACCEPTED, CANCELED is accepted from a passenger, REJECTED
+     * is accepted from a driver, ABSENT is accepted from a driver in case previous <class>userStatus</class> of
+     * the passenger is ACCEPTED.
+     * <p>
+     * Transactional annotation is added to override class based behavior read only = true, with read only = false, as
+     * this method is modifying the entity so we expect Hibernate to observe changes in the current Persistence Context
+     * and include update at flush-time.
+     *
+     * @param tripId  the <class>modelId</class> of the <class>trip</class>
+     * @param passengerUsername the <class>username</class> of this<class>user</class> which <class>userStatus</class>
+     *                          is passed for change
+     * @param loggedUserUsername <class>username</class> of the currently logged <class>user</class> extracted from
+     *      *                           the security context thread
+     * @param userStatus  the new <class>UserStatus</class> to be applied for this passenger
+     */
     void changeUserStatus(Long tripId, String passengerUsername,
                           String loggedUserUsername, UserStatus userStatus);
 
+    void adjustAvailablePlacesAndTripStatusWhenPassengerIsAccepted(Trip trip);
 }
