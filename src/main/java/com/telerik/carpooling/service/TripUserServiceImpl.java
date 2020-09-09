@@ -40,11 +40,12 @@ public class TripUserServiceImpl implements TripUserStatusService {
     private final DtoMapper dtoMapper;
 
     @Override
-    public TripUserStatusDtoResponse createTripUserStatusAsDriver(Trip trip, String loggedUserUsername) {
+    public TripUserStatusDtoResponse createTripUserStatusAsDriver(final Trip trip, final String loggedUserUsername) {
 
         User driver = findUserByUsername(loggedUserUsername);
 
         TripUserStatus tripUserStatus = new TripUserStatus(driver, trip, UserStatus.DRIVER);
+
         tripUserStatusRepository.save(tripUserStatus);
 
         return dtoMapper.objectToDtoTrip(tripUserStatus);
