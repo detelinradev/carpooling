@@ -52,12 +52,18 @@ public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, 
 
     List<TripUserStatus> findAllByUserAndIsDeletedFalse(User user);
 
-    @Query("from TripUserStatus " +
-            "where trip = :trip " +
-            "and userStatus = 'F' " +
-            "and isDeleted = false "
-    )
-    List<TripUserStatus> findAllTripsWithDriversByTripAndIsDeletedFalse(@Param(value = "trip") Trip trip);
+    /**
+     *     Fetches from the database all distinct (by parameter <class>user</class>) and most recent (by parameter
+     * <class>modified</class>) <class>tripUserStatus</class> objects for a given <class>trip</class>.
+     *
+     * @param trip <class>trip</class> instance which current<class>TripUserStatus</class> objects we are looking for
+     * @return <class>List</class> with instances of the fetched <class>TripUserStatus</class> objects
+     */
+    @Query("select tus1 from TripUserStatus tus1 " +
+            "left join TripUserStatus tus2 " +
+            "on (tus1.user = tus2.user and tus1.modified < tus2.modified) " +
+            "where tus2.modified is null ")
+    List<TripUserStatus> findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(@Param(value = "trip") Trip trip);
 
     /**
      *     Fetches from the database all <class>tripUserStatus</class> objects in which contained <class>trip</class>

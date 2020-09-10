@@ -50,14 +50,14 @@ public class TripController {
             @RequestParam(value = "luggageAllowed", required = false) final Boolean luggage,
             @RequestParam(value = "airConditioned", required = false) final Boolean airConditioned)
     {
-        return ResponseEntity.ok().body(tripUserStatusService.getAllTripUserStatuses(pageNumber, pageSize, tripStatus, origin, destination,
+        return ResponseEntity.ok().body(tripUserStatusService.getAllTripsWithDrivers(pageNumber, pageSize, tripStatus, origin, destination,
                 earliestDepartureTime, latestDepartureTime, availablePlaces, smoking, pets, luggage,airConditioned));
     }
 
     @GetMapping(value = "/{tripId}")
     public ResponseEntity<List<TripUserStatusDtoResponse>> getTripUserStatuses(@PathVariable final Long tripId) {
 
-        return ResponseEntity.ok().body(tripUserStatusService.getTripUserStatuses(tripId));
+        return ResponseEntity.ok().body(tripUserStatusService.getCurrentTripUserStatusForAllUsersInATrip(tripId));
     }
 
     @GetMapping(value = "/myTrips")

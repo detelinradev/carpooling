@@ -22,11 +22,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -60,25 +57,22 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
     }
 
     @Override
-    public List<TripUserStatusDtoResponse> getTripUserStatuses(final Long tripID) {
+    public List<TripUserStatusDtoResponse> getCurrentTripUserStatusForAllUsersInATrip(final Long tripID) {
 
         Trip trip = getTripById(tripID);
-        List<TripUserStatus> result = new ArrayList<>(tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip).stream()
-                .collect(Collectors
-                        .toMap(TripUserStatus::getUser, Function.identity(), (u1, u2) -> u1))
-                .values());
 
-        return dtoMapper.tripUserStatusToDtoList(result);
+        return dtoMapper.tripUserStatusToDtoList(
+                tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip));
     }
 
     @Override
-    public List<TripUserStatusDtoResponse> getAllTripUserStatuses(final Integer pageNumber,final Integer pageSize,
-                                                                  final TripStatus tripStatus,final String origin,
+    public List<TripUserStatusDtoResponse> getAllTripsWithDrivers(final Integer pageNumber, final Integer pageSize,
+                                                                  final TripStatus tripStatus, final String origin,
                                                                   final String destination,
                                                                   final String earliestDepartureTime,
                                                                   final String latestDepartureTime,
-                                                                  final Integer availablePlaces,final Boolean smoking,
-                                                                  final  Boolean pets,final Boolean luggage,
+                                                                  final Integer availablePlaces, final Boolean smoking,
+                                                                  final  Boolean pets, final Boolean luggage,
                                                                   final Boolean airConditioned) {
 
 

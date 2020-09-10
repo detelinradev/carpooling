@@ -39,7 +39,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         Trip trip = getTripById(tripID);
         User user = findUserByUsername(loggedUserUsername);
         User receiver = findUserByUsername(receiverUsername);
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip);
+        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip);
         boolean isDriver = tripUserStatusList.stream().filter(j->j.getUser().equals(receiver))
                 .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER));
 

@@ -227,4 +227,24 @@ public class TripUserStatusServiceTests {
         verify(tripRepository,times(1)).save(trip);
         verifyNoMoreInteractions(tripRepository);
     }
+
+    @Test
+    public void  get_CurrentTripUserStatusForAllUsersInATrip_Should_ReturnListWithResults_WhenModelIdReturnsTrip(){
+
+        when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
+        when(tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip))
+                .thenReturn(tripUserStatusList);
+        when(dtoMapper.tripUserStatusToDtoList(tripUserStatusList)).thenReturn(tripUserStatusDtoResponsesList);
+
+        Assert.assertEquals(
+                tripUserStatusDtoResponsesList,tripUserService.getCurrentTripUserStatusForAllUsersInATrip(1L));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void get_CurrentTripUserStatusForAllUsersInATrip_Should_ThrowException_IfTripModelIdDoNotReturnTrip(){
+
+        when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.empty());
+
+        tripUserService.getCurrentTripUserStatusForAllUsersInATrip(1L);
+    }
 }

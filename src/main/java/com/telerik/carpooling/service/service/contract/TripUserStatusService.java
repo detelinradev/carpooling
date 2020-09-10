@@ -13,20 +13,33 @@ public interface TripUserStatusService {
      *     Fetches from the database all <class>tripUserStatuses</class> in which contained <class>trip</class> currently logged
      * user participates like driver or passenger and where <class>userStatus</class> is DRIVER.
      * <p>
-     *     Parameter loggedUserUsername is trusted and is not checked as it is extracted from security context as a
+     *     Parameter loggedUserUsername is trusted and is not checked as it is extracted from the security context as a
      * currently logged <class>user</class>.
      *
      * @param loggedUserUsername <class>username</class> of the currently logged <class>user</class> extracted from the
      *                         security context thread
-     * @return <class>List</class> with instances of the fetched <class>TripUserStatuses</class> mapped as <class>TripDtoResponses</class>
+     * @return <class>List</class> with instances of the fetched <class>TripUserStatus</class> objects mapped as
+     * <class>TripUserStatusDtoResponse</class>
      */
     List<TripUserStatusDtoResponse> getUserOwnTripsWithDrivers(String loggedUserUsername);
 
-    List<TripUserStatusDtoResponse> getAllTripUserStatuses(Integer pageEnd, Integer pageStart, TripStatus tripStatus, String origin,
+    List<TripUserStatusDtoResponse> getAllTripsWithDrivers(Integer pageEnd, Integer pageStart, TripStatus tripStatus, String origin,
                                                            String destination, String earliestDepartureTime, String latestDepartureTime,
                                                            Integer availablePlaces, Boolean smoking, Boolean pets, Boolean luggage, Boolean airConditioned);
 
-    List<TripUserStatusDtoResponse> getTripUserStatuses(Long tripID);
+    /**
+     *     Fetches from the database all distinct (by parameter <class>user</class>) and most recent (by parameter
+     * <class>modified</class>) <class>tripUserStatus</class> objects for a given <class>trip</class>.
+     * <p>
+     *     The input is validated against the database and exception is thrown with relevant message if <class>trip</class>
+     * with this modelId does not exist.
+     *
+     * @param tripID the <class>modelId</class> of this <class>trip</class> which current
+     *               <class>TripUserStatus</class> objects we are looking for
+     * @return <class>List</class> with instances of the fetched <class>TripUserStatus</class> objects mapped as
+     * <class>TripUserStatusDtoResponse</class>
+     */
+    List<TripUserStatusDtoResponse> getCurrentTripUserStatusForAllUsersInATrip(Long tripID);
 
     /**
      *     Creates <class>tripUserStatus</class> from given <class>trip</class> and <class>user</class> with predefined
