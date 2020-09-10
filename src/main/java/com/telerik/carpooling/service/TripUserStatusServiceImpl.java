@@ -14,6 +14,8 @@ import com.telerik.carpooling.service.service.contract.TripUserStatusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -53,7 +54,10 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
     @Override
     public List<TripUserStatusDtoResponse> getUserOwnTripsWithDrivers(final String loggedUserUsername) {
 
-        return dtoMapper.tripUserStatusToDtoList(tripUserStatusRepository.findAllUserOwnTripsWithDrivers(loggedUserUsername));
+        Slice<TripUserStatus> tripUserStatusSlice = tripUserStatusRepository.findAllUserOwnTripsWithDrivers(
+                        loggedUserUsername,PageRequest.of(0, 10, Sort.by("modified").descending()));
+
+        return dtoMapper.tripUserStatusToDtoList(tripUserStatusSlice.getContent());
     }
 
     @Override
@@ -75,20 +79,12 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
                                                                   final  Boolean pets, final Boolean luggage,
                                                                   final Boolean airConditioned) {
 
-
-        if (availablePlaces != null && (availablePlaces < 1 || availablePlaces > 4))
-            throw new IllegalArgumentException("Available seats should be between 1 and 4");
-        if ((pageNumber != null && pageSize == null) || (pageNumber == null && pageSize != null))
-            throw new IllegalArgumentException("Page number and page size should be both present");
-
-        List<TripUserStatus> tripUserStatuses = tripUserStatusRepository.findTripUserStatusesByPassedParameters(
+        Slice<TripUserStatus> sliceOfTripUserStatuses = tripUserStatusRepository.findAllTripsWithDriversByPassedParameters(
                 tripStatus, origin, destination, parseDateTime(earliestDepartureTime),
-                parseDateTime(latestDepartureTime), availablePlaces,
-                smoking, pets, luggage, airConditioned, (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+                parseDateTime(latestDepartureTime), availablePlaces, smoking, pets, luggage, airConditioned,
+                PageRequest.of(pageNumber, pageSize, Sort.by("modified").descending()));
 
-        if (tripUserStatuses.size() == 0) return Collections.emptyList();
-
-        return dtoMapper.tripUserStatusToDtoList(tripUserStatuses);
+        return dtoMapper.tripUserStatusToDtoList(sliceOfTripUserStatuses.getContent());
     }
 
     @Override

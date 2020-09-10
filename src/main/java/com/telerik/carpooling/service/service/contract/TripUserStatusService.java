@@ -23,7 +23,45 @@ public interface TripUserStatusService {
      */
     List<TripUserStatusDtoResponse> getUserOwnTripsWithDrivers(String loggedUserUsername);
 
-    List<TripUserStatusDtoResponse> getAllTripsWithDrivers(Integer pageEnd, Integer pageStart, TripStatus tripStatus, String origin,
+    /**
+     *    Retrieving from data base all <class>TripUserStatus</class> objects with <class>UserStatus</class> DRIVER and
+     * <class>Trip</class> fields matching the passed parameters.
+     * <p>
+     *     Includes <class>Pageable</class> object which pageNumber has default value of 0, pageSize - default value
+     * of 10 and <class>Sort</class> object which sorts result based on <class>modified</class> field descending.
+     * <p>
+     *     All parameters are optional and if any or all of them are missing, they are replaced with null and not taken
+     * into account when searching the database.
+     *
+     * @param pageNumber parameter is optional and represents the number of the page to be retrieved,
+     *                   part of <class>Pageable</class> object, has default value of 0
+     * @param pageSize parameter is optional and represents the size of the page that will be retrieved,
+     *                 part of <class>Pageable</class> object, has default value of 10
+     * @param tripStatus enum representing <class>TripStatus</class> as an optional search parameter
+     * @param origin string representing <class>origin</class> field of <class>trip</class> object,
+     *               it is optional search parameter
+     * @param destination string representing <class>destination</class> field of <class>trip</class> object,
+     *                    it is optional search parameter
+     * @param earliestDepartureTime string representing <class>LocalDateTime</class> object which should be before
+     *                              <class>departureTime</class> field of <class>trip</class> object, it is optional
+     *                              search parameter
+     * @param latestDepartureTime string representing <class>LocalDateTime</class> object which should be after
+     *                            <class>departureTime</class> field of <class>trip</class> object, it is optional
+     *                            search parameter
+     * @param availablePlaces integer value represents <class>availablePlaces</class> of <class>trip</class>, has range
+     *                        from 1 to 4 inclusive, it is optional search parameter
+     * @param smoking boolean value represents <class>smokingAllowed</class> field of <class>trip</class>, it is optional
+     *                search parameter
+     * @param pets boolean value represents <class>petsAllowed</class> field of <class>trip</class>, it is optional
+     *             search parameter
+     * @param luggage boolean value represents <class>luggageAllowed</class> field of <class>trip</class>, it is optional
+     *                search parameter
+     * @param airConditioned boolean value represents <class>airConditioned</class> field of <class>trip</class>, it is optional
+     *                       search parameter
+     * @return <class>List</class> with instances of the fetched <class>TripUserStatus</class> objects mapped as
+     *         <class>TripUserStatusDtoResponse</class>
+     */
+    List<TripUserStatusDtoResponse> getAllTripsWithDrivers(Integer pageNumber, Integer pageSize, TripStatus tripStatus, String origin,
                                                            String destination, String earliestDepartureTime, String latestDepartureTime,
                                                            Integer availablePlaces, Boolean smoking, Boolean pets, Boolean luggage, Boolean airConditioned);
 

@@ -46,15 +46,15 @@ public class Trip extends MappedAudibleBase {
     private LocalDateTime departureTime;
 
     @NotNull(message = "Trip should have origin")
-    @Size(max = 20,message = "Origin max size should be 20 symbols")
+    @Size(max = 50,message = "Origin max size should be 50 symbols")
     private String origin;
 
     @NotNull(message = "Trip should have destination")
-    @Size(max = 20,message = "Destination max size should be 20 symbols")
+    @Size(max = 50,message = "Destination max size should be 50 symbols")
     private String destination;
 
     @NotNull(message = "Trip should have number of available places")
-    @Range(min = 1,max = 8, message = "Please enter total number of seats between 1 and 8")
+    @Range(min = 1,max = 4, message = "Please enter total number of seats between 1 and 4")
     private Integer availablePlaces;
 
     @NotNull(message = "Trip should have trip duration")

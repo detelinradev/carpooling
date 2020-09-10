@@ -5,6 +5,7 @@ import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.TripUserStatus;
 import com.telerik.carpooling.model.User;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -80,9 +81,43 @@ public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, 
                          "from TripUserStatus tusUser " +
                          "where tusUser.user.username = :username) "
             )
-    List<TripUserStatus> findAllUserOwnTripsWithDrivers(@Param(value ="username")String username);
+    Slice<TripUserStatus> findAllUserOwnTripsWithDrivers(@Param(value ="username")String username, Pageable pageable);
 
 
+    /**
+     *    Retrieving from data base all <class>TripUserStatus</class> objects with <class>UserStatus</class> DRIVER and
+     * <class>Trip</class> fields matching the passed parameters.
+     * <p>
+     *     Includes <class>Pageable</class> object which pageNumber has default value of 0, pageSize - default value
+     * of 10 and <class>Sort</class> object which sorts result based on <class>modified</class> field descending.
+     * <p>
+     *     All parameters are optional and if any or all of them are missing, they are replaced with null and not taken
+     * into account when searching the database.
+     *
+     * @param tripStatus enum representing <class>TripStatus</class> as an optional search parameter
+     * @param origin string representing <class>origin</class> field of <class>trip</class> object,
+     *               it is optional search parameter
+     * @param destination string representing <class>destination</class> field of <class>trip</class> object,
+     *                    it is optional search parameter
+     * @param earliestDepartureTime string representing <class>LocalDateTime</class> object which should be before
+     *                              <class>departureTime</class> field of <class>trip</class> object, it is optional
+     *                              search parameter
+     * @param latestDepartureTime string representing <class>LocalDateTime</class> object which should be after
+     *                            <class>departureTime</class> field of <class>trip</class> object, it is optional
+     *                            search parameter
+     * @param availablePlaces integer value represents <class>availablePlaces</class> of <class>trip</class>, has range
+     *                        from 1 to 4 inclusive, it is optional search parameter
+     * @param smoking boolean value represents <class>smokingAllowed</class> field of <class>trip</class>, it is optional
+     *                search parameter
+     * @param pets boolean value represents <class>petsAllowed</class> field of <class>trip</class>, it is optional
+     *             search parameter
+     * @param luggage boolean value represents <class>luggageAllowed</class> field of <class>trip</class>, it is optional
+     *                search parameter
+     * @param airConditioned boolean value represents <class>airConditioned</class> field of <class>trip</class>, it is optional
+     *                       search parameter
+     * @return <class>Slice</class> with instances of the fetched <class>TripUserStatus</class> objects grouped and
+     * sorted by passed <class>Pageable</class> object
+     */
     @Query("select t from TripUserStatus t " +
             "where " +
             "(:tripStatus is null or t.trip.tripStatus = :tripStatus) and" +
@@ -98,17 +133,17 @@ public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, 
             "(:luggage is null or t.trip.luggageAllowed = :luggage) and" +
             "(:airConditioned is null or :airConditioned ='' or t.trip.airConditioned = :airConditioned)"
     )
-    List<TripUserStatus> findTripUserStatusesByPassedParameters(@Param(value = "tripStatus") TripStatus status,
-                                           @Param(value = "origin") String origin,
-                                           @Param(value = "destination") String destination,
-                                           @Param(value = "earliestDepartureTime") LocalDateTime EarliestDepartureTime,
-                                           @Param(value = "latestDepartureTime") LocalDateTime latestDepartureTime,
-                                           @Param(value = "availablePlaces") Integer availablePlaces,
-                                           @Param(value = "smoking") Boolean smoking,
-                                           @Param(value = "pets") Boolean pets,
-                                           @Param(value = "luggage") Boolean luggage,
-                                           @Param(value = "airConditioned") Boolean airConditioned,
-                                           Pageable page
+    Slice<TripUserStatus> findAllTripsWithDriversByPassedParameters(@Param(value = "tripStatus") TripStatus tripStatus,
+                                                                    @Param(value = "origin") String origin,
+                                                                    @Param(value = "destination") String destination,
+                                                                    @Param(value = "earliestDepartureTime") LocalDateTime earliestDepartureTime,
+                                                                    @Param(value = "latestDepartureTime") LocalDateTime latestDepartureTime,
+                                                                    @Param(value = "availablePlaces") Integer availablePlaces,
+                                                                    @Param(value = "smoking") Boolean smoking,
+                                                                    @Param(value = "pets") Boolean pets,
+                                                                    @Param(value = "luggage") Boolean luggage,
+                                                                    @Param(value = "airConditioned") Boolean airConditioned,
+                                                                    Pageable page
     );
 
     /**
