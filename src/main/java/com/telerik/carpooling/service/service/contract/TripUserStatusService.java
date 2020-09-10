@@ -83,5 +83,12 @@ public interface TripUserStatusService {
     void changeUserStatus(Long tripId, String passengerUsername,
                           String loggedUserUsername, UserStatus userStatus);
 
+    /**
+     *     Helper method of a changeUserStatus method in <class>UserStatus</class> class. It is called when a passenger
+     * is confirmed with <class>userStatus</class> ACCEPTED to adjust available seat down and change
+     * <class>TripStatus</class> if necessary.
+     *
+     * @param trip instance of the required <class>trip</class> for adjusting its parameters
+     */
     void adjustAvailablePlacesAndTripStatusWhenPassengerIsAccepted(Trip trip);
 }

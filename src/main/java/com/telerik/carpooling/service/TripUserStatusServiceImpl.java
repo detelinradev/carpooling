@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -53,13 +54,13 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
     }
 
     @Override
-    public List<TripUserStatusDtoResponse> getUserOwnTripsWithDrivers(String loggedUserUsername) {
+    public List<TripUserStatusDtoResponse> getUserOwnTripsWithDrivers(final String loggedUserUsername) {
 
         return dtoMapper.tripUserStatusToDtoList(tripUserStatusRepository.findAllUserOwnTripsWithDrivers(loggedUserUsername));
     }
 
     @Override
-    public List<TripUserStatusDtoResponse> getTripUserStatuses(Long tripID) {
+    public List<TripUserStatusDtoResponse> getTripUserStatuses(final Long tripID) {
 
         Trip trip = getTripById(tripID);
         List<TripUserStatus> result = new ArrayList<>(tripUserStatusRepository.findAllTripsWithDriversByTripAndIsDeletedFalse(trip).stream()
@@ -71,10 +72,14 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
     }
 
     @Override
-    public List<TripUserStatusDtoResponse> getAllTripUserStatuses(Integer pageNumber, Integer pageSize, TripStatus tripStatus,
-                                                                  String origin, String destination, String earliestDepartureTime,
-                                                                  String latestDepartureTime, Integer availablePlaces, Boolean smoking,
-                                                                  Boolean pets, Boolean luggage, Boolean airConditioned) {
+    public List<TripUserStatusDtoResponse> getAllTripUserStatuses(final Integer pageNumber,final Integer pageSize,
+                                                                  final TripStatus tripStatus,final String origin,
+                                                                  final String destination,
+                                                                  final String earliestDepartureTime,
+                                                                  final String latestDepartureTime,
+                                                                  final Integer availablePlaces,final Boolean smoking,
+                                                                  final  Boolean pets,final Boolean luggage,
+                                                                  final Boolean airConditioned) {
 
 
         if (availablePlaces != null && (availablePlaces < 1 || availablePlaces > 4))
@@ -94,8 +99,8 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
 
     @Override
     @Transactional
-    public void changeUserStatus(Long tripID, String passengerUsername, String loggedUserUsername,
-                                 UserStatus userStatus) {
+    public void changeUserStatus(final Long tripID,final String passengerUsername,final String loggedUserUsername,
+                                final UserStatus userStatus) {
 
         Trip trip = getTripById(tripID);
         User loggedUser = findUserByUsername(loggedUserUsername);
@@ -109,7 +114,8 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
 
     }
 
-    public void adjustAvailablePlacesAndTripStatusWhenPassengerIsAccepted(Trip trip){
+    @Override
+    public void adjustAvailablePlacesAndTripStatusWhenPassengerIsAccepted(@NotNull final Trip trip){
 
         trip.setAvailablePlaces(trip.getAvailablePlaces() - 1);
 
@@ -121,12 +127,12 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
     }
 
 
-    private User findUserByUsername(String username) {
+    private User findUserByUsername(final String username) {
         return userRepository.findByUsernameAndIsDeletedFalse(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
     }
 
-    private LocalDateTime parseDateTime(String departureTime) {
+    private LocalDateTime parseDateTime(final String departureTime) {
         LocalDateTime departureTimeFormat;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -141,7 +147,7 @@ public class TripUserStatusServiceImpl implements TripUserStatusService {
         return null;
     }
 
-    private Trip getTripById(Long tripID) {
+    private Trip getTripById(final Long tripID) {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
                 .orElseThrow(() -> new IllegalArgumentException("Trip does not exist"));
     }

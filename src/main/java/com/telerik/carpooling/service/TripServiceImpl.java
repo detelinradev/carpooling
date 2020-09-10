@@ -19,6 +19,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BinaryOperator;
@@ -88,7 +89,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void changeAllLeftPendingUserStatusesToRejected(final Trip trip) {
+    public void changeAllLeftPendingUserStatusesToRejected(@NotNull final Trip trip) {
 
         // fetch all tripUserStatuses for the given trip
         List<TripUserStatus> tripUserStatusList = tripUserStatusRepository
@@ -107,7 +108,7 @@ public class TripServiceImpl implements TripService {
                 .forEach(tripUserStatusRepository::save);
     }
 
-    private Trip getTripById(Long tripId) {
+    private Trip getTripById(final Long tripId) {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripId)
                 .orElseThrow(() -> new IllegalArgumentException("Trip with this modelId does not exist"));
     }

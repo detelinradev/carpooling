@@ -36,6 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'org.jetbrains:annotations:19.0.0'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
     implementation 'org.springframework.boot:spring-boot-starter'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.0'
