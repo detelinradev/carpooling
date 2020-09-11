@@ -5,5 +5,6 @@ import javassist.NotFoundException;
 public interface RatingService {
 
 
-    void rateUser(Long tripID, String loggedUserUsername, String passengerUsername, Integer rating) throws NotFoundException;
+    void createRating(Long tripID, String loggedUserUsername, String passengerUsername, Integer rating) throws NotFoundException;
+    void setUserRating(Long tripId, String passengerUsername, Integer rating);
 }

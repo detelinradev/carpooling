@@ -42,7 +42,8 @@ public class UserController {
                                          final Authentication authentication,
                                          @RequestBody final Integer rating) throws NotFoundException {
 
-        ratingService.rateUser(tripId, authentication.getName(), username, rating);
+        ratingService.createRating(tripId, authentication.getName(), username, rating);
+        ratingService.setUserRating(tripId, username, rating);
         return ResponseEntity.ok().build();
     }
 

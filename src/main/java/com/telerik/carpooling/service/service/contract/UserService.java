@@ -56,6 +56,17 @@ public interface UserService {
      */
     UserDtoResponse updateUser(UserDtoEdit userDtoEdit, String loggedUserName);
 
+    /**
+     *     Fetches from the database this <class>user</class> which <class>username</class> is passed as parameter.
+     * <p>
+     *     Check is made if logged <class>user</class> is authorized to get <class>user</class> data and if the
+     * passed <class>username</class> is valid, if not exception is thrown.
+     *
+     * @param username the <class>username</class> of the searched <class>user</class>
+     * @param loggedUserUsername <class>username</class> of the currently logged <class>user</class> extracted from the
+     *                           security context thread
+     * @return instance of the fetched <class>user</class> mapped as <class>UserDtoResponse</class>
+     */
     UserDtoResponse getUser(String username,  String loggedUserUsername);
 
     void deleteUser(String username);

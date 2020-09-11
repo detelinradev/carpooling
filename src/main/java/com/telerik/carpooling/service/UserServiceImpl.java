@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
         User user = dtoMapper.dtoToObject(userDtoRequest);
 
-        if(user.getPassword()!= null) {
+        if (user.getPassword() != null) {
 
             user.setPassword(bCryptEncoder.encode(userDtoRequest.getPassword()));
 
@@ -51,16 +51,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDtoResponse updateUser(UserDtoEdit userDtoEdit,String loggedUserName) {
+    public UserDtoResponse updateUser(UserDtoEdit userDtoEdit, String loggedUserName) {
 
         User user = dtoMapper.dtoToObject(userDtoEdit);
         User loggedUser = findUserByUsername(loggedUserName);
 
-        if (isRole_AdminOrSameUser( user, loggedUser)) {
+        if (isRole_AdminOrSameUser(user, loggedUser)) {
 
-            if(user.getPassword()!= null)
+            if (user.getPassword() != null) {
 
-            user.setPassword(bCryptEncoder.encode(user.getPassword()));
+                user.setPassword(bCryptEncoder.encode(user.getPassword()));
+            }
 
             return dtoMapper.objectToDto(userRepository.save(user));
 
@@ -70,17 +71,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDtoResponse getUser(String username, String loggedUserUsername) {
+
         User user = findUserByUsername(username);
         User loggedUser = findUserByUsername(loggedUserUsername);
-        if (isRole_AdminOrSameUser( user, loggedUser)) {
-            Double ratingAsPassenger = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
-            Double ratingAsDriver = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
-            if (ratingAsDriver != null)
-                user.setRatingAsDriver(ratingAsDriver);
-            if (ratingAsPassenger != null)
-                user.setRatingAsPassenger(ratingAsPassenger);
+
+        if (isRole_AdminOrSameUser(user, loggedUser)) {
 
             return dtoMapper.objectToDto(user);
+
         } else throw new IllegalArgumentException("You are not authorized to get information for the user");
     }
 
@@ -90,14 +88,7 @@ public class UserServiceImpl implements UserService {
 
         List<User> users = userRepository.findUsers(username, firstName, lastName, email, phone,
                 (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
-        for (User user : users) {
-            Double ratingAsPassenger = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
-            Double ratingAsDriver = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
-            if (ratingAsDriver != null)
-                user.setRatingAsDriver(ratingAsDriver);
-            if (ratingAsPassenger != null)
-                user.setRatingAsPassenger(ratingAsPassenger);
-        }
+
         return dtoMapper.userToDtoList(users);
     }
 
@@ -118,21 +109,13 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findUsers(null, null, null,
                 null, null, null);
         if (isPassenger) {
-            for (User user : users) {
-                Double rating;
-                rating = ratingRepository.findAverageRatingByUserAsPassenger(user.getModelId());
-                if (rating != null)
-                    user.setRatingAsPassenger(rating);
-            }
+
             users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
+
         } else {
-            for (User user : users) {
-                Double rating;
-                rating = ratingRepository.findAverageRatingByUserAsDriver(user.getModelId());
-                if (rating != null)
-                    user.setRatingAsDriver(rating);
-            }
+
             users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
+
         }
 
         return dtoMapper.userToDtoList(users.stream()
@@ -140,7 +123,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList()));
     }
 
-    private boolean isRole_AdminOrSameUser( User user, User loggedUser) {
+    private boolean isRole_AdminOrSameUser(User user, User loggedUser) {
 
         return loggedUser.equals(user) || loggedUser.getRole().equals(UserRole.ADMIN);
     }

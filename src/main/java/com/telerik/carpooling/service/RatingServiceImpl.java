@@ -29,7 +29,7 @@ public class RatingServiceImpl implements RatingService {
     private final TripUserStatusRepository tripUserStatusRepository;
 
     @Override
-    public void rateUser(Long tripID, String loggedUserUsername, String ratedUserUsername, Integer rating) throws MyNotFoundException {
+    public void createRating(Long tripID, String loggedUserUsername, String ratedUserUsername, Integer rating) throws MyNotFoundException {
 
         Trip trip = getTripById(tripID);
         User user = findUserByUsername(loggedUserUsername);
@@ -46,11 +46,30 @@ public class RatingServiceImpl implements RatingService {
                     || isDriver)) {
 
                 Rating ratingObject = new Rating(user, ratedUser, rating, isDriver);
-                ratingObject.setIsDeleted(false);
+
                 ratingRepository.save(ratingObject);
+
             }else throw new IllegalArgumentException("You are not authorized to rate this user");
         }else throw new IllegalArgumentException("Rating value should be between 1 and 5");
     }
+
+    @Override
+    public void setUserRating(Long tripId, String ratedUserUsername, Integer rating) {
+
+        User ratedUser = findUserByUsername(ratedUserUsername);
+        boolean isDriver = tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(tripId,ratedUserUsername).isPresent();
+
+        if(isDriver){
+            ratedUser.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(ratedUser.getModelId())
+                    .orElse(0.0));
+        }else {
+            ratedUser.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(ratedUser.getModelId())
+                    .orElse(0.0));
+        }
+
+
+    }
+
 
     private Trip getTripById(Long tripID) throws MyNotFoundException {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)

@@ -13,6 +13,13 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    /**
+     *     Fetches from the database this <class>user</class> which <class>username</class> is passed as parameter if
+     * available, or else return <class>Optional</class>empty().
+     *
+     * @param username the <class>username</class> of the searched <class>user</class>
+     * @return optional instance of the fetched <class>user</class>
+     */
     Optional<User> findByUsernameAndIsDeletedFalse(String username);
 
     @Query("select u from User u " +

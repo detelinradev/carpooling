@@ -115,10 +115,11 @@ public class UserServiceTests {
     }
 
     @Test
-    public void update_user_Should_UpdateUser_When_UserIsLoggedUserOrAdminAndPasswordIsPresent() {
+    public void update_user_Should_UpdateUser_When_UserIsLoggedUserAndPasswordIsPresent() {
 
         when(userRepository.save(user1)).thenReturn(user1);
-        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername())).thenReturn(java.util.Optional.ofNullable(user1));
+        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user1));
         when(dtoMapper.dtoToObject(userDtoEdit)).thenReturn(user1);
         when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
 
@@ -169,5 +170,50 @@ public class UserServiceTests {
                 .thenReturn(Optional.empty());
 
         userService.updateUser(userDtoEdit,"username1");
+    }
+
+    @Test
+    public void get_user_Should_RetrieveUser_When_LoggedUserIsSameUserAndUsernameIsValid() {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user1));
+        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user1));
+        when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
+
+        Assert.assertEquals(userDtoResponse, userService.getUser("username1","username1"));
+    }
+
+    @Test
+    public void get_user_Should_RetrieveUser_When_LoggedUserIsAdminAndUsernameIsValid() {
+
+        user2.setRole(UserRole.ADMIN);
+        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user1));
+        when(userRepository.findByUsernameAndIsDeletedFalse(user2.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user2));
+        when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
+
+        Assert.assertEquals(userDtoResponse, userService.getUser("username1","username2"));
+    }
+
+    @Test (expected = UsernameNotFoundException.class)
+    public void get_user_Should_ThrowException_IfUsernameIsNotValid(){
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
+                .thenReturn(Optional.empty());
+
+        userService.getUser("username1","username1");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void get_user_Should_ThrowException_IfLoggedUserIsNotSameUserAndAdmin(){
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
+                .thenReturn(Optional.ofNullable(user1));
+        when(userRepository.findByUsernameAndIsDeletedFalse(user2.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user2));
+
+        userService.getUser("username1","username2");
     }
 }
