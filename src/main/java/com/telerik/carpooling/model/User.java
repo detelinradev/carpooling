@@ -49,7 +49,7 @@ public class User extends MappedAudibleBase {
     private String email;
 
     @NotNull(message = "User should have user role")
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 
     @JsonIgnore
     @NotNull(message = "User should have password")
@@ -69,12 +69,12 @@ public class User extends MappedAudibleBase {
     private String phone;
 
     @NotNull(message = "User should have rating as driver")
-    @DecimalMax(value = "5.00",message = "Rating as driver should be between 0 and 5")
-    @DecimalMin(value = "0.00",message = "Rating as driver should be between 0 and 5")
-    private Double ratingAsDriver;
+    @DecimalMax(value = "5.00", message = "Rating as driver should be between 0 and 5")
+    @DecimalMin(value = "0.00", message = "Rating as driver should be between 0 and 5")
+    private Double ratingAsDriver = 0.0;
 
     @NotNull(message = "User should have rating as passenger")
-    @DecimalMax(value = "5.00",message = "Rating as passenger should be between 0 and 5")
-    @DecimalMin(value = "0.00",message = "Rating as passenger should be between 0 and 5")
-    private Double ratingAsPassenger;
+    @DecimalMax(value = "5.00", message = "Rating as passenger should be between 0 and 5")
+    @DecimalMin(value = "0.00", message = "Rating as passenger should be between 0 and 5")
+    private Double ratingAsPassenger = 0.0;
 }

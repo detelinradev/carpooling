@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -36,13 +38,12 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptEncoder;
 
     @Override
-    public UserDtoResponse save(UserDtoRequest userDtoRequest) {
+    public UserDtoResponse createUser(UserDtoRequest userDtoRequest) {
+
         User user = dtoMapper.dtoToObject(userDtoRequest);
+
         user.setPassword(bCryptEncoder.encode(userDtoRequest.getPassword()));
-        user.setRole(UserRole.USER);
-        user.setIsDeleted(false);
-        user.setRatingAsDriver(0.0);
-        user.setRatingAsPassenger(0.0);
+
         return dtoMapper.objectToDto(userRepository.save(user));
     }
 

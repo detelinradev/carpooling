@@ -27,7 +27,9 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -58,6 +60,7 @@ public class TripServiceTests {
     private TripUserStatus tripUserStatus;
     private User user;
     private Car car;
+    private List<TripUserStatus> tripUserStatusList;
 
 
     @Spy
@@ -86,6 +89,8 @@ public class TripServiceTests {
                 "origin","destination", 3, 4,
                 4, true, true, true,true);
         tripUserStatus = new TripUserStatus(user,trip, UserStatus.PENDING);
+        tripUserStatusList = new ArrayList<>();
+        tripUserStatusList.add(tripUserStatus);
     }
 
     @Test
@@ -133,14 +138,20 @@ public class TripServiceTests {
         when(tripUserStatusRepository.findOneByTripModelIdAndUserAsDriverOrAdmin(1L,"username1"))
                 .thenReturn(Optional.ofNullable(tripUserStatus));
         when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
+        when( tripUserStatusRepository.findAllByTripModelIdAndIsDeletedFalse(1L))
+                .thenReturn(tripUserStatusList);
         when(tripRepository.save(trip)).thenReturn(trip);
+        when(tripUserStatusRepository.save(tripUserStatus)).thenReturn(tripUserStatus);
 
         tripService.deleteTrip(1L,"username1");
 
         verify(tripUserStatusRepository,times(1))
                 .findOneByTripModelIdAndUserAsDriverOrAdmin(1L,"username1");
+        verify(tripUserStatusRepository,times(1))
+                .findAllByTripModelIdAndIsDeletedFalse(1L);
         verify(tripRepository,times(1)).save(trip);
         verify(tripRepository,times(1)).findByModelIdAndIsDeletedFalse(1L);
+        verify(tripUserStatusRepository,times(1)).save(tripUserStatus);
 
         verifyNoMoreInteractions(tripRepository,tripUserStatusRepository);
     }

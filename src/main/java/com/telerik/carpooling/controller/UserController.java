@@ -30,7 +30,7 @@ public class UserController {
     @PostMapping(value = "/register")
     public ResponseEntity<UserDtoResponse> save(@Valid @RequestBody final UserDtoRequest userDtoRequest) {
 
-        return ResponseEntity.ok().body(userService.save(userDtoRequest));
+        return ResponseEntity.ok().body(userService.createUser(userDtoRequest));
     }
 
     @PostMapping(value = "/rate/{tripId}/user/{username}")
