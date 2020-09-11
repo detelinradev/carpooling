@@ -40,10 +40,10 @@ public class UserController {
     }
 
     @PostMapping(value = "/rate/{tripId}/user/{username}")
-    public ResponseEntity<Void> rateUser(@PathVariable final Long tripId,
-                                         @PathVariable final String username,
+    public ResponseEntity<Void> rateUser(@PathVariable @NotNull final Long tripId,
+                                         @PathVariable @NotNull final String username,
                                          final Authentication authentication,
-                                         @RequestBody final Integer rating) throws NotFoundException {
+                                         @RequestBody @NotNull final Integer rating) throws NotFoundException {
 
         ratingService.createRating(tripId, authentication.getName(), username, rating);
         ratingService.setUserRating(tripId, username, rating);
@@ -51,10 +51,10 @@ public class UserController {
     }
 
     @PostMapping(value = "/feedback/{tripId}/user/{username}")
-    public ResponseEntity<Void> leaveFeedback(@PathVariable final Long tripId,
-                                              @PathVariable final String username,
+    public ResponseEntity<Void> leaveFeedback(@PathVariable @NotNull final Long tripId,
+                                              @PathVariable @NotNull final String username,
                                               final Authentication authentication,
-                                              @RequestBody final String feedback) throws NotFoundException {
+                                              @RequestBody @NotNull final String feedback) throws NotFoundException {
 
         feedbackService.leaveFeedback(tripId, authentication.getName(), username, feedback);
         return ResponseEntity.ok().build();
@@ -85,13 +85,14 @@ public class UserController {
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserDtoResponse> getUser(@PathVariable final String username, final Authentication authentication) {
+    public ResponseEntity<UserDtoResponse> getUser(@PathVariable @NotNull final String username,
+                                                   final Authentication authentication) {
 
         return ResponseEntity.ok().body(userService.getUser(username, authentication.getName()));
     }
 
     @GetMapping(value = "/{username}/feedback")
-    public ResponseEntity<Set<FeedbackDtoResponse>> getFeedback(@PathVariable final String username) {
+    public ResponseEntity<Set<FeedbackDtoResponse>> getFeedback(@PathVariable @NotNull final String username) {
 
         return ResponseEntity.ok().body(feedbackService.getFeedback(username));
     }
@@ -105,7 +106,7 @@ public class UserController {
 
     @DeleteMapping(value = "/{username}/delete")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<Void> deleteUser(@PathVariable final String username) {
+    public ResponseEntity<Void> deleteUser(@PathVariable @NotNull final String username) {
 
         userService.deleteUser(username);
         return ResponseEntity.ok().build();

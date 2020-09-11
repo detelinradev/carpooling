@@ -10,20 +10,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotNull;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
 @Log4j2
 @RequestMapping("images")
+@Validated
 public class ImageController {
 
     private final ImageService imageService;
 
     @PostMapping()
-    public ResponseEntity<Void> uploadUserImage(@RequestBody final MultipartFile file,
+    public ResponseEntity<Void> uploadUserImage(@RequestBody @NotNull final MultipartFile file,
                                                 final Authentication authentication) {
 
         imageService.storeUserImage(file, authentication.getName());
@@ -31,7 +35,7 @@ public class ImageController {
     }
 
     @PostMapping("/car")
-    public ResponseEntity<Void> uploadCarImage(@RequestParam("upfile") final MultipartFile file,
+    public ResponseEntity<Void> uploadCarImage(@RequestParam("upfile") @NotNull final MultipartFile file,
                                                final Authentication authentication) {
 
         imageService.storeCarImage(file, authentication.getName());
@@ -39,26 +43,28 @@ public class ImageController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<byte[]> downloadUserImage(@PathVariable final String username) {
+    public ResponseEntity<byte[]> downloadUserImage(@PathVariable @NotNull final String username) {
 
         return createImageModelInResponseEntity(imageService.getUserImage(username));
     }
 
     @GetMapping("/car/{username}")
-    public ResponseEntity<byte[]> downloadCarImage(@PathVariable final String username) throws NotFoundException {
+    public ResponseEntity<byte[]> downloadCarImage(@PathVariable @NotNull final String username) throws NotFoundException {
 
         return createImageModelInResponseEntity(imageService.getCarImage(username));
     }
 
     @DeleteMapping(value = "/{username}")
-    public ResponseEntity<Void> deleteUserImage(@PathVariable final String username, final Authentication authentication) {
+    public ResponseEntity<Void> deleteUserImage(@PathVariable @NotNull final String username,
+                                                final Authentication authentication) {
 
         imageService.deleteUserImage(username,authentication);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = "/car/{username}")
-    public ResponseEntity<Void> deleteCarImage(@PathVariable final String username, final Authentication authentication) throws NotFoundException {
+    public ResponseEntity<Void> deleteCarImage(@PathVariable @NotNull final String username,
+                                               final Authentication authentication) throws NotFoundException {
 
         imageService.deleteCarImage(username,authentication);
         return ResponseEntity.ok().build();

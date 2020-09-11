@@ -8,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @CrossOrigin(maxAge = 3600)
@@ -18,21 +20,22 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Log4j2
 @RequestMapping("comments")
+@Validated
 public class CommentController {
 
     private final CommentService commentService;
 
     @PostMapping(value = "/{tripId}")
-    public ResponseEntity<CommentDtoResponse> createComment(@PathVariable final Long tripId,
+    public ResponseEntity<CommentDtoResponse> createComment(@PathVariable @NotNull final Long tripId,
                                                             final Authentication authentication,
-                                                            @RequestParam(value = "comment") final String message)
+                                                            @RequestParam(value = "comment") @NotNull final String message)
             throws NotFoundException {
 
         return ResponseEntity.ok().body(commentService.createComment(tripId, authentication.getName(), message));
     }
 
     @GetMapping(value = "/{tripId}")
-    public ResponseEntity<Set<CommentDtoResponse>> getComments(@PathVariable final Long tripId)
+    public ResponseEntity<Set<CommentDtoResponse>> getComments(@PathVariable @NotNull final Long tripId)
             throws NotFoundException {
 
         return ResponseEntity.ok().body(commentService.getComments(tripId));
@@ -46,7 +49,7 @@ public class CommentController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable final Long id, final Authentication authentication)
+    public ResponseEntity<Void> deleteComment(@PathVariable @NotNull final Long id, final Authentication authentication)
             throws NotFoundException {
 
         commentService.deleteComment(id,authentication.getName());

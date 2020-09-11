@@ -29,8 +29,7 @@ public class RatingServiceImpl implements RatingService {
     private final TripUserStatusRepository tripUserStatusRepository;
 
     @Override
-    public void createRating(Long tripID, String loggedUserUsername, String ratedUserUsername, Integer rating) throws MyNotFoundException {
-
+    public void createRating(Long tripID, String loggedUserUsername, String ratedUserUsername, Integer rating){
         Trip trip = getTripById(tripID);
         User user = findUserByUsername(loggedUserUsername);
         User ratedUser = findUserByUsername(ratedUserUsername);
@@ -71,7 +70,7 @@ public class RatingServiceImpl implements RatingService {
     }
 
 
-    private Trip getTripById(Long tripID) throws MyNotFoundException {
+    private Trip getTripById(Long tripID) {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
                 .orElseThrow(() -> new MyNotFoundException("Trip does not exist"));
     }
