@@ -59,13 +59,14 @@ public class UserController {
 
     @GetMapping
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<List<UserDtoResponse>> getUsers(@RequestParam(value = "_end", required = false) final Integer pageNumber,
-                                                          @RequestParam(value = "_start", required = false) final Integer pageSize,
-                                                          @RequestParam(value = "username", required = false) final String username,
-                                                          @RequestParam(value = "firstName", required = false) final String firstName,
-                                                          @RequestParam(value = "lastName", required = false) final String lastName,
-                                                          @RequestParam(value = "email", required = false) final String email,
-                                                          @RequestParam(value = "phone", required = false) final String phone) {
+    public ResponseEntity<List<UserDtoResponse>> getUsers
+            (@RequestParam(value = "_end", required = false,defaultValue = "0") final Integer pageNumber,
+             @RequestParam(value = "_start", required = false,defaultValue = "10") final Integer pageSize,
+             @RequestParam(value = "username", required = false) final String username,
+             @RequestParam(value = "firstName", required = false) final String firstName,
+             @RequestParam(value = "lastName", required = false) final String lastName,
+             @RequestParam(value = "email", required = false) final String email,
+             @RequestParam(value = "phone", required = false) final String phone) {
 
         return ResponseEntity.ok().body(userService.getUsers(pageNumber, pageSize, username, firstName, lastName, email,
                 phone));

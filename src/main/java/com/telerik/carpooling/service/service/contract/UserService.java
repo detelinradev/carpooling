@@ -71,6 +71,33 @@ public interface UserService {
 
     void deleteUser(String username);
 
+    /**
+     *    Retrieving from data base all <class>User</class> objects matching the passed parameters.
+     * <p>
+     *     Includes <class>Pageable</class> object which pageNumber has default value of 0, pageSize - default value
+     * of 10 and nested <class>Sort</class> object which sorts result first based on <class>lastName</class>
+     * field ascending and then sorts based on <class>firstName</class> field ascending.
+     * <p>
+     *     All parameters are optional and if any or all of them are missing, they are replaced with null and not taken
+     * into account when searching the database.
+     *
+     * @param pageNumber parameter is optional and represents the number of the page to be retrieved,
+     *                   part of <class>Pageable</class> object, has default value of 0
+     * @param pageSize parameter is optional and represents the size of the page that will be retrieved,
+     *                 part of <class>Pageable</class> object, has default value of 10
+     * @param username string representing <class>username</class> field of <class>User</class> object,
+     *                 it is optional search parameter
+     * @param firstName string representing <class>firstName</class> field of <class>User</class> object,
+     *                  it is optional search parameter
+     * @param lastName string representing <class>lastName</class> field of <class>User</class> object,
+     *                 it is optional search parameter
+     * @param email string representing <class>email</class> field of <class>User</class> object,
+     *              it is optional search parameter
+     * @param phone string representing <class>phone</class> field of <class>User</class> object,
+     *              it is optional search parameter
+     * @return <class>List</class> with instances of the fetched <class>User</class> objects mapped as
+     *         <class>UserDtoResponse</class> objects
+     */
     List<UserDtoResponse> getUsers(Integer pageNumber,Integer pageSize,String username,String firstName
             ,String lastName,String email, String phone);
 

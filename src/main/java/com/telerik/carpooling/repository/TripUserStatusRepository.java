@@ -115,6 +115,9 @@ public interface TripUserStatusRepository extends JpaRepository<TripUserStatus, 
      *                search parameter
      * @param airConditioned boolean value represents <class>airConditioned</class> field of <class>trip</class>, it is optional
      *                       search parameter
+     * @param page <class>Pageable</class> object which if no value is provided by the user then pageNumber has default
+     *             value of 0, pageSize - default value of 10 and <class>Sort</class> object which sorts result based
+     *             on <class>modified</class> field descending.
      * @return <class>Slice</class> with instances of the fetched <class>TripUserStatus</class> objects grouped and
      * sorted by passed <class>Pageable</class> object
      */

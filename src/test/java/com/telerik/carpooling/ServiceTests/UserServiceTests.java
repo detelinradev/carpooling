@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDateTime;
@@ -54,7 +55,10 @@ public class UserServiceTests {
     private UserDtoRequest userDtoRequest;
     private UserDtoResponse userDtoResponse;
     private UserDtoEdit userDtoEdit;
-    private List<TripUserStatus> tripUserStatusList;
+    private List<User> userList;
+    private List<UserDtoResponse> userDtoResponseList;
+    private Slice<User> userSlice;
+    private Pageable pageable;
 
     @Spy
     @InjectMocks
@@ -90,12 +94,16 @@ public class UserServiceTests {
                 "origin", "destination", 3, 4,
                 4, true, true, true, true);
         tripUserStatus = new TripUserStatus(user1, trip, UserStatus.PENDING);
-        tripUserStatusList = new ArrayList<>();
-        tripUserStatusList.add(tripUserStatus);
+        userList = new ArrayList<>();
+        userList.add(user1);
+        userDtoResponseList = new ArrayList<>();
+        userDtoResponseList.add(userDtoResponse);
+        userSlice = new SliceImpl<>(userList);
+        pageable = PageRequest.of(0, 10, Sort.by("lastName").ascending().and(Sort.by("firstName").ascending()));
     }
 
     @Test
-    public void create_user_Should_CreateNewUser_When_DtoIsValid() {
+    public void create_User_Should_CreateNewUser_When_DtoIsValid() {
 
         when(userRepository.save(user1)).thenReturn(user1);
         when(dtoMapper.dtoToObject(userDtoRequest)).thenReturn(user1);
@@ -105,7 +113,7 @@ public class UserServiceTests {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void create_user_Should_ThrowException_IfNoPasswordIsPresent(){
+    public void create_User_Should_ThrowException_IfNoPasswordIsPresent(){
 
         user1.setPassword(null);
 
@@ -115,7 +123,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void update_user_Should_UpdateUser_When_UserIsLoggedUserAndPasswordIsPresent() {
+    public void update_User_Should_UpdateUser_When_UserIsLoggedUserAndPasswordIsPresent() {
 
         when(userRepository.save(user1)).thenReturn(user1);
         when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
@@ -127,7 +135,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void update_user_Should_UpdateUser_When_UserIsLoggedUserAndPasswordIsNotPresent() {
+    public void update_User_Should_UpdateUser_When_UserIsLoggedUserAndPasswordIsNotPresent() {
 
         userDtoEdit.setPassword(null);
         when(userRepository.save(user1)).thenReturn(user1);
@@ -140,7 +148,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void update_user_Should_UpdateUser_When_UserIsAdminAndPasswordIsPresent() {
+    public void update_User_Should_UpdateUser_When_UserIsAdminAndPasswordIsPresent() {
 
         user2.setRole(UserRole.ADMIN);
         when(userRepository.findByUsernameAndIsDeletedFalse(user2.getUsername()))
@@ -153,7 +161,7 @@ public class UserServiceTests {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void update_user_Should_ThrowException_IfUserIsNotLoggedUserAndNotAdmin(){
+    public void update_User_Should_ThrowException_IfUserIsNotLoggedUserAndNotAdmin(){
 
         when(userRepository.findByUsernameAndIsDeletedFalse(user2.getUsername()))
                 .thenReturn(java.util.Optional.ofNullable(user2));
@@ -164,7 +172,7 @@ public class UserServiceTests {
     }
 
     @Test (expected = UsernameNotFoundException.class)
-    public void update_user_Should_ThrowException_IfUserIsNotFound(){
+    public void update_User_Should_ThrowException_IfUserIsNotFound(){
 
         when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
                 .thenReturn(Optional.empty());
@@ -173,7 +181,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void get_user_Should_RetrieveUser_When_LoggedUserIsSameUserAndUsernameIsValid() {
+    public void get_User_Should_RetrieveUser_When_LoggedUserIsSameUserAndUsernameIsValid() {
 
         when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
                 .thenReturn(java.util.Optional.ofNullable(user1));
@@ -185,7 +193,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void get_user_Should_RetrieveUser_When_LoggedUserIsAdminAndUsernameIsValid() {
+    public void get_User_Should_RetrieveUser_When_LoggedUserIsAdminAndUsernameIsValid() {
 
         user2.setRole(UserRole.ADMIN);
         when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
@@ -198,7 +206,7 @@ public class UserServiceTests {
     }
 
     @Test (expected = UsernameNotFoundException.class)
-    public void get_user_Should_ThrowException_IfUsernameIsNotValid(){
+    public void get_User_Should_ThrowException_IfUsernameIsNotValid(){
 
         when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
                 .thenReturn(Optional.empty());
@@ -207,7 +215,7 @@ public class UserServiceTests {
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void get_user_Should_ThrowException_IfLoggedUserIsNotSameUserAndAdmin(){
+    public void get_User_Should_ThrowException_IfLoggedUserIsNotSameUserAndAdmin(){
 
         when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
                 .thenReturn(Optional.ofNullable(user1));
@@ -215,5 +223,27 @@ public class UserServiceTests {
                 .thenReturn(java.util.Optional.ofNullable(user2));
 
         userService.getUser("username1","username2");
+    }
+
+    @Test
+    public void get_Users_Should_RetrieveListWithUsers_When_AllParametersArePassed() {
+
+        when(userRepository.findUsers("username", "firstName","lastName","email",
+                "phone", pageable)).thenReturn(userSlice);
+        when(dtoMapper.userToDtoList(userList)).thenReturn(userDtoResponseList);
+
+        Assert.assertEquals(userDtoResponseList,userService.getUsers(0,10,"username", "firstName","lastName","email",
+                "phone"));
+    }
+
+    @Test
+    public void get_Users_Should_RetrieveListWithUsers_When_NoParametersArePassed() {
+
+        when(userRepository.findUsers(null, null,null,null,
+                null, pageable)).thenReturn(userSlice);
+        when(dtoMapper.userToDtoList(userList)).thenReturn(userDtoResponseList);
+
+        Assert.assertEquals(userDtoResponseList,userService.getUsers(0,10,null,
+                null,null,null, null));
     }
 }

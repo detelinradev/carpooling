@@ -14,6 +14,8 @@ import com.telerik.carpooling.service.service.contract.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -86,10 +88,10 @@ public class UserServiceImpl implements UserService {
     public List<UserDtoResponse> getUsers(Integer pageNumber, Integer pageSize, String username, String firstName,
                                           String lastName, String email, String phone) {
 
-        List<User> users = userRepository.findUsers(username, firstName, lastName, email, phone,
-                (pageNumber != null ? PageRequest.of(pageNumber, pageSize) : null));
+        Slice<User> users = userRepository.findUsers(username, firstName, lastName, email, phone,
+                PageRequest.of(pageNumber, pageSize, Sort.by("lastName").ascending().and(Sort.by("firstName").ascending())));
 
-        return dtoMapper.userToDtoList(users);
+        return dtoMapper.userToDtoList(users.getContent());
     }
 
     @Override
@@ -106,18 +108,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDtoResponse> getTopRatedUsers(Boolean isPassenger) {
+
         List<User> users = userRepository.findUsers(null, null, null,
-                null, null, null);
+                null, null, null).getContent();
+
         if (isPassenger) {
 
             users.sort((a, b) -> b.getRatingAsPassenger().compareTo(a.getRatingAsPassenger()));
-
         } else {
 
             users.sort((a, b) -> b.getRatingAsDriver().compareTo(a.getRatingAsDriver()));
-
         }
-
         return dtoMapper.userToDtoList(users.stream()
                 .limit(10)
                 .collect(Collectors.toList()));
