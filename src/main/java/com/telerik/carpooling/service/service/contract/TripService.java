@@ -58,6 +58,8 @@ public interface TripService {
      *     There is check if the logged <class>user</class> is the owner of this <class>trip</class> or <class>admin</class>,
      * if the criteria is met, the <class>trip</class> is retrieved from the database, otherwise
      * IllegalArgumentException exception is thrown as that is not the expected result.
+     * <p>
+     *     All <class>tripUserStatuses</class> where the <class>trip</class> occurs are softly deleted as well.
      *
      * @param tripId             the <class>modelId</class> of the <class>trip</class>
      * @param loggedUserUsername <class>username</class> of the currently logged <class>user</class> extracted from

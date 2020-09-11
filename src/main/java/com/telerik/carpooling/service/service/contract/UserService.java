@@ -69,6 +69,19 @@ public interface UserService {
      */
     UserDtoResponse getUser(String username,  String loggedUserUsername);
 
+    /**
+     *     Deletes softly <class>user</class> with given <class>username</class>.
+     * <p>
+     *     Check is made if the passed <class>username</class> is valid, if not exception is thrown.
+     * <p>
+     *     All <class>tripUserStatuses</class> where the <class>user</class> occurs are softly deleted as well.
+     * <p>
+     *     Transactional annotation is added to override class based behavior read only = true, with read only = false, as
+     * this method is modifying the entity so we expect Hibernate to observe changes in the current Persistence Context
+     * and include update at flush-time.
+     *
+     * @param username the <class>username</class> of the <class>user</class> to be deleted
+     */
     void deleteUser(String username);
 
     /**
@@ -101,6 +114,20 @@ public interface UserService {
     List<UserDtoResponse> getUsers(Integer pageNumber,Integer pageSize,String username,String firstName
             ,String lastName,String email, String phone);
 
+    /**
+     *     Returns list with top 10 users based on their rating. Provides two different searches based on boolean
+     * parameter - top 10 drivers and top 10 passengers.
+     * <p>
+     *     If there is no rates yet returns 0.0 as default value.
+     *  <p>
+     *     Parameter isPassenger is considered to be valid because of validation in controller. Either way null values
+     *  should not be passed.
+     *
+     * @param isPassenger boolean parameter indicating which rating field - <class>ratingAsPassenger</class> or
+     *                    <class>ratingAsDriver</class> to be used when forming the result list
+     * @return <class>List</class> with instances of the fetched <class>User</class> objects mapped as
+     *         <class>UserDtoResponse</class> objects
+     */
     List<UserDtoResponse> getTopRatedUsers(Boolean isPassenger);
 
 }

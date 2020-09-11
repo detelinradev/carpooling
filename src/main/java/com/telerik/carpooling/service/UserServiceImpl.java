@@ -21,6 +21,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,17 +102,21 @@ public class UserServiceImpl implements UserService {
 
         User user = findUserByUsername(username);
         List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByUserAndIsDeletedFalse(user);
-        tripUserStatusList.forEach(passenger -> passenger.getTrip().setIsDeleted(true));
+
+        tripUserStatusList.forEach(tripUserStatus -> tripUserStatus.setIsDeleted(true));
         tripUserStatusList.forEach(tripUserStatusRepository::save);
+
         user.setIsDeleted(true);
+
         userRepository.save(user);
     }
 
     @Override
-    public List<UserDtoResponse> getTopRatedUsers(Boolean isPassenger) {
+    public List<UserDtoResponse> getTopRatedUsers(@NotNull final Boolean isPassenger) {
 
-        List<User> users = userRepository.findUsers(null, null, null,
-                null, null, null).getContent();
+        Slice<User> result = userRepository.findUsers(null, null, null,
+                null, null, null);
+        List<User> users = new ArrayList<>(result.getContent());
 
         if (isPassenger) {
 

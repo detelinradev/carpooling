@@ -10,6 +10,7 @@ import com.telerik.carpooling.model.User;
 import com.telerik.carpooling.model.dto.*;
 import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
 import com.telerik.carpooling.repository.TripRepository;
+import com.telerik.carpooling.repository.TripUserStatusRepository;
 import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.UserServiceImpl;
 import com.telerik.carpooling.service.service.contract.TripService;
@@ -29,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class UserServiceTests {
@@ -41,6 +43,9 @@ public class UserServiceTests {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    TripUserStatusRepository tripUserStatusRepository;
 
     @Mock
     DtoMapper dtoMapper;
@@ -57,6 +62,7 @@ public class UserServiceTests {
     private UserDtoEdit userDtoEdit;
     private List<User> userList;
     private List<UserDtoResponse> userDtoResponseList;
+    private List<TripUserStatus> tripUserStatusList;
     private Slice<User> userSlice;
     private Pageable pageable;
 
@@ -98,6 +104,8 @@ public class UserServiceTests {
         userList.add(user1);
         userDtoResponseList = new ArrayList<>();
         userDtoResponseList.add(userDtoResponse);
+        tripUserStatusList = new ArrayList<>();
+        tripUserStatusList.add(tripUserStatus);
         userSlice = new SliceImpl<>(userList);
         pageable = PageRequest.of(0, 10, Sort.by("lastName").ascending().and(Sort.by("firstName").ascending()));
     }
@@ -245,5 +253,58 @@ public class UserServiceTests {
 
         Assert.assertEquals(userDtoResponseList,userService.getUsers(0,10,null,
                 null,null,null, null));
+    }
+
+    @Test
+    public void delete_User_Should_deleteUser_WhenPassedUsernameIsValid() {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1"))
+                .thenReturn(Optional.ofNullable(user1));
+        when( tripUserStatusRepository.findAllByUserAndIsDeletedFalse(user1))
+                .thenReturn(tripUserStatusList);
+        when(tripUserStatusRepository.save(tripUserStatus)).thenReturn(tripUserStatus);
+        when(userRepository.save(user1)).thenReturn(user1);
+
+        userService.deleteUser("username1");
+
+        verify(userRepository,times(1))
+                .findByUsernameAndIsDeletedFalse("username1");
+        verify(tripUserStatusRepository,times(1))
+                .findAllByUserAndIsDeletedFalse(user1);
+        verify(tripUserStatusRepository,times(1)).save(tripUserStatus);
+        verify(userRepository,times(1)).save(user1);
+
+        verifyNoMoreInteractions(userRepository,tripUserStatusRepository);
+    }
+
+    @Test (expected = UsernameNotFoundException.class)
+    public void delete_User_Should_ThrowException_IfPassedUsernameIsNotValid() {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1"))
+                .thenReturn(Optional.empty());
+
+        userService.deleteUser("username1");
+    }
+
+    @Test
+    public void get_TopRatedUsers_Should_RetrieveListWithUsers_When_ParameterIsPassengerIsTrue() {
+
+        when(userRepository.findUsers(null, null, null,
+                null, null, null))
+                .thenReturn(userSlice);
+        when(dtoMapper.userToDtoList(userList)).thenReturn(userDtoResponseList);
+
+        Assert.assertEquals(userDtoResponseList, userService.getTopRatedUsers(true));
+    }
+
+    @Test
+    public void get_TopRatedUsers_Should_RetrieveListWithUsers_When_ParameterIsPassengerIsFalse() {
+
+        when(userRepository.findUsers(null, null, null,
+                null, null, null))
+                .thenReturn(userSlice);
+        when(dtoMapper.userToDtoList(userList)).thenReturn(userDtoResponseList);
+
+        Assert.assertEquals(userDtoResponseList, userService.getTopRatedUsers(false));
     }
 }

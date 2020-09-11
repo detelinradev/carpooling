@@ -13,9 +13,11 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +26,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Log4j2
 @RequestMapping(value = "users")
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -73,7 +76,9 @@ public class UserController {
     }
 
     @GetMapping(value = "/top-rated-users")
-    public ResponseEntity<List<UserDtoResponse>> getTopRatedUsers(@RequestParam(value = "isPassenger") final Boolean isPassenger) {
+    public ResponseEntity<List<UserDtoResponse>> getTopRatedUsers(
+            @RequestParam(value = "isPassenger")
+            @NotNull(message = "isPassenger parameter should not be null") final Boolean isPassenger) {
 
         return ResponseEntity.ok().body(userService.getTopRatedUsers(isPassenger));
 
