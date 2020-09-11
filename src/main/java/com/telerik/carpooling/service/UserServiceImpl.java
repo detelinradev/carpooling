@@ -2,15 +2,13 @@ package com.telerik.carpooling.service;
 
 import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.model.TripUserStatus;
-import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.User;
-import com.telerik.carpooling.model.dto.TripDtoResponse;
 import com.telerik.carpooling.model.dto.UserDtoEdit;
 import com.telerik.carpooling.model.dto.UserDtoRequest;
 import com.telerik.carpooling.model.dto.UserDtoResponse;
 import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
-import com.telerik.carpooling.repository.TripUserStatusRepository;
 import com.telerik.carpooling.repository.RatingRepository;
+import com.telerik.carpooling.repository.TripUserStatusRepository;
 import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.service.contract.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,25 +35,35 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptEncoder;
 
     @Override
+    @Transactional
     public UserDtoResponse createUser(UserDtoRequest userDtoRequest) {
 
         User user = dtoMapper.dtoToObject(userDtoRequest);
 
-        user.setPassword(bCryptEncoder.encode(userDtoRequest.getPassword()));
+        if(user.getPassword()!= null) {
+
+            user.setPassword(bCryptEncoder.encode(userDtoRequest.getPassword()));
+
+        } else throw new IllegalArgumentException("User should specify a password");
 
         return dtoMapper.objectToDto(userRepository.save(user));
     }
 
     @Override
-    public UserDtoResponse updateUser(UserDtoEdit userDtoEdit,String loggedUserUsername) {
+    @Transactional
+    public UserDtoResponse updateUser(UserDtoEdit userDtoEdit,String loggedUserName) {
+
         User user = dtoMapper.dtoToObject(userDtoEdit);
-        String password = user.getPassword();
-        User loggedUser = findUserByUsername(loggedUserUsername);
+        User loggedUser = findUserByUsername(loggedUserName);
+
         if (isRole_AdminOrSameUser( user, loggedUser)) {
-            user.setRatingAsPassenger(0.0);
-            user.setRatingAsDriver(0.0);
-            user.setPassword(bCryptEncoder.encode(password));
+
+            if(user.getPassword()!= null)
+
+            user.setPassword(bCryptEncoder.encode(user.getPassword()));
+
             return dtoMapper.objectToDto(userRepository.save(user));
+
         } else throw new IllegalArgumentException("You are not authorized to edit the user");
 
     }
@@ -95,19 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<TripDtoResponse> getUserOwnTrips(String loggedUserUsername) {
-        List<Trip> tripsNotDeleted = new ArrayList<>();
-        User user = findUserByUsername(loggedUserUsername);
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findAllByUserAndIsDeletedFalse(user);
-        tripUserStatusList.stream()
-                .filter(k -> !k.getTrip().getIsDeleted())
-                .distinct()
-                .forEach(j -> tripsNotDeleted.add(j.getTrip()));
-
-        return dtoMapper.tripToDtoList(tripsNotDeleted);
-    }
-
-    @Override
+    @Transactional
     public void deleteUser(String username) {
 
         User user = findUserByUsername(username);

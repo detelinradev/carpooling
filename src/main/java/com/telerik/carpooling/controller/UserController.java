@@ -1,6 +1,9 @@
 package com.telerik.carpooling.controller;
 
-import com.telerik.carpooling.model.dto.*;
+import com.telerik.carpooling.model.dto.FeedbackDtoResponse;
+import com.telerik.carpooling.model.dto.UserDtoEdit;
+import com.telerik.carpooling.model.dto.UserDtoRequest;
+import com.telerik.carpooling.model.dto.UserDtoResponse;
 import com.telerik.carpooling.service.service.contract.FeedbackService;
 import com.telerik.carpooling.service.service.contract.RatingService;
 import com.telerik.carpooling.service.service.contract.UserService;
@@ -28,7 +31,7 @@ public class UserController {
     private final FeedbackService feedbackService;
 
     @PostMapping(value = "/register")
-    public ResponseEntity<UserDtoResponse> save(@Valid @RequestBody final UserDtoRequest userDtoRequest) {
+    public ResponseEntity<UserDtoResponse> create(@Valid @RequestBody final UserDtoRequest userDtoRequest) {
 
         return ResponseEntity.ok().body(userService.createUser(userDtoRequest));
     }
@@ -87,9 +90,10 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserDtoResponse> editUser(@Valid @RequestBody final UserDtoEdit userDtoEdit, final Authentication authentication) {
+    public ResponseEntity<UserDtoResponse> editUser(@Valid @RequestBody final UserDtoEdit userDtoEdit,
+                                                    final Authentication authentication) {
 
-        return ResponseEntity.ok().body(userService.updateUser(userDtoEdit, authentication.getName()));
+        return ResponseEntity.ok().body(userService.updateUser(userDtoEdit,authentication.getName()));
     }
 
     @DeleteMapping(value = "/{username}/delete")

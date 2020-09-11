@@ -32,7 +32,6 @@ public class UserDtoRequest {
     @Email(message = "Email should follow the pattern xxxx@yyyy.zzzz")
     private String email;
 
-    @NotNull(message = "User should have password")
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,128}$",
             message = "Please enter password that contains:\n" +
             "\n" +

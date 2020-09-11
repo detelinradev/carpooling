@@ -1,15 +1,18 @@
 package com.telerik.carpooling.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.model.base.MappedAudibleBase;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.validation.constraints.*;
 
 
@@ -51,8 +54,6 @@ public class User extends MappedAudibleBase {
     @NotNull(message = "User should have user role")
     private UserRole role = UserRole.USER;
 
-    @JsonIgnore
-    @NotNull(message = "User should have password")
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,128}$",
             message = "Please enter password that contains:\n" +
                     "\n" +

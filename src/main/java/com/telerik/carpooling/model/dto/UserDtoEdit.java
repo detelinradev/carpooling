@@ -24,7 +24,6 @@ public class UserDtoEdit {
     @NotNull(message = "User should have user role")
     private UserRole role;
 
-    @NotNull(message = "User should have password")
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,128}$",
             message = "Please enter password that contains:\n" +
                     "\n" +

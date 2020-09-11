@@ -4,7 +4,6 @@ package com.telerik.carpooling.ServiceTests;
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.enums.UserStatus;
-import com.telerik.carpooling.model.Car;
 import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.TripUserStatus;
 import com.telerik.carpooling.model.User;
@@ -22,11 +21,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -42,9 +42,6 @@ public class UserServiceTests {
     UserRepository userRepository;
 
     @Mock
-    BCryptPasswordEncoder bCryptEncoder;
-
-    @Mock
     DtoMapper dtoMapper;
 
     private Trip trip;
@@ -52,10 +49,11 @@ public class UserServiceTests {
     private TripDtoEdit tripDtoEdit;
     private TripDtoRequest tripDtoRequest;
     private TripUserStatus tripUserStatus;
-    private User user;
+    private User user1;
+    private User user2;
     private UserDtoRequest userDtoRequest;
     private UserDtoResponse userDtoResponse;
-    private Car car;
+    private UserDtoEdit userDtoEdit;
     private List<TripUserStatus> tripUserStatusList;
 
     @Spy
@@ -65,15 +63,19 @@ public class UserServiceTests {
     @Before
     public void SetUp() {
 
-        user = new User("username1", "lastName", "username1",
+        user1 = new User("username1", "lastName", "username1",
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
                 4.0);
-        user.setModelId(1L);
+        user1.setModelId(1L);
+        user2 = new User("username2", "lastName", "username2",
+                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
+                4.0);
+        user2.setModelId(2L);
         userDtoRequest = new UserDtoRequest("username1", "lastName", "username1",
                 "email@gmail.com", "password", "phone");
         userDtoResponse = new UserDtoResponse(1L, "username1", "lastName", "username1",
                 "email@gmail.com", UserRole.USER, "phone", 3.5, 4.0);
-        car = new Car("model", "brand", "color", 2018, true, user);
+        userDtoEdit = new UserDtoEdit (1L,"email@gmail.com", UserRole.USER,"password", "phone");
         trip = new Trip("message", LocalDateTime.MAX,
                 "origin", "destination", 3, 5, 4,
                 true, true, true, true, TripStatus.AVAILABLE);
@@ -87,7 +89,7 @@ public class UserServiceTests {
         tripDtoEdit = new TripDtoEdit(1L, "message", LocalDateTime.MAX,
                 "origin", "destination", 3, 4,
                 4, true, true, true, true);
-        tripUserStatus = new TripUserStatus(user, trip, UserStatus.PENDING);
+        tripUserStatus = new TripUserStatus(user1, trip, UserStatus.PENDING);
         tripUserStatusList = new ArrayList<>();
         tripUserStatusList.add(tripUserStatus);
     }
@@ -95,123 +97,77 @@ public class UserServiceTests {
     @Test
     public void create_user_Should_CreateNewUser_When_DtoIsValid() {
 
-        when(userRepository.save(user)).thenReturn(user);
-        when(dtoMapper.dtoToObject(userDtoRequest)).thenReturn(user);
-        when(dtoMapper.objectToDto(user)).thenReturn(userDtoResponse);
+        when(userRepository.save(user1)).thenReturn(user1);
+        when(dtoMapper.dtoToObject(userDtoRequest)).thenReturn(user1);
+        when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
 
         Assert.assertEquals(userDtoResponse, userService.createUser(userDtoRequest));
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void create_user_Should_ThrowException_IfNoPasswordIsPresent(){
 
-//    @Test
-//    public void findAll_Should_ReturnAll() {
-//        //Arrange
-//        User first = new User("firstName", "lastName", "username1",
-//                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-//                4.0);
-//        User second = new User("firstName", "lastName", "username1",
-//                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-//                4.0);
-//        first.setModelId(1L);
-//        Optional<Double> rating1;
-//        rating1 = Optional.of(3.3);
-//        Optional<Double> rating2;
-//        rating2 = Optional.of(3.2);
-//        List<User> users = new ArrayList<>();
-//        users.add(first);
-//        users.add(second);
+        user1.setPassword(null);
 
+        when(dtoMapper.dtoToObject(userDtoRequest)).thenReturn(user1);
 
-        //Act
-//        when(userRepository.findAllByIsDeletedIsFalse()).thenReturn(users);
-//        when(ratingRepository.findAverageRatingByUserAsPassenger(1L)).thenReturn(rating1);
-//        when(ratingRepository.findAverageRatingByUserAsDriver(1L)).thenReturn(rating2);
+        userService.createUser(userDtoRequest);
+    }
 
-        //Assert
-//        Assert.assertEquals(users, userService.getUsers());
-//    }
+    @Test
+    public void update_user_Should_UpdateUser_When_UserIsLoggedUserOrAdminAndPasswordIsPresent() {
 
-//    @Test
-//    public void getUser() {
-//        User first = new User("firstName", "lastName", "username1",
-//                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-//                4.0);
-//        first.setModelId(1L);
-//        Optional<Double> rating1;
-//        rating1 = Optional.of(3.3);
-//        Optional<Double> rating2;
-//        rating2 = Optional.of(3.2);
-//        when(userRepository.findFirstByUsername("username1")).thenReturn(first);
-//        when(ratingRepository.findAverageRatingByUserAsPassenger(1L)).thenReturn(rating1);
-//        when(ratingRepository.findAverageRatingByUserAsDriver(1L)).thenReturn(rating2);
-//
-//        Assert.assertEquals(first, userService.getUser("username1"));
-//    }
+        when(userRepository.save(user1)).thenReturn(user1);
+        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername())).thenReturn(java.util.Optional.ofNullable(user1));
+        when(dtoMapper.dtoToObject(userDtoEdit)).thenReturn(user1);
+        when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
 
-//    @Test
-//    public void save() {
-//        User user = new User("firstName", "lastName", "username1",
-//                "email@gmail.com", "0888999888", 3.2, 3.3,
-//                "Password!1", "USER", null, "URI", null,
-//                null, null, null, null);
-//        User newUser = new User();
-//        newUser.setUsername(user.getUsername());
-//        newUser.setFirstName(user.getFirstName());
-//        newUser.setLastName(user.getLastName());
-//        newUser.setPassword(bCryptEncoder.encode(user.getPassword()));
-//        newUser.setEmail(user.getEmail());
-//        newUser.setRole("USER");
-//        newUser.setIsDeleted(false);
-//        newUser.setPhone(user.getPhone());
-//        when(userRepository.save(user)).thenReturn(newUser);
-//
-//        Assert.assertEquals(newUser, userService.save(user));
-//    }
+        Assert.assertEquals(userDtoResponse, userService.updateUser(userDtoEdit,"username1"));
+    }
+
+    @Test
+    public void update_user_Should_UpdateUser_When_UserIsLoggedUserAndPasswordIsNotPresent() {
+
+        userDtoEdit.setPassword(null);
+        when(userRepository.save(user1)).thenReturn(user1);
+        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user1));
+        when(dtoMapper.dtoToObject(userDtoEdit)).thenReturn(user1);
+        when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
+
+        Assert.assertEquals(userDtoResponse, userService.updateUser(userDtoEdit,"username1"));
+    }
+
+    @Test
+    public void update_user_Should_UpdateUser_When_UserIsAdminAndPasswordIsPresent() {
+
+        user2.setRole(UserRole.ADMIN);
+        when(userRepository.findByUsernameAndIsDeletedFalse(user2.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user2));
+        when(dtoMapper.dtoToObject(userDtoEdit)).thenReturn(user1);
+        when(userRepository.save(user1)).thenReturn(user1);
+        when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
+
+        Assert.assertEquals(userDtoResponse, userService.updateUser(userDtoEdit,"username2"));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void update_user_Should_ThrowException_IfUserIsNotLoggedUserAndNotAdmin(){
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user2.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user2));
+        when(dtoMapper.dtoToObject(userDtoEdit)).thenReturn(user1);
 
 
-//    @Test
-//    public void updatePassword_Should_callRepository_when_UserHasAuthority() {
-//        //Arrange
-//        User toBeEdited = new User("firstName", "lastName", "username1",
-//                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-//                4.0);
-//        toBeEdited.setModelId(2L);
-//
-//        User currentUser = new User("firstName", "lastName", "username1",
-//                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-//                4.0);
-//        currentUser.setModelId(1L);
-//        currentUser.setRole(UserRole.USER);
-//
-//        //Act
-//        when(userRepository.findById(2L)).thenReturn(Optional.of(toBeEdited));
-////        userService.updateCurrentUserPassword("newPassword",currentUser);
-//
-//        //Assert
-////        verify(userService, times(1)).updateCurrentUserPassword("newPassword",currentUser);
-//    }
+        userService.updateUser(userDtoEdit,"username2");
+    }
 
-//    @Test
-//    public void updateEmail_Should_callRepository_when_UserHasAuthority() {
-//        //Arrange
-//        User toBeEdited = new User("firstName", "lastName", "username1",
-//                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-//                4.0);
-//        toBeEdited.setModelId(2L);
-//
-//        User currentUser = new User("firstName", "lastName", "username1",
-//                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-//                4.0);
-//        currentUser.setModelId(1L);
-////        currentUser.setRole("USER");
-//
-//        //Act
-//        when(userRepository.findById(2L)).thenReturn(Optional.of(toBeEdited));
-////        userService.updateCurrentUserEmail("newEmail@gmail.com",currentUser);
-//
-//        //Assert
-////        verify(userService, times(1)).updateCurrentUserEmail("newEmail@gmail.com",currentUser);
-//    }
+    @Test (expected = UsernameNotFoundException.class)
+    public void update_user_Should_ThrowException_IfUserIsNotFound(){
 
+        when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
+                .thenReturn(Optional.empty());
 
+        userService.updateUser(userDtoEdit,"username1");
+    }
 }
