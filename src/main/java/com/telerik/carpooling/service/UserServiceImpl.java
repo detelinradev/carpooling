@@ -7,7 +7,6 @@ import com.telerik.carpooling.model.dto.UserDtoEdit;
 import com.telerik.carpooling.model.dto.UserDtoRequest;
 import com.telerik.carpooling.model.dto.UserDtoResponse;
 import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
-import com.telerik.carpooling.repository.RatingRepository;
 import com.telerik.carpooling.repository.TripUserStatusRepository;
 import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.service.contract.UserService;
@@ -33,7 +32,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final RatingRepository ratingRepository;
     private final TripUserStatusRepository tripUserStatusRepository;
     private final DtoMapper dtoMapper;
     private final BCryptPasswordEncoder bCryptEncoder;

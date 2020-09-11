@@ -9,11 +9,9 @@ import com.telerik.carpooling.model.TripUserStatus;
 import com.telerik.carpooling.model.User;
 import com.telerik.carpooling.model.dto.*;
 import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
-import com.telerik.carpooling.repository.TripRepository;
 import com.telerik.carpooling.repository.TripUserStatusRepository;
 import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.UserServiceImpl;
-import com.telerik.carpooling.service.service.contract.TripService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +22,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,15 +30,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class UserServiceTests {
-
-    @Mock
-    TripRepository tripRepository;
-    @Mock
-    TripService tripService;
 
     @Mock
     UserRepository userRepository;
@@ -48,12 +41,11 @@ public class UserServiceTests {
     TripUserStatusRepository tripUserStatusRepository;
 
     @Mock
+    BCryptPasswordEncoder bCryptEncoder;
+
+    @Mock
     DtoMapper dtoMapper;
 
-    private Trip trip;
-    private TripDtoResponse tripDtoResponse;
-    private TripDtoEdit tripDtoEdit;
-    private TripDtoRequest tripDtoRequest;
     private TripUserStatus tripUserStatus;
     private User user1;
     private User user2;
@@ -86,19 +78,10 @@ public class UserServiceTests {
         userDtoResponse = new UserDtoResponse(1L, "username1", "lastName", "username1",
                 "email@gmail.com", UserRole.USER, "phone", 3.5, 4.0);
         userDtoEdit = new UserDtoEdit (1L,"email@gmail.com", UserRole.USER,"password", "phone");
-        trip = new Trip("message", LocalDateTime.MAX,
+        Trip trip = new Trip("message", LocalDateTime.MAX,
                 "origin", "destination", 3, 5, 4,
                 true, true, true, true, TripStatus.AVAILABLE);
         trip.setModelId(1L);
-        tripDtoResponse = new TripDtoResponse(1L, "message", LocalDateTime.MAX,
-                "origin", "destination", 3, TripStatus.AVAILABLE, 4,
-                4, true, true, true, true);
-        tripDtoRequest = new TripDtoRequest("message", LocalDateTime.MAX,
-                "origin", "destination", 3, 5,
-                4, true, true, true, true);
-        tripDtoEdit = new TripDtoEdit(1L, "message", LocalDateTime.MAX,
-                "origin", "destination", 3, 4,
-                4, true, true, true, true);
         tripUserStatus = new TripUserStatus(user1, trip, UserStatus.PENDING);
         userList = new ArrayList<>();
         userList.add(user1);
@@ -113,9 +96,10 @@ public class UserServiceTests {
     @Test
     public void create_User_Should_CreateNewUser_When_DtoIsValid() {
 
-        when(userRepository.save(user1)).thenReturn(user1);
         when(dtoMapper.dtoToObject(userDtoRequest)).thenReturn(user1);
+        when(userRepository.save(user1)).thenReturn(user1);
         when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
+        when(bCryptEncoder.encode(userDtoRequest.getPassword())).thenReturn("password");
 
         Assert.assertEquals(userDtoResponse, userService.createUser(userDtoRequest));
     }
@@ -138,6 +122,7 @@ public class UserServiceTests {
                 .thenReturn(java.util.Optional.ofNullable(user1));
         when(dtoMapper.dtoToObject(userDtoEdit)).thenReturn(user1);
         when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
+        when(bCryptEncoder.encode(userDtoRequest.getPassword())).thenReturn("password");
 
         Assert.assertEquals(userDtoResponse, userService.updateUser(userDtoEdit,"username1"));
     }
@@ -164,6 +149,7 @@ public class UserServiceTests {
         when(dtoMapper.dtoToObject(userDtoEdit)).thenReturn(user1);
         when(userRepository.save(user1)).thenReturn(user1);
         when(dtoMapper.objectToDto(user1)).thenReturn(userDtoResponse);
+        when(bCryptEncoder.encode(userDtoRequest.getPassword())).thenReturn("password");
 
         Assert.assertEquals(userDtoResponse, userService.updateUser(userDtoEdit,"username2"));
     }
