@@ -17,6 +17,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
@@ -40,10 +42,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/rate/{tripId}/user/{username}")
-    public ResponseEntity<Void> rateUser(@PathVariable @NotNull final Long tripId,
-                                         @PathVariable @NotNull final String username,
-                                         final Authentication authentication,
-                                         @RequestBody @NotNull final Integer rating) throws NotFoundException {
+    public ResponseEntity<Void> rateUser(
+            @PathVariable @NotNull final Long tripId,
+            @PathVariable @NotNull final String username,
+            final Authentication authentication,
+            @RequestBody @NotNull
+            @Min(value = 1,message = "Rating value should be at least one")
+            @Max(value = 5,message = "Rating value should be at most five")final Integer rating) {
 
         ratingService.createRating(tripId, authentication.getName(), username, rating);
         ratingService.setUserRating(tripId, username, rating);
