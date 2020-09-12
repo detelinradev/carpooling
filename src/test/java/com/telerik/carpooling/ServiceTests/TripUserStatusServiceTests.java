@@ -74,11 +74,11 @@ public class TripUserStatusServiceTests {
 
         userDriver = new User("username1", "lastName", "username1",
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-                4.0);
+                4.0,3, 4.0, 3, 4.0);
         userDriver.setModelId(1L);
         userPassenger = new User("username2", "lastName", "username2",
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-                4.0);
+                4.0,3, 4.0, 3, 4.0);
         userPassenger.setModelId(2L);
         UserDtoResponse userDtoResponse = new UserDtoResponse(1L, "username1", "lastName", "username1",
                 "email@gmail.com", UserRole.USER, "phone", 3.5, 4.0);

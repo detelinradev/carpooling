@@ -2,6 +2,7 @@ package com.telerik.carpooling.controller;
 
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.enums.UserStatus;
+import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.dto.TripDtoEdit;
 import com.telerik.carpooling.model.dto.TripDtoRequest;
 import com.telerik.carpooling.model.dto.TripDtoResponse;
@@ -32,7 +33,7 @@ public class TripController {
 
     @PostMapping
     public ResponseEntity<TripUserStatusDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest tripDtoRequest,
-                                                                final Authentication authentication) {
+                                                                final Authentication authentication) throws MyNotFoundException {
 
         return ResponseEntity.ok()
                 .body(tripUserStatusService.createTripUserStatusAsDriver(

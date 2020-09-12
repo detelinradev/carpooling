@@ -12,10 +12,10 @@ import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.service.contract.RatingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +32,8 @@ public class RatingServiceImpl implements RatingService {
     private final TripUserStatusRepository tripUserStatusRepository;
 
     @Override
-    public void createRating(Long tripID, String loggedUserUsername, String ratedUserUsername, Integer rating) {
+    public void createRating(final Long tripID, final String loggedUserUsername, final String ratedUserUsername,
+                             final Integer rating) {
 
         Trip trip = getTripById(tripID);
         User loggedUser = findUserByUsername(loggedUserUsername);
@@ -41,12 +42,12 @@ public class RatingServiceImpl implements RatingService {
         List<TripUserStatus> tripUserStatusList =
                 tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip);
 
-        if (doLoggedUserAndRatedUserBothBelongToTripAndOneOfThemIsDriver(loggedUser,ratedUser,tripUserStatusList)) {
+        if (doLoggedUserAndRatedUserBothBelongToTripAndOneOfThemIsDriver(loggedUser, ratedUser, tripUserStatusList)) {
 
             boolean isDriver = tripUserStatusList
                     .stream()
-                    .filter(m->m.getUser().equals(ratedUser))
-                    .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER));
+                    .filter(m -> m.getUser().equals(ratedUser))
+                    .anyMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER));
 
             Rating ratingObject = new Rating(loggedUser, ratedUser, rating, isDriver);
 
@@ -56,21 +57,49 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public void setUserRating(Long tripId, String ratedUserUsername, Integer rating) {
+    public void setUserRating(final Long tripId, final String ratedUserUsername, final Integer rating) {
 
         User ratedUser = findUserByUsername(ratedUserUsername);
-        boolean isDriver = tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(tripId, ratedUserUsername).isPresent();
+        getTripById(tripId);
+
+        boolean isDriver = tripUserStatusRepository
+                .findFirstByTripModelIdAndUserUsernameAsDriver(tripId, ratedUserUsername).isPresent();
+
+        double newSum;
+        int newCount;
+        double newRating;
+
+        DecimalFormat df = new DecimalFormat("#.0");
 
         if (isDriver) {
-            ratedUser.setRatingAsDriver(ratingRepository.findAverageRatingByUserAsDriver(ratedUser.getModelId())
-                    .orElse(0.0));
+
+            newSum = ratedUser.getSumRatingsAsDriver() + rating;
+            newCount = ratedUser.getCountRatingsAsDriver() + 1;
+            newRating = newSum / newCount;
+
+            df.format(newRating);
+
+            ratedUser.setRatingAsDriver(newRating);
+            ratedUser.setCountRatingsAsDriver(newCount);
+            ratedUser.setSumRatingsAsDriver(newSum);
+
         } else {
-            ratedUser.setRatingAsPassenger(ratingRepository.findAverageRatingByUserAsPassenger(ratedUser.getModelId())
-                    .orElse(0.0));
+
+            newSum = ratedUser.getSumRatingsAsPassenger() + rating;
+            newCount = ratedUser.getCountRatingsAsPassenger() + 1;
+            newRating = newSum / newCount;
+
+            df.format(newRating);
+
+            ratedUser.setRatingAsPassenger(newRating);
+            ratedUser.setCountRatingsAsPassenger(newCount);
+            ratedUser.setSumRatingsAsPassenger(newSum);
         }
+        userRepository.save(ratedUser);
     }
+
     private boolean doLoggedUserAndRatedUserBothBelongToTripAndOneOfThemIsDriver
-            (User loggedUser, User ratedUser, List<TripUserStatus> tripUserStatuses){
+            (final User loggedUser, final User ratedUser, final List<TripUserStatus> tripUserStatuses) {
 
         Map<User, UserStatus> userUserStatusMap = tripUserStatuses
                 .stream()
@@ -81,14 +110,14 @@ public class RatingServiceImpl implements RatingService {
                 || userUserStatusMap.get(loggedUser).equals(UserStatus.DRIVER));
     }
 
-    private Trip getTripById(Long tripID) {
+    private Trip getTripById(final Long tripID) {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
                 .orElseThrow(() -> new IllegalArgumentException("Trip does not exist"));
     }
 
-    private User findUserByUsername(String username) {
+    private User findUserByUsername(final String username) {
         return userRepository.findByUsernameAndIsDeletedFalse(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
+                .orElseThrow(() -> new IllegalArgumentException("Username is not recognized"));
     }
 }
 

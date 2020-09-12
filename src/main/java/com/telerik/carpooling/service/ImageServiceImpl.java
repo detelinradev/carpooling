@@ -11,64 +11,69 @@ import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.service.contract.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
     private final CarRepository carRepository;
 
-    public void storeUserImage(MultipartFile file, String loggedUserUsername) {
+    @Transactional
+    @Override
+    public void storeUserImage(final MultipartFile file,final String loggedUserUsername) {
 
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         User user = findUserByUsername(loggedUserUsername);
 
         try {
-            if (fileName.contains("..")) {
-                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
-            }
-            Image image = new Image(file.getOriginalFilename(),
+
+            Image image = new Image(fileName,
                     file.getContentType(),
                     file.getBytes(), user);
-            image.setIsDeleted(false);
+
             imageRepository.save(image);
+
         } catch (IOException ex) {
+
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
 
+    @Transactional
+    @Override
     public void storeCarImage( MultipartFile file,String loggedUserUsername) {
 
-        User user = findUserByUsername(loggedUserUsername);
         Optional<Car> car = carRepository.findByOwnerAndIsDeletedFalse(loggedUserUsername);
+
         if(car.isPresent()) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             try {
-                if (fileName.contains("..")) {
-                    throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
-                }
-                Image image = new Image(file.getOriginalFilename(),
+
+                Image image = new Image(fileName,
                         file.getContentType(),
                         file.getBytes(), car.get());
-                image.setIsDeleted(false);
+
                 imageRepository.save(image);
             } catch (IOException ex) {
+
                 throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
             }
         }
     }
 
     @Override
-    public Image getUserImage(String username) {
+    public Image getUserImage(String username) throws MyNotFoundException {
         User user = findUserByUsername(username);
         return imageRepository.findByUserAndIsDeletedFalse(user)
                 .orElseThrow(() -> new MyNotFoundException("User image not found for user " + user.getUsername()));
@@ -83,8 +88,9 @@ public class ImageServiceImpl implements ImageService {
                 .orElseThrow(() -> new MyNotFoundException("Car image not found for car owned of " + user.getUsername()));
     }
 
+    @Transactional
     @Override
-    public void deleteUserImage(String username, Authentication authentication) {
+    public void deleteUserImage(String username, Authentication authentication) throws MyNotFoundException {
 
         User user = findUserByUsername(username);
         User loggedUser = findUserByUsername(authentication.getName());
@@ -95,6 +101,7 @@ public class ImageServiceImpl implements ImageService {
         }else throw new IllegalArgumentException("You are not authorized to delete the image");
     }
 
+    @Transactional
     @Override
     public void deleteCarImage(String username, Authentication authentication) throws MyNotFoundException {
         User user = findUserByUsername(username);
@@ -108,7 +115,7 @@ public class ImageServiceImpl implements ImageService {
 
     private User findUserByUsername(String username) {
         return userRepository.findByUsernameAndIsDeletedFalse(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
+                .orElseThrow(() -> new IllegalArgumentException("Username is not recognized"));
     }
 
     private Car findCarByUser(String username) throws MyNotFoundException {

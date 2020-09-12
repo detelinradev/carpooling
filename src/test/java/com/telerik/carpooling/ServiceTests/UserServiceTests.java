@@ -67,11 +67,11 @@ public class UserServiceTests {
 
         user1 = new User("username1", "lastName", "username1",
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-                4.0);
+                4.0,3, 4.0, 3, 4.0);
         user1.setModelId(1L);
         user2 = new User("username2", "lastName", "username2",
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-                4.0);
+                4.0,3, 4.0, 3, 4.0);
         user2.setModelId(2L);
         userDtoRequest = new UserDtoRequest("username1", "lastName", "username1",
                 "email@gmail.com", "password", "phone");

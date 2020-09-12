@@ -1,5 +1,6 @@
 package com.telerik.carpooling.controller;
 
+import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.dto.FeedbackDtoResponse;
 import com.telerik.carpooling.model.dto.UserDtoEdit;
 import com.telerik.carpooling.model.dto.UserDtoRequest;
@@ -59,7 +60,7 @@ public class UserController {
     public ResponseEntity<Void> leaveFeedback(@PathVariable @NotNull final Long tripId,
                                               @PathVariable @NotNull final String username,
                                               final Authentication authentication,
-                                              @RequestBody @NotNull final String feedback) throws NotFoundException {
+                                              @RequestBody @NotNull final String feedback) throws NotFoundException, MyNotFoundException {
 
         feedbackService.leaveFeedback(tripId, authentication.getName(), username, feedback);
         return ResponseEntity.ok().build();

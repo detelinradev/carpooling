@@ -1,29 +1,28 @@
 package com.telerik.carpooling.ServiceTests;
 
 import com.telerik.carpooling.enums.UserRole;
+import com.telerik.carpooling.exception.FileStorageException;
 import com.telerik.carpooling.model.Car;
 import com.telerik.carpooling.model.Image;
 import com.telerik.carpooling.model.User;
-import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
+import com.telerik.carpooling.repository.CarRepository;
 import com.telerik.carpooling.repository.ImageRepository;
 import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.ImageServiceImpl;
-import com.telerik.carpooling.service.service.contract.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URI;
 import java.util.Optional;
 import java.util.Random;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ImageServiceTests {
@@ -31,15 +30,16 @@ public class ImageServiceTests {
     @Mock
     ImageRepository imageRepository;
     @Mock
-    UserService userService;
-    @Mock
     UserRepository userRepository;
     @Mock
-    DtoMapper dtoMapper;
+    CarRepository carRepository;
 
     private User user;
     private Car car;
-    private Image image;
+    private Image imageUser;
+    private Image imageCar;
+    private MultipartFile multipartFile;
+    private MultipartFile emptyMultipartFile;
 
 
     @Spy
@@ -48,123 +48,90 @@ public class ImageServiceTests {
 
     @Before
     public void SetUp() {
-        MockitoAnnotations.initMocks(this);
 
         byte[] content = new byte[20];
+        byte[] emptyContent = new byte[20];
         new Random().nextBytes(content);
-        this.user = new User("firstName", "lastName", "username1",
+        user = new User("username1", "firstName", "lastName",
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-                4.0);
-
-        this.image = new Image("fileName", "picture", content, user, null);
-        this.image.setModelId(1L);
-
-        this.car = new Car("model", "brand", "color", 2018,true, user);
+                4.0,3, 4.0, 3, 4.0);
+        car = new Car("model", "brand", "color", 2018,true, user);
+        multipartFile = new MockMultipartFile("name","fileName","picture",content);
+        emptyMultipartFile = new MockMultipartFile("name",content);
+        imageUser = new Image("fileName", "picture", content, user);
+        imageCar = new Image("fileName", "picture", content, car);
     }
 
-    @Test (expected = NullPointerException.class)
-    public void Should_ThrowException_When_FileIsEmpty() {
-        //Arrange
-//        final Long authorId = 1L;
-//        final Long userId = authorId;
-       // User author = new User();
-       // author.setUsername("username1");
-        byte[] content = null;
-        final String name = "picture.jpg";
-        final String type = "image/jpeg";
-        URI uri = URI.create("username1");
-        MockMultipartFile file = null;
+    @Test
+    public void store_UserImage_Should_StoreUserImage_When_UserNameIsValidAndFileIsValid() {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user));
 
-        //Act & Assert
-        imageService.storeUserImage(file, "username1");
+        when(imageRepository.save(imageUser)).thenReturn(imageUser);
 
+        imageService.storeUserImage(multipartFile, "username1");
+
+
+        verify(userRepository, times(1)).findByUsernameAndIsDeletedFalse("username1");
+        verify(imageRepository, times(1)).save(imageUser);
+
+        verifyNoMoreInteractions(userRepository, imageRepository);
     }
 
-//    @Test
-//    public void getByID_Should_Return_Beer_When_Beer_With_Same_ID_Exists() throws IllegalArgumentException {
-//        Mockito.when(imageRepository.findById(1L)).thenReturn(Optional.of(image));
-//        imageService.getImage(1L);
-//        Assert.assertEquals(image, imageService.getImage(1L));
-//    }
+    @Test(expected = IllegalArgumentException.class)
+    public void store_UserImage_Should_ThrowException_IfUsernameIsNotValid() {
 
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1"))
+                .thenReturn(Optional.empty());
 
-    @Test(expected = NullPointerException.class)
-    public void saveUserImage_Should_ThrowException_When_FileIsEmpty() {
-        //Arrange
-        User author = new User();
-        author.setUsername("username");
-        byte[] content = null;
-        final String name = "picture.jpg";
-        final String type = "image/jpeg";
-        MockMultipartFile file = new MockMultipartFile(name, name, type, content);
+        imageService.storeUserImage(multipartFile, "username1");
+    }
+
+    @Test(expected = FileStorageException.class)
+    public void store_UserImage_Should_ThrowException_IfFileIsNotFound() {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user));
-//        when(imageService.storeUserImage(file, "username1")).thenReturn(null);
 
-        //Act & Assert
-        imageService.storeUserImage(file, "username1");
+        when(imageRepository.save(imageUser)).thenThrow(FileStorageException.class);
 
+        imageService.storeUserImage(multipartFile, "username1");
     }
 
-    //
-//    @Test
-//    public void save_Should_Return_Picture_When_Successful() {
-//        //Arrange
-//        User author = new User();
-//        author.setUsername("username");
-//        byte[] content = new byte[20];
-//        new Random().nextBytes(content);
-//        final String name = "picture.jpg";
-//        final String type = "image/jpeg";
-//        URI uri = URI.create("test");
-//        MockMultipartFile file = new MockMultipartFile(name,name, type, content);
-//
-//        Image image = new Image();
-//        image.setModelId(1L);
-//        when(userService.getUser("username")).thenReturn(author);
-//        when(imageService.getImage(1L)).thenReturn(image);
-//        //Act
-//        Image result = imageService.storeUserImage(file, author, uri);
-//        System.out.println(result);
-//        //Assert
-//        Assert.assertEquals(result, imageService.getImage(1L));
-//    }
-//
-//    @Test (expected = NotFoundException.class)
-//    public void findByUserId_Should_ThrowException_When_NotFound() {
-//        //Arrange
-//        final Long userId = 1L;
-//        User user = new User();
-//        user.setId(userId);
-//
-//        when(userService.findById(userId)).thenReturn(user);
-//
-//        //Act & Assert
-//        pictureService.findByUserId(userId);
-//    }
-//
-//
-//    @Test
-//    public void findByUserId_Should_Return_Resource_When_Successful() {
-//        //Arrange
-//        final Long userId = 1L;
-//        final String fileName = "Picture";
-//        User user = new User();
-//        user.setId(userId);
-//        Picture picture = new Picture();
-//        picture.setFileName(fileName);
-//
-//        Resource resource = null;
-//
-//        when(userService.findById(userId)).thenReturn(user);
-//        when(pictureService.loadFileByName(fileName)).thenReturn(resource);
-//
-//        //Act
-//        Resource result = pictureService.findByUserId(userId);
-//
-//        //Assert
-//        Assert.assertEquals(result, resource);
-//    }
+    @Test
+    public void store_CarImage_Should_StoreCarImage_When_UserNameIsValidAndFileIsValidAndCarIsPresent() {
+
+        when(carRepository.findByOwnerAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(car));
+
+        when(imageRepository.save(imageCar)).thenReturn(imageCar);
+
+        imageService.storeCarImage(multipartFile, "username1");
+
+
+        verify(carRepository, times(1)).findByOwnerAndIsDeletedFalse("username1");
+        verify(imageRepository, times(1)).save(imageCar);
+
+        verifyNoMoreInteractions(userRepository, imageRepository);
+    }
+
+    @Test
+    public void store_CarImage_Should_NotStoreImage_When_CarIsNotPresent() {
+
+        when(carRepository.findByOwnerAndIsDeletedFalse("username1")).thenReturn(Optional.empty());
+
+        imageService.storeCarImage(multipartFile, "username1");
+
+        verify(carRepository, times(1)).findByOwnerAndIsDeletedFalse("username1");
+
+        verifyNoMoreInteractions(userRepository, imageRepository, carRepository);
+    }
+
+    @Test(expected = FileStorageException.class)
+    public void store_CarImage_Should_ThrowException_IfFileIsNotFound() {
+
+        when(carRepository.findByOwnerAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(car));
+
+        when(imageRepository.save(imageCar)).thenThrow(FileStorageException.class);
+
+        imageService.storeCarImage(multipartFile, "username1");
+    }
 }

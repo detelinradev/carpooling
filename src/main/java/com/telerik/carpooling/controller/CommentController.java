@@ -1,5 +1,6 @@
 package com.telerik.carpooling.controller;
 
+import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.dto.CommentDtoEdit;
 import com.telerik.carpooling.model.dto.CommentDtoResponse;
 import com.telerik.carpooling.service.service.contract.CommentService;
@@ -29,14 +30,14 @@ public class CommentController {
     public ResponseEntity<CommentDtoResponse> createComment(@PathVariable @NotNull final Long tripId,
                                                             final Authentication authentication,
                                                             @RequestParam(value = "comment") @NotNull final String message)
-            throws NotFoundException {
+            throws NotFoundException, MyNotFoundException {
 
         return ResponseEntity.ok().body(commentService.createComment(tripId, authentication.getName(), message));
     }
 
     @GetMapping(value = "/{tripId}")
     public ResponseEntity<Set<CommentDtoResponse>> getComments(@PathVariable @NotNull final Long tripId)
-            throws NotFoundException {
+            throws NotFoundException, MyNotFoundException {
 
         return ResponseEntity.ok().body(commentService.getComments(tripId));
     }
@@ -50,7 +51,7 @@ public class CommentController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable @NotNull final Long id, final Authentication authentication)
-            throws NotFoundException {
+            throws NotFoundException, MyNotFoundException {
 
         commentService.deleteComment(id,authentication.getName());
         return ResponseEntity.ok().build();

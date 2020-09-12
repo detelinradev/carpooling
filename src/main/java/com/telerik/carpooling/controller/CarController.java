@@ -1,5 +1,6 @@
 package com.telerik.carpooling.controller;
 
+import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.dto.CarDtoEdit;
 import com.telerik.carpooling.model.dto.CarDtoRequest;
 import com.telerik.carpooling.model.dto.CarDtoResponse;
@@ -34,7 +35,7 @@ public class CarController {
 
     @GetMapping(value = "/{username}")
     public ResponseEntity<CarDtoResponse> getCar(@PathVariable @NotNull final String username)
-            throws NotFoundException {
+            throws NotFoundException, MyNotFoundException {
 
         return ResponseEntity.ok().body(carService.getCar(username));
     }
@@ -47,7 +48,7 @@ public class CarController {
     }
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteCar(@PathVariable @NotNull final Long id, final Authentication authentication)
-            throws NotFoundException {
+            throws NotFoundException, MyNotFoundException {
 
         carService.deleteCar(id,authentication.getName());
         return ResponseEntity.ok().build();

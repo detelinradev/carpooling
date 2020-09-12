@@ -188,7 +188,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class, MyNotFoundException.class})
+    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class,
+            MyNotFoundException.class, FileStorageException.class})
     public ResponseEntity<Object> handleInternalRuntime(final RuntimeException ex, final WebRequest request) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage()
                 , "Missing or wrong argument");

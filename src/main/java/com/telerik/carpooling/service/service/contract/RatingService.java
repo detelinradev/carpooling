@@ -21,5 +21,16 @@ public interface RatingService {
      */
     void createRating(Long tripID, String loggedUserUsername, String ratedUserUsername, Integer rating);
 
-    void setUserRating(Long tripId, String passengerUsername, Integer rating);
+    /**
+     *     Sets <class>ratingAsPassenger</class> or <class>ratingAsDriver</class> of the passed <class>user</class> based
+     * on check if this passed <class>user</class> is with <class>UserStatus</class> DRIVER.
+     * <p>
+     *     There is check if parameters tripId and ratedUserUsername are valid, otherwise exception is thrown, parameter
+     * rating has validation check in controller.
+     *
+     * @param tripId            the <class>modelId</class> of the <class>trip</class>
+     * @param ratedUserUsername <class>username</class> of this<class>user</class> who will be rated
+     * @param rating            integer representation of field <class>rating</class> of <class>Rating</class> object
+     */
+    void setUserRating(Long tripId, String ratedUserUsername, Integer rating);
 }

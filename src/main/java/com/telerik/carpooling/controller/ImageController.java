@@ -1,5 +1,6 @@
 package com.telerik.carpooling.controller;
 
+import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Image;
 import com.telerik.carpooling.service.service.contract.ImageService;
 import javassist.NotFoundException;
@@ -43,20 +44,20 @@ public class ImageController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<byte[]> downloadUserImage(@PathVariable @NotNull final String username) {
+    public ResponseEntity<byte[]> downloadUserImage(@PathVariable @NotNull final String username) throws MyNotFoundException {
 
         return createImageModelInResponseEntity(imageService.getUserImage(username));
     }
 
     @GetMapping("/car/{username}")
-    public ResponseEntity<byte[]> downloadCarImage(@PathVariable @NotNull final String username) throws NotFoundException {
+    public ResponseEntity<byte[]> downloadCarImage(@PathVariable @NotNull final String username) throws NotFoundException, MyNotFoundException {
 
         return createImageModelInResponseEntity(imageService.getCarImage(username));
     }
 
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<Void> deleteUserImage(@PathVariable @NotNull final String username,
-                                                final Authentication authentication) {
+                                                final Authentication authentication) throws MyNotFoundException {
 
         imageService.deleteUserImage(username,authentication);
         return ResponseEntity.ok().build();
@@ -64,7 +65,7 @@ public class ImageController {
 
     @DeleteMapping(value = "/car/{username}")
     public ResponseEntity<Void> deleteCarImage(@PathVariable @NotNull final String username,
-                                               final Authentication authentication) throws NotFoundException {
+                                               final Authentication authentication) throws NotFoundException, MyNotFoundException {
 
         imageService.deleteCarImage(username,authentication);
         return ResponseEntity.ok().build();

@@ -28,7 +28,7 @@ public class User extends MappedAudibleBase {
 
     public static User NOT_FOUND = new User("No value", "No value", "No value",
             "No value", UserRole.USER, "No value", "No value", 0.0,
-            0.0);
+            0.0,0,0.0,0,0.0);
 
     @NotNull(message = "User should have username")
     @Size(min = 2, max = 20, message = "Please enter username between 2 and 20 symbols")
@@ -78,4 +78,12 @@ public class User extends MappedAudibleBase {
     @DecimalMax(value = "5.00", message = "Rating as passenger should be between 0 and 5")
     @DecimalMin(value = "0.00", message = "Rating as passenger should be between 0 and 5")
     private Double ratingAsPassenger = 0.0;
+
+    private Integer countRatingsAsPassenger = 0;
+
+    private Double sumRatingsAsPassenger = 0.0;
+
+    private Integer countRatingsAsDriver = 0;
+
+    private Double sumRatingsAsDriver = 0.0;
 }

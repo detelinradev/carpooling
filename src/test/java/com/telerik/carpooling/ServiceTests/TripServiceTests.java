@@ -72,7 +72,7 @@ public class TripServiceTests {
 
         user = new User("username1", "lastName", "username1",
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-                4.0);
+                4.0,3, 4.0, 3, 4.0);
         user.setModelId(1L);
         car = new Car("model", "brand", "color", 2018,true, user);
         trip = new Trip("message", LocalDateTime.MAX,
