@@ -2,15 +2,16 @@ package com.telerik.carpooling.ServiceTests;
 
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.enums.UserRole;
-import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.model.Comment;
 import com.telerik.carpooling.model.Trip;
-import com.telerik.carpooling.model.TripUserStatus;
 import com.telerik.carpooling.model.User;
+import com.telerik.carpooling.model.dto.CommentDtoEdit;
 import com.telerik.carpooling.model.dto.CommentDtoResponse;
 import com.telerik.carpooling.model.dto.UserDtoResponse;
 import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
-import com.telerik.carpooling.repository.*;
+import com.telerik.carpooling.repository.CommentRepository;
+import com.telerik.carpooling.repository.TripRepository;
+import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.CommentServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,24 +23,20 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class CommentServiceTests {
-
-    @Mock
-    FeedbackRepository feedbackRepository;
 
     @Mock
     TripRepository tripRepository;
 
     @Mock
     UserRepository userRepository;
-
-    @Mock
-    TripUserStatusRepository tripUserStatusRepository;
 
     @Mock
     CommentRepository commentRepository;
@@ -50,13 +47,9 @@ public class CommentServiceTests {
     private Comment comment;
     private CommentDtoResponse commentDtoResponse;
     private Trip trip;
-    private TripUserStatus tripUserStatusDriver;
-    private TripUserStatus tripUserStatusPassenger;
     private User user1;
     private User user2;
-    private User user3;
-    private UserDtoResponse userDtoResponse;
-    private List<TripUserStatus> tripUserStatusList;
+    private CommentDtoEdit commentDtoEdit;
     private Set<CommentDtoResponse> commentDtoResponseSet;
     private Set<Comment> commentSet;
 
@@ -76,11 +69,7 @@ public class CommentServiceTests {
                 4.0,
                 3, 4.0, 3, 4.0);
         user2.setModelId(2L);
-        user3 = new User("username3", "lastName", "username3",
-                "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
-                4.0, 3, 4.0, 3, 4.0);
-        user3.setModelId(3L);
-        userDtoResponse = new UserDtoResponse(1L, "username1", "firstName", "lastName",
+        UserDtoResponse userDtoResponse = new UserDtoResponse(1L, "username1", "firstName", "lastName",
                 "email@gmail.com", UserRole.USER, "phone", 3.5,
                 4.0);
         userDtoResponse.setModelId(1L);
@@ -89,20 +78,16 @@ public class CommentServiceTests {
                 true, true, true, true, TripStatus.AVAILABLE);
         trip.setModelId(1L);
         comment = new Comment(user1, trip, "message");
+        commentDtoEdit = new CommentDtoEdit(1L,"message");
         commentSet = new HashSet<>();
         commentSet.add(comment);
         commentDtoResponse = new CommentDtoResponse(1L, userDtoResponse,"message");
         commentDtoResponseSet = new HashSet<>();
         commentDtoResponseSet.add(commentDtoResponse);
-        tripUserStatusDriver = new TripUserStatus(user1, trip, UserStatus.DRIVER);
-        tripUserStatusPassenger = new TripUserStatus(user2, trip, UserStatus.ACCEPTED);
-        tripUserStatusList = new ArrayList<>();
-        tripUserStatusList.add(tripUserStatusDriver);
-        tripUserStatusList.add(tripUserStatusPassenger);
     }
 
     @Test
-    public void create_trip_Should_CreateNewTrip_WhenCarIsPresent()  {
+    public void create_Comment_Should_CreateNewComment_WhenTripIdAndLoggedUserUsernameIsValid()  {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user1));
         when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
@@ -113,7 +98,7 @@ public class CommentServiceTests {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void create_trip_Should_ThrowException_IfTripModelIdIsNotValid() {
+    public void create_Comment_Should_ThrowException_IfTripModelIdIsNotValid() {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user1));
         when(tripRepository.findByModelIdAndIsDeletedFalse(1L))
@@ -123,7 +108,7 @@ public class CommentServiceTests {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void create_trip_Should_ThrowException_IfUserUsernameIsNotValid() {
+    public void create_Comment_Should_ThrowException_IfUserUsernameIsNotValid() {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.empty());
 
@@ -148,4 +133,103 @@ public class CommentServiceTests {
         commentService.createComment(1L, "username1", "message");
     }
 
+    @Test
+    public void delete_Comment_Should_DeleteComment_When_CommentIdIsValidAndLoggedUserSameUser() {
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.ofNullable(comment));
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user1));
+        when(commentRepository.save(comment)).thenReturn(comment);
+
+        commentService.deleteComment(1L, "username1");
+
+        verify(commentRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).findByUsernameAndIsDeletedFalse("username1");
+        verify(commentRepository, times(1)).save(comment);
+
+        verifyNoMoreInteractions(userRepository, commentRepository);
+    }
+
+    @Test
+    public void delete_Comment_Should_DeleteComment_When_CommentIdIsValidAndLoggedUserAdmin() {
+
+        user2.setRole(UserRole.ADMIN);
+        when(commentRepository.findById(1L)).thenReturn(Optional.ofNullable(comment));
+        when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.ofNullable(user2));
+        when(commentRepository.save(comment)).thenReturn(comment);
+
+        commentService.deleteComment(1L, "username2");
+
+        verify(commentRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).findByUsernameAndIsDeletedFalse("username2");
+        verify(commentRepository, times(1)).save(comment);
+
+        verifyNoMoreInteractions(userRepository, commentRepository);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_Comment_Should_ThrowException_IfCommentModelIdIsNotValid() {
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.empty());
+
+        commentService.deleteComment(1L, "username1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_Comment_Should_ThrowException_IfLoggedUserUsernameIsNotValid() {
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.ofNullable(comment));
+        when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.empty());
+
+        commentService.deleteComment(1L, "username1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void delete_Comment_Should_ThrowException_IfLoggedUserIsNotAuthorOrAdmin() {
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.ofNullable(comment));
+        when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.ofNullable(user2));
+
+        commentService.deleteComment(1L, "username2");
+    }
+
+    @Test
+    public void update_Comment_Should_UpdateComment_WhenLoggedUserSameUserAndLoggedUserUsernameIsValid()  {
+
+        when(dtoMapper.dtoToObject(commentDtoEdit)).thenReturn(comment);
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user1));
+        when(commentRepository.save(comment)).thenReturn(comment);
+        when(dtoMapper.objectToDto(comment)).thenReturn(commentDtoResponse);
+
+        Assert.assertEquals(commentDtoResponse,commentService.updateComment(commentDtoEdit, "username1"));
+    }
+
+    @Test
+    public void update_Comment_Should_UpdateComment_WhenLoggedUserIsAdminAndLoggedUserUsernameIsValid()  {
+
+        user2.setRole(UserRole.ADMIN);
+        when(dtoMapper.dtoToObject(commentDtoEdit)).thenReturn(comment);
+        when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.ofNullable(user2));
+        when(commentRepository.save(comment)).thenReturn(comment);
+        when(dtoMapper.objectToDto(comment)).thenReturn(commentDtoResponse);
+
+        Assert.assertEquals(commentDtoResponse,commentService.updateComment(commentDtoEdit, "username2"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_Comment_Should_ThrowException_IfLoggedUserIsNotAuthorOrAdmin() {
+
+        when(dtoMapper.dtoToObject(commentDtoEdit)).thenReturn(comment);
+        when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.ofNullable(user2));
+
+        commentService.updateComment(commentDtoEdit, "username2");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_Comment_Should_ThrowException_IfLoggedUserUsernameIsNotValid() {
+
+        when(dtoMapper.dtoToObject(commentDtoEdit)).thenReturn(comment);
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.empty());
+
+        commentService.updateComment(commentDtoEdit, "username1");
+    }
 }

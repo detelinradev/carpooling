@@ -37,7 +37,47 @@ public interface CommentService {
      */
     Set<CommentDtoResponse> getComments(Long tripId);
 
-    void deleteComment(Long id, String username);
+    /**
+     *   Deletes softly <class>Comment</class> with given <class>comment</class> <class>modelId</class>
+     * <p>
+     *     There is check if the logged <class>user</class> is the author of this <class>comment</class> or
+     * <class>admin</class>, if the criteria is met, the <class>comment</class> is softly delete, otherwise
+     * IllegalArgumentException exception is thrown as that is not the expected result.
+     * <p>
+     *     Validation is made for <class>comment</class> <class>modelId</class>, if it is not passed exception is thrown.
+     * Parameter loggedUserUsername is trusted and is not checked as it is extracted from the security context as a
+     * currently logged <class>user</class>.
+     * <p>
+     *     Transactional annotation is added to override class based behavior read only = true, with read only = false, as
+     * this method is modifying the entity so we expect Hibernate to observe changes in the current Persistence Context
+     * and include update at flush-time.
+     *
+     * @param commentId the <class>modelId</class> of the <class>comment</class> to be deleted
+     * @param loggedUserUsername <class>username</class> of the currently logged <class>user</class> extracted from
+     *                           the security context thread
+     */
+    void deleteComment(Long commentId, String loggedUserUsername);
 
-    CommentDtoResponse updateComment(CommentDtoEdit commentDtoEdit, String username);
+    /**
+     *     Updates <class>comment</class> from given DTO object.
+     * <p>
+     *     There is check if the logged <class>user</class> is the author of this <class>comment</class> or admin, if
+     * the criteria is met, this <class>comment</class> is updated, otherwise exception is
+     * thrown as that is not the expected behavior.
+     * <p>
+     *     It is expected the input to be valid data, based on a validity check in the controller with annotation @Valid
+     * and restrains upon the creation of the DTO object. However it that is not the case, validation criteria are as well
+     * placed in the actual entity class, what would fire an exception if invalid data is provided. Parameter
+     * loggedUserUsername is extracted from security context and therefore is considered safe.
+     * <p>
+     *     Transactional annotation is added to override class based behavior read only = true, with read only = false, as
+     * this method is modifying the entity so we expect Hibernate to observe changes in the current Persistence Context
+     * and include update at flush-time.
+     *
+     * @param commentDtoEdit  DTO that holds required data for creating <class>Comment</class> object
+     * @param loggedUserUsername loggedUserUsername <class>username</class> of the currently logged <class>user</class>
+     *                           extracted from the security context thread
+     * @return instance of the updated <class>comment</class> mapped as <class>CommentDtoResponse</class>
+     */
+    CommentDtoResponse updateComment(CommentDtoEdit commentDtoEdit, String loggedUserUsername);
 }

@@ -52,28 +52,34 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void deleteComment(Long id, String username) {
+    public void deleteComment(Long commentId, String loggedUserUsername) {
 
-        Comment comment = commentRepository.findById(id)
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("Comment with this id not found"));
+
         User commentAuthor = comment.getAuthor();
-        User loggedUser = findUserByUsername(username);
+        User loggedUser = findUserByUsername(loggedUserUsername);
 
         if (isRole_AdminOrSameUser(commentAuthor, loggedUser)) {
+
             comment.setIsDeleted(true);
             commentRepository.save(comment);
+
         } else throw new IllegalArgumentException("You are not authorized to delete the comment");
     }
 
     @Override
     @Transactional
-    public CommentDtoResponse updateComment(CommentDtoEdit commentDtoEdit, String username) {
+    public CommentDtoResponse updateComment(CommentDtoEdit commentDtoEdit, String loggedUserUsername) {
+
         Comment comment = dtoMapper.dtoToObject(commentDtoEdit);
         User commentAuthor = comment.getAuthor();
-        User loggedUser = findUserByUsername(username);
+        User loggedUser = findUserByUsername(loggedUserUsername);
+
         if (isRole_AdminOrSameUser(commentAuthor, loggedUser)) {
 
             return dtoMapper.objectToDto(commentRepository.save(comment));
+
         } else throw new IllegalArgumentException("You are not authorized to edit the comment");
     }
 
@@ -90,6 +96,6 @@ public class CommentServiceImpl implements CommentService {
 
     private boolean isRole_AdminOrSameUser(User user, User loggedUser) {
 
-        return loggedUser.equals(user) || user.getRole().equals(UserRole.ADMIN);
+        return loggedUser.equals(user) || loggedUser.getRole().equals(UserRole.ADMIN);
     }
 }

@@ -56,7 +56,7 @@ public interface TripService {
      *     Deletes softly <class>trip</class> with given trip <class>modelId</class>
      * <p>
      *     There is check if the logged <class>user</class> is the owner of this <class>trip</class> or <class>admin</class>,
-     * if the criteria is met, the <class>trip</class> is retrieved from the database, otherwise
+     * if the criteria is met, the <class>trip</class> is softly delete, otherwise
      * IllegalArgumentException exception is thrown as that is not the expected result.
      * <p>
      *     All <class>tripUserStatuses</class> where the <class>trip</class> occurs are softly deleted as well.
