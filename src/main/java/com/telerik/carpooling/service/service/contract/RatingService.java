@@ -40,5 +40,5 @@ public interface RatingService {
     void setUserRating(Long tripId, String ratedUserUsername, Integer rating);
 
     boolean doLoggedUserAndInteractedUserBothBelongToTripAndOneOfThemIsDriver
-            (final User loggedUser, final User ratedUser, final List<TripUserStatus> tripUserStatuses);
+            (User loggedUser, User ratedUser, List<TripUserStatus> tripUserStatuses);
 }

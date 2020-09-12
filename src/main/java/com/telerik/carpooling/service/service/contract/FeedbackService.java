@@ -16,6 +16,10 @@ public interface FeedbackService {
      * <p>
      *     There is check if loggedUser and ratedUser both belong to the <class>trip</class> and one of them is
      * with <class>UserStatus</class> DRIVER, otherwise exception is thrown.
+     * <p>
+     *     Transactional annotation is added to override class based behavior read only = true, with read only = false, as
+     * this method is modifying the entity so we expect Hibernate to observe changes in the current Persistence Context
+     * and include update at flush-time.
      *
      * @param tripID  the <class>modelId</class> of the <class>trip</class>
      * @param loggedUserUsername <class>username</class> of the currently logged <class>user</class> extracted from

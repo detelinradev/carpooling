@@ -1,7 +1,6 @@
 package com.telerik.carpooling.service;
 
 import com.telerik.carpooling.enums.UserRole;
-import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Comment;
 import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.User;
@@ -12,17 +11,17 @@ import com.telerik.carpooling.repository.CommentRepository;
 import com.telerik.carpooling.repository.TripRepository;
 import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.service.contract.CommentService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 @Log4j2
+@Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
@@ -31,23 +30,20 @@ public class CommentServiceImpl implements CommentService {
     private final DtoMapper dtoMapper;
 
     @Override
+    @Transactional
     public CommentDtoResponse createComment(Long tripID,
-                                            String loggedUserUsername, String message) throws MyNotFoundException {
+                                            String loggedUserUsername, String message) {
 
         User user = findUserByUsername(loggedUserUsername);
-        Comment comment = new Comment();
-        comment.setAuthor(user);
-        comment.setMessage(message);
-        comment.setIsDeleted(false);
-
         Trip trip = getTripById(tripID);
-        comment.setTrip(trip);
+
+        Comment comment = new Comment(user,trip,message);
 
         return dtoMapper.objectToDto(commentRepository.save(comment));
     }
 
     @Override
-    public Set<CommentDtoResponse> getComments(Long tripId) throws MyNotFoundException {
+    public Set<CommentDtoResponse> getComments(Long tripId) {
 
         Trip trip = getTripById(tripId);
 
@@ -55,10 +51,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long id, String username) throws MyNotFoundException {
+    @Transactional
+    public void deleteComment(Long id, String username) {
 
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new MyNotFoundException("Comment with this id not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Comment with this id not found"));
         User commentAuthor = comment.getAuthor();
         User loggedUser = findUserByUsername(username);
 
@@ -69,6 +66,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentDtoResponse updateComment(CommentDtoEdit commentDtoEdit, String username) {
         Comment comment = dtoMapper.dtoToObject(commentDtoEdit);
         User commentAuthor = comment.getAuthor();
@@ -82,12 +80,12 @@ public class CommentServiceImpl implements CommentService {
 
     private User findUserByUsername(String username) {
         return userRepository.findByUsernameAndIsDeletedFalse(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
+                .orElseThrow(() -> new IllegalArgumentException("Username is not recognized"));
     }
 
-    private Trip getTripById(Long tripID) throws MyNotFoundException {
+    private Trip getTripById(Long tripID)  {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
-                .orElseThrow(() -> new MyNotFoundException("Trip does not exist"));
+                .orElseThrow(() -> new IllegalArgumentException("Trip with this id does not exist"));
     }
 
     private boolean isRole_AdminOrSameUser(User user, User loggedUser) {

@@ -52,14 +52,12 @@ public class FeedbackServiceTests {
     DtoMapper dtoMapper;
 
     private Feedback feedback;
-    private FeedbackDtoResponse feedbackDtoResponse;
     private Trip trip;
     private TripUserStatus tripUserStatusDriver;
     private TripUserStatus tripUserStatusPassenger;
     private User user1;
     private User user2;
     private User user3;
-    private UserDtoResponse userDtoResponse;
     private List<TripUserStatus> tripUserStatusList;
     private Set<FeedbackDtoResponse> feedbackDtoResponseSet;
     private Set<Feedback> feedbackSet;
@@ -84,14 +82,14 @@ public class FeedbackServiceTests {
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
                 4.0, 3, 4.0, 3, 4.0);
         user3.setModelId(3L);
-        userDtoResponse = new UserDtoResponse(1L, "username1", "firstName", "lastName",
+        UserDtoResponse userDtoResponse = new UserDtoResponse(1L, "username1", "firstName", "lastName",
                 "email@gmail.com", UserRole.USER, "phone", 3.5,
                 4.0);
         userDtoResponse.setModelId(1L);
         feedback = new Feedback(user1, user2, "feedback", false);
         feedbackSet = new HashSet<>();
         feedbackSet.add(feedback);
-        feedbackDtoResponse = new FeedbackDtoResponse(1L, userDtoResponse,"feedback");
+        FeedbackDtoResponse feedbackDtoResponse = new FeedbackDtoResponse(1L, userDtoResponse, "feedback");
         feedbackDtoResponseSet= new HashSet<>();
         feedbackDtoResponseSet.add(feedbackDtoResponse);
         trip = new Trip("message", LocalDateTime.MAX,
