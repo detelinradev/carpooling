@@ -1,6 +1,5 @@
 package com.telerik.carpooling.controller;
 
-import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.dto.FeedbackDtoResponse;
 import com.telerik.carpooling.model.dto.UserDtoEdit;
 import com.telerik.carpooling.model.dto.UserDtoRequest;
@@ -8,7 +7,6 @@ import com.telerik.carpooling.model.dto.UserDtoResponse;
 import com.telerik.carpooling.service.service.contract.FeedbackService;
 import com.telerik.carpooling.service.service.contract.RatingService;
 import com.telerik.carpooling.service.service.contract.UserService;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +58,7 @@ public class UserController {
     public ResponseEntity<Void> leaveFeedback(@PathVariable @NotNull final Long tripId,
                                               @PathVariable @NotNull final String username,
                                               final Authentication authentication,
-                                              @RequestBody @NotNull final String feedback) throws NotFoundException, MyNotFoundException {
+                                              @RequestBody @NotNull final String feedback) {
 
         feedbackService.leaveFeedback(tripId, authentication.getName(), username, feedback);
         return ResponseEntity.ok().build();

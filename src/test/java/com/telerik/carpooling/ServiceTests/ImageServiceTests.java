@@ -21,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Random;
 
@@ -42,7 +43,6 @@ public class ImageServiceTests {
     private Image imageUser;
     private Image imageCar;
     private MultipartFile multipartFile;
-    private MultipartFile emptyMultipartFile;
 
 
     @Spy
@@ -53,7 +53,6 @@ public class ImageServiceTests {
     public void SetUp() {
 
         byte[] content = new byte[20];
-        byte[] emptyContent = new byte[20];
         new Random().nextBytes(content);
         user1 = new User("username1", "firstName", "lastName",
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
@@ -63,7 +62,6 @@ public class ImageServiceTests {
                 4.0,3, 4.0, 3, 4.0);
         car = new Car("model", "brand", "color", 2018,true, user1);
         multipartFile = new MockMultipartFile("name","fileName","picture",content);
-        emptyMultipartFile = new MockMultipartFile("name",content);
         imageUser = new Image("fileName", "picture", content, user1);
         imageCar = new Image("fileName", "picture", content, car);
     }
@@ -97,8 +95,7 @@ public class ImageServiceTests {
     public void store_UserImage_Should_ThrowException_IfFileIsNotFound() {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user1));
-
-        when(imageRepository.save(imageUser)).thenThrow(FileStorageException.class);
+        when(imageRepository.save(imageUser)).thenAnswer(invocation -> {throw new IOException("");});
 
         imageService.storeUserImage(multipartFile, "username1");
     }
@@ -136,7 +133,7 @@ public class ImageServiceTests {
 
         when(carRepository.findByOwnerAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(car));
 
-        when(imageRepository.save(imageCar)).thenThrow(FileStorageException.class);
+        when(imageRepository.save(imageCar)).thenAnswer(invocation -> {throw new IOException("");});
 
         imageService.storeCarImage(multipartFile, "username1");
     }

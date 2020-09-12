@@ -1,5 +1,10 @@
 package com.telerik.carpooling.service.service.contract;
 
+import com.telerik.carpooling.model.TripUserStatus;
+import com.telerik.carpooling.model.User;
+
+import java.util.List;
+
 public interface RatingService {
 
 
@@ -33,4 +38,7 @@ public interface RatingService {
      * @param rating            integer representation of field <class>rating</class> of <class>Rating</class> object
      */
     void setUserRating(Long tripId, String ratedUserUsername, Integer rating);
+
+    boolean doLoggedUserAndInteractedUserBothBelongToTripAndOneOfThemIsDriver
+            (final User loggedUser, final User ratedUser, final List<TripUserStatus> tripUserStatuses);
 }

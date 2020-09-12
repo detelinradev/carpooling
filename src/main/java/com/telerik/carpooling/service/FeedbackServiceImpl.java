@@ -1,7 +1,6 @@
 package com.telerik.carpooling.service;
 
 import com.telerik.carpooling.enums.UserStatus;
-import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Feedback;
 import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.TripUserStatus;
@@ -13,10 +12,11 @@ import com.telerik.carpooling.repository.TripRepository;
 import com.telerik.carpooling.repository.TripUserStatusRepository;
 import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.service.contract.FeedbackService;
+import com.telerik.carpooling.service.service.contract.RatingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -24,33 +24,41 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Transactional(readOnly = true)
 public class FeedbackServiceImpl implements FeedbackService {
 
     private final UserRepository userRepository;
     private final TripRepository tripRepository;
     private final FeedbackRepository feedbackRepository;
     private final TripUserStatusRepository tripUserStatusRepository;
+    private final RatingService ratingService;
     private final DtoMapper dtoMapper;
 
     @Override
+    @Transactional
     public void leaveFeedback(Long tripID, String loggedUserUsername, String receiverUsername,
-                              String feedbackString) throws MyNotFoundException {
+                              String feedbackString) {
 
         Trip trip = getTripById(tripID);
-        User user = findUserByUsername(loggedUserUsername);
+        User loggedUser = findUserByUsername(loggedUserUsername);
         User receiver = findUserByUsername(receiverUsername);
-        List<TripUserStatus> tripUserStatusList = tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip);
-        boolean isDriver = tripUserStatusList.stream().filter(j->j.getUser().equals(receiver))
-                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER));
 
-        if (tripUserStatusList.stream().anyMatch(k->k.getUser().equals(receiver))
-                && tripUserStatusList.stream().anyMatch(k->k.getUser().equals(user))
-                && (tripUserStatusList.stream().filter(j->j.getUser().equals(user))
-                .anyMatch(k->k.getUserStatus().equals(UserStatus.DRIVER))
-                || isDriver)) {
-            Feedback feedback = new Feedback(user, receiver, feedbackString, isDriver);
+        List<TripUserStatus> tripUserStatusList =
+                tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip);
+
+        if (ratingService.doLoggedUserAndInteractedUserBothBelongToTripAndOneOfThemIsDriver
+                (loggedUser, receiver, tripUserStatusList)) {
+
+            boolean isDriver = tripUserStatusList
+                    .stream()
+                    .filter(m -> m.getUser().equals(receiver))
+                    .anyMatch(k -> k.getUserStatus().equals(UserStatus.DRIVER));
+
+            Feedback feedback = new Feedback(loggedUser, receiver, feedbackString, isDriver);
+
             feedbackRepository.save(feedback);
-        }else throw new IllegalArgumentException("You are not authorized to give feedback to this user");
+
+        } else throw new IllegalArgumentException("You are not authorized to leave feedback for this user");
     }
 
     @Override
@@ -61,13 +69,13 @@ public class FeedbackServiceImpl implements FeedbackService {
         return dtoMapper.feedbackToFeedbackDtoResponses(feedbackRepository.getAllByUserAndIsDeletedFalse(user));
     }
 
-    private Trip getTripById(Long tripID) throws MyNotFoundException {
+    private Trip getTripById(Long tripID)  {
         return tripRepository.findByModelIdAndIsDeletedFalse(tripID)
-                .orElseThrow(() -> new MyNotFoundException("Trip does not exist"));
+                .orElseThrow(() -> new IllegalArgumentException("Trip does not exist"));
     }
 
     private User findUserByUsername(String username) {
         return userRepository.findByUsernameAndIsDeletedFalse(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
+                .orElseThrow(() -> new IllegalArgumentException("Username is not recognized"));
     }
 }

@@ -42,7 +42,7 @@ public class RatingServiceImpl implements RatingService {
         List<TripUserStatus> tripUserStatusList =
                 tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip);
 
-        if (doLoggedUserAndRatedUserBothBelongToTripAndOneOfThemIsDriver(loggedUser, ratedUser, tripUserStatusList)) {
+        if (doLoggedUserAndInteractedUserBothBelongToTripAndOneOfThemIsDriver(loggedUser, ratedUser, tripUserStatusList)) {
 
             boolean isDriver = tripUserStatusList
                     .stream()
@@ -98,7 +98,7 @@ public class RatingServiceImpl implements RatingService {
         userRepository.save(ratedUser);
     }
 
-    private boolean doLoggedUserAndRatedUserBothBelongToTripAndOneOfThemIsDriver
+    public boolean doLoggedUserAndInteractedUserBothBelongToTripAndOneOfThemIsDriver
             (final User loggedUser, final User ratedUser, final List<TripUserStatus> tripUserStatuses) {
 
         Map<User, UserStatus> userUserStatusMap = tripUserStatuses
