@@ -1,5 +1,6 @@
 package com.telerik.carpooling.service;
 
+import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.exception.FileStorageException;
 import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Car;
@@ -10,7 +11,6 @@ import com.telerik.carpooling.repository.ImageRepository;
 import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.service.contract.ImageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -93,26 +93,41 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional
     @Override
-    public void deleteUserImage(String username, Authentication authentication) throws MyNotFoundException {
+    public void deleteUserImage(String username,String loggedUsername){
 
         User user = findUserByUsername(username);
-        User loggedUser = findUserByUsername(authentication.getName());
-        if (isRole_AdminOrSameUser(authentication, user, loggedUser)) {
-            Image image = getUserImage(username);
-            image.setIsDeleted(true);
-            imageRepository.save(image);
+        User loggedUser = findUserByUsername(loggedUsername);
+
+        if (isRole_AdminOrSameUser(user, loggedUser)) {
+            try {
+
+                Image image = getUserImage(username);
+
+                imageRepository.save(image);
+
+            }catch (MyNotFoundException e){
+                throw new IllegalArgumentException("User should have an image to delete it." + e.getLocalizedMessage());
+            }
         }else throw new IllegalArgumentException("You are not authorized to delete the image");
     }
 
     @Transactional
     @Override
-    public void deleteCarImage(String username, Authentication authentication) throws MyNotFoundException {
+    public void deleteCarImage(String username, String loggedUsername)  {
+
         User user = findUserByUsername(username);
-        User loggedUser = findUserByUsername(authentication.getName());
-        if (isRole_AdminOrSameUser(authentication, user, loggedUser)) {
-            Image image = getCarImage(username);
-            image.setIsDeleted(true);
-            imageRepository.save(image);
+        User loggedUser = findUserByUsername(loggedUsername);
+
+        if (isRole_AdminOrSameUser(user, loggedUser)) {
+            try {
+
+                Image image = getCarImage(username);
+
+                imageRepository.save(image);
+
+            }catch (MyNotFoundException e){
+                throw new IllegalArgumentException("Car should have an image to delete it." + e.getLocalizedMessage());
+            }
         }else throw new IllegalArgumentException("You are not authorized to delete the image");
     }
 
@@ -126,10 +141,8 @@ public class ImageServiceImpl implements ImageService {
                 .orElseThrow(() -> new MyNotFoundException("User do not have a car"));
     }
 
-    private boolean isRole_AdminOrSameUser(Authentication authentication, User user, User loggedUser) {
+    private boolean isRole_AdminOrSameUser(User user, User loggedUser) {
 
-        return loggedUser.equals(user) || authentication.getAuthorities()
-                .stream()
-                .anyMatch(k -> k.getAuthority().equals("ROLE_ADMIN"));
+        return loggedUser.equals(user) || loggedUser.getRole().equals(UserRole.ADMIN);
     }
 }

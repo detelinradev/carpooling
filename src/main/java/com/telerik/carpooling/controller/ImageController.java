@@ -3,7 +3,6 @@ package com.telerik.carpooling.controller;
 import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Image;
 import com.telerik.carpooling.service.service.contract.ImageService;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
@@ -50,24 +49,24 @@ public class ImageController {
     }
 
     @GetMapping("/car/{username}")
-    public ResponseEntity<byte[]> downloadCarImage(@PathVariable @NotNull final String username) throws NotFoundException, MyNotFoundException {
+    public ResponseEntity<byte[]> downloadCarImage(@PathVariable @NotNull final String username) throws MyNotFoundException {
 
         return createImageModelInResponseEntity(imageService.getCarImage(username));
     }
 
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<Void> deleteUserImage(@PathVariable @NotNull final String username,
-                                                final Authentication authentication) throws MyNotFoundException {
+                                                final Authentication authentication) {
 
-        imageService.deleteUserImage(username,authentication);
+        imageService.deleteUserImage(username,authentication.getName());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = "/car/{username}")
     public ResponseEntity<Void> deleteCarImage(@PathVariable @NotNull final String username,
-                                               final Authentication authentication) throws NotFoundException, MyNotFoundException {
+                                               final Authentication authentication) {
 
-        imageService.deleteCarImage(username,authentication);
+        imageService.deleteCarImage(username,authentication.getName());
         return ResponseEntity.ok().build();
     }
 
