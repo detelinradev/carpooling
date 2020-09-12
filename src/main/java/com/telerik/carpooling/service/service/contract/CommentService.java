@@ -27,7 +27,7 @@ public interface CommentService {
     CommentDtoResponse createComment(Long tripID, String loggedUserUsername, String message);
 
     /**
-     *     Gets all <class>Comment</class> objects created for the given <class>trip</class>.
+     *     Gets all <class>Comment</class> objects retrieved from the database for the given <class>trip</class>.
      * <p>
      *     Validation is made for parameter tripId, if it is not valid, exception si thrown.
      *
@@ -74,7 +74,7 @@ public interface CommentService {
      * this method is modifying the entity so we expect Hibernate to observe changes in the current Persistence Context
      * and include update at flush-time.
      *
-     * @param commentDtoEdit  DTO that holds required data for creating <class>Comment</class> object
+     * @param commentDtoEdit  DTO that holds required data for updating <class>Comment</class> object
      * @param loggedUserUsername loggedUserUsername <class>username</class> of the currently logged <class>user</class>
      *                           extracted from the security context thread
      * @return instance of the updated <class>comment</class> mapped as <class>CommentDtoResponse</class>

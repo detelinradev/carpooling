@@ -5,7 +5,6 @@ import com.telerik.carpooling.model.dto.CarDtoEdit;
 import com.telerik.carpooling.model.dto.CarDtoRequest;
 import com.telerik.carpooling.model.dto.CarDtoResponse;
 import com.telerik.carpooling.service.service.contract.CarService;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +34,7 @@ public class CarController {
 
     @GetMapping(value = "/{username}")
     public ResponseEntity<CarDtoResponse> getCar(@PathVariable @NotNull final String username)
-            throws NotFoundException, MyNotFoundException {
+            throws MyNotFoundException {
 
         return ResponseEntity.ok().body(carService.getCar(username));
     }
@@ -47,8 +46,7 @@ public class CarController {
         return ResponseEntity.ok().body(carService.updateCar(car, authentication.getName()));
     }
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteCar(@PathVariable @NotNull final Long id, final Authentication authentication)
-            throws NotFoundException, MyNotFoundException {
+    public ResponseEntity<Void> deleteCar(@PathVariable @NotNull final Long id, final Authentication authentication) {
 
         carService.deleteCar(id,authentication.getName());
         return ResponseEntity.ok().build();
