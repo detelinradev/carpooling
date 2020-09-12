@@ -2,6 +2,7 @@ package com.telerik.carpooling.ServiceTests;
 
 import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.exception.FileStorageException;
+import com.telerik.carpooling.exception.MyNotFoundException;
 import com.telerik.carpooling.model.Car;
 import com.telerik.carpooling.model.Image;
 import com.telerik.carpooling.model.User;
@@ -9,6 +10,7 @@ import com.telerik.carpooling.repository.CarRepository;
 import com.telerik.carpooling.repository.ImageRepository;
 import com.telerik.carpooling.repository.UserRepository;
 import com.telerik.carpooling.service.ImageServiceImpl;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -133,5 +135,65 @@ public class ImageServiceTests {
         when(imageRepository.save(imageCar)).thenThrow(FileStorageException.class);
 
         imageService.storeCarImage(multipartFile, "username1");
+    }
+
+    @Test
+    public void get_UserImage_Should_RetrieveUserImage_When_UsernameIsValidAndUserHaveImage() throws MyNotFoundException {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user));
+        when(imageRepository.findByUserAndIsDeletedFalse(user)).thenReturn(Optional.ofNullable(imageUser));
+
+        Assert.assertEquals(imageUser, imageService.getUserImage("username1"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void get_UserImage_Should_ThrowException_IfUsernameIsNotValid() throws MyNotFoundException {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user.getUsername()))
+                .thenReturn(Optional.empty());
+
+        imageService.getUserImage("username1");
+    }
+
+    @Test(expected = MyNotFoundException.class)
+    public void get_UserImage_Should_ThrowException_IfUserDoNotHaveImage() throws MyNotFoundException {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user));
+        when(imageRepository.findByUserAndIsDeletedFalse(user)).thenAnswer(invocation -> {throw new MyNotFoundException("");});
+
+        imageService.getUserImage("username1");
+    }
+
+    @Test
+    public void get_CarImage_Should_RetrieveCarImage_When_UsernameIsValidAndCarHaveImage() throws MyNotFoundException {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user));
+        when(carRepository.findByOwnerAndIsDeletedFalse(user.getUsername())).thenReturn(Optional.ofNullable(car));
+        when(imageRepository.findByCarAndIsDeletedFalse(car)).thenReturn(Optional.ofNullable(imageCar));
+
+        Assert.assertEquals(imageCar, imageService.getCarImage("username1"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void get_CarImage_Should_ThrowException_IfUsernameIsNotValid() throws MyNotFoundException {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user.getUsername()))
+                .thenReturn(Optional.empty());
+
+        imageService.getCarImage("username1");
+    }
+
+    @Test(expected = MyNotFoundException.class)
+    public void get_CarImage_Should_ThrowException_IfCarDoNotHaveImage() throws MyNotFoundException {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse(user.getUsername()))
+                .thenReturn(java.util.Optional.ofNullable(user));
+        when(carRepository.findByOwnerAndIsDeletedFalse(user.getUsername())).thenReturn(Optional.ofNullable(car));
+        when(imageRepository.findByUserAndIsDeletedFalse(user)).thenAnswer(invocation -> {throw new MyNotFoundException("");});
+
+        imageService.getCarImage("username1");
     }
 }

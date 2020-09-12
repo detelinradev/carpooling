@@ -41,8 +41,30 @@ public interface ImageService {
      */
     void storeUserImage(MultipartFile file, String loggedUserUsername);
 
+    /**
+     *      Fetches from database <class>Image</class> object for the passed <class>User</class>.
+     *  <p>
+     *      Check is made if passed <class>username</class>is valid, otherwise exception is thrown.
+     *
+     * @param username the <class>username</class> of this<class>user</class> which <class>image</class> we are fetching
+     * @return retrieved from database <class>Image</class> object
+     * @throws MyNotFoundException for user to not have image is expected and recoverable condition so checked
+     * exception is thrown which is then propagated to controller and global exception handler
+     */
     Image getUserImage(String username) throws MyNotFoundException;
 
+    /**
+     *      Fetches from database <class>Image</class> object for the passed <class>Car</class>.
+     *  <p>
+     *      Check is made if passed <class>username</class>is valid and passed <class>user</class> has a
+     *      <class>car</class> , otherwise exception is thrown.
+     *
+     * @param username the <class>username</class> of this<class>user</class> which <class>car</class>
+     *                 <class>image</class> we are fetching
+     * @return retrieved from database <class>Image</class> object
+     * @throws MyNotFoundException for car to not have image is expected and recoverable condition so checked
+     * exception is thrown which is then propagated to controller and global exception handler
+     */
     Image getCarImage(String username) throws MyNotFoundException;
 
     void deleteUserImage(String username, Authentication authentication) throws MyNotFoundException;
