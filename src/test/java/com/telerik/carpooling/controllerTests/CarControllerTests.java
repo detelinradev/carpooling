@@ -1,12 +1,13 @@
 package com.telerik.carpooling.controllerTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.telerik.carpooling.controller.CommentController;
+import com.telerik.carpooling.controller.CarController;
 import com.telerik.carpooling.enums.UserRole;
-import com.telerik.carpooling.model.dto.CommentDtoEdit;
-import com.telerik.carpooling.model.dto.CommentDtoResponse;
+import com.telerik.carpooling.model.dto.CarDtoEdit;
+import com.telerik.carpooling.model.dto.CarDtoRequest;
+import com.telerik.carpooling.model.dto.CarDtoResponse;
 import com.telerik.carpooling.model.dto.UserDtoResponse;
-import com.telerik.carpooling.service.service.contract.CommentService;
+import com.telerik.carpooling.service.service.contract.CarService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,9 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -32,91 +30,90 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CommentControllerTests {
+public class CarControllerTests {
 
     private MockMvc mockMvc;
 
     @Mock
-    CommentService commentService;
+    CarService carService;
 
 
     @InjectMocks
-    CommentController commentController;
+    CarController carController;
 
-    private JacksonTester<CommentDtoResponse> jsonCommentDtoResponse;
-    private JacksonTester<CommentDtoEdit> jsonCommentDtoEdit;
-    private JacksonTester<Set<CommentDtoResponse>> jsonCommentDtoResponseSet;
-    private CommentDtoResponse commentDtoResponse;
-    private CommentDtoEdit commentDtoEdit;
-    private Set<CommentDtoResponse> commentDtoResponseSet;
+    private JacksonTester<CarDtoResponse> jsonCarDtoResponse;
+    private JacksonTester<CarDtoEdit> jsonCarDtoEdit;
+    private JacksonTester<CarDtoRequest> jsonCarDtoRequest;
+    private CarDtoResponse carDtoResponse;
+    private CarDtoEdit carDtoEdit;
+    private CarDtoRequest carDtoRequest;
     private Authentication authentication;
 
     @BeforeEach
-    public void setup()  {
+    public void setup() {
 
-        mockMvc = MockMvcBuilders.standaloneSetup(commentController)
+        mockMvc = MockMvcBuilders.standaloneSetup(carController)
                 .build();
         authentication = mock(Authentication.class);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        ObjectMapper objectMapper = new ObjectMapper();
-        JacksonTester.initFields(this, objectMapper);
+        JacksonTester.initFields(this, new ObjectMapper());
         UserDtoResponse userDtoResponse = new UserDtoResponse(1L, "username1", "lastName",
                 "username1", "email@gmail.com", UserRole.USER, "0889111777", 3.5,
                 4.0);
-        commentDtoEdit = new CommentDtoEdit(1L,"message");
-        commentDtoResponse = new CommentDtoResponse(1L, userDtoResponse,"message");
-        commentDtoResponseSet = new HashSet<>();
-        commentDtoResponseSet.add(commentDtoResponse);
+        carDtoEdit = new CarDtoEdit(1L,"brand","model","color",1980);
+        carDtoResponse = new CarDtoResponse(1L, "brand","model","color",
+                1980,true);
+        carDtoRequest = new CarDtoRequest( "brand","model","color",1980,true);
     }
 
     @Test
-    public void get_Comments_Should_ReturnSetWithComments() throws Exception {
+    public void get_Car_Should_ReturnCar() throws Exception {
         // given
-        given(commentService.getComments(1L))
-                .willReturn(commentDtoResponseSet);
+        given(carService.getCar("username1"))
+                .willReturn(carDtoResponse);
 
         // when
         MockHttpServletResponse response = mockMvc.perform(
-                get("/comments/1")
+                get("/car/username1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).isEqualTo(
-                jsonCommentDtoResponseSet.write(commentDtoResponseSet).getJson()
+                jsonCarDtoResponse.write(carDtoResponse).getJson()
         );
     }
 
     @Test
-    public void update_Comments_Should_UpdateComment() throws Exception {
+    public void update_Car_Should_UpdateCar() throws Exception {
         // given
-        given(commentService.updateComment(commentDtoEdit,"username1"))
-                .willReturn(commentDtoResponse);
+        given(carService.updateCar(carDtoEdit,"username1"))
+                .willReturn(carDtoResponse);
 
         // when
         when(authentication.getName()).thenReturn("username1");
         MockHttpServletResponse response = mockMvc.perform(
-                put("/comments")
+                put("/car")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonCommentDtoEdit.write(commentDtoEdit).getJson())
+                        .content(jsonCarDtoEdit.write(carDtoEdit).getJson())
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).isEqualTo(
-                jsonCommentDtoResponse.write(commentDtoResponse).getJson()
+                jsonCarDtoResponse.write(carDtoResponse).getJson()
         );
     }
 
     @Test
-    public void delete_Comments_Should_DeleteComment() throws Exception {
+    public void delete_Car_Should_DeleteCar() throws Exception {
 
         // when
         when(authentication.getName()).thenReturn("username1");
         MockHttpServletResponse response = mockMvc.perform(
-                delete("/comments/1")
+                delete("/car/1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -125,22 +122,24 @@ public class CommentControllerTests {
     }
 
     @Test
-    public void create_Comments_Should_CreateComment() throws Exception {
+    public void create_Car_Should_CreateCar() throws Exception {
         // given
-        given(commentService.createComment(1L,"username1","message"))
-                .willReturn(commentDtoResponse);
+        given(carService.createCar(carDtoRequest,"username1"))
+                .willReturn(carDtoResponse);
 
         // when
         when(authentication.getName()).thenReturn("username1");
         MockHttpServletResponse response = mockMvc.perform(
-                post("/comments/1?comment=message")
+                post("/car")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonCarDtoRequest.write(carDtoRequest).getJson())
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).isEqualTo(
-                jsonCommentDtoResponse.write(commentDtoResponse).getJson()
+                jsonCarDtoResponse.write(carDtoResponse).getJson()
         );
     }
 }
