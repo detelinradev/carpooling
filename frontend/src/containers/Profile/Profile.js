@@ -187,13 +187,13 @@ class Profile extends Component {
             return;
         }
 
-        // let data = new FormData();
-        // data.append('upfile', this.state.file);
+        let data = new FormData();
+        data.append('upFile', this.state.file);
 
         fetch('http://localhost:8080/images', {
             method: 'POST',
             headers: {"Authorization": this.props.token},
-            body: this.state.file
+            body: data
         }).then(response => {
             if (!response.response)
                 this.setState({message: 'Successfully uploaded file'});

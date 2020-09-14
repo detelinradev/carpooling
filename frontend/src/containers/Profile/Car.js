@@ -51,7 +51,7 @@ class Car extends Component {
         }
 
         let data = new FormData();
-        data.append('upfile', this.state.file);
+        data.append('upFile', this.state.file);
 
         fetch('http://localhost:8080/images/car', {
             method: 'POST',
