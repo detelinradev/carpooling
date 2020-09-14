@@ -136,6 +136,6 @@ public class UserServiceImpl implements UserService {
     private User findUserByUsername(String username) {
 
         return userRepository.findByUsernameAndIsDeletedFalse(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username is not recognized"));
+                .orElseThrow(() -> new IllegalArgumentException("Username is not recognized"));
     }
 }

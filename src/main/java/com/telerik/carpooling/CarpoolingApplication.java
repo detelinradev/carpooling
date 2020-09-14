@@ -37,7 +37,6 @@ public class CarpoolingApplication {
             return Optional.of( authentication.getName());
         }
     }
-
 }
 
 

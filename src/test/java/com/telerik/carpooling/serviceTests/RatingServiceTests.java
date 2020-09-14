@@ -1,22 +1,17 @@
-package com.telerik.carpooling.ServiceTests;
+package com.telerik.carpooling.serviceTests;
 
 import com.telerik.carpooling.enums.TripStatus;
 import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.enums.UserStatus;
-import com.telerik.carpooling.model.Feedback;
+import com.telerik.carpooling.model.Rating;
 import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.TripUserStatus;
 import com.telerik.carpooling.model.User;
-import com.telerik.carpooling.model.dto.FeedbackDtoResponse;
-import com.telerik.carpooling.model.dto.UserDtoResponse;
-import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
-import com.telerik.carpooling.repository.FeedbackRepository;
+import com.telerik.carpooling.repository.RatingRepository;
 import com.telerik.carpooling.repository.TripRepository;
 import com.telerik.carpooling.repository.TripUserStatusRepository;
 import com.telerik.carpooling.repository.UserRepository;
-import com.telerik.carpooling.service.FeedbackServiceImpl;
-import com.telerik.carpooling.service.service.contract.RatingService;
-import org.junit.Assert;
+import com.telerik.carpooling.service.RatingServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,15 +21,17 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class FeedbackServiceTests {
+public class RatingServiceTests {
 
     @Mock
-    FeedbackRepository feedbackRepository;
+    RatingRepository ratingRepository;
 
     @Mock
     TripRepository tripRepository;
@@ -45,13 +42,7 @@ public class FeedbackServiceTests {
     @Mock
     TripUserStatusRepository tripUserStatusRepository;
 
-    @Mock
-    RatingService ratingService;
-
-    @Mock
-    DtoMapper dtoMapper;
-
-    private Feedback feedback;
+    private Rating rating;
     private Trip trip;
     private TripUserStatus tripUserStatusDriver;
     private TripUserStatus tripUserStatusPassenger;
@@ -59,12 +50,10 @@ public class FeedbackServiceTests {
     private User user2;
     private User user3;
     private List<TripUserStatus> tripUserStatusList;
-    private Set<FeedbackDtoResponse> feedbackDtoResponseSet;
-    private Set<Feedback> feedbackSet;
 
     @Spy
     @InjectMocks
-    FeedbackServiceImpl feedbackService;
+    RatingServiceImpl ratingService;
 
     @Before
     public void SetUp() {
@@ -82,16 +71,7 @@ public class FeedbackServiceTests {
                 "email@gmail.com", UserRole.USER, "password", "phone", 3.5,
                 4.0, 3, 4.0, 3, 4.0);
         user3.setModelId(3L);
-        UserDtoResponse userDtoResponse = new UserDtoResponse(1L, "username1", "firstName", "lastName",
-                "email@gmail.com", UserRole.USER, "phone", 3.5,
-                4.0);
-        userDtoResponse.setModelId(1L);
-        feedback = new Feedback(user1, user2, "feedback", false);
-        feedbackSet = new HashSet<>();
-        feedbackSet.add(feedback);
-        FeedbackDtoResponse feedbackDtoResponse = new FeedbackDtoResponse(1L, userDtoResponse, "feedback");
-        feedbackDtoResponseSet= new HashSet<>();
-        feedbackDtoResponseSet.add(feedbackDtoResponse);
+        rating = new Rating(user1, user2, 3, false);
         trip = new Trip("message", LocalDateTime.MAX,
                 "origin", "destination", 3, 5, 4,
                 true, true, true, true, TripStatus.AVAILABLE);
@@ -104,60 +84,62 @@ public class FeedbackServiceTests {
     }
 
     @Test
-    public void leave_Feedback_Should_CreateFeedback_When_AllParametersAreValidAndUsersBelongToTrip() {
+    public void create_Rating_Should_CreateRating_When_AllParametersAreValidAndUsersBelongToTrip() {
 
         when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user1));
         when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.ofNullable(user2));
         when(tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip))
                 .thenReturn(tripUserStatusList);
-        when(ratingService.doLoggedUserAndInteractedUserBothBelongToTripAndOneOfThemIsDriver(user1,user2,tripUserStatusList))
-                .thenReturn(true);
-        when(feedbackRepository.save(feedback)).thenReturn(feedback);
+        when(ratingRepository.save(rating)).thenReturn(rating);
 
-        feedbackService.leaveFeedback(1L, "username1", "username2", "feedback");
+        ratingService.createRating(1L, "username1", "username2", 3);
 
-        verify(tripRepository, times(1)).findByModelIdAndIsDeletedFalse(1L);
-        verify(userRepository, times(1)).findByUsernameAndIsDeletedFalse("username1");
-        verify(userRepository, times(1)).findByUsernameAndIsDeletedFalse("username2");
-        verify(tripUserStatusRepository, times(1)).findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip);
-        verify(feedbackRepository, times(1)).save(feedback);
+        verify(tripRepository, times(1))
+                .findByModelIdAndIsDeletedFalse(1L);
+        verify(userRepository, times(1))
+                .findByUsernameAndIsDeletedFalse("username1");
+        verify(userRepository, times(1))
+                .findByUsernameAndIsDeletedFalse("username2");
+        verify(tripUserStatusRepository, times(1))
+                .findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip);
+        verify(ratingRepository, times(1)).save(rating);
 
-        verifyNoMoreInteractions(userRepository, tripUserStatusRepository, tripRepository, feedbackRepository);
+        verifyNoMoreInteractions(userRepository, tripUserStatusRepository, tripRepository, ratingRepository);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void leave_Feedback_Should_ThrowException_IfTripModelIdIsNotValid() {
+    public void create_Rating_Should_ThrowException_IfTripModelIdIsNotValid() {
 
         when(tripRepository.findByModelIdAndIsDeletedFalse(1L))
                 .thenReturn(Optional.empty());
 
-        feedbackService.leaveFeedback(1L, "username1", "username2", "feedback");
+        ratingService.createRating(1L, "username1", "username2", 3);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void leave_Feedback_Should_ThrowException_IfLoggedUserUsernameIsNotValid() {
+    public void create_Rating_Should_ThrowException_IfLoggedUserUsernameIsNotValid() {
 
         when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
         when(userRepository.findByUsernameAndIsDeletedFalse("username1"))
                 .thenReturn(Optional.empty());
 
-        feedbackService.leaveFeedback(1L, "username1", "username2", "feedback");
+        ratingService.createRating(1L, "username1", "username2", 3);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void leave_Feedback_Should_ThrowException_IfUserUsernameIsNotValid() {
+    public void create_Rating_Should_ThrowException_IfRatedUserUsernameIsNotValid() {
 
         when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user1));
         when(userRepository.findByUsernameAndIsDeletedFalse("username2"))
                 .thenReturn(Optional.empty());
 
-        feedbackService.leaveFeedback(1L, "username1", "username2", "feedback");
+        ratingService.createRating(1L, "username1", "username2", 3);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void leave_Feedback_Should_ThrowException_IfUserDoNotBelongToTheTrip() {
+    public void create_Rating_Should_ThrowException_IfRatedUserDoNotBelongToTheTrip() {
 
         tripUserStatusPassenger.setUser(user3);
 
@@ -166,14 +148,12 @@ public class FeedbackServiceTests {
         when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.ofNullable(user2));
         when(tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip))
                 .thenReturn(tripUserStatusList);
-        when(ratingService.doLoggedUserAndInteractedUserBothBelongToTripAndOneOfThemIsDriver(user1,user2,tripUserStatusList))
-                .thenReturn(false);
 
-        feedbackService.leaveFeedback(1L, "username1", "username2", "feedback");
+        ratingService.createRating(1L, "username1", "username2", 3);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void leave_Feedback_Should_ThrowException_IfLoggedUserDoNotBelongToTheTrip() {
+    public void create_Rating_Should_ThrowException_IfLoggedUserDoNotBelongToTheTrip() {
 
         tripUserStatusDriver.setUser(user3);
 
@@ -182,14 +162,12 @@ public class FeedbackServiceTests {
         when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.ofNullable(user2));
         when(tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip))
                 .thenReturn(tripUserStatusList);
-        when(ratingService.doLoggedUserAndInteractedUserBothBelongToTripAndOneOfThemIsDriver(user1,user2,tripUserStatusList))
-                .thenReturn(false);
 
-        feedbackService.leaveFeedback(1L, "username1", "username2", "feedback");
+        ratingService.createRating(1L, "username1", "username2", 3);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void leave_Feedback_Should_ThrowException_IfNeitherOfBothUsersIsDriver() {
+    public void create_Rating_Should_ThrowException_IfNeitherOfBothUsersIsDriver() {
 
         tripUserStatusDriver.setUserStatus(UserStatus.ACCEPTED);
 
@@ -198,28 +176,66 @@ public class FeedbackServiceTests {
         when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.ofNullable(user2));
         when(tripUserStatusRepository.findCurrentTripUserStatusForAllUsersByTripAndIsDeletedFalse(trip))
                 .thenReturn(tripUserStatusList);
-        when(ratingService.doLoggedUserAndInteractedUserBothBelongToTripAndOneOfThemIsDriver(user1,user2,tripUserStatusList))
-                .thenReturn(false);
 
-        feedbackService.leaveFeedback(1L, "username1", "username2", "feedback");
+        ratingService.createRating(1L, "username1", "username2", 3);
     }
 
     @Test
-    public void get_Feedback_Should_ReturnSetWithResults_WhenUsernameIsValid() {
+    public void set_UserRating_Should_SetRatingAsDriver_When_AllParametersAreValid() {
 
-        when(userRepository.findByUsernameAndIsDeletedFalse("username1"))
-                .thenReturn(Optional.ofNullable(user1));
-        when(feedbackRepository.getAllByUserAndIsDeletedFalse(user1)).thenReturn(feedbackSet);
-        when(dtoMapper.feedbackToFeedbackDtoResponses(feedbackSet)).thenReturn(feedbackDtoResponseSet);
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user1));
+        when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
+        when(tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username1"))
+                .thenReturn(Optional.ofNullable(tripUserStatusDriver));
+        when(userRepository.save(user1)).thenReturn(user1);
 
-        Assert.assertEquals(feedbackDtoResponseSet, feedbackService.getFeedback("username1"));
+        ratingService.setUserRating(1L, "username1", 3);
+
+        verify(userRepository, times(1))
+                .findByUsernameAndIsDeletedFalse("username1");
+        verify(tripRepository, times(1))
+                .findByModelIdAndIsDeletedFalse(1L);
+        verify(tripUserStatusRepository, times(1))
+                .findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username1");
+        verify(userRepository, times(1)).save(user1);
+
+        verifyNoMoreInteractions(userRepository, tripUserStatusRepository, tripRepository);
+    }
+
+    @Test
+    public void set_UserRating_Should_SetRatingAsPassenger_When_AllParametersAreValid() {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse("username2")).thenReturn(Optional.ofNullable(user2));
+        when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.ofNullable(trip));
+        when(tripUserStatusRepository.findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username2"))
+                .thenReturn(Optional.empty());
+        when(userRepository.save(user2)).thenReturn(user2);
+
+        ratingService.setUserRating(1L, "username2", 3);
+
+        verify(userRepository, times(1)).findByUsernameAndIsDeletedFalse("username2");
+        verify(tripRepository, times(1)).findByModelIdAndIsDeletedFalse(1L);
+        verify(tripUserStatusRepository, times(1))
+                .findFirstByTripModelIdAndUserUsernameAsDriver(1L,"username2");
+        verify(userRepository, times(1)).save(user2);
+
+        verifyNoMoreInteractions(userRepository, tripUserStatusRepository, tripRepository);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void get_Feedback_Should_ThrowException_IfUsernameIsNotValid() {
+    public void set_UserRating_Should_ThrowException_IfRatedUserUsernameIsNotValid() {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.empty());
 
-        feedbackService.getFeedback("username1");
+        ratingService.setUserRating(1L, "username1", 3);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void set_UserRating_Should_ThrowException_IfTripModelIdIsNotValid() {
+
+        when(userRepository.findByUsernameAndIsDeletedFalse("username1")).thenReturn(Optional.ofNullable(user1));
+        when(tripRepository.findByModelIdAndIsDeletedFalse(1L)).thenReturn(Optional.empty());
+
+        ratingService.setUserRating(1L, "username1", 3);
     }
 }

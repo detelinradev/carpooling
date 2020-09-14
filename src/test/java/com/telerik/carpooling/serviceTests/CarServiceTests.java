@@ -1,4 +1,4 @@
-package com.telerik.carpooling.ServiceTests;
+package com.telerik.carpooling.serviceTests;
 
 import com.telerik.carpooling.enums.UserRole;
 import com.telerik.carpooling.exception.MyNotFoundException;

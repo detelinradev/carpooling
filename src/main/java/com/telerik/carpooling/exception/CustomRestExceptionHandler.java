@@ -1,6 +1,7 @@
 package com.telerik.carpooling.exception;
 
 import javassist.NotFoundException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -36,9 +36,9 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
+            @NotNull HttpHeaders headers,
+            @NotNull HttpStatus status,
+            @NotNull WebRequest request) {
         List<String> errors = new ArrayList<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
@@ -55,8 +55,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
-            MissingServletRequestParameterException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+            MissingServletRequestParameterException ex, @NotNull HttpHeaders headers,
+            @NotNull HttpStatus status, @NotNull WebRequest request) {
         String error = ex.getParameterName() + " parameter is missing";
 
         ApiError apiError =
@@ -94,7 +94,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(
-            NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            NoHandlerFoundException ex, @NotNull HttpHeaders headers, @NotNull HttpStatus status, @NotNull WebRequest request) {
         String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
 
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), error);
@@ -104,9 +104,9 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
             HttpRequestMethodNotSupportedException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
+            @NotNull HttpHeaders headers,
+            @NotNull HttpStatus status,
+            @NotNull WebRequest request) {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getMethod());
         builder.append(
@@ -122,9 +122,9 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
             HttpMediaTypeNotSupportedException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
+            @NotNull HttpHeaders headers,
+            @NotNull HttpStatus status,
+            @NotNull WebRequest request) {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getContentType());
         builder.append(" media type is not supported. Supported media types are ");
@@ -156,8 +156,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(final HttpMessageNotReadableException ex,
-                                                                  final HttpHeaders headers, final HttpStatus status,
-                                                                  final WebRequest request) {
+                                                                  final @NotNull HttpHeaders headers, final @NotNull HttpStatus status,
+                                                                  final @NotNull WebRequest request) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage()
                 , "Message not properly formatted");
         return new ResponseEntity<>(
@@ -172,10 +172,10 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler({ UsernameNotFoundException.class})
+    @ExceptionHandler({ MyNotFoundException.class})
     public ResponseEntity<Object> handleUsernameNotFoundException(final Exception ex, final WebRequest request) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage()
-                , "Username not found");
+                , ex.getMessage());
         return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
@@ -188,11 +188,11 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class,
-            MyNotFoundException.class, FileStorageException.class})
+    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class
+            , FileStorageException.class})
     public ResponseEntity<Object> handleInternalRuntime(final RuntimeException ex, final WebRequest request) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage()
-                , "Missing or wrong argument");
+                , ex.getMessage());
         return new ResponseEntity<>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
