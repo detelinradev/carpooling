@@ -11,7 +11,7 @@ import com.telerik.carpooling.service.service.contract.TripService;
 import com.telerik.carpooling.service.service.contract.TripUserStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +32,14 @@ public class TripController {
     private final TripUserStatusService tripUserStatusService;
 
     @PostMapping
-    public ResponseEntity<TripUserStatusDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest tripDtoRequest,
-                                                                final Authentication authentication) throws MyNotFoundException {
+    public ResponseEntity<TripUserStatusDtoResponse> createTrip(@Valid @RequestBody final TripDtoRequest tripDtoRequest)
+            throws MyNotFoundException {
+
+        String loggedUserName = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return ResponseEntity.ok()
                 .body(tripUserStatusService.createTripUserStatusAsDriver(
-                        tripService.createTrip(tripDtoRequest, authentication.getName()), authentication.getName()));
+                        tripService.createTrip(tripDtoRequest, loggedUserName), loggedUserName));
     }
 
     @GetMapping
@@ -56,53 +58,61 @@ public class TripController {
             @RequestParam(value = "petsAllowed", required = false) final Boolean pets,
             @RequestParam(value = "luggageAllowed", required = false) final Boolean luggage,
             @RequestParam(value = "airConditioned", required = false) final Boolean airConditioned) {
+
         return ResponseEntity.ok().body(tripUserStatusService.getAllTripsWithDrivers(pageNumber, pageSize, tripStatus,
                 origin, destination, earliestDepartureTime, latestDepartureTime, availablePlaces, smoking, pets,
                 luggage, airConditioned));
     }
 
     @GetMapping(value = "/{tripId}")
-    public ResponseEntity<List<TripUserStatusDtoResponse>> getTripUserStatuses(@PathVariable @NotNull final Long tripId) {
+    public ResponseEntity<List<TripUserStatusDtoResponse>> getAllTripUserStatusesForATrip(@PathVariable @NotNull final Long tripId) {
 
         return ResponseEntity.ok().body(tripUserStatusService.getCurrentTripUserStatusForAllUsersInATrip(tripId));
     }
 
     @GetMapping(value = "/myTrips")
-    public ResponseEntity<List<TripUserStatusDtoResponse>> getMyTrips(final Authentication authentication) {
+    public ResponseEntity<List<TripUserStatusDtoResponse>> getMyTrips() {
 
-        return ResponseEntity.ok().body(tripUserStatusService.getUserOwnTripsWithDrivers(authentication.getName()));
+        String loggedUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return ResponseEntity.ok().body(tripUserStatusService.getUserOwnTripsWithDrivers(loggedUserName));
     }
 
     @PutMapping
-    public ResponseEntity<TripDtoResponse> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit, final Authentication authentication) {
+    public ResponseEntity<TripDtoResponse> updateTrip(@Valid @RequestBody final TripDtoEdit tripDtoEdit) {
 
-        return ResponseEntity.ok().body(tripService.updateTrip(tripDtoEdit, authentication.getName()));
+        String loggedUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return ResponseEntity.ok().body(tripService.updateTrip(tripDtoEdit, loggedUserName));
     }
 
     @PatchMapping(value = "/{tripId}")
     public ResponseEntity<Void> changeTripStatus(@PathVariable @NotNull final Long tripId,
-                                                 final Authentication authentication,
                                                  @RequestParam(value = "status") @NotNull TripStatus tripStatus) {
 
-        tripService.changeTripStatus(tripId, authentication.getName(), tripStatus);
+        String loggedUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        tripService.changeTripStatus(tripId, loggedUserName, tripStatus);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping(value = "/{tripId}/passengers/{passengerUsername}")
     public ResponseEntity<Void> changeUserStatus(@PathVariable @NotNull final Long tripId,
                                                  @PathVariable @NotNull final String passengerUsername,
-                                                 final Authentication authentication,
                                                  @RequestParam(value = "status")@NotNull UserStatus userStatus) {
 
-        tripUserStatusService.changeUserStatus(tripId, passengerUsername, authentication.getName(), userStatus);
+        String loggedUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        tripUserStatusService.changeUserStatus(tripId, passengerUsername, loggedUserName, userStatus);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping(value = "/{tripId}/delete")
-    public ResponseEntity<Void> deleteTrip(@PathVariable @NotNull final Long tripId,
-                                           final Authentication authentication) {
+    public ResponseEntity<Void> deleteTrip(@PathVariable @NotNull final Long tripId) {
 
-        tripService.deleteTrip(tripId, authentication.getName());
+        String loggedUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        tripService.deleteTrip(tripId, loggedUserName);
         return ResponseEntity.ok().build();
     }
 }

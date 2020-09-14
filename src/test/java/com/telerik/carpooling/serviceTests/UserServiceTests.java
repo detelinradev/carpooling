@@ -7,7 +7,9 @@ import com.telerik.carpooling.enums.UserStatus;
 import com.telerik.carpooling.model.Trip;
 import com.telerik.carpooling.model.TripUserStatus;
 import com.telerik.carpooling.model.User;
-import com.telerik.carpooling.model.dto.*;
+import com.telerik.carpooling.model.dto.UserDtoEdit;
+import com.telerik.carpooling.model.dto.UserDtoRequest;
+import com.telerik.carpooling.model.dto.UserDtoResponse;
 import com.telerik.carpooling.model.dto.dto.mapper.DtoMapper;
 import com.telerik.carpooling.repository.TripUserStatusRepository;
 import com.telerik.carpooling.repository.UserRepository;
@@ -21,7 +23,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.*;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -165,7 +166,7 @@ public class UserServiceTests {
         userService.updateUser(userDtoEdit,"username2");
     }
 
-    @Test (expected = UsernameNotFoundException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void update_User_Should_ThrowException_IfUserIsNotFound(){
 
         when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
@@ -199,7 +200,7 @@ public class UserServiceTests {
         Assert.assertEquals(userDtoResponse, userService.getUser("username1","username2"));
     }
 
-    @Test (expected = UsernameNotFoundException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void get_User_Should_ThrowException_IfUsernameIsNotValid(){
 
         when(userRepository.findByUsernameAndIsDeletedFalse(user1.getUsername()))
@@ -263,7 +264,7 @@ public class UserServiceTests {
         verifyNoMoreInteractions(userRepository,tripUserStatusRepository);
     }
 
-    @Test (expected = UsernameNotFoundException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void delete_User_Should_ThrowException_IfPassedUsernameIsNotValid() {
 
         when(userRepository.findByUsernameAndIsDeletedFalse("username1"))
